@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>  
+
+
+    <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/admintest?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">root</property>
+        <property name="password" type="java.lang.String">123456</property>
+        <property name="DBType" type="java.lang.String">MYSQL</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="MVCOption" class="com.zg.mvc.entity.MVCOption">
+        <property name="controllerPackage" type="java.lang.String">com.zg.io.controller</property>
+        <property name="controllerSuffix" type="java.lang.String">.do</property>
+        <property name="upLoadPackage" type="java.lang.String">com.zg.io.controller</property>
+        <property name="upLoadSuffix" type="java.lang.String">.file</property>
+        <property name="temporaryFilePath" type="java.lang.String">E:\\upFile\\</property>
+    </bean>
+
+    <bean id="FTPConfig" class="com.zg.bean.entity.FTPConfig">
+        <property name="ftpHost" type="java.lang.String">192.168.71.221</property>
+        <property name="ftpPort" type="java.lang.String">21</property>
+        <property name="ftpUserName" type="java.lang.String">guangge</property>
+        <property name="ftpPassword" type="java.lang.String">helloworld</property>
+        <property name="ftpPath" type="java.lang.String">upload/</property>
+    </bean>
+
+
+    <bean id="optionMGDB" class="com.zg.bean.entity.OptionMGDB">
+        <property name="ip" type="java.lang.String">localhost</property>
+        <property name="port" type="java.lang.String">27017</property>
+        <property name="database" type="java.lang.String">admin</property>
+        <property name="username" type="java.lang.String">adminUser</property>
+        <property name="password" type="java.lang.String">adminPass</property>
+    </bean>
+
+
+
+    <bean id="SSOOpthion" class="com.zg.sso.entity.SSOOpthion">
+        <property name="ssoURL" type="java.lang.String">http://localhost:8888/sso</property>
+        <property name="domain" type="java.lang.String">localhost</property>
+        <property name="rootPath" type="java.lang.String">/</property>
+    </bean>
+
+
+    <bean id="tableMapper" class="com.zg.webdemo.dao.TableMapper">
+    </bean>
+
+    <bean id="tableService" class="com.zg.webdemo.service.table.TableServiceImpl">
+        <property name="tableMapper" ref="tableMapper"></property>
+    </bean>
+
+    <proxy package="com.zg.webdemo.service.table" handler="com.zg.handler.CommitInterfaceHandler" method="deleteTableDate"></proxy>
+
+
+</beans>
