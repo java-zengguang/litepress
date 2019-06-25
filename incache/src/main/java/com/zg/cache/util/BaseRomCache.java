@@ -1,4 +1,4 @@
-package com.zg.database.dbcache;
+package com.zg.cache.util;
 
 import com.zg.bean.entity.ContainModel;
 import com.zg.bean.entity.MainModel;
@@ -12,21 +12,18 @@ import java.util.*;
 /**
  * Created by Administrator on 2018/11/27 0027.
  */
-public class ROMCache implements ROMCacheInte {
+public  abstract class BaseRomCache implements RomCacheInte {
 
-    public Object model;
-    private List modelList = new ArrayList();
-    private List bankList = new ArrayList();
+    //public Object model;
+    public Class modelClass;
+    public List modelList = new ArrayList();
+    public List bankList = new ArrayList();
+    public String sql="";
 
-    public ROMCache(Object model){
-        this.model=model;
+    public BaseRomCache(Class modelClass,String sql){
+        this.modelClass=modelClass;
+        this.sql=sql;
     }
-
-
-    protected Scanner input = new Scanner(System.in);
-
-
-
 
 
 		/*根据查询条件更新*/
@@ -43,10 +40,10 @@ public class ROMCache implements ROMCacheInte {
 
     public boolean updataList(String valueS, int index) throws IllegalArgumentException, IllegalAccessException, InstantiationException {
         String[] values = getValues(valueS);
-        Field fields[] = model.getClass().getFields();
+        Field fields[] = modelClass.getFields();
         if (values.length == fields.length) {
             int i = 0;
-            model = model.getClass().newInstance();
+           Object model =modelClass.newInstance();
             for (Field f : fields) {
                 FieldUtils.setField(f, model, values[i].trim());
                 i++;
@@ -117,7 +114,6 @@ public class ROMCache implements ROMCacheInte {
 
     List<Integer> findModelIndex(String... terms) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         List num_list = new ArrayList();
-        Class modelClass = model.getClass();
         Map termMap = new HashMap();
         for (String term : terms) {
             String[] subS = term.split("=");
@@ -159,12 +155,13 @@ public class ROMCache implements ROMCacheInte {
     public boolean upLoadDatabase() {
         try {
             List<String> sqlList = new ArrayList<String>();
+            Object model=modelClass.newInstance();
             if (model instanceof MainModel) {
-                sqlList = ModelSQLUtils.replaceListSql(modelList, bankList, model);
+                sqlList = ModelSQLUtils.replaceListSql(modelList, bankList);
             } else if (model instanceof ContainModel) {
-                Field[] fields = model.getClass().getFields();
+                Field[] fields = modelClass.getFields();
                 for (Field field : fields) {
-                    if (field.getType() != int.class && field.getType() != String.class) {
+                    if (FieldUtils.isPrimitive(field.getType())) {
                         List<String> subSqlList = new ArrayList();
                         List<Object> subModelList = new ArrayList<Object>();
                         List<Object> subBankList = new ArrayList<Object>();
@@ -178,13 +175,14 @@ public class ROMCache implements ROMCacheInte {
                             Object o = field.get(bankList.get(i));
                             subBankList.add(o);
                         }
-                        subSqlList = ModelSQLUtils.replaceListSql(subModelList, subBankList, field.get(model));
+                        subSqlList = ModelSQLUtils.replaceListSql(subModelList, subBankList);
                         subSqlList.addAll(sqlList);
                         sqlList = subSqlList;
                     }
                 }
             }
             JDBCUtils.batchSql(sqlList);
+            submit();
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -196,13 +194,13 @@ public class ROMCache implements ROMCacheInte {
     }
 
 
-    public boolean downLoadDatabese(Class model, String sql) throws Exception {
+    @Override
+    public boolean downLoadDatabese() throws Exception {
 
-        bankList = JDBCUtils.select(sql, model);
-        modelList = JDBCUtils.select(sql, model);
+        bankList = JDBCUtils.select(sql, modelClass);
+        modelList = JDBCUtils.select(sql, modelClass);
         return true;
     }
-
 
     @Override
     public List getList() {
@@ -237,9 +235,8 @@ public class ROMCache implements ROMCacheInte {
 
     @Override
     public boolean submit() {
-        //cpm.commit();
-        //cpm.release();
-        System.out.println(ROMCache.class+"====提交成功，重置链接");
+        JDBCUtils.commit();
+        System.out.println(BaseRomCache.class+"====提交成功，重置链接");
         return true;
     }
 

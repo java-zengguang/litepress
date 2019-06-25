@@ -220,7 +220,7 @@ public class ControllerAdapter {
             return objects;
         }
         FileUpLoad fileUpLoad = new FileUpLoad();
-        String filePath = fileUpLoad.upload(targetS,inputFilePath,targetS, "E:\\upFile\\");
+        String filePath = fileUpLoad.upload(targetS,inputFilePath,targetS, mvcOption.upLoadPath);
 
         objects[0] = filePath;  //返回文件的路径
 
@@ -233,8 +233,8 @@ public class ControllerAdapter {
         LOGGER.info("请求的url "+request.getRequestURL());
         String requestURI = request.getRequestURI();
         Object viewObject = null;
-        if (requestURI.endsWith(mvcOption.controllerSuffix) || requestURI.endsWith(mvcOption.upLoadSuffix)) {
-            if(mvcOption.projectRoot!=null && !"".equals(mvcOption.projectRoot)) {
+        if (requestURI.endsWith(mvcOption.controllerSuffix) || requestURI.endsWith(mvcOption.upLoadSuffix )) {
+            if(mvcOption.projectRoot!=null && !"".equals(mvcOption.projectRoot) && requestURI.contains(mvcOption.projectRoot)) {
                 requestURI = requestURI.replaceFirst(mvcOption.projectRoot, "");
             }
             String parentURI = "/" + requestURI.split("/")[1];
@@ -275,10 +275,9 @@ public class ControllerAdapter {
             }
 
         }else{
-  /*          if(mvcOption.projectRoot!=null && !"".equals(mvcOption.projectRoot)){
+           /* if(mvcOption.projectRoot!=null && !"".equals(mvcOption.projectRoot)){
                 int index=requestURI.indexOf("/",6);
-                requestURI=requestURI.substring(0,index)+"/sso"+requestURI.substring(index,requestURI.length());
-
+                requestURI=requestURI.substring(0,index)+mvcOption.projectRoot+requestURI.substring(index,requestURI.length());
             }*/
         }
 

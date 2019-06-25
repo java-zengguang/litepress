@@ -7,7 +7,7 @@
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
         <property name="username" type="java.lang.String">root</property>
-        <property name="password" type="java.lang.String">123456</property>
+        <property name="password" type="java.lang.String">helloworld</property>
         <property name="DBType" type="java.lang.String">MYSQL</property>
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
@@ -17,7 +17,10 @@
         <property name="controllerSuffix" type="java.lang.String">.do</property>
         <property name="upLoadPackage" type="java.lang.String">com.zg.io.controller</property>
         <property name="upLoadSuffix" type="java.lang.String">.file</property>
-        <property name="temporaryFilePath" type="java.lang.String">E:\\upFile\\</property>
+        <property name="temporaryFilePath" type="java.lang.String">D:\\tempFile\\</property>
+        <property name="upLoadPath" type="java.lang.String">D:\\upFile\\</property>
+        <property name="projectRoot" type="java.lang.String">/webiodemo</property>
+
     </bean>
 
     <bean id="FTPConfig" class="com.zg.bean.entity.FTPConfig">
@@ -42,7 +45,7 @@
     <bean id="SSOOpthion" class="com.zg.sso.entity.SSOOpthion">
         <property name="ssoURL" type="java.lang.String">http://localhost:8888/sso</property>
         <property name="domain" type="java.lang.String">localhost</property>
-        <property name="rootPath" type="java.lang.String">/</property>
+        <property name="rootPath" type="java.lang.String">/sso</property>
     </bean>
 
 

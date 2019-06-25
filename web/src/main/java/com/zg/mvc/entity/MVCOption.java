@@ -10,6 +10,7 @@ public class MVCOption extends MainModel {
     public String controllerSuffix;
     public String upLoadSuffix;
     public String upLoadPackage;
+    public String  upLoadPath;
     public String temporaryFilePath;
     public String projectRoot;
 

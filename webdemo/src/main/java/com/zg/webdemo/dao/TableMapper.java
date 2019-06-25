@@ -25,6 +25,7 @@ public class TableMapper {
                "$if{ and table_name LIKE  concat(#{tableName},'%') }  ";
 
        sql= ModelSQLUtils.dynamicSQL(sql,table);
+       System.out.println(sql);
         List list=JDBCUtils.selectToMapList(sql);
         return list;
     }

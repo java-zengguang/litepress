@@ -1,11 +1,11 @@
-package com.zg.database.dbcache;
+package com.zg.cache.util;
 
 import java.util.List;
 
 /**
  * Created by Administrator on 2018/11/27 0027.
  */
-public interface ROMCacheInte {
+public interface RomCacheInte {
 
     List getList();
 
@@ -25,7 +25,7 @@ public interface ROMCacheInte {
 
     List findModel(String... terms);
 
-    boolean downLoadDatabese(Class modelClass, String sql) throws Exception;
+    boolean downLoadDatabese() throws Exception;
 
     boolean upLoadDatabase();
 

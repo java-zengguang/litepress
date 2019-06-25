@@ -6,26 +6,26 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="admin" />
-        <module name="blog" />
-        <module name="direction" />
+        <module name="web" />
         <module name="im" />
         <module name="network-util" />
+        <module name="blog" />
         <module name="scala" />
-        <module name="sso" />
+        <module name="incache" />
+        <module name="direction" />
         <module name="util" />
-        <module name="web" />
-        <module name="webdemo" />
+        <module name="sso" />
         <module name="webiodemo" />
+        <module name="webdemo" />
+        <module name="admin" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="admin" target="1.8" />
-      <module name="blog" target="1.8" />
       <module name="databases" target="1.8" />
       <module name="direction" target="1.8" />
-      <module name="hessianDemo" target="1.8" />
       <module name="im" target="1.8" />
+      <module name="incache" target="1.8" />
       <module name="network-util" target="1.8" />
       <module name="scala" target="1.8" />
       <module name="sso" target="1.8" />
@@ -39,7 +39,6 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="-parameters" />
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="databases" options="" />
-      <module name="hessianDemo" options="" />
       <module name="scala" options="" />
       <module name="sso" options="-parameters" />
       <module name="util" options="-parameters" />

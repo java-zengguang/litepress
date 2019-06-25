@@ -216,7 +216,7 @@ public class ModelSQLUtils {
     }
 
 
-    public static List replaceListSql(List source, List target, Object object) throws Exception {
+    public static List replaceListSql(List source, List target) throws Exception {
 
         List deleteList = new ArrayList();
         for (Object o : target) {
@@ -257,20 +257,27 @@ public class ModelSQLUtils {
 
     }
 
+private static boolean isTrue(String string,Object object){
+        return true;
+}
 
     private static synchronized String resovleSQL(String sql, String key, Object object) throws NoSuchFieldException, IllegalAccessException {
 
         if (sql.contains(key + "{")) {
-            String bracket = sql.substring(sql.indexOf(key + "{"), sql.indexOf("}", sql.indexOf(key + "{")) + 1);
+            String bracket = sql.substring(sql.indexOf(key + "{")+key.length()+1, sql.indexOf("}", sql.indexOf(key + "{")) );
             if ("$if".equals(key)) {
-                sql = sql.replace(bracket, "");
+                if(isTrue(bracket,object)){
+                    sql = sql.replace("$if{"+bracket+"}",bracket);
+                }else{
+                sql = sql.replace("$if{"+bracket+"}", "");
+                }
             } else if ("#".equals(key)) {
                 if (object instanceof Map) {
                     Map<String, String> map = (Map) object;
-                    sql = sql.replace(bracket, map.get(bracket.substring(2, bracket.length() - 1).trim()));
+                    sql = sql.replace("#{"+bracket+"}", map.get(bracket.trim()));
                 } else {
-                    Field field = object.getClass().getField(bracket.substring(2, bracket.length() - 1).trim());
-                    sql = sql.replace(bracket, FieldSQLUtils.getFieldSql(field, object));
+                    Field field = object.getClass().getField(bracket.trim());
+                    sql = sql.replace("#{"+bracket+"}", FieldSQLUtils.getFieldSql(field, object));
                 }
             }
             return sql = resovleSQL(sql, key, object);   //递归执行
@@ -283,6 +290,7 @@ public class ModelSQLUtils {
     public static String dynamicSQL(String sql, Object object) throws NoSuchFieldException, IllegalAccessException {
         sql = resovleSQL(sql, "#", object);
         sql = resovleSQL(sql, "$if", object);
+
         return sql;
     }
 

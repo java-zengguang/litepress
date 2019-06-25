@@ -22,6 +22,7 @@
         <module>admin</module>
         <module>direction</module>
         <module>im</module>
+        <module>incache</module>
     </modules>
 
 

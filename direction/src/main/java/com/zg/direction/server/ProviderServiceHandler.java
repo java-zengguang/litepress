@@ -6,8 +6,10 @@ import com.zg.direction.entity.ParamterEntity;
 import com.zg.network.common.service.BaseServiceHandler;
 import com.zg.util.reflect.FieldUtils;
 import com.zg.util.reflect.JsonUtils;
+import com.zg.util.reflect.SerializeUtils;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -106,7 +108,8 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             e.printStackTrace();
         }
 
-        String responseJson=JsonUtils.objectToJson(response).toString();
+        //String responseJson=JsonUtils.objectToJson(response).toString();
+        String responseJson=serialize(response);
        // Channel channel=BaseChannelGroups.getChannel("");
        // channel.writeAndFlush(responseJson+"\r\n");
         ctx.writeAndFlush(responseJson+ "\r\n");
