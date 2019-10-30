@@ -25,9 +25,7 @@ public interface RomCacheInte {
 
     List findModel(String... terms);
 
-    boolean downLoadDatabese() throws Exception;
+    boolean addModel(Object model);
 
-    boolean upLoadDatabase();
 
-    boolean submit();
 }

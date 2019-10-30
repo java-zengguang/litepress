@@ -7,7 +7,7 @@
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
         <property name="username" type="java.lang.String">root</property>
-        <property name="password" type="java.lang.String">123456</property>
+        <property name="password" type="java.lang.String">root</property>
         <property name="DBType" type="java.lang.String">MYSQL</property>
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>

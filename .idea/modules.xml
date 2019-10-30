@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/incache/incache.iml" filepath="$PROJECT_DIR$/incache/incache.iml" />
       <module fileurl="file://$PROJECT_DIR$/network-util/network-util.iml" filepath="$PROJECT_DIR$/network-util/network-util.iml" />
       <module fileurl="file://$PROJECT_DIR$/scala/scala.iml" filepath="$PROJECT_DIR$/scala/scala.iml" />
+      <module fileurl="file://$PROJECT_DIR$/search/search.iml" filepath="$PROJECT_DIR$/search/search.iml" />
       <module fileurl="file://$PROJECT_DIR$/sso/sso.iml" filepath="$PROJECT_DIR$/sso/sso.iml" />
       <module fileurl="file://$PROJECT_DIR$/util/util.iml" filepath="$PROJECT_DIR$/util/util.iml" />
       <module fileurl="file://$PROJECT_DIR$/web/web.iml" filepath="$PROJECT_DIR$/web/web.iml" />

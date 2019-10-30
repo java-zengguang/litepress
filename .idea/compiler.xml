@@ -9,15 +9,16 @@
         <module name="web" />
         <module name="im" />
         <module name="network-util" />
-        <module name="blog" />
         <module name="scala" />
         <module name="incache" />
-        <module name="direction" />
-        <module name="util" />
-        <module name="sso" />
-        <module name="webiodemo" />
-        <module name="webdemo" />
         <module name="admin" />
+        <module name="webdemo" />
+        <module name="direction" />
+        <module name="search" />
+        <module name="util" />
+        <module name="webiodemo" />
+        <module name="sso" />
+        <module name="blog" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -28,6 +29,7 @@
       <module name="incache" target="1.8" />
       <module name="network-util" target="1.8" />
       <module name="scala" target="1.8" />
+      <module name="search" target="1.8" />
       <module name="sso" target="1.8" />
       <module name="util" target="1.8" />
       <module name="web" target="1.8" />

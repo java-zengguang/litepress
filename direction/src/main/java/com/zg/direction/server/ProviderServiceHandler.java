@@ -92,20 +92,14 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             Object paramters[] = getParamters(request.methodParamters, method.getParameterTypes());
             Object result = method.invoke(classes.newInstance(), paramters);
             response.success=true;
-            response.resultData= serialize(result);
+            response.setResultData(serialize(result));
             response.resultType=request.methodType;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+            response.success=false;
+            response.resultData= null;
+            response.resultType=request.methodType;
+            response.error=e.getMessage();
         }
 
         //String responseJson=JsonUtils.objectToJson(response).toString();

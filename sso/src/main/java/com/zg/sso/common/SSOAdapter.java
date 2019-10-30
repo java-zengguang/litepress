@@ -1,7 +1,8 @@
 package com.zg.sso.common;
 
-import com.zg.init.Config;
 import com.zg.sso.entity.SSOOpthion;
+import com.zg.util.url.URLUtils;
+
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -86,12 +87,15 @@ public class SSOAdapter {
     private String toRegistToken(HttpServletRequest request) throws IOException {
 
         String url = (request).getRequestURL().toString();
+        url= URLUtils.getURLEncoderString(url);
+        System.out.println(url);
 
         String newToken = loginService.registToken(url, ssoOpthion.domain, ssoOpthion.rootPath);
         return newToken;
     }
 
     private void toLogin(HttpServletResponse response, String token) throws IOException {
+
         String domain = ssoOpthion.domain;
         String rootPath = ssoOpthion.rootPath;
         Cookie cookie = new Cookie("token", token);

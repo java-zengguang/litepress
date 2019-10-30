@@ -23,6 +23,7 @@
         <module>direction</module>
         <module>im</module>
         <module>incache</module>
+        <module>search</module>
     </modules>
 
 

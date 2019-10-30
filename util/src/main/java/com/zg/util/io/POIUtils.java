@@ -27,6 +27,9 @@ public class POIUtils {
                 hssfRowHead = sheet.createRow(topLine);  //创建表头
             }
             Map<String, String> map = list.get(i);
+
+
+
             HSSFRow hssfRow = sheet.createRow(i + topLine + 1);  //一行表头
             Set<String> keySet = map.keySet();
             int j = 0;
@@ -75,5 +78,7 @@ public class POIUtils {
         List list1=readExcel(hssfWorkbook,"test");
         System.out.println("list1="+list1);
        // hssfWorkbook.write(out);
+
+
     }
 }

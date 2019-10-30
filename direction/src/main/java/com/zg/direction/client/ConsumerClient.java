@@ -2,6 +2,7 @@ package com.zg.direction.client;
 
 import com.zg.network.common.client.BaseClient;
 import com.zg.network.common.client.BaseClientHandler;
+import com.zg.util.reflect.FieldUtils;
 import com.zg.util.reflect.JsonUtils;
 
 public class ConsumerClient extends BaseClient {
@@ -13,7 +14,7 @@ public class ConsumerClient extends BaseClient {
     public String resovleProtocol(Object object)  {
         String json =null;
         try {
-            json= JsonUtils.objectToJson(object).toString();
+            json= FieldUtils.serialize(object);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }

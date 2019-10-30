@@ -100,16 +100,7 @@ public class FieldUtils {
         return value;
     }
 
-    public static String translateString(Object object) throws IllegalAccessException {
-        String str="";
-        if(isPrimitive(object)){
-            str=fieldtoString(object);
-        }else{
-            str=JsonUtils.objectToJson(object).toString();
-        }
 
-        return str;
-    }
 
 
 
@@ -465,6 +456,12 @@ public class FieldUtils {
                 if (type == String.class) {
                     String s1 = (String) field.get(o1);
                     String s2 = (String) termMap.get(term);
+                    if(s1==s2){
+                        return 0;
+                    }
+                    if(s1==null || s2==null){
+                        return -1;
+                    }
                     fruit = s1.length() - s2.length();
                     if (fruit != 0) {
                         return fruit;
@@ -526,7 +523,7 @@ public class FieldUtils {
 
     public static String serialize(Object object) throws IllegalAccessException {
 
-            return translateString(object);
+            return JsonUtils.objectToJsonString(object);
 
     }
 

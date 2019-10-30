@@ -1,32 +1,24 @@
 package com.zg.cache.util;
 
-import com.zg.bean.entity.ContainModel;
-import com.zg.bean.entity.MainModel;
-import com.zg.database.util.JDBCUtils;
-import com.zg.database.util.ModelSQLUtils;
 import com.zg.util.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
-/**
- * Created by Administrator on 2018/11/27 0027.
- */
-public  abstract class BaseRomCache implements RomCacheInte {
+public abstract class BaseRomCache implements RomCacheInte {
 
     //public Object model;
     public Class modelClass;
     public List modelList = new ArrayList();
     public List bankList = new ArrayList();
-    public String sql="";
 
-    public BaseRomCache(Class modelClass,String sql){
+
+    public BaseRomCache(Class modelClass){
         this.modelClass=modelClass;
-        this.sql=sql;
     }
 
 
-		/*根据查询条件更新*/
+    /*根据查询条件更新*/
 
     private String[] getValues(String valueS) {
 
@@ -43,7 +35,7 @@ public  abstract class BaseRomCache implements RomCacheInte {
         Field fields[] = modelClass.getFields();
         if (values.length == fields.length) {
             int i = 0;
-           Object model =modelClass.newInstance();
+            Object model =modelClass.newInstance();
             for (Field f : fields) {
                 FieldUtils.setField(f, model, values[i].trim());
                 i++;
@@ -151,57 +143,6 @@ public  abstract class BaseRomCache implements RomCacheInte {
         return sub_list;
     }
 
-
-    public boolean upLoadDatabase() {
-        try {
-            List<String> sqlList = new ArrayList<String>();
-            Object model=modelClass.newInstance();
-            if (model instanceof MainModel) {
-                sqlList = ModelSQLUtils.replaceListSql(modelList, bankList);
-            } else if (model instanceof ContainModel) {
-                Field[] fields = modelClass.getFields();
-                for (Field field : fields) {
-                    if (FieldUtils.isPrimitive(field.getType())) {
-                        List<String> subSqlList = new ArrayList();
-                        List<Object> subModelList = new ArrayList<Object>();
-                        List<Object> subBankList = new ArrayList<Object>();
-
-                        for (int i = 0; i < modelList.size(); i++) {
-                            Object o = field.get(modelList.get(i));
-
-                            subModelList.add(o);
-                        }
-                        for (int i = 0; i < bankList.size(); i++) {
-                            Object o = field.get(bankList.get(i));
-                            subBankList.add(o);
-                        }
-                        subSqlList = ModelSQLUtils.replaceListSql(subModelList, subBankList);
-                        subSqlList.addAll(sqlList);
-                        sqlList = subSqlList;
-                    }
-                }
-            }
-            JDBCUtils.batchSql(sqlList);
-            submit();
-
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return false;
-        }
-
-        return true;
-    }
-
-
-    @Override
-    public boolean downLoadDatabese() throws Exception {
-
-        bankList = JDBCUtils.select(sql, modelClass);
-        modelList = JDBCUtils.select(sql, modelClass);
-        return true;
-    }
-
     @Override
     public List getList() {
         return modelList;
@@ -234,9 +175,8 @@ public  abstract class BaseRomCache implements RomCacheInte {
     }
 
     @Override
-    public boolean submit() {
-        JDBCUtils.commit();
-        System.out.println(BaseRomCache.class+"====提交成功，重置链接");
+    public boolean addModel(Object model){
+        modelList.add(model);
         return true;
     }
 
@@ -245,5 +185,6 @@ public  abstract class BaseRomCache implements RomCacheInte {
         modelList.remove(index);
         return true;
     }
+
 
 }

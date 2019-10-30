@@ -30,11 +30,20 @@
         <property name="projectRoot" type="java.lang.String">/sso</property>
     </bean>
 
+    <bean id="SSOOpthion" class="com.zg.sso.entity.SSOOpthion">
+        <property name="ssoURL" type="java.lang.String">http://localhost:8080/sso</property>
+        <property name="domain" type="java.lang.String">localhost</property>
+        <property name="rootPath" type="java.lang.String">/sso</property>
+        <property name="loginPath" type="java.lang.String">/sso/toLogin.do</property>
+
+    </bean>
 
 
+<!--
 
 
     <proxy package="com.zg.webdemo.service.table" handler="com.zg.handler.CommitInterfaceHandler" method="deleteTableDate"></proxy>
+-->
 
 
 </beans>

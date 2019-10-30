@@ -35,7 +35,7 @@ public class ConsumerClientHandler extends BaseClientHandler<String> {
             System.out.println("操作成功");
             if (!"".equals(response.resultType) && !"NULL".equals(response.resultType)){
                 Class classType=Class.forName(response.resultType);
-                result= unSerialize(response.resultData,classType);
+                result= unSerialize(response.resultData.toString(),classType);
                 received=true;
             }
         }

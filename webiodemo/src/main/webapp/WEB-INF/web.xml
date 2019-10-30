@@ -28,6 +28,12 @@
 
     <servlet-mapping>
         <servlet-name>default</servlet-name>
+        <url-pattern>*.png</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
         <url-pattern>*.js</url-pattern>
     </servlet-mapping>
 
@@ -53,14 +59,18 @@
 
 
     
-    
-  <!--  <filter>
+
+<!--    <filter>
         <filter-name>loginFilter</filter-name>
-        <filter-class>com.zg.sso.filter.WebLoginFilter</filter-class>
+        <filter-class>com.zg.sso.filter.WebCacheLoginFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>loginFilter</filter-name>
         <servlet-name>AdapterServlet</servlet-name>
     </filter-mapping>-->
+
+    <listener>
+        <listener-class>com.zg.sso.listener.CacheListener</listener-class>
+    </listener>
 
 </web-app>

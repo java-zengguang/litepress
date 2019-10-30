@@ -12,7 +12,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="MVCOption" class="com.zg.mvc.entity.MVCOption">
+<!--    <bean id="MVCOption" class="com.zg.mvc.entity.MVCOption">
         <property name="controllerPackage" type="java.lang.String">com.zg.io.controller</property>
         <property name="controllerSuffix" type="java.lang.String">.do</property>
         <property name="upLoadPackage" type="java.lang.String">com.zg.io.controller</property>
@@ -20,7 +20,16 @@
         <property name="temporaryFilePath" type="java.lang.String">D:\\tempFile\\</property>
         <property name="upLoadPath" type="java.lang.String">D:\\upFile\\</property>
         <property name="projectRoot" type="java.lang.String">/webiodemo</property>
+    </bean>-->
 
+    <bean id="MVCOption" class="com.zg.mvc.entity.MVCOption">
+        <property name="controllerPackage" type="java.lang.String">com.zg.io.controller</property>
+        <property name="controllerSuffix" type="java.lang.String">.do</property>
+        <property name="upLoadPackage" type="java.lang.String">com.zg.io.controller</property>
+        <property name="upLoadSuffix" type="java.lang.String">.file</property>
+        <property name="temporaryFilePath" type="java.lang.String">D:\\test\\tempFile\\</property>
+        <property name="upLoadPath" type="java.lang.String">D:\\test\\upFile\\</property>
+        <property name="projectRoot" type="java.lang.String">/webiodemo</property>
     </bean>
 
     <bean id="FTPConfig" class="com.zg.bean.entity.FTPConfig">
@@ -43,9 +52,10 @@
 
 
     <bean id="SSOOpthion" class="com.zg.sso.entity.SSOOpthion">
-        <property name="ssoURL" type="java.lang.String">http://localhost:8888/sso</property>
-        <property name="domain" type="java.lang.String">localhost</property>
-        <property name="rootPath" type="java.lang.String">/sso</property>
+        <property name="ssoURL" type="java.lang.String">http://116.62.238.238:8080/webiodemo</property>
+        <property name="domain" type="java.lang.String">116.62.238.238</property>
+        <property name="rootPath" type="java.lang.String">/webiodemo</property>
+        <property name="loginPath" type="java.lang.String">/sso/toLogin.do</property>
     </bean>
 
 
