@@ -4,6 +4,7 @@ import com.zg.network.bean.ChannelBean;
 import com.zg.network.bean.ZGMPBean;
 import com.zg.network.im.login.LoginManager;
 import com.zg.network.common.heartbeat.BaseHeartbeatHandle;
+import com.zg.util.reflect.FieldUtils;
 import com.zg.util.reflect.JsonUtils;
 import io.netty.channel.Channel;
 
@@ -15,11 +16,11 @@ import java.util.*;
  */
 public class IMHeartbeatHandle extends BaseHeartbeatHandle {
 
-    public final long HBTIME=60*1000;   //心跳时间
+  //  public final long HBTIME=30*60*1000;   //心跳时间
 
 
-    public IMHeartbeatHandle(Map<String,ChannelBean> channelMap){
-        super(channelMap);
+    public IMHeartbeatHandle(Map<String,ChannelBean> channelMap,long HBTIME){
+        super(channelMap,HBTIME);
 
 
     }
@@ -32,11 +33,9 @@ public class IMHeartbeatHandle extends BaseHeartbeatHandle {
             int status=channelBean.status;
             if(status<0) {    //判断是否失效
                 System.out.println(channelBean.uuid+" 的channel失效");
-                try {
-                    LoginManager.logout(channelBean.uuid,channelBean.token);  //退出登陆
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+
+                LoginManager.logout(channelBean.uuid,channelBean.token);  //退出登陆
+
             }else {
 
                 if (channelBean.count < 0) {    //判断是否已经多次未接收到心跳回复
@@ -52,11 +51,7 @@ public class IMHeartbeatHandle extends BaseHeartbeatHandle {
                     response.methodType = "HEARTBEAT";
                     response.heartBeatID=channelBean.heartBeatID;
                     response.sendTime = new Date().getTime();
-                    try {
-                        json = JsonUtils.objectToJson(response).toString();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
+                    json = FieldUtils.serialize(response);
                     channel.writeAndFlush(json + "\r\n");
                     channelBean.time = new Date().getTime();
                     channelBean.count--;

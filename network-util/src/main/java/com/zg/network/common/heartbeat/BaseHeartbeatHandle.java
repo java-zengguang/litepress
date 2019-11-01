@@ -14,11 +14,12 @@ public abstract class BaseHeartbeatHandle implements Runnable{
 
     public Map<String,ChannelBean> channelMap;
 
-    public final long HBTIME=60*1000;   //心跳时间
+    public long HBTIME=0;   //心跳时间
 
 
-    public BaseHeartbeatHandle(Map<String,ChannelBean> channelMap){
+    public BaseHeartbeatHandle(Map<String,ChannelBean> channelMap,long HBTIME){
        this.channelMap=channelMap;
+       this.HBTIME=HBTIME;
 
     }
 
@@ -41,7 +42,9 @@ public abstract class BaseHeartbeatHandle implements Runnable{
     @Override
     public void run() {
         try {
-            sendHeartbeat();
+            if(HBTIME!=0) {
+                sendHeartbeat();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

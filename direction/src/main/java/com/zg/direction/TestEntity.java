@@ -29,4 +29,12 @@ public class TestEntity {
     public void setX(int x) {
         this.x = x;
     }
+
+    @Override
+    public String toString() {
+        return "TestEntity{" +
+                "x=" + x +
+                ", list=" + list.get(0) +list.get(1)+
+                '}';
+    }
 }

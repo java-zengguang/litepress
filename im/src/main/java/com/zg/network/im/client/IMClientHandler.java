@@ -5,6 +5,7 @@ import com.zg.network.bean.UserBean;
 import com.zg.network.bean.ZGMPBean;
 import com.zg.network.common.client.BaseClientHandler;
 import com.zg.network.common.MessgeReceivedListener;
+import com.zg.util.reflect.FieldUtils;
 import com.zg.util.reflect.JsonUtils;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -19,7 +20,7 @@ public class IMClientHandler extends BaseClientHandler<String> {
     private ClientDB clientDB=new ClientDB();
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) {
         System.out.println(" get msg >> " + msg);
 
         ZGMPBean response = JSON.parseObject(msg, ZGMPBean.class);
@@ -62,7 +63,7 @@ public class IMClientHandler extends BaseClientHandler<String> {
                 request.uuid=response.uuid;
                 request.message="维持心跳";
                 request.heartBeatID=response.heartBeatID;
-                json= JsonUtils.objectToJson(request).toString();
+                json= FieldUtils.serialize(request);
                 ctx.writeAndFlush(json+"\r\n");
                 break;
             }

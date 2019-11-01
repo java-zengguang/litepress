@@ -15,7 +15,7 @@ public  class IMService extends BaseService {
 
     @Override
     public void startHeartbeat() {
-        IMHeartbeatHandle IMHeartbeatHandle =new IMHeartbeatHandle(IMChannelGroups.getChanelGroups());
+        IMHeartbeatHandle IMHeartbeatHandle =new IMHeartbeatHandle(IMChannelGroups.getChanelGroups(),5*60*1000 );
         Thread t=new Thread(IMHeartbeatHandle);
         t.start();
     }

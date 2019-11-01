@@ -24,6 +24,7 @@
         <module>im</module>
         <module>incache</module>
         <module>search</module>
+        <module>login-provider</module>
     </modules>
 
 
@@ -57,6 +58,8 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
+
+
 
         </plugins>
 

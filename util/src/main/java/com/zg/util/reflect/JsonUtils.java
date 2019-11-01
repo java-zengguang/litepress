@@ -65,7 +65,7 @@ public class JsonUtils {
 
 
 
-    public static Object jsonToObject(String json, Class classes) throws IllegalAccessException, InstantiationException {
+    public static Object jsonToObject(String json, Class classes) {
 
         Object object = JSON.parseObject(json, classes);
         return object;

@@ -5,6 +5,7 @@ import com.zg.network.bean.ChannelBean;
 import com.zg.network.bean.ZGMPBean;
 import com.zg.network.common.service.BaseServiceHandler;
 import com.zg.network.im.login.LoginManager;
+import com.zg.util.reflect.FieldUtils;
 import com.zg.util.reflect.JsonUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -26,9 +27,9 @@ public class IMServerHandle extends BaseServiceHandler<String> {
 
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, String msg)  {
         // System.out.println(" get msg >> " + msg);
-        ZGMPBean request = (ZGMPBean) JsonUtils.jsonToObject(msg, ZGMPBean.class);//把JSON数据进行反序列化
+        ZGMPBean request = (ZGMPBean) FieldUtils.unSerialize(msg, ZGMPBean.class);//把JSON数据进行反序列化
         ZGMPBean response = new ZGMPBean("RESPONSE");
         response.sendTime = System.currentTimeMillis();
         request.sendTime = System.currentTimeMillis();
@@ -36,7 +37,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
         if (request == null) {
             response.status = -1;
             response.errorStr = "请求无效";
-            String json = JsonUtils.objectToJson(response).toString();
+            String json = FieldUtils.serialize(response);
             ctx.writeAndFlush(json);
             return;
         }
@@ -73,11 +74,11 @@ public class IMServerHandle extends BaseServiceHandler<String> {
 
                     } else {
                         request.direction = "RESPONSE";
-                        String json = JsonUtils.objectToJson(request).toString();
+                        String json = FieldUtils.serialize(request);
                         channel.writeAndFlush(json + "\r\n");  //转发数据
                         response.message = "成功发送";
                     }
-                    String resonseJson = JsonUtils.objectToJson(response).toString();
+                    String resonseJson = FieldUtils.serialize(response);
                     ctx.writeAndFlush(resonseJson + "\r\n");
                     break;
                 }
@@ -96,7 +97,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                         response.errorStr = "退出出错";
 
                     }
-                    String json = JsonUtils.objectToJson(response).toString();
+                    String json = FieldUtils.serialize(response);
                     ctx.writeAndFlush(json + "\r\n");
                     break;
                 }
@@ -127,7 +128,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                 default: {
                     response.errorStr = "操作码错误";
                     response.status = -1; //状态码
-                    String json = JsonUtils.objectToJson(response).toString();
+                    String json = FieldUtils.serialize(response);
                     ctx.writeAndFlush(json + "\r\n");
                     break;
                 }

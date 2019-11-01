@@ -521,13 +521,13 @@ public class FieldUtils {
     }
 
 
-    public static String serialize(Object object) throws IllegalAccessException {
+    public static String serialize(Object object) {
 
             return JsonUtils.objectToJsonString(object);
 
     }
 
-    public static Object unSerialize(String str,Class classType) throws InstantiationException, IllegalAccessException {
+    public static Object unSerialize(String str,Class classType) {
         Object value=null;
         if(isPrimitive(classType)){
             value=translateType(str,classType);
