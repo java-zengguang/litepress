@@ -9,13 +9,14 @@ public class ZGMPBean implements Serializable,Cloneable {
     public String token;
     public String username;
     public String password;
-    public String message;
+    public String message;   //携带信息
     public String methodType;
+    public String operationType;
     public String uuid;
     public String targetUuid;
     public long sendTime;
     public int status;
-    public String direction;
+    public String direction;   //标识请求还是返回
     public String errorStr;
     public String heartBeatID;
 
