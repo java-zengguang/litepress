@@ -27,7 +27,6 @@
         <module>login-provider</module>
     </modules>
 
-
     <repositories>
         <repository>
             <id>alimaven</id>
@@ -41,6 +40,14 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+        <id>alimaven</id>
+        <name>Maven Aliyun Mirror</name>
+        <url>http://maven.aliyun.com/nexus/content/repositories/central/</url>
+        </repository>
+    </distributionManagement>
 
 
     <build>

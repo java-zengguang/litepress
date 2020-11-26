@@ -1,6 +1,8 @@
 package com.zg.direction.register;
 
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.Watcher.Event.EventType;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
@@ -8,6 +10,10 @@ import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.data.Stat;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 
@@ -45,10 +51,46 @@ public class ZookeeperUtil implements Watcher {
         zk.delete(path, version);
     }
 
+
+
     public String findNode(String path) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
         String data=new String(zk.getData(path,true,stat));
         return data;
+    }
+
+    public JSONObject findNodeJson(String path) throws InterruptedException, KeeperException {
+        JSONObject jsonObject= JSONObject.parseObject(findNode(path));
+        if(jsonObject!=null){
+        jsonObject.put("name",path);
+        }
+        return jsonObject;
+    }
+
+    public List<Map<String,String>> findChildNodes(String path) throws InterruptedException, KeeperException {
+        connectedSemaphore.await();
+        List<Map<String,String>> resultList=new ArrayList<>();
+        List<String> list= zk.getChildren(path,true,stat);
+        for(String key:list){
+            String data=new String(zk.getData("/"+key,true,stat));
+            Map map=new HashMap();
+            map.put(key,data);
+            resultList.add(map);
+        }
+        return resultList;
+    }
+
+    public JSONArray findChildNodesJson(String path) throws InterruptedException, KeeperException {
+        connectedSemaphore.await();
+        JSONArray jsonArray=new JSONArray();
+        List<String> list= zk.getChildren(path,true,stat);
+        for(String key:list){
+            JSONObject jsonObject=findNodeJson("/"+key);
+            if(jsonObject!=null) {
+                jsonArray.add(jsonObject);
+            }
+        }
+        return jsonArray;
     }
 
     public static void main(String[] args) throws Exception {

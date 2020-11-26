@@ -6,7 +6,7 @@ import net.sf.json.JSONObject;
 public class DTPResponse extends MainModel {
     public boolean success;
     public String error;
-    public JSONObject resultData;
+    public String resultData;
     public String resultType;
 
 
@@ -29,20 +29,14 @@ public class DTPResponse extends MainModel {
         this.error = error;
     }
 
-    public JSONObject getResultData() {
+
+    public String getResultData() {
         return resultData;
     }
 
-
-
-    public void setResultData(JSONObject resultData) {
+    public void setResultData(String resultData) {
         this.resultData = resultData;
     }
-
-    public void setResultData(String resultData) {
-        this.resultData= JSONObject.fromObject(resultData);
-    }
-
 
     public String getResultType() {
         return resultType;

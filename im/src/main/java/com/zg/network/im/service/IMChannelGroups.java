@@ -4,7 +4,9 @@ import com.zg.network.bean.ChannelBean;
 import com.zg.network.common.service.BaseChannelGroups;
 import io.netty.channel.Channel;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class IMChannelGroups extends BaseChannelGroups{
     public static void put(String key, String token, Channel channel){
@@ -19,6 +21,16 @@ public class IMChannelGroups extends BaseChannelGroups{
             return channelBean.channel;
         }
         return null;
+    }
+
+
+    public static List<Channel> getAllChannel(){
+       List<ChannelBean> list=getAll();
+       List<Channel> channelList=new ArrayList<>();
+       for(ChannelBean channelBean:list){
+           channelList.add(channelBean.channel);
+       }
+        return channelList;
     }
 
 }

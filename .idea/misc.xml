@@ -63,6 +63,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/hessian/pom.xml" />
+        <option value="$PROJECT_DIR$/sso-common/pom.xml" />
       </set>
     </option>
   </component>

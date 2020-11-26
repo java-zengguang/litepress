@@ -1,8 +1,6 @@
 package com.zg.direction;
 
-import com.mysql.cj.xdevapi.JsonArray;
 import com.zg.direction.annotation.Provider;
-import org.apache.poi.hssf.record.formula.functions.T;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +16,13 @@ public class Test implements TestInte{
 
         TestEntity testEntity=new TestEntity();
         testEntity.list=list;
+        return testEntity;
+    }
+
+    public TestEntity hello(String name){
+        System.out.println("hello");
+        TestEntity testEntity=new TestEntity();
+        testEntity.setS("hello  "+name);
         return testEntity;
     }
 

@@ -16,8 +16,6 @@ import java.util.Properties;
  */
 public class FileUtils {
 
-    public static final String PATH;
-
     static {
         //获取项目的相对路径
         String path = "";
@@ -29,8 +27,11 @@ public class FileUtils {
         }
 
 
+
         PATH = path;
     }
+
+    public static final String PATH;
 
     //读取文件,并把文件信息放入到Properties 容器中
     public static Properties read(String fileName) {
@@ -65,6 +66,13 @@ public class FileUtils {
         return root;
     }
 
+    public static  Element getRootElement(String rootPath,String fileName) throws DocumentException {
+        SAXReader reader = new SAXReader();
+        // System.out.println("配置文件路径："+FileUtils.PATH + fileName);
+        Document doc = reader.read(new File(rootPath+fileName));
+        Element root = doc.getRootElement();
+        return root;
+    }
 
     public static List getClassFormPackage(String packageName, boolean isAnnotation, Class annotation) throws ClassNotFoundException {
         List classList = new ArrayList();

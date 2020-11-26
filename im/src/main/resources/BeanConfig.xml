@@ -21,20 +21,16 @@
     </bean>
 
 
-    <bean id="MVCOption" class="com.zg.mvc.entity.MVCOption">
-        <property name="controllerPackage" type="java.lang.String">com.zg.sso.controller</property>
-        <property name="controllerSuffix" type="java.lang.String">.do</property>
-        <property name="upLoadPackage" type="java.lang.String">com.zg.mvc.controller</property>
-        <property name="upLoadSuffix" type="java.lang.String">.file</property>
-        <property name="temporaryFilePath" type="java.lang.String">E:\\upFile\\input.txt</property>
-        <property name="projectRoot" type="java.lang.String">/sso</property>
+
+
+    <bean id="providerConfig" class="com.zg.direction.entity.ProviderConfig">
+        <property name="registerURL" type="java.lang.String">127.0.0.1:2181</property>
+        <property name="packages" type="java.lang.String">com.zg.provider</property>
+        <property name="DTPHost" type="java.lang.String">127.0.0.1</property>
+        <property name="DTPPort" type="java.lang.String">10001</property>
     </bean>
 
 
-
-
-
-    <proxy package="com.zg.webdemo.service.table" handler="com.zg.handler.CommitInterfaceHandler" method="deleteTableDate"></proxy>
 
 
 </beans>

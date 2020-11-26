@@ -14,7 +14,7 @@ public class Config {
 
     private static void createConfigMap(String array[]){
         for(String beanName:array){
-            Object object=BeanFactory.createBean(beanName);
+            Object object =BeanFactory.createBean(beanName);
             if(object!=null){
                 configMap.put(beanName,object);
             }

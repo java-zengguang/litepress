@@ -14,12 +14,12 @@
         <module name="util" />
         <module name="direction" />
         <module name="scala" />
-        <module name="webdemo" />
         <module name="sso" />
         <module name="webiodemo" />
-        <module name="network-util" />
-        <module name="loginprovider" />
+        <module name="login-provider" />
+        <module name="webdemo" />
         <module name="web" />
+        <module name="network-util" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -28,11 +28,12 @@
       <module name="direction" target="1.8" />
       <module name="im" target="1.8" />
       <module name="incache" target="1.8" />
-      <module name="loginprovider" target="1.8" />
+      <module name="login-provider" target="1.8" />
       <module name="network-util" target="1.8" />
       <module name="scala" target="1.8" />
       <module name="search" target="1.8" />
       <module name="sso" target="1.8" />
+      <module name="ssocommon" target="1.8" />
       <module name="util" target="1.8" />
       <module name="web" target="1.8" />
       <module name="webdemo" target="1.8" />
@@ -43,6 +44,9 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="-parameters" />
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="databases" options="" />
+      <module name="direction" options="-parameters" />
+      <module name="im" options="-parameters" />
+      <module name="login-provider" options="-parameters" />
       <module name="scala" options="" />
       <module name="sso" options="-parameters" />
       <module name="util" options="-parameters" />

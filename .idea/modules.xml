@@ -3,12 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/admin/admin.iml" filepath="$PROJECT_DIR$/admin/admin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/blog/blog.iml" filepath="$PROJECT_DIR$/blog/blog.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/databases.iml" filepath="$PROJECT_DIR$/.idea/databases.iml" />
       <module fileurl="file://$PROJECT_DIR$/direction/direction.iml" filepath="$PROJECT_DIR$/direction/direction.iml" />
       <module fileurl="file://$PROJECT_DIR$/im/im.iml" filepath="$PROJECT_DIR$/im/im.iml" />
       <module fileurl="file://$PROJECT_DIR$/incache/incache.iml" filepath="$PROJECT_DIR$/incache/incache.iml" />
-      <module fileurl="file://$PROJECT_DIR$/login-provider/loginprovider.iml" filepath="$PROJECT_DIR$/login-provider/loginprovider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/login-provider/login-provider.iml" filepath="$PROJECT_DIR$/login-provider/login-provider.iml" />
       <module fileurl="file://$PROJECT_DIR$/network-util/network-util.iml" filepath="$PROJECT_DIR$/network-util/network-util.iml" />
       <module fileurl="file://$PROJECT_DIR$/scala/scala.iml" filepath="$PROJECT_DIR$/scala/scala.iml" />
       <module fileurl="file://$PROJECT_DIR$/search/search.iml" filepath="$PROJECT_DIR$/search/search.iml" />

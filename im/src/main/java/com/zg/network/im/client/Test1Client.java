@@ -10,9 +10,10 @@ import java.util.Scanner;
 public class Test1Client {
     public static void main(String args[]) {
 
+
         ResolveCommand resolveCommand = new ResolveCommand();
         ZGMPBean request = new ZGMPBean("REQUEST");
-        IMClient imClient = new IMClient(new IMClientHandler(),"10.1.82.63",10000);
+        IMClient imClient = new IMClient(new IMClientHandler(),"10.1.82.106",10000);
         imClient.addRequest(request);
         Thread thread=new Thread(imClient);
         thread.start();
@@ -21,17 +22,22 @@ public class Test1Client {
 
         Scanner input = new Scanner(System.in);
         while (go) {
-            System.out.print("-》");
-            String command = input.nextLine();
-            if (command != null && !"".equals(command)) {
-                if ("end".equals(command)) {
-                    go = false;
-                    System.exit(0);
+            try {
+               // System.out.print("-》");
+                String command = input.nextLine();
+                if (command != null && !"".equals(command)) {
+                    if ("end".equals(command)) {
+                        go = false;
+                        System.exit(0);
+                    }
+                    request = resolveCommand.resolveCommand(command);
+                    if (request != null) {
+                        imClient.addRequest(request);
+                    }
                 }
-                request = resolveCommand.resolveCommand(command);
-                if (request != null) {
-                    imClient.addRequest(request);
-                }
+            }catch (Exception e){
+                System.out.println("命令错误");
+                continue;
             }
 
         }

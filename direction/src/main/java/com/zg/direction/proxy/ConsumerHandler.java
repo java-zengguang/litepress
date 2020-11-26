@@ -13,6 +13,8 @@ import org.apache.zookeeper.KeeperException;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConsumerHandler implements InvocationHandler {
 
@@ -61,6 +63,16 @@ public class ConsumerHandler implements InvocationHandler {
         request.className=className;
         request.methodName=method.getName();
         request.methodType=method.getReturnType().getName();
+        List methodParamters=new ArrayList<>();
+        List<String> methodParamterTypes=new ArrayList<>();
+        for(Object arg:args){
+
+            Class classes=arg.getClass();
+            methodParamters.add(arg);
+            methodParamterTypes.add(classes.getName());
+        }
+        request.methodParamterTypes=methodParamterTypes;
+        request.methodParamters=methodParamters;
         ConsumerClientHandler consumerClientHandler=new ConsumerClientHandler();
         ConsumerClient consumerClient=new ConsumerClient(consumerClientHandler,host,port);
         consumerClient.addRequest(request);

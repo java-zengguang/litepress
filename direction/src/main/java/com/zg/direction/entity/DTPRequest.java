@@ -2,6 +2,8 @@ package com.zg.direction.entity;
 
 import com.zg.bean.entity.MainModel;
 
+import java.util.List;
+
 public class DTPRequest extends MainModel {
 
     public String uuid;
@@ -14,9 +16,9 @@ public class DTPRequest extends MainModel {
 
     public String methodType;
 
-    public String methodParamters;
+    public List<String> methodParamters;
 
-    public String methodParamterTypes;
+    public List<String> methodParamterTypes;
 
     public DTPRequest() {
     }
@@ -62,19 +64,19 @@ public class DTPRequest extends MainModel {
         this.methodType = methodType;
     }
 
-    public String getMethodParamters() {
+    public List<String> getMethodParamters() {
         return methodParamters;
     }
 
-    public void setMethodParamters(String methodParamters) {
+    public void setMethodParamters(List<String> methodParamters) {
         this.methodParamters = methodParamters;
     }
 
-    public String getMethodParamterTypes() {
+    public List<String> getMethodParamterTypes() {
         return methodParamterTypes;
     }
 
-    public void setMethodParamterTypes(String methodParamterTypes) {
+    public void setMethodParamterTypes(List<String> methodParamterTypes) {
         this.methodParamterTypes = methodParamterTypes;
     }
 }

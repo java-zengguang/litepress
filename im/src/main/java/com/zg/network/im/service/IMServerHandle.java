@@ -11,6 +11,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,11 +24,13 @@ public class IMServerHandle extends BaseServiceHandler<String> {
     //  private IMMessageBiz immessagebiz = new IMMessageBiz();
 
 
-    private final long TIMEOUT = 50 * 1000;
+    private final long TIMEOUT = 10 * 1000;
+
+
 
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String msg)  {
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) {
         // System.out.println(" get msg >> " + msg);
         ZGMPBean request = (ZGMPBean) FieldUtils.unSerialize(msg, ZGMPBean.class);//把JSON数据进行反序列化
         ZGMPBean response = new ZGMPBean("RESPONSE");
@@ -36,16 +39,16 @@ public class IMServerHandle extends BaseServiceHandler<String> {
 
         if (request == null) {
             response.status = -1;
-            response.errorStr = "请求无效";
+            response.errorStr = "Request error";
             String json = FieldUtils.serialize(response);
             ctx.writeAndFlush(json);
             return;
         }
 
         String methodType = request.methodType;
-        System.out.println("the req method >> " + methodType);
+        // System.out.println("the req method >> " + methodType);
         response.methodType = methodType;
-        if(methodType!=null) {
+        if (methodType != null) {
             switch (methodType) {
                 case ("LOGIN"): {
 
@@ -53,7 +56,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                     String uuid = map.get("uuid");
                     if (uuid != null) {
                         String token = map.get("token");
-                        response.message = "login ok";
+                        response.message = "Login ok";
                         response.status = 0;   //设置状态
                         response.uuid = uuid;
                         response.token = token;
@@ -61,23 +64,44 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                         response.errorStr = map.get("message");
                         response.status = -1; //状态码
                     }
+
                     String json = JSON.toJSONString(response);
                     ctx.writeAndFlush(json + "\r\n");  //发送josn字符串数据，注意后面一定要加"\r\n"
                     break;
                 }
+
                 case ("SEND"): {
-                    // System.out.println(request.message);
+                    System.out.println(request);
                     String uuid = request.targetUuid;
-                    Channel channel = IMChannelGroups.getChannel(uuid);
-                    if (channel == null) {
-                        response.message = "对方未上线";
+                    if (uuid != null && "all".equals(uuid)) {
+                        List<Channel> channelList = IMChannelGroups.getAllChannel();
+                        for (Channel channel : channelList) {
+                            request.direction = "RESPONSE";
+                            if(request.operationType!=null && !"".equals(request.operationType)){
+                                request.methodType=request.operationType;
+                            }
+                            String json = FieldUtils.serialize(request);
+                            channel.writeAndFlush(json + "\r\n");  //转发数据
+                        }
+                        response.message = "Send ok";
 
                     } else {
-                        request.direction = "RESPONSE";
-                        String json = FieldUtils.serialize(request);
-                        channel.writeAndFlush(json + "\r\n");  //转发数据
-                        response.message = "成功发送";
+
+                        Channel channel = IMChannelGroups.getChannel(uuid);
+                        if (channel == null) {
+                            response.message = "The other party is not online";
+
+                        } else {
+                            request.direction = "RESPONSE";
+                            if(request.operationType!=null && !"".equals(request.operationType)){
+                                request.methodType=request.operationType;
+                            }
+                            String json = FieldUtils.serialize(request);
+                            channel.writeAndFlush(json + "\r\n");  //转发数据
+                            response.message = "Send ok";
+                        }
                     }
+                    response.methodType = "SYS";
                     String resonseJson = FieldUtils.serialize(response);
                     ctx.writeAndFlush(resonseJson + "\r\n");
                     break;
@@ -90,11 +114,11 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                     if (LoginManager.logout(uuid, token)) {
 
                         response.status = 0;
-                        response.message = "退出成功";
+                        response.message = "Logout ok";
                         response.methodType = methodType;
                     } else {
                         response.status = -1;
-                        response.errorStr = "退出出错";
+                        response.errorStr = "Logout error";
 
                     }
                     String json = FieldUtils.serialize(response);
@@ -106,7 +130,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                     //  System.out.println(request.message);
                     String uuid = request.uuid;
                     ChannelBean channelBean = IMChannelGroups.get(uuid);
-                    if (channelBean.heartBeatID.equals(request.heartBeatID)) {
+                    if (channelBean != null && channelBean.heartBeatID.equals(request.heartBeatID)) {
                         long expectTime = channelBean.time + TIMEOUT;
                         long actualTime = new Date().getTime();
                    /* System.out.println("应到时间" + expectTime);
@@ -114,19 +138,29 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                         if (expectTime > actualTime) {
                             channelBean.count = 3;
                         } else {
-                            System.out.println(channelBean.uuid + " 第" + channelBean.count + "次断开");
+                            System.out.println(channelBean.uuid + "The " + channelBean.count + "th disconnection");
                         }
                     } else {
-                        System.out.println("此心跳包超时");
+                        System.out.println("Heartbeat packet timeout");
                     }
-
-
                     break;
                 }
 
 
+                case "FILESERVICEREQUEST": {
+                    System.out.println("请求打开文件服务");
+
+                    break;
+                }
+
+                case "FILESERVICEREADY":{
+                    System.out.println("文件服务已打开");
+
+                    break;
+                }
+
                 default: {
-                    response.errorStr = "操作码错误";
+                    response.errorStr = "Status error";
                     response.status = -1; //状态码
                     String json = FieldUtils.serialize(response);
                     ctx.writeAndFlush(json + "\r\n");

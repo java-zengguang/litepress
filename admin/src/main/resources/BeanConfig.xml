@@ -3,11 +3,11 @@
 
 
     <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
-        <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/admintest?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+        <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
         <property name="username" type="java.lang.String">root</property>
-        <property name="password" type="java.lang.String">123456</property>
+        <property name="password" type="java.lang.String">root</property>
         <property name="DBType" type="java.lang.String">MYSQL</property>
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
@@ -27,6 +27,13 @@
         <property name="upLoadPackage" type="java.lang.String">com.zg.admin.controller</property>
         <property name="upLoadSuffix" type="java.lang.String">.file</property>
         <property name="temporaryFilePath" type="java.lang.String">E:\\upFile\\input.txt</property>
+    </bean>
+
+    <bean id="providerConfig" class="com.zg.direction.entity.ProviderConfig">
+        <property name="registerURL" type="java.lang.String">127.0.0.1:2181</property>
+        <property name="packages" type="java.lang.String">com.zg.direction</property>
+        <property name="DTPHost" type="java.lang.String">127.0.0.1</property>
+        <property name="DTPPort" type="java.lang.String">10001</property>
     </bean>
 
 

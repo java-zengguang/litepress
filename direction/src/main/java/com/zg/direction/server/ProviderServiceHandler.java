@@ -27,31 +27,30 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
         return objects;
     }
 
-    public Class[] getParamterTypes(String paramterTypeS) throws ClassNotFoundException {
+    public Class[] getParamterTypes(List<String> paramterTypes) throws ClassNotFoundException {
         Class[] result=null;
-        if(paramterTypeS!=null  ) {
-            String[] paramterTypes = paramterTypeS.split(",");
-            result= new Class[paramterTypes.length];
+
+
+            result= new Class[paramterTypes.size()];
             for (int i = 0; i < result.length; i++) {
-                result[i] = Class.forName(paramterTypes[i]);
+                result[i] = Class.forName(paramterTypes.get(i));
             }
-        }
+
         return result;
     }
 
-    private Object[] getParamters(String paramterValueS, Class[] paramterTypes) {
+    private Object[] getParamters(List<String> paramterValues, Class[] paramterTypes) {
         Object[] result=null;
 
-        if (paramterValueS!=null) {
-            String[] paramterValues = paramterValueS.split(",");
+
             result = new Object[paramterTypes.length];
 
             for (int i = 0; i < paramterTypes.length; i++) {
                 if (FieldUtils.isPrimitive(paramterTypes[i])) {
-                    result[i] = FieldUtils.translateType(paramterValues[i], paramterTypes[i]);
+                    result[i] = FieldUtils.translateType(paramterValues.get(i), paramterTypes[i]);
                 }
             }
-        }
+
         return result;
 
     }
@@ -92,7 +91,7 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             Object paramters[] = getParamters(request.methodParamters, method.getParameterTypes());
             Object result = method.invoke(classes.newInstance(), paramters);
             response.success=true;
-            response.setResultData(serialize(result));
+            response.resultData=serialize(result);
             response.resultType=request.methodType;
         } catch (Exception e) {
             e.printStackTrace();

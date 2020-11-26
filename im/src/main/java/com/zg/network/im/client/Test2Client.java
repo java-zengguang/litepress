@@ -18,10 +18,9 @@ public class Test2Client {
         thread.start();
         System.out.print("网络通信客户端");
         boolean go = true;
-
         Scanner input = new Scanner(System.in);
         while (go) {
-            System.out.print("-》");
+           // System.out.print("-》");
             String command = input.nextLine();
             if (command != null && !"".equals(command)) {
                 if ("end".equals(command)) {

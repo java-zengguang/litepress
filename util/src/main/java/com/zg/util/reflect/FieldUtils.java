@@ -523,7 +523,11 @@ public class FieldUtils {
 
     public static String serialize(Object object) {
 
+        if (object instanceof String){
+            return (String)object;
+        }else {
             return JsonUtils.objectToJsonString(object);
+        }
 
     }
 

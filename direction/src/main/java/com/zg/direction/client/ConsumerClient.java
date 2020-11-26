@@ -13,11 +13,7 @@ public class ConsumerClient extends BaseClient {
     @Override
     public String resovleProtocol(Object object)  {
         String json =null;
-        try {
-            json= FieldUtils.serialize(object);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        json= FieldUtils.serialize(object);
         return json;
     }
 }

@@ -2,6 +2,7 @@ package com.zg.network.im.client;
 
 import com.zg.network.bean.UserBean;
 import com.zg.network.bean.ZGMPBean;
+import com.zg.prestuctural.manager.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,7 @@ import java.util.List;
 public class ResolveCommand {
 
     Logger logger= LoggerFactory.getLogger(ResolveCommand.class);
-    private ClientDB clientDB = new ClientDB();
+   // private ClientDB clientDB = new ClientDB();
 
     public ZGMPBean resolveCommand(String command) {
         ZGMPBean request = new ZGMPBean("REQUEST");
@@ -29,13 +30,18 @@ public class ResolveCommand {
                 request.password = s[2];
             } else if ("logout".equals(s[0])) {
                 request.methodType = "LOGOUT";
+            }else if("file".equals(s[0])){
+                request.methodType="SEND";
+                request.operationType="FILESERVICEREQUEST";
+                request.targetUuid = s[1];
+                request.message = s[2];
             }
 
-        }catch (Exception e){
-            logger.error("命令错误",e);
-        }
         if(!checkRequest(request)){
             return null;
+        }
+        }catch (Exception e){
+            logger.error("命令错误");
         }
         return request;
     }
@@ -43,6 +49,7 @@ public class ResolveCommand {
 
     public boolean checkRequest(ZGMPBean request) {
         String methodType = request.methodType;
+
         switch (methodType) {
             case "LOGIN": {
                // System.out.println(" to login  ");
@@ -63,6 +70,7 @@ public class ResolveCommand {
                // System.out.println(" to " + request.message);
                 break;
             }
+
             default: {
                 System.out.println(" 未识别得操作类型 " + methodType);
                 break;
@@ -72,13 +80,12 @@ public class ResolveCommand {
     }
 
     public boolean isLogin(ZGMPBean request) {
-        List list = clientDB.select("user");
-        if (list != null && list.size() > 0) {
-            UserBean userBean = (UserBean) list.get(0);
+        UserBean userBean =(UserBean) CacheManager.get("user");
+        if (userBean!=null) {
             request.uuid = userBean.uuid;
             request.token = userBean.token;
             return true;
-        } else {
+        }else{
             return false;
         }
     }

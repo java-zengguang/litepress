@@ -38,11 +38,14 @@ public class WebCacheLogin extends BaseLogin{
             return true;
         } else {
             return false;
+
         }
+
     }
 
     @Override
-    public Object doLogin(HttpServletRequest request, String uuid, HttpServletResponse response) {
+    public Object doLogin(HttpServletRequest
+                                      request, String uuid, HttpServletResponse response) {
         String token = getCookieValue("token", request);
         List<UserLogin> list = romCacheInte.findModel("token=" + token);
         if (token != null && list != null && list.size() > 0) {

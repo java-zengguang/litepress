@@ -6,6 +6,7 @@ import java.util.List;
 
 public class TestEntity {
     public int x;
+    public String s;
     public List<String> list;
 
     public TestEntity(){}
@@ -30,11 +31,19 @@ public class TestEntity {
         this.x = x;
     }
 
+    public String getS() {
+        return s;
+    }
+
+    public void setS(String s) {
+        this.s = s;
+    }
+
     @Override
     public String toString() {
         return "TestEntity{" +
                 "x=" + x +
-                ", list=" + list.get(0) +list.get(1)+
+                ", s='" + s + '\'' +
                 '}';
     }
 }
