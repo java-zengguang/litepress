@@ -206,7 +206,7 @@ public class ControllerAdapter {
 
     //用于处理文件上传
     private static Object[] getInputStream(HttpServletRequest request, HttpServletResponse response, Method method, String inputFilePath) throws IOException, InterruptedException {
-        Object[] objects = new Object[1];
+        Object[] objects = new Object[2];
         InputStream inputStream = request.getInputStream();
         String contentType = request.getContentType();
         String targetS = contentType.substring(contentType.lastIndexOf("boundary=") + 9, contentType.length());
@@ -219,10 +219,12 @@ public class ControllerAdapter {
             objects[0]="上传失败";
             return objects;
         }
-        FileUpLoad fileUpLoad = new FileUpLoad();
-        String filePath = fileUpLoad.upload(targetS,inputFilePath,targetS, mvcOption.upLoadPath);
+        FileUpLoad fileUpLoad = new FileUpLoad(targetS,inputFilePath,targetS, mvcOption.upLoadPath);
+        fileUpLoad.upload();
 
-        objects[0] = filePath;  //返回文件的路径
+        objects[0] = fileUpLoad.fileAbsolutePath;  //返回文件的路径
+        objects[1] = fileUpLoad.fileLogitchPath;  //返回文件的路径
+
 
         return objects;
     }

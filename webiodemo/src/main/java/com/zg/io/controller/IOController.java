@@ -1,5 +1,9 @@
 package com.zg.io.controller;
 
+import com.zg.handler.ProxyUtils;
+import com.zg.io.entity.FileEntity;
+import com.zg.io.service.FileService;
+import com.zg.io.service.FileServiceImpl;
 import com.zg.mvc.annotation.controller.Controller;
 import com.zg.mvc.annotation.controller.ResultMapping;
 import com.zg.util.reflect.JsonUtils;
@@ -16,6 +20,9 @@ import java.util.Map;
 public class IOController {
 
 
+    public FileService fileService = (FileService) ProxyUtils.getProxyClass(new FileServiceImpl(), "insertFileData");
+
+
     @ResultMapping("/toUpFile.do")
     public String toUpFile() throws Exception {
 
@@ -25,8 +32,11 @@ public class IOController {
 
 
     @ResultMapping("/upFile.file")
-    public  String upFile(String filePath) throws IOException, InterruptedException, IllegalAccessException {
+    public  String upFile(String filePath,String logicPath) throws IOException, InterruptedException, IllegalAccessException {
 
+        FileEntity fileEntity=new FileEntity();
+        fileEntity.setFileName("");
+        fileService.insertFileData(fileEntity);
         Map json=new HashMap<>();
 
         json.put("path",filePath);

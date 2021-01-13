@@ -59,7 +59,7 @@
 
 
     
-
+<!--
     <filter>
         <filter-name>loginFilter</filter-name>
         <filter-class>com.zg.sso.filter.WebCacheLoginFilter</filter-class>
@@ -67,7 +67,7 @@
     <filter-mapping>
         <filter-name>loginFilter</filter-name>
         <servlet-name>AdapterServlet</servlet-name>
-    </filter-mapping>
+    </filter-mapping>-->
 
     <listener>
         <listener-class>com.zg.sso.listener.CacheListener</listener-class>
