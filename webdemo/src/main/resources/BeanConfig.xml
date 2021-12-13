@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>  
 
-
+<!--
     <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
         <property name="maxPoolSize" type="int">10</property>
@@ -10,7 +10,19 @@
         <property name="password" type="java.lang.String">root</property>
         <property name="DBType" type="java.lang.String">MYSQL</property>
         <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>-->
+
+
+    <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">root</property>
+        <property name="password" type="java.lang.String">helloworld</property>
+        <property name="DBType" type="java.lang.String">MYSQL</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
+
 
     <bean id="optionMGDB" class="com.zg.bean.entity.OptionMGDB">
         <property name="ip" type="java.lang.String">localhost</property>

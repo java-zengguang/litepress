@@ -67,7 +67,7 @@ public class RoleService implements RoleServiceInte{
     }
 
     @Override
-    public boolean deleteRoles(String ids) {
+    public boolean deleteRoles(String ids) throws SQLException {
         System.out.println("ids"+ids);
         String idArray[]=ids.split(",");
         roleDao.deleteRoles(idArray);

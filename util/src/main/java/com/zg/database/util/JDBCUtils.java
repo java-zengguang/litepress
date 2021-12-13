@@ -2,12 +2,13 @@ package com.zg.database.util;
 
 import com.zg.bean.entity.MainModel;
 import com.zg.database.pool.DataBaseInte;
+import com.zg.util.io.FileUtils;
 import com.zg.util.reflect.DynamicClass;
 import com.zg.util.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.text.ParseException;
@@ -34,19 +35,19 @@ public class JDBCUtils {
     }
 
     public static int insertTable(Object model) throws SQLException, IllegalAccessException {
-        List list=new ArrayList();
+        List list = new ArrayList();
         list.add(model);
-        int results[]=insertTables(list,model.getClass());
-        int result=0;
-        if(results!=null && results.length>0){
-            result=results[0];
+        int results[] = insertTables(list, model.getClass());
+        int result = 0;
+        if (results != null && results.length > 0) {
+            result = results[0];
         }
         return result;
     }
 
     public static int[] insertTables(List modelLIst, Class modelClass) throws SQLException, IllegalAccessException {
-       String tableName= FieldUtils.getTableNameFromModel(modelClass);
-       return insertTables(modelLIst,modelClass,tableName);
+        String tableName = FieldUtils.getTableNameFromModel(modelClass);
+        return insertTables(modelLIst, modelClass, tableName);
     }
 
     //插入model_list ，未提交，未初始化连接
@@ -60,7 +61,7 @@ public class JDBCUtils {
         LOGGER.info("-----------------start batch-----------");
         for (Object model : modelList) {
 
-            String sql=ModelSQLUtils.insert(model,tableName);
+            String sql = ModelSQLUtils.insert(model, tableName);
             LOGGER.info(sql);
 
             stmt.addBatch(sql);
@@ -80,7 +81,7 @@ public class JDBCUtils {
         Map tableInfoMap = tableInfo(sql);
         list = selectToMapList(sql);
         Object model = DynamicClass.getDynamicClass(Arrays.asList("com.zg.bean.Model.MainModel"), getTableName(sql), tableInfoMap, null, "MainModel");
-        list = SerializeObjectUtils.setMember(list, model);
+        list = SerializeObjectUtils.setMember(list, model.getClass());
         return list;
     }
 
@@ -140,7 +141,9 @@ public class JDBCUtils {
             Map map = new LinkedHashMap();
             columncount = rsmd.getColumnCount();
             for (int i = 1; i < columncount + 1; i++) {
-                map.put(rsmd.getColumnLabel(i), rs.getObject(i) + "");
+                String columnLabel = rsmd.getColumnLabel(i);
+                Object columnValue = rs.getObject(i);
+                map.put(columnLabel, columnValue);
             }
 
             list.add(map);
@@ -163,31 +166,51 @@ public class JDBCUtils {
 
 
     //执行批操作
-    public static int[] batchSql(List<String> sqlList) {
+    public static int[] batchSql(List<String> sqlList) throws SQLException {
         int i[] = null;
         Statement stmt;
         Connection conn;
 
-        try {
-            conn = getConnection();
-            stmt = conn.createStatement();
-            LOGGER.info("--------------start batch-----------");
-            for (String sql : sqlList) {
-                LOGGER.info(sql);
-                stmt.addBatch(sql);
-            }
-            i = stmt.executeBatch();
-            LOGGER.info("--------------end batch-----------");
-            stmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        conn = getConnection();
+        stmt = conn.createStatement();
+        LOGGER.info("--------------start batch-----------");
+        for (String sql : sqlList) {
+            LOGGER.info(sql);
+            stmt.addBatch(sql);
         }
+        i = stmt.executeBatch();
+        LOGGER.info("--------------end batch-----------");
+        stmt.close();
 
 
         return i;
     }
 
 
+    public static List<String> batchSqlFile(File file) throws IOException {
+        // 装载list
+        List<String> list = new ArrayList<String>();
+        if (file != null && file.exists()) {
+            // 读取文件
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            String lineStr = "";
+            while ((line = br.readLine()) != null) {
+                lineStr = lineStr + line;
+                System.out.println(lineStr);
+                // 判断截取点
+                if (lineStr.endsWith(";")) {
+                    lineStr = lineStr.replace(";", "");
+                    list.add(new String(lineStr));
+                    lineStr = "";
+                }
+            }
+
+        } else {
+            System.out.println("Sql文件没找到！");
+        }
+        return list;
+    }
 
 
     public static List execute(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
@@ -229,17 +252,45 @@ public class JDBCUtils {
         threadLocal.remove();
     }
 
-    public static int updateModel(Object object,String... terms) throws SQLException, IllegalAccessException {
-        int result=0;
+    public static int updateModel(Object object, String... terms) throws SQLException, IllegalAccessException {
+        int result = 0;
         if (terms != null && terms.length > 0) {
-            String  sql = ModelSQLUtils.update(object, terms);
-            result=JDBCUtils.operation(sql);
+            String sql = ModelSQLUtils.update(object, terms);
+            result = JDBCUtils.operation(sql);
         }
         return result;
     }
 
 
+    public static String getOneValue(String sql) {
+        String result = "";
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
+        try {
 
+            Connection conn = getConnection();
+            pstmt = conn.prepareStatement(sql);
+
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                result = rs.getString(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                pstmt.close();
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+        return result;
+    }
 
 
     /*    public static void rollBack(){

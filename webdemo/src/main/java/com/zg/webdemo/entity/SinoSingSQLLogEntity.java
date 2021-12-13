@@ -1,0 +1,162 @@
+package com.zg.webdemo.entity;
+
+import com.zg.bean.annotation.AutoIncrease;
+import com.zg.bean.annotation.FieldTypeMode;
+import com.zg.bean.annotation.Model;
+import com.zg.bean.annotation.NotCommitField;
+import com.zg.bean.entity.MainModel;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+
+@Model(tableName = "sinosingsqllog")
+@FieldTypeMode(typeMode = "entity")
+public class SinoSingSQLLogEntity extends MainModel {
+    @AutoIncrease
+    @NotCommitField
+    public Integer id;
+    public String batchno;
+    public String serialno;
+    public String planname;
+    public String demandid;
+    public String demandname;
+    public String applyusername;
+    public String environment;
+    public String databasename;
+    public String isconfig;
+    public String sqltype;
+    public String basesql;
+    public String devsql;
+    public String prosql;
+    @NotCommitField
+    public String executetime;
+    //0-初始化  1-脚本执行成功  -1-脚本校验失败  -2-校验失败  -3-未知异常 2-处理完成
+    public String executestate;
+    public String errormassage;
+    public String sqlpurpose;
+    public String sqldescribe;
+    public String needpowertables;
+    @NotCommitField
+    public String[] needPowerTableArray;
+
+
+    public String getBatchno() {
+        return batchno;
+    }
+
+    public void setBatchno(String batchno) {
+        this.batchno = batchno;
+    }
+
+    public String getSerialno() {
+        return serialno;
+    }
+
+    public void setSerialno(String serialno) {
+        this.serialno = serialno;
+    }
+
+    public String getPlanname() {
+        return planname;
+    }
+
+    public void setPlanname(String planname) {
+        this.planname = planname;
+    }
+
+    public String getDemandname() {
+        return demandname;
+    }
+
+    public void setDemandname(String demandname) {
+        this.demandname = demandname;
+    }
+
+    public String getApplyusername() {
+        return applyusername;
+    }
+
+    public void setApplyusername(String applyusername) {
+        this.applyusername = applyusername;
+    }
+
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(String environment) {
+        this.environment = environment;
+    }
+
+    public String getDatabasename() {
+        return databasename;
+    }
+
+    public void setDatabasename(String databasename) {
+        this.databasename = databasename;
+    }
+
+    public String getBasesql() {
+        return basesql;
+    }
+
+    public void setBasesql(String basesql) {
+        this.basesql = basesql;
+    }
+
+    public String getDevsql() {
+        return devsql;
+    }
+
+    public void setDevsql(String devsql) {
+        this.devsql = devsql;
+    }
+
+    public String getProsql() {
+        return prosql;
+    }
+
+    public void setProsql(String prosql) {
+        this.prosql = prosql;
+    }
+
+    public String getExecutetime() {
+        return executetime;
+    }
+
+    public void setExecutetime(String executetime) {
+        this.executetime = executetime;
+    }
+
+    public String getExecutestate() {
+        return executestate;
+    }
+
+    public void setExecutestate(String executestate) {
+        this.executestate = executestate;
+    }
+
+    public String getErrormassage() {
+        return errormassage;
+    }
+
+    public void setErrormassage(String errormassage) {
+        this.errormassage = errormassage;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

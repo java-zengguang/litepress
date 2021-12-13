@@ -1,6 +1,8 @@
 package com.zg.database.util;
 
-import com.zg.util.reflect.FieldSQLUtils;
+import com.zg.bean.annotation.FieldTypeMode;
+import com.zg.bean.annotation.Model;
+import com.zg.util.reflect.FieldUtils;
 import com.zg.util.reflect.FieldUtils;
 
 import java.io.*;
@@ -69,19 +71,15 @@ public class SerializeObjectUtils implements Runnable {
         }
 
 
-        list_model = setMember(list, model);
+        list_model = setMember(list, model.getClass());
 
         return list_model;
     }
 
 
     //映射实体类
-    public static List setMember(List<Map> list, Object model) throws ClassNotFoundException, IOException, InstantiationException, ParseException, IllegalAccessException {
-        return setMember(list, model.getClass());
-    }
-
-    //映射实体类
     public static List setMember(List<Map> list, Class modelClass) throws IllegalArgumentException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
+
         Field[] model_fields = modelClass.getFields();
         Map<String, String> map = new HashMap();
         List model_list = new ArrayList();
@@ -95,17 +93,32 @@ public class SerializeObjectUtils implements Runnable {
                     f.setAccessible(true);
                     if (map.get(f.getName()) != null) {
                         //   f.set(Model, map.get(f.getName()));
-                        FieldSQLUtils.setFieldSql(f, model, map.get(f.getName()));
+                        FieldUtils.setFieldObject(f, model, map.get(f.getName()));
                     }
 
-                }  else if(FieldUtils.isMainModel(f)){
+                } else if (FieldUtils.isMainModel(f)) {
 
                     f.set(model, setMember(list, f.getType()).get(0));
 
-                }else if (FieldUtils.isCollection(f)) {
+                } else if (FieldUtils.isCollection(f)) {
+
+                }
+
+                if (FieldUtils.isPrimitive(f)) {
+                    f.setAccessible(true);
+                    if (map.get(f.getName()) != null) {
+                        f.set(model, map.get(f.getName()));
+                    }
+
+                } else if (FieldUtils.isMainModel(f)) {
+
+                    f.set(model, setMember(list, f.getType()).get(0));
+
+                } else if (FieldUtils.isCollection(f)) {
 
                 }
             }
+
 
             //序列化，实现深度克隆
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -119,20 +132,20 @@ public class SerializeObjectUtils implements Runnable {
     }
 
 
- //序列化
-    public static String serializeToString(Object obj) throws Exception{
+    //序列化
+    public static String serializeToString(Object obj) throws Exception {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
         objOut.writeObject(obj);
         String str = byteOut.toString("ISO-8859-1");//此处只能是ISO-8859-1,但是不会影响中文使用
         return str;
-         }
+    }
 
     //反序列化
-    public static Object deserializeToObject(String str) throws Exception{
+    public static Object deserializeToObject(String str) throws Exception {
         ByteArrayInputStream byteIn = new ByteArrayInputStream(str.getBytes("ISO-8859-1"));
         ObjectInputStream objIn = new ObjectInputStream(byteIn);
-        Object obj =objIn.readObject();
+        Object obj = objIn.readObject();
         return obj;
     }
 
@@ -155,7 +168,7 @@ public class SerializeObjectUtils implements Runnable {
                         /*               f.set(Model,map.get(f.getName()))*/
                         ;
                     } else {
-                        FieldSQLUtils.setFieldSql(f, model, map.get(f.getName()));
+                        FieldUtils.setFieldObject(f, model, map.get(f.getName()));
                     }
                 }
             }
