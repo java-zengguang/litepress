@@ -1,6 +1,6 @@
 package com.zg.database.util;
 
-import com.zg.util.reflect.FieldSQLUtils;
+import com.zg.util.reflect.FieldUtils;
 import com.zg.util.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class ModelSQLUtils {
             member_list.add(name);
 
             f.setAccessible(true);
-            values_list.add(FieldSQLUtils.getFieldSql(f, models));
+            values_list.add(FieldUtils.getFieldObject(f, models));
         }
 
     }
@@ -112,7 +112,7 @@ public class ModelSQLUtils {
         StringBuffer condition = new StringBuffer();
         Field[] fields = o.getClass().getFields();
         for (Field field : fields) {
-            condition.append(field.getName() + "=" + FieldSQLUtils.getFieldSql(field, o) + " and ");
+            condition.append(field.getName() + "=" + FieldUtils.getFieldObject(field, o) + " and ");
         }
         condition = condition.delete(condition.length() - 4, condition.length());
         String sql = delete(o.getClass().getSimpleName(), condition.toString());
@@ -277,7 +277,7 @@ private static boolean isTrue(String string,Object object){
                     sql = sql.replace("#{"+bracket+"}", map.get(bracket.trim()));
                 } else {
                     Field field = object.getClass().getField(bracket.trim());
-                    sql = sql.replace("#{"+bracket+"}", FieldSQLUtils.getFieldSql(field, object));
+                    sql = sql.replace("#{"+bracket+"}", FieldUtils.getFieldObject(field, object));
                 }
             }
             return sql = resovleSQL(sql, key, object);   //递归执行

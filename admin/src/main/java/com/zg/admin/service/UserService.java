@@ -36,7 +36,7 @@ public class UserService implements UserServiceInte{
     }
 
     @Override
-    public void deleteUsers(String ids) {
+    public void deleteUsers(String ids) throws SQLException {
         System.out.println("ids"+ids);
         String idArray[]=ids.split(",");
         System.out.println(idArray);

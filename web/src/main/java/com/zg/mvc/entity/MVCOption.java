@@ -16,11 +16,7 @@ public class MVCOption extends MainModel {
 
     public MVCOption clone() {
         MVCOption config = null;
-        try {
-            config = (MVCOption) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+        config = (MVCOption) super.clone();
         return config;
     }
 }

@@ -1,6 +1,10 @@
 package com.zg.util.reflect;
 
+import com.zg.bean.annotation.Model;
+import org.apache.poi.hssf.record.formula.functions.T;
+
 import java.lang.reflect.Field;
+import java.rmi.MarshalledObject;
 import java.util.*;
 
 /**
@@ -137,5 +141,17 @@ public class ListUtils {
         return sub_list;
     }
 
+/*    public static List<Object> mapToModelList(List <Map> mapList, Class classes) throws IllegalAccessException {
+        List<Object> list=new ArrayList();
+        for(Map<String,String> map:mapList){
+            Object object= classes.getInterfaces();
+            Field[] fields= classes.getFields();
+            for(Field field:fields){
+                field.set(object,map.get(field.getName()));
+            }
+            list.add(object);
+        }
+        return list;
+    }*/
 
 }

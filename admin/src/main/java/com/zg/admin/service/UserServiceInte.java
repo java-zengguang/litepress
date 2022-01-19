@@ -2,6 +2,7 @@ package com.zg.admin.service;
 
 import com.zg.admin.entity.User;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ public interface UserServiceInte {
     List<User> getUserList(User user);
     void insertUser(User user);
 
-    void deleteUsers(String ids);
+    void deleteUsers(String ids) throws SQLException;
 
     void editUser(User user);
 }
