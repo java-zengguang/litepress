@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/databases.iml" filepath="$PROJECT_DIR$/.idea/databases.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sinosing-util/sinosing-util.iml" filepath="$PROJECT_DIR$/sinosing-util/sinosing-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sinosig-util/sinosig-util.iml" filepath="$PROJECT_DIR$/sinosig-util/sinosig-util.iml" />
       <module fileurl="file://$PROJECT_DIR$/util/util.iml" filepath="$PROJECT_DIR$/util/util.iml" />
       <module fileurl="file://$PROJECT_DIR$/web/web.iml" filepath="$PROJECT_DIR$/web/web.iml" />
     </modules>
