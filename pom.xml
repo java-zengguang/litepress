@@ -14,6 +14,7 @@
     <modules>
         <module>util</module>
         <module>web</module>
+        <module>sinosig-util</module>
 <!--        <module>webdemo</module>
         <module>scala</module>
         <module>webiodemo</module>
@@ -25,7 +26,7 @@
         <module>incache</module>
         <module>search</module>
         <module>login-provider</module>-->
-        <module>sinosing-util</module>
+
     </modules>
 
     <repositories>

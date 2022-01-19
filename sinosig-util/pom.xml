@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>com.zg.database</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.zg.sinosig</groupId>
+    <artifactId>sinosig-util</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+
+
+    <properties>
+        <nonveh-model.version>22.01.16</nonveh-model.version>
+    </properties>
+
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.zg.sinosig.SQLModel</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.zg.mvc</groupId>
+            <artifactId>web</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.zg.database</groupId>
+            <artifactId>util</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <!-- servlet依赖的jar包start -->
+        <!-- jsp依赖jar包start -->
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <!-- jsp依赖jar包end -->
+        <!--jstl标签依赖的jar包start -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <!--    分頁助手-->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>5.1.2</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>8.5.16</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sinosig</groupId>
+            <artifactId>nonveh-model</artifactId>
+            <version>${nonveh-model.version}</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.0.206</version>
+            <scope>runtime</scope>
+        </dependency>
+
+
+    </dependencies>
+
+
+</project>
