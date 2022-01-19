@@ -7,7 +7,6 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +14,14 @@ import java.util.List;
 /**
  * Created by Administrator on 2018/12/24 0024.
  */
-public  class CommitClassHandler extends BaseClassHandler {
-    private static final Logger LOGGER= LoggerFactory.getLogger(CommitClassHandler.class);
+public class CommitClassHandler extends BaseClassHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommitClassHandler.class);
 
     private Object target;
     private List methodList = new ArrayList();
 
-    public CommitClassHandler(){}
+    public CommitClassHandler() {
+    }
 
     public Object getInstance(Object target, String method) {
         this.target = target;
@@ -37,24 +37,31 @@ public  class CommitClassHandler extends BaseClassHandler {
     }
 
     @Override
-    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Exception {
         Object result = null;
+        Boolean flag = false;
         try {
-            result=methodProxy.invokeSuper(o, objects); //调用业务类（父类中）的方法
-        } catch (IllegalAccessException e) {
+            result = methodProxy.invokeSuper(o, objects); //调用业务类（父类中）的方法
+            flag = true;
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        if (methodList.contains(method.getName())) {
-           LOGGER.info(method.getName() + " 事务被提交");
-            JDBCUtils.commit();
+        } finally {
+            if (flag && methodList.contains(method.getName())) {
+                LOGGER.info(method.getName() + " 事务被提交");
+                JDBCUtils.commit();
+
+            } else {
+             //   System.out.println(method.getName() + " 事务未被提交");
+                JDBCUtils.release();
+                if (!flag) {
+                    throw new Exception("事务提交失败！");
+                }
+
+            }
             return result;
-        } else {
-            System.out.println(method.getName() + " 事务未被提交");
-            JDBCUtils.release();
-            return result;
+
         }
     }
+
 
 }

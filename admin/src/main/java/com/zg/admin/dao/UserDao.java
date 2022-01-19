@@ -30,7 +30,7 @@ public class UserDao {
         JDBCUtils.insertTables(list,User.class,"user_user");
     }
 
-    public void deleteUsers(String[] idArray) {
+    public void deleteUsers(String[] idArray) throws SQLException {
         List sqlList=new ArrayList();
         for(int i=0;i<idArray.length;i++){
             String id=idArray[i];

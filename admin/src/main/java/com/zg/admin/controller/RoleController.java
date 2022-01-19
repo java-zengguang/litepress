@@ -11,6 +11,7 @@ import com.zg.mvc.entity.MessageBean;
 import com.zg.util.reflect.JsonUtils;
 
 import java.lang.reflect.Proxy;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -67,7 +68,7 @@ public class RoleController extends BaseController{
 
 
     @ResultMapping("/deleteRoles.do")
-    public String deleteRoles(String ids) throws IllegalAccessException {
+    public String deleteRoles(String ids) throws IllegalAccessException, SQLException {
         if(roleService.deleteRoles(ids)) {
 
             json = new MessageBean("操作成功", true, null);
