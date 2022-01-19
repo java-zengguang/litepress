@@ -14,7 +14,7 @@
     <modules>
         <module>util</module>
         <module>web</module>
-        <module>webdemo</module>
+<!--        <module>webdemo</module>
         <module>scala</module>
         <module>webiodemo</module>
         <module>sso</module>
@@ -24,7 +24,8 @@
         <module>im</module>
         <module>incache</module>
         <module>search</module>
-        <module>login-provider</module>
+        <module>login-provider</module>-->
+        <module>sinosing-util</module>
     </modules>
 
     <repositories>
@@ -49,6 +50,10 @@
         </repository>
     </distributionManagement>
 
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <build>
 

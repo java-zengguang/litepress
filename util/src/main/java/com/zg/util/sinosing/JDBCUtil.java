@@ -155,7 +155,7 @@ public class JDBCUtil {
             Map map = new LinkedHashMap();
             columncount = rsmd.getColumnCount();
             for (int i = 1; i < columncount + 1; i++) {
-                map.put(rsmd.getColumnLabel(i), rs.getObject(i) + "");
+                map.put(rsmd.getColumnLabel(i), rs.getObject(i));
             }
 
             list.add(map);
@@ -252,5 +252,19 @@ public class JDBCUtil {
     }
 
 
-
+    public List<String> selectOneColList(String sql) throws SQLException {
+        List list=new ArrayList();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        ResultSet rs;
+        rs = pstmt.executeQuery();
+        while(rs.next()){
+            String value = rs.getString(1) ; // 此方法比较高效
+            list.add(value);
+        }
+        rs.close();
+        pstmt.close();
+        conn.close();
+        //dataBasePool.release(conn);
+        return list;
+    }
 }

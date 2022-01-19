@@ -6,6 +6,7 @@ import com.zg.bean.annotation.NotCommitField;
 import com.zg.bean.entity.OptionDB;
 import com.zg.database.util.DataBaseUtil;
 import com.zg.init.Config;
+import org.python.antlr.ast.Str;
 
 import java.lang.reflect.Field;
 import java.text.ParseException;
@@ -28,21 +29,26 @@ public class FieldUtils {
 
 
     //为类的公共属性赋值
-    public static void setField(Field field, Object object, String value, String fieldType) throws IllegalArgumentException, IllegalAccessException {
+    public static void setField(Field field, Object object, Object value, String fieldType) throws IllegalArgumentException, IllegalAccessException {
 
         if (value != null) {
 
             if ("null".equals(value) || "".equals(value)) {
 
             } else {
-                Object data = translateType(value, fieldType);
-                field.set(object, data);
+                if(value instanceof String) {
+                    value = translateType((String) value, fieldType);
+                }
+                if("String".equals(fieldType)){
+                    value=value.toString();
+                }
+                field.set(object, value);
             }
         }
     }
 
     //为类的公共属性赋值
-    public static void setField(Field field, Object object, String value) throws IllegalArgumentException, IllegalAccessException {
+    public static void setField(Field field, Object object, Object value) throws IllegalArgumentException, IllegalAccessException {
         String fieldType = field.getType().getSimpleName();
         setField(field, object, value, fieldType);
     }
@@ -682,7 +688,7 @@ public class FieldUtils {
     }
 
 
-    private static void setFieldMySql(Field field, Object object, String value) throws IllegalArgumentException, IllegalAccessException, ParseException {
+    private static void setFieldMySql(Field field, Object object, Object value) throws IllegalArgumentException, IllegalAccessException, ParseException {
 
         Map<String,String> tableInfo=null;
 
@@ -705,48 +711,48 @@ public class FieldUtils {
         }
         switch (fieldType) {
             case "int": {
-                field.set(object, Integer.valueOf(value));
+                field.set(object, (Integer)object);
                 break;
             }
             case "varchar": {
-                field.set(object, value);
+                field.set(object, (String)object);
                 break;
             }
 
             case "string":{
-                field.set(object,value);
+                field.set(object,(String)value);
                 break;
             }
 
             case "text":{
-                field.set(object,value);
+                field.set(object,(String)value);
                 break;
             }
 
             case "date": {
                 //  SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-                field.set(object, sdf.parse(value));
+                field.set(object, sdf.parse((String) value));
                 break;
             }
 
             case "datetime": {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                field.set(object, sdf.parse(value));
+                field.set(object, sdf.parse((String) value));
                 break;
             }
 
             case "boolean":{
-                if("true".endsWith(value)){
+                if("true".endsWith((String) value)){
                     field.set(object,true);
                 }
-                if("false".endsWith(value)){
+                if("false".endsWith((String) value)){
                     field.set(object,true);
                 }
 
                 break;
             }
 
-            case "tinyint":{
+      /*      case "tinyint":{
                 if("true".endsWith(value)){
                     field.set(object,true);
                 }
@@ -754,7 +760,12 @@ public class FieldUtils {
                     field.set(object,true);
                 }
                 break;
+            }*/
+            case "tinyint": {
+                field.set(object, (Integer)object);
+                break;
             }
+
         }
 
     }
@@ -772,7 +783,7 @@ public class FieldUtils {
         }
     }
 
-    private static void setFieldSql(Field field, Object object,String value) throws IllegalAccessException, ParseException {
+    private static void setFieldSql(Field field, Object object,Object value) throws IllegalAccessException, ParseException {
 
         if("MYSQL".equals(optionDB.DBType)){
             setFieldMySql(field,object,value);
@@ -786,7 +797,7 @@ public class FieldUtils {
         }
     }
 
-    public static void setFieldObject(Field field, Object object,String value) throws IllegalAccessException, ParseException {
+    public static void setFieldObject(Field field, Object object,Object value) throws IllegalAccessException, ParseException {
         FieldTypeMode typeMode = (FieldTypeMode) object.getClass().getAnnotation(FieldTypeMode.class);
         if ("database".equals(typeMode.typeMode())) {
             setFieldSql(field, object, value);
