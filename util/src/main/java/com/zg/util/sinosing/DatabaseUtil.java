@@ -3,10 +3,12 @@ package com.zg.util.sinosing;
 import com.zg.bean.entity.OptionDB;
 
 public  class DatabaseUtil {
+
     public static OptionDB getOptionDB(String type, String database) {
         OptionDB optionDB = new OptionDB();
         String userName = "";
         String ip = "";
+        String password="HvgaE#7ML_";
         String instanceName = "";
 
         if ("dev".equals(type)) {
@@ -114,10 +116,56 @@ public  class DatabaseUtil {
                 userName = "nvpolicy";
             }
         }
+
+        if("old_dev".equals(type)){
+            if ("投保单库".equals(database)) {
+                ip="10.8.199.28";
+                instanceName = "pcoreuat";
+                userName = "basecode";
+                password="basecode";
+            }
+            if ("保单库".equals(database)) {
+                ip="10.8.199.29";
+                instanceName = "stagedb";
+                userName = "sinosoft";
+                password="sinosoft";
+            }
+        }
+
         optionDB.url = "jdbc:oracle:thin:@" + ip + ":1521/" + instanceName;
         optionDB.username = userName;
-        optionDB.password = "HvgaE#7ML_";
+        optionDB.password = password;
         optionDB.driver = "oracle.jdbc.driver.OracleDriver";
+        String target="";
+        switch (database){
+            case "保单库":{
+                target="nvpolicy";
+                break;
+            }
+            case "投保单库":{
+                target="nvproposal";
+                break;
+            }
+            case "批单修改库":{
+                target="nvendorsement";
+                break;
+            }
+            case "产品工厂库":{
+                target="nvfactory";
+                break;
+            }
+            case "统一工作台库":{
+                target="nvportal";
+                break;
+            }
+
+            case "汇总库":{
+                target="nvsun";
+                break;
+            }
+
+        }
+        optionDB.dataSourceName=type+"_"+target;
         return optionDB;
     }
 

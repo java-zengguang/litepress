@@ -19,6 +19,21 @@
         <plugins>
 
 
+<!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.zg.sinosing.SQLModel</mainClass> &lt;!&ndash; 你的主类名 &ndash;&gt;
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+-->
+
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
@@ -52,6 +67,9 @@
 
     </build>
 
+    <properties>
+        <nonveh-model.version>21.12.18</nonveh-model.version>
+    </properties>
 
 
     <dependencies>
@@ -103,6 +121,20 @@
             <version>8.5.16</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.sinosig</groupId>
+            <artifactId>nonveh-model</artifactId>
+            <version>${nonveh-model.version}</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.0.206</version>
+            <scope>runtime</scope>
+        </dependency>
 
 
     </dependencies>

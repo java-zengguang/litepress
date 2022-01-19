@@ -117,28 +117,23 @@ public class POIUtils {
         int i = 0;
         for (String key : keySet) {
             int j = 0;
-
             List<Map> list = mapList.get(key);
             WritableSheet sheet = workbook.createSheet(key, i);
+            sheet.getSettings().setDefaultColumnWidth(20);
             for (Map<String, String> map : list) {
                 int x = 0;
-
                 Set<String> columnSet = map.keySet();
                 for (String column : columnSet) {
                     WritableCell cell;
-                    if (j == 0) {
-                        cell = new Label(x, j, column);
-                    } else {
-                        cell = new Label(x, j, String.valueOf(map.get(column)));
-                    }
+                    String content=String.valueOf(map.get(column));
+                    cell = new Label(x, j, content);
                     sheet.addCell(cell);
                     x++;
                 }
                 j++;
             }
-
+            //自动调整列宽
             i++;
-
         }
 
         workbook.write();

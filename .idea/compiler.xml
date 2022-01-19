@@ -6,20 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="incache" />
-        <module name="im" />
-        <module name="search" />
-        <module name="admin" />
         <module name="blog" />
         <module name="util" />
-        <module name="direction" />
-        <module name="scala" />
-        <module name="sso" />
-        <module name="webiodemo" />
-        <module name="login-provider" />
-        <module name="webdemo" />
         <module name="web" />
-        <module name="network-util" />
+        <module name="sinosing-util" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -32,6 +22,7 @@
       <module name="network-util" target="1.8" />
       <module name="scala" target="1.8" />
       <module name="search" target="1.8" />
+      <module name="sinosing-util" target="1.8" />
       <module name="sso" target="1.8" />
       <module name="ssocommon" target="1.8" />
       <module name="util" target="1.8" />

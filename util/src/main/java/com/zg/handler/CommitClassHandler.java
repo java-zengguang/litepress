@@ -7,7 +7,6 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +51,7 @@ public class CommitClassHandler extends BaseClassHandler {
                 JDBCUtils.commit();
 
             } else {
-                System.out.println(method.getName() + " 事务未被提交");
+             //   System.out.println(method.getName() + " 事务未被提交");
                 JDBCUtils.release();
                 if (!flag) {
                     throw new Exception("事务提交失败！");
