@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.sinosig:nonveh-model:22.01.16">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../maven-master/com/sinosig/nonveh-model/22.01.16/nonveh-model-22.01.16.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../maven-master/com/sinosig/nonveh-model/22.01.16/nonveh-model-22.01.16-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../maven-master/com/sinosig/nonveh-model/22.01.16/nonveh-model-22.01.16-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

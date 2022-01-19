@@ -1,6 +1,7 @@
 package com.zg.bean.entity;
 
 public class OptionDB extends MainModel{
+    public String dataSourceName;
     public String url = null;
     public int maxPoolSize = 5;
     public String driver = null;

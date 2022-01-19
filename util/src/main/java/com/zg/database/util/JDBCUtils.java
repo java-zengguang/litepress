@@ -2,7 +2,6 @@ package com.zg.database.util;
 
 import com.zg.bean.entity.MainModel;
 import com.zg.database.pool.DataBaseInte;
-import com.zg.util.io.FileUtils;
 import com.zg.util.reflect.DynamicClass;
 import com.zg.util.reflect.FieldUtils;
 import org.slf4j.Logger;
@@ -175,7 +174,7 @@ public class JDBCUtils {
         stmt = conn.createStatement();
         LOGGER.info("--------------start batch-----------");
         for (String sql : sqlList) {
-            LOGGER.info(sql);
+           // LOGGER.info(sql);
             stmt.addBatch(sql);
         }
         i = stmt.executeBatch();

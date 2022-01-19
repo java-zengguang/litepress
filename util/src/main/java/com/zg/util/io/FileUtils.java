@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * Created by Administrator on 2018/11/27 0027.
@@ -21,11 +22,24 @@ public class FileUtils {
         String path = "";
 
         try {
-            path = FileUtils.class.getResource("/").toURI().getPath();
+
+            if (FileUtils.class.getResource("/")!=null){
+                path = FileUtils.class.getResource("/").toURI().getPath();
+            }else{
+               path= FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+               File file=new File(path);
+               path=file.getParent();
+               path = java.net.URLDecoder.decode(path, "UTF-8");
+               path=path+"\\";
+
+            }
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
-
+        System.out.println("----"+path);
 
 
         PATH = path;

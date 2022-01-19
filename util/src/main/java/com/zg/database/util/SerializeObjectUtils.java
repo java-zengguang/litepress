@@ -81,11 +81,11 @@ public class SerializeObjectUtils implements Runnable {
     public static List setMember(List<Map> list, Class modelClass) throws IllegalArgumentException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
 
         Field[] model_fields = modelClass.getFields();
-        Map<String, String> map = new HashMap();
+
         List model_list = new ArrayList();
         for (int i = 0; i < list.size(); i++) {
             Object model = modelClass.newInstance();
-            map = (Map) list.get(i);
+           Map<String,Object> map = (Map) list.get(i);
 
             for (Field f : model_fields) {
 
@@ -107,7 +107,8 @@ public class SerializeObjectUtils implements Runnable {
                 if (FieldUtils.isPrimitive(f)) {
                     f.setAccessible(true);
                     if (map.get(f.getName()) != null) {
-                        f.set(model, map.get(f.getName()));
+                       // f.set(model, map.get(f.getName()));
+                        FieldUtils.setFieldObject(f, model, map.get(f.getName()));
                     }
 
                 } else if (FieldUtils.isMainModel(f)) {

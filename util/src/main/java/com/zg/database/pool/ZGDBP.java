@@ -127,11 +127,11 @@ public class ZGDBP implements DataBaseInte {
     //重置连接
     public boolean release(Connection conn) {
 
-        try {
+/*        try {
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
         return connectPool.add(conn);
     }
 
