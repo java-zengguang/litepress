@@ -6,10 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="sinosig-util" />
         <module name="blog" />
         <module name="util" />
         <module name="web" />
-        <module name="sinosing-util" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -22,6 +22,8 @@
       <module name="network-util" target="1.8" />
       <module name="scala" target="1.8" />
       <module name="search" target="1.8" />
+      <module name="sinosig-util" target="1.8" />
+      <module name="sinosig-util (1)" target="1.8" />
       <module name="sinosing-util" target="1.8" />
       <module name="sso" target="1.8" />
       <module name="ssocommon" target="1.8" />

@@ -58,12 +58,26 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/sinosig-util/pom.xml" />
+        <option value="$PROJECT_DIR$/sinosig-util/dependency-reduced-pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/admin/pom.xml" />
+        <option value="$PROJECT_DIR$/direction/pom.xml" />
         <option value="$PROJECT_DIR$/hessian/pom.xml" />
+        <option value="$PROJECT_DIR$/im/pom.xml" />
+        <option value="$PROJECT_DIR$/incache/pom.xml" />
+        <option value="$PROJECT_DIR$/login-provider/pom.xml" />
+        <option value="$PROJECT_DIR$/network-util/pom.xml" />
+        <option value="$PROJECT_DIR$/scala/pom.xml" />
+        <option value="$PROJECT_DIR$/search/pom.xml" />
+        <option value="$PROJECT_DIR$/sinosing-util/pom.xml" />
         <option value="$PROJECT_DIR$/sso-common/pom.xml" />
+        <option value="$PROJECT_DIR$/sso/pom.xml" />
+        <option value="$PROJECT_DIR$/webdemo/pom.xml" />
+        <option value="$PROJECT_DIR$/webiodemo/pom.xml" />
       </set>
     </option>
   </component>
