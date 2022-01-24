@@ -8,6 +8,7 @@ import com.zg.sinosig.generate.GenerateSQL;
 import com.zg.sinosig.generate.SimpleGeneraterSQL;
 import com.zg.sinosig.load.LoadDataBaseStructure;
 import com.zg.sinosig.load.SimpleLoadDataBaseStructure;
+import com.zg.util.io.FileUtils;
 import com.zg.util.io.POIUtils;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 import jxl.write.WriteException;
@@ -21,10 +22,11 @@ import java.util.*;
 
 public class SQLModel {
 
-    private final String rootPath = "D:\\test\\SQLExcute\\";
+  //  private final String rootPath = FileUtils.PATH;
+  private final String rootPath = "D:\\test\\SQLExcute\\";
     private CheckSQL checkSQL = new SimpleCheckSQL();
     private ExcuteSQL excuteSQL = new SimpleExcute();
-    private LoadDataBaseStructure loadDataBaseStructure = new SimpleLoadDataBaseStructure("D:\\test\\SQLExcute\\in");
+    private LoadDataBaseStructure loadDataBaseStructure = new SimpleLoadDataBaseStructure(rootPath+"in");
 
 
     private boolean saveSqlFile(SinoSigSQLLogEntity sinoSigSQLLogEntity) throws IOException {
@@ -135,19 +137,19 @@ public class SQLModel {
         String executeBatchNo = "" + (new Date()).getTime();
         List<SinoSigSQLLogEntity> resultList = new ArrayList<>();
         //uat 执行
-        if (true) {
+        if (false) {
             GenerateSQL generateSQL = new SimpleGeneraterSQL(dirFile, executeBatchNo, "uat");
             List<SinoSigSQLLogEntity> list = generateSQL.initLoadSinoSingSQL();
             list = checkSQL.checkSQL(list);
-            //list= excuteSQL.excute(list);
-            resultList.addAll(list);
+          //  list= excuteSQL.excute(list);
+             resultList.addAll(list);
         }
         //stage 执行
-        if (false) {
+        if (true) {
             GenerateSQL generateSQL = new SimpleGeneraterSQL(dirFile, executeBatchNo, "stage");
             List<SinoSigSQLLogEntity> list = generateSQL.initLoadSinoSingSQL();
             list = checkSQL.checkSQL(list);
-            // list = excuteSQL.excute(list);
+           //  list = excuteSQL.excute(list);
             resultList.addAll(list);
         }
         outPut(resultList);

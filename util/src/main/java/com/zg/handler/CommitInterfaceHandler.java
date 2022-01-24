@@ -44,7 +44,7 @@ public class CommitInterfaceHandler implements InvocationHandler {
             JDBCUtils.commit();
             return result;
         } else {
-            LOGGER.info(method.getName() + " 事务未被提交");
+           // LOGGER.info(method.getName() + " 事务未被提交");
             JDBCUtils.release();
             return result;
         }

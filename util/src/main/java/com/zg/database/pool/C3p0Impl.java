@@ -26,8 +26,8 @@ public class C3p0Impl implements DataBaseInte {
         C3p0Impl c3p0=c3p0Map.get(dataOptionName);
         if(c3p0==null){
             c3p0=new C3p0Impl(dataOptionName);
+            c3p0Map.put(dataOptionName,c3p0);
         }
-        c3p0Map.put(dataOptionName,c3p0);
         return c3p0;
     }
 
