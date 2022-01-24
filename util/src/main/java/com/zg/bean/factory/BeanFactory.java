@@ -72,11 +72,14 @@ public class BeanFactory {
                         Field field = Class.forName(beanClassName).getField(name);
                         field.setAccessible(true);
                         if (property.attributeValue("type") != null) {
+                            String value=property.getStringValue();
                             //对密码做个加密
                             if("password".equals(name)){
-
+                                if("新一代数据库".equals(value)){
+                                    value="HvgaE#7ML_";
+                                }
                             }
-                            FieldUtils.setField(field, o, property.getStringValue());
+                            FieldUtils.setField(field, o,value);
                         }
                         if (property.attributeValue("ref") != null) {
                             field.set(o, BeanFactory.createBean(property.attributeValue("ref")));

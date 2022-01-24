@@ -45,7 +45,7 @@ public class SimpleGeneraterSQL implements GenerateSQL {
                 String devEmpowermentSql = "";
                 if ("保单库".equals(sinoSigSQLLogEntity.databasename)) {
                     proEmpowermentSql = "grant select on nvpolicy.table_name to wushengrun_phq;\n" +
-                            "create or synonym wushengrun_phq.table_name for nvpolicy.table_name;\n" +
+                            "create synonym wushengrun_phq.table_name for nvpolicy.table_name;\n" +
                             "grant select,insert,update,delete on nvpolicy.table_name to nonveh;\n" +
                             "create synonym nonveh.table_name for nvpolicy.table_name;\n" +
                             "grant select on nvpolicy.table_name to tangjunxiang_ghq;\n" +
@@ -268,7 +268,7 @@ public class SimpleGeneraterSQL implements GenerateSQL {
                         baseEntity.executebatchno = executeBatchNo;
                         SinoSigSQLLogEntity sinoSigSQLLogEntity = machiningSQL(baseEntity);  //以入口为模板复制加工处新的对
                         logEntities.add(sinoSigSQLLogEntity);
-                      //  sinoSigSQLLogService.insertSinoSingSQLLog(sinoSigSQLLogEntity);
+                        sinoSigSQLLogService.insertSinoSingSQLLog(sinoSigSQLLogEntity);
                     }
 
                 }
