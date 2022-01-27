@@ -1,38 +1,30 @@
-package com.zg.sinosig;
+package com.zg.sinosig.result;
 
-import com.zg.sinosig.check.CheckSQL;
-import com.zg.sinosig.check.SimpleCheckSQL;
-import com.zg.sinosig.execute.ExecuteSQL;
-import com.zg.sinosig.execute.SimpleExecute;
-import com.zg.sinosig.generate.GenerateSQL;
-import com.zg.sinosig.generate.SimpleGeneraterSQL;
-import com.zg.sinosig.load.LoadDataBaseStructure;
-import com.zg.sinosig.load.SimpleLoadDataBaseStructure;
+import com.sinosig.saab.util.DateUtil;
+import com.sinosig.saab.util.FileUtils;
+import com.zg.database.util.SvnUtil;
 import com.zg.util.io.POIUtils;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
+import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
+import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
+import org.tmatesoft.svn.core.wc.ISVNOptions;
+import org.tmatesoft.svn.core.wc.SVNClientManager;
+import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
-import java.io.*;
-import java.text.SimpleDateFormat;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 
-public class SQLModel {
+public class SQLExecuteResultImpl implements SQLExecuteResult{
+    private String executeRoot="D:\\test\\SQLExecuteTask\\";
 
-    //  private final String rootPath = FileUtils.PATH;
-    private final String rootPath;
-    private CheckSQL checkSQL = new SimpleCheckSQL();
-    private ExecuteSQL executeSQL = new SimpleExecute();
-    private LoadDataBaseStructure loadDataBaseStructure;
+    private String name = "zengguang-phq";
+    private String password = "";
 
-    public SQLModel() {
-        this.rootPath = "D:\\test\\SQLExcute\\";
-        this.loadDataBaseStructure = new SimpleLoadDataBaseStructure(rootPath + "in");
-    }
-
-    public SQLModel(String rootPath) {
-        this.rootPath = rootPath;
-        this.loadDataBaseStructure = new SimpleLoadDataBaseStructure(rootPath + "in");
-
-    }
 
     private boolean saveSqlFile(SinoSigSQLLogEntity sinoSigSQLLogEntity) throws IOException {
 
@@ -46,8 +38,7 @@ public class SQLModel {
         fileName = fileName + sinoSigSQLLogEntity.demandname + ".sql";
         String content = sinoSigSQLLogEntity.prosql;
         Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        String path = rootPath + "temp\\" + sinoSigSQLLogEntity.planname;
+        String path = executeRoot + "temp\\" + sinoSigSQLLogEntity.planname;
 
         File pathFile = new File(path);
         if (!pathFile.exists()) {
@@ -77,10 +68,6 @@ public class SQLModel {
         return true;
     }
 
-
-    private void writeResultExcel(List<SinoSigSQLLogEntity> list, File outFile) {
-
-    }
 
     private void outPut(List<SinoSigSQLLogEntity> list) throws Exception {
         Boolean flag = true;
@@ -131,45 +118,38 @@ public class SQLModel {
             mapList.add(map);
         }
         resultMap.put("执行结果情况", mapList);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
-        String dateStr = simpleDateFormat.format(new Date());
-        File resultFile = new File(rootPath + "out\\" + dateStr + ".xlsx");
+
+        //执行结构
+        String fileName=DateUtil.format(new Date(),"yyyy-MM-dd-HHmmss") + ".xlsx";
+        File resultFile = new File(executeRoot + "out" ,fileName);
         POIUtils.writeXLSX(resultMap, resultFile);
+        Date currentDate=new Date();
+        String svnUrl="http://it_doc.sinosig.com/SPIS/非车新一代/01项目范围管理/UAT脚本发布提交/"+DateUtil.format(currentDate,"yyyyMM")+"/"+DateUtil.format(currentDate,"yyyyMMdd")+"/执行结果";
+        upLoadToSVN(resultFile,new File("D:\\test\\UAT脚本发布提交\\"+DateUtil.format(currentDate,"yyyyMM")+"\\"+DateUtil.format(currentDate,"yyyyMMdd")+"\\执行结果",fileName),svnUrl);
     }
 
 
-
-
-    public void domain() throws Exception {
-
-        File dirFile = new File(rootPath + "in\\");
-        String executeBatchNo = "" + (new Date()).getTime();
-        List<SinoSigSQLLogEntity> resultList = new ArrayList<>();
-        //uat 执行
-        if (true) {
-            GenerateSQL generateSQL = new SimpleGeneraterSQL(dirFile, executeBatchNo, "uat");
-            List<SinoSigSQLLogEntity> list = generateSQL.initLoadSinoSingSQL();
-            list = checkSQL.checkSQL(list);
-             list= executeSQL.excute(list);
-            resultList.addAll(list);
+    private void upLoadToSVN(File sourceFile, File targetFile,String svnUrl) throws IOException, SVNException {
+        System.out.println("提交结果到SVN"+svnUrl);
+        SVNRepositoryFactoryImpl.setup();
+        FileUtils.copyFile(sourceFile,targetFile);
+        ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
+        SVNClientManager  ourClientManager = SVNClientManager.newInstance((DefaultSVNOptions) options, name, password);
+        SVNURL svnURL=SVNURL.parseURIEncoded(svnUrl);
+        if (SvnUtil.isURLExist(svnURL, name, password)) {
+            SvnUtil.addEntry(ourClientManager,targetFile);
+            SvnUtil.commit(ourClientManager, targetFile,true,"执行结果");
+        } else {
+            System.out.println("目录不存在！");
         }
-        //stage 执行
-        if (true) {
-            GenerateSQL generateSQL = new SimpleGeneraterSQL(dirFile, executeBatchNo, "stage");
-            List<SinoSigSQLLogEntity> list = generateSQL.initLoadSinoSingSQL();
-            list = checkSQL.checkSQL(list);
-             list = executeSQL.excute(list);
-            resultList.addAll(list);
-        }
-        outPut(resultList);
     }
 
-
-
-
-
-    public static void main(String args[]) throws Exception {
-        SQLModel sqlModel = new SQLModel();
-        sqlModel.domain();
+    @Override
+    public void doResult(List<SinoSigSQLLogEntity> list) {
+        try {
+            outPut(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

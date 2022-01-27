@@ -237,6 +237,7 @@ public class VerificationCheck {
 
             //最后提交，H2数据库消失
             jdbcUtil.commit();
+            jdbcUtil.release();
             return list;
     }
 

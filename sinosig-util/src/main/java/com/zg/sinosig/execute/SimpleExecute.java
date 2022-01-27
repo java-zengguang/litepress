@@ -1,4 +1,4 @@
-package com.zg.sinosig.excute;
+package com.zg.sinosig.execute;
 
 import com.zg.handler.CommitInterfaceHandler;
 import com.zg.handler.ProxyUtils;
@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleExcute implements ExcuteSQL{
+public class SimpleExecute implements ExecuteSQL {
 
     //private SinoSigSQLLogService sinoSigSQLLogService = (SinoSigSQLLogService) ProxyUtils.getProxyClass(new SinoSigSQLLogServiceImpl(), "insertSinoSingSQLLog,updateStateSinoSingSQLLog");
     private SinoSigSQLLogService sinoSigSQLLogService = (SinoSigSQLLogService) ProxyUtils.getProxyInterface(SinoSigSQLLogServiceImpl.class, new CommitInterfaceHandler(new SinoSigSQLLogServiceImpl(),"insertSinoSingSQLLog,updateStateSinoSingSQLLog"));

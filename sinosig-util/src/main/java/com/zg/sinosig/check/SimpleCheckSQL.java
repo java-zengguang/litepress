@@ -115,13 +115,19 @@ public class SimpleCheckSQL implements CheckSQL {
                         tableName = tableName.substring(tableName.indexOf(".") + 1, tableName.length());
                     }
                     if ("table".equals(opreateObject)) {
-                        String flag = JDBCUtils.getOneValue("select 1 from databasetablestructure d where d.environment  in ('pro') and d.tablename ='" + tableName + "'");
+
+
+                        String flag = JDBCUtils.getOneValue("select owner from databasetablestructure d where d.environment  in ('pro')  and d.tablename ='" + tableName + "'");
                         if ("".equals(flag) && "alter".equals(opreate) && !sql.contains("constraint")) {
                             sinoSigSQLLogEntity.setErrormassage("检查未通过:生产没有这个表 " + "tablename:" + tableName);
                             return false;
                         }
-                        if ("1".equals(flag) && "create".equals(opreate)) {
+                        if (!"".equals(flag) && "create".equals(opreate)) {
                             sinoSigSQLLogEntity.setErrormassage("检查未通过:生产已经有这个表了 " + "tablename:" + tableName);
+                            return false;
+                        }
+                        if (!"".equals(flag) && !"nvpolicy".equals(flag) && !"nvproposal".equals(flag) && !"nvendorsement".equals(flag)) {
+                            sinoSigSQLLogEntity.setErrormassage("检查未通过:生产环境这个表归属不是承保系统 " + "tablename:" + tableName+" owner:"+flag);
                             return false;
                         }
 

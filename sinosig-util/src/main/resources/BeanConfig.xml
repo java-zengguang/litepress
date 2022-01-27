@@ -304,7 +304,6 @@
         <property name="username" type="java.lang.String">su</property>
         <property name="password" type="java.lang.String"></property>
         <property name="DBType" type="java.lang.String">H2</property>
-        <property name="DBPType" type="java.lang.String">ZGDBP</property>
     </bean>
 
 
