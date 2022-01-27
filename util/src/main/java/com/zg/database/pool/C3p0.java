@@ -61,30 +61,7 @@ public class C3p0 implements DataBaseInte {
     }
 
 
-    @Override
-    public boolean commit(Connection conn) {
-        try {
-            conn.commit();
-            release(conn);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
-    @Override
-    public boolean release(Connection conn) {
-
-        if (conn != null) {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return true;
-    }
 
 
 }

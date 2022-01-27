@@ -4,6 +4,7 @@ import com.zg.handler.ProxyUtils;
 import com.zg.util.reflect.ClassUtil;
 import com.zg.webdemo.entity.DatabaseTableStructureEntity;
 import com.zg.webdemo.entity.LDCode;
+import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureService;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureServiceImpl;
 import com.zg.webdemo.service.ldcode.LDCodeService;
@@ -11,6 +12,7 @@ import com.zg.webdemo.service.ldcode.LDCodeServiceImpl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,6 +20,10 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
     private String rootDir = "";
     DatabaseTableStrcutureService strcutureService = (DatabaseTableStrcutureService) ProxyUtils.getProxyClass(new DatabaseTableStrcutureServiceImpl(), "insertDataBaseTableStructures,reloadDataBaseTableStructures");
     LDCodeService ldCodeService = (LDCodeService) ProxyUtils.getProxyClass(new LDCodeServiceImpl(), "reLoadPRPTable");
+
+    public SimpleLoadDataBaseStructure(){
+
+    }
 
     public SimpleLoadDataBaseStructure(String rootDir) {
         this.rootDir = rootDir;
@@ -89,17 +95,49 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
         }
     }
 
+
+
     @Override
-    public boolean loadStructure() throws Exception {
-        return true;
+    public boolean reLoadStructure(List<SinoSigSQLLogEntity> list) throws Exception {
+        Set<String> environmentSet=new HashSet<>();
+     for(SinoSigSQLLogEntity sinoSigSQLLogEntity:list){
+         if("DDL".equals(sinoSigSQLLogEntity.sqltype) &&"3".equals(sinoSigSQLLogEntity.executestate)){
+             environmentSet.add(sinoSigSQLLogEntity.environment) ;
+         }
+     }
+
+     for(String environment:environmentSet){
+         reLoadStructure(environment);
+     }
+        return false;
     }
 
     @Override
-    public boolean reLoadStructure() throws Exception {
+    public boolean loadStructure() throws Exception {
         if (reloadBaseTable() && reloadDatabaseStrucure()) {
             return true;
         } else {
             return false;
         }
     }
+
+
+
+
+    private boolean reLoadStructure(String environment) throws Exception {
+        List<DatabaseTableStructureEntity> list=new ArrayList<>();
+        String[] databaseNames={"保单库","投保单库","批单修改库"};
+        for(String databaseName:databaseNames) {
+           list= GetDataStructure.getDataStructure(environment, databaseName);
+        }
+        strcutureService.reloadDataBaseTableStructures(list,environment);
+        return false;
+    }
+
+
+    public static void main(String args[]) throws Exception {
+        SimpleLoadDataBaseStructure simpleLoadDataBaseStructure=new SimpleLoadDataBaseStructure();
+        simpleLoadDataBaseStructure.reLoadStructure("int");
+    }
+
 }

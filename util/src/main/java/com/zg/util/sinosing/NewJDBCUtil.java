@@ -23,7 +23,7 @@ import java.util.*;
 public class NewJDBCUtil {
     private final Logger LOGGER = LoggerFactory.getLogger(NewJDBCUtil.class);
     private String dataSource;
-    DataBaseInte dataBasePool;
+
     private Connection conn;
 
     public NewJDBCUtil(String dataSource) {
@@ -34,11 +34,14 @@ public class NewJDBCUtil {
 
 
     private boolean init() {
-        if(dataBasePool==null) {
-            dataBasePool = NewDBPUtils.getInstance(dataSource);
-        }
         if(conn==null) {
-            conn = dataBasePool.getConnection();
+            try {
+                conn =NewDBPUtils.getConnection(dataSource);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
         return true;
     }
@@ -242,17 +245,14 @@ public class NewJDBCUtil {
         return list;
     }
 
-    public void release() {
-        if(dataBasePool!=null&&dataBasePool!=null) {
-            dataBasePool.release(conn);
-        }
+    public void release() throws SQLException {
+
+        conn.close();
     }
 
-    public boolean commit() {
-        if(dataBasePool!=null&&dataBasePool!=null) {
-            dataBasePool.commit(conn);
-        }
-        release();
+    public boolean commit() throws SQLException {
+
+        conn.commit();
         return true;
     }
 
