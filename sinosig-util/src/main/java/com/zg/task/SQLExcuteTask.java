@@ -12,14 +12,14 @@ import com.zg.sinosig.load.LoadDataBaseStructure;
 import com.zg.sinosig.load.SimpleLoadDataBaseStructure;
 import com.zg.sinosig.result.SQLExecuteResult;
 import com.zg.sinosig.result.SQLExecuteResultImpl;
-import com.zg.util.reflect.FieldUtils;
-import com.zg.util.reflect.SerializeUtils;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
-import com.zg.webdemo.service.sinosigsqllog.SinoSigSQLLogService;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
 import java.util.*;
 
-public class SQLExcuteTask {
+public class SQLExcuteTask implements Job {
 
 
     private String executeRoot="D:\\test\\SQLExecuteTask\\";
@@ -33,7 +33,7 @@ public class SQLExcuteTask {
         if (true) {
             List<SinoSigSQLLogEntity> executeList = new ArrayList<>();
             GenerateSQL generateSQL = new SVNSimpleGeneraterSQL(executeRoot, executeBatchNo);
-            List<SinoSigSQLLogEntity> list = generateSQL.initLoadSinoSingSQL();
+            List<SinoSigSQLLogEntity> list = generateSQL.initLoadSinoSigSQL();
             for(SinoSigSQLLogEntity sinoSigSQLLogEntity:list){
                 SinoSigSQLLogEntity sigSQLLogEntity= (SinoSigSQLLogEntity) sinoSigSQLLogEntity.clone();
                 sigSQLLogEntity.environment="uat";
@@ -50,7 +50,7 @@ public class SQLExcuteTask {
         if (true) {
             List<SinoSigSQLLogEntity> executeList = new ArrayList<>();
             GenerateSQL generateSQL = new SVNSimpleGeneraterSQL(executeRoot, executeBatchNo);
-            List<SinoSigSQLLogEntity> list = generateSQL.initLoadSinoSingSQL();
+            List<SinoSigSQLLogEntity> list = generateSQL.initLoadSinoSigSQL();
             for(SinoSigSQLLogEntity sinoSigSQLLogEntity:list){
                 SinoSigSQLLogEntity sigSQLLogEntity= (SinoSigSQLLogEntity) sinoSigSQLLogEntity.clone();
                 sigSQLLogEntity.environment="stage";
@@ -87,14 +87,15 @@ public class SQLExcuteTask {
 
     public boolean doStart() {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 17); // 控制时
-        calendar.set(Calendar.MINUTE, 40);       // 控制分
+      //  calendar.add(Calendar.DAY_OF_MONTH,1);
+        calendar.set(Calendar.HOUR_OF_DAY, 18); // 控制时
+        calendar.set(Calendar.MINUTE, 22);       // 控制分
         calendar.set(Calendar.SECOND, 0);       // 控制秒
 
         Date time = calendar.getTime();         // 得出执行任务的时间,此处为今天的17：30：00
 
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timer.schedule(new TimerTask() {
             public void run() {
                 System.out.println("-------脚本执行定时任务启动--------");
                 try {
@@ -108,6 +109,19 @@ public class SQLExcuteTask {
 
         return true;
     }
+
+
+    @Override
+    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        System.out.println("-------脚本执行定时任务启动--------");
+        try {
+            doExecute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("-------脚本执行定时任务完成--------");
+    }
+
 
     public static void main(String args[]) {
         System.out.println("启动定时脚本自动执行程序");

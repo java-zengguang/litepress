@@ -35,7 +35,7 @@ public class SVNSimpleGeneraterSQL implements GenerateSQL {
     private String localurl = "D:\\test\\UAT脚本发布提交";
     private SVNClientManager ourClientManager;
     private String name = "zengguang-phq";
-    private String password = "";
+    private String password = "tx3Zak7!";
     private String executeRoot="D:\\test\\SQLExecuteTask\\";
 
 
@@ -62,6 +62,7 @@ public class SVNSimpleGeneraterSQL implements GenerateSQL {
             repositoryURL = SVNURL.parseURIEncoded(svnRootURL);
             SVNURL sunURL = repositoryURL.appendPath(relativePath+ "/"+"提交", true);
             if (SvnUtil.isURLExist(sunURL, name, password)) {
+                SvnUtil.update(ourClientManager, new File(localurl), SVNRevision.HEAD, SVNDepth.INFINITY);
                 SvnUtil.update(ourClientManager, new File(localurl,relativePath+ "/"+"提交"), SVNRevision.HEAD, SVNDepth.INFINITY);
             } else {
                 System.out.println("目录未创建！");
@@ -330,7 +331,7 @@ public class SVNSimpleGeneraterSQL implements GenerateSQL {
     }
 
     @Override
-    public List initLoadSinoSingSQL() {
+    public List initLoadSinoSigSQL() {
         List<SinoSigSQLLogEntity> list=new ArrayList();
         try {
             initSVNLoad();

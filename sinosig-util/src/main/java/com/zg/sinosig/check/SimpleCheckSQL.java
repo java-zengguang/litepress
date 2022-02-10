@@ -118,6 +118,7 @@ public class SimpleCheckSQL implements CheckSQL {
 
 
                         String flag = JDBCUtils.getOneValue("select owner from databasetablestructure d where d.environment  in ('pro')  and d.tablename ='" + tableName + "'");
+                        flag=flag.toLowerCase();
                         if ("".equals(flag) && "alter".equals(opreate) && !sql.contains("constraint")) {
                             sinoSigSQLLogEntity.setErrormassage("检查未通过:生产没有这个表 " + "tablename:" + tableName);
                             return false;

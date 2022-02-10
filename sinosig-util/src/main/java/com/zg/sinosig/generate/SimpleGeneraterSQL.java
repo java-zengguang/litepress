@@ -278,7 +278,7 @@ public class SimpleGeneraterSQL implements GenerateSQL {
     }
 
     @Override
-    public List initLoadSinoSingSQL() {
+    public List initLoadSinoSigSQL() {
         List<SinoSigSQLLogEntity> list=new ArrayList();
         try {
             list=generateSQLFromExcel(file);

@@ -148,7 +148,7 @@ public class SQLModel {
         //uat 执行
         if (true) {
             GenerateSQL generateSQL = new SimpleGeneraterSQL(dirFile, executeBatchNo, "uat");
-            List<SinoSigSQLLogEntity> list = generateSQL.initLoadSinoSingSQL();
+            List<SinoSigSQLLogEntity> list = generateSQL.initLoadSinoSigSQL();
             list = checkSQL.checkSQL(list);
              list= executeSQL.excute(list);
             resultList.addAll(list);
@@ -156,7 +156,7 @@ public class SQLModel {
         //stage 执行
         if (true) {
             GenerateSQL generateSQL = new SimpleGeneraterSQL(dirFile, executeBatchNo, "stage");
-            List<SinoSigSQLLogEntity> list = generateSQL.initLoadSinoSingSQL();
+            List<SinoSigSQLLogEntity> list = generateSQL.initLoadSinoSigSQL();
             list = checkSQL.checkSQL(list);
              list = executeSQL.excute(list);
             resultList.addAll(list);
