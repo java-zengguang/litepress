@@ -3,7 +3,6 @@ package com.zg.task;
 import com.sinosig.saab.util.DateUtil;
 import com.zg.database.util.SvnUtil;
 import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
@@ -13,10 +12,8 @@ import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 import java.io.File;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
+
 
 public class CreateSVNDirTask implements Job{
 
