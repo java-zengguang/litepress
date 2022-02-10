@@ -334,7 +334,7 @@
         <property name="name" type="java.lang.String">SQLExcuteTaskTiming</property>
         <property name="group" type="java.lang.String">1</property>
         <property name="startAt" type="java.lang.String">2022-01-01</property>
-        <property name="cron" type="java.lang.String">0 30 17 * * ?</property>
+        <property name="cron" type="java.lang.String">0 17 30 * * ?</property>
     </bean>
 
 

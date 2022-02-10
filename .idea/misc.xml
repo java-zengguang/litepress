@@ -59,7 +59,6 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/sinosig-util/pom.xml" />
-        <option value="$PROJECT_DIR$/sinosig-util/dependency-reduced-pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
