@@ -74,6 +74,7 @@ public class DatabaseTableStrcutureServiceImpl extends CommitClassHandler implem
                 result.put("生产测试表差异对比",mapper.compareToTable("pro","stage"));
                 result.put("生产测试字段类型对比",mapper.compareToColumn("pro","stage"));
                 result.put("新老核心字段对比",mapper.compareToOld("pro"));
+                result.put("新老核心表字段数对比",mapper.compareToOldTable("pro"));
                 result.put("生产套表拉齐字段类型对比",mapper.compareT("pro"));
                 result.put("生产套表拉齐缺少字段情况",mapper.compareTColumn("pro"));
                 result.put("生产套表缺失情况",mapper.compareTTable("pro"));
