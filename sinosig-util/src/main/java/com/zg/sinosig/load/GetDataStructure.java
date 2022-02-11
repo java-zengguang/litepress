@@ -72,13 +72,13 @@ public  class  GetDataStructure {
         return list;
     }
 
-    public static List<DatabaseTableStructureEntity> getDataStructureByExcel(File dirFile, String database) throws IOException {
+    public static List<DatabaseTableStructureEntity> getDataStructureByExcel(File dirFile) throws IOException {
         List<DatabaseTableStructureEntity> list=new ArrayList<>();
         if(dirFile.exists() && dirFile.isDirectory()){
            File[] files= dirFile.listFiles(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {
-                    if(name.equals(database+".xls")){
+                    if(name.endsWith(".xls")){
                         return true;
                     }else {
                         return false;

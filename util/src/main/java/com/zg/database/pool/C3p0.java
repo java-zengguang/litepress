@@ -15,22 +15,17 @@ import java.sql.SQLException;
 
 public class C3p0 implements DataBaseInte {
 
-    private  static C3p0 c3p0=null;
-    private static DataSource dataSource = null;
 
+    private DataSource dataSource ;
 
-    public  static C3p0 getInstance(OptionDB optionDB){
-        if(c3p0==null){
-            c3p0=new C3p0(optionDB);
-        }
-        return c3p0;
+    public C3p0() {
     }
 
-    private C3p0(OptionDB optionDB){
-        this.dataSource=createCPDS(optionDB);
+    public C3p0(OptionDB optionDB) {
+        this.dataSource = createCPDS(optionDB);
     }
 
-    private  ComboPooledDataSource createCPDS(OptionDB optionDB){
+    private ComboPooledDataSource createCPDS(OptionDB optionDB) {
         ComboPooledDataSource cpds = new ComboPooledDataSource();
         try {
             cpds.setDriverClass(optionDB.getDriver());// loads the driver
@@ -66,30 +61,7 @@ public class C3p0 implements DataBaseInte {
     }
 
 
-    @Override
-    public boolean commit(Connection conn) {
-        try {
-            conn.commit();
-            release(conn);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
-    @Override
-    public boolean release(Connection conn) {
-
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        return true;
-    }
 
 
 }

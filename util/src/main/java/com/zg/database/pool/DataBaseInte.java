@@ -7,9 +7,6 @@ import java.sql.Connection;
  */
 public interface DataBaseInte {
 
-    boolean release(Connection conn);
-
-    boolean commit(Connection conn);
 
     Connection getConnection();
 

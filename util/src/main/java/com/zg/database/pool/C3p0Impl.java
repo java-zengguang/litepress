@@ -26,8 +26,8 @@ public class C3p0Impl implements DataBaseInte {
         C3p0Impl c3p0=c3p0Map.get(dataOptionName);
         if(c3p0==null){
             c3p0=new C3p0Impl(dataOptionName);
+            c3p0Map.put(dataOptionName,c3p0);
         }
-        c3p0Map.put(dataOptionName,c3p0);
         return c3p0;
     }
 
@@ -72,30 +72,6 @@ public class C3p0Impl implements DataBaseInte {
     }
 
 
-    @Override
-    public boolean commit(Connection conn) {
-        try {
-            conn.commit();
-            release(conn);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean release(Connection conn) {
-
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        return true;
-    }
 
 
 }

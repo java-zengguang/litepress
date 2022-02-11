@@ -23,7 +23,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>com.zg.sinosig.SQLModel</mainClass>
+                  <mainClass>com.zg.task.TaskManager</mainClass>
                 </transformer>
               </transformers>
             </configuration>
@@ -33,7 +33,7 @@
     </plugins>
   </build>
   <properties>
-    <nonveh-model.version>22.01.16</nonveh-model.version>
+    <nonveh-model.version>22.01.22</nonveh-model.version>
   </properties>
 </project>
 

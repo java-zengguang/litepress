@@ -10,7 +10,7 @@ import java.util.List;
 
 public class LDCodeMapper {
     public void deletePRPTableLDCode() throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException, ParseException, IOException {
-        JDBCUtils.execute("delete from ldcode where codetype='prp_table' ");
+        JDBCUtils.execute("delete from ldcode where codetype in('prp_table','table_relationship') ");
     }
 
     public void insertLDCode(List<LDCode> ldCodes) throws SQLException, IllegalAccessException {

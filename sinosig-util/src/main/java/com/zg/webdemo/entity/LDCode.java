@@ -13,6 +13,7 @@ public class LDCode extends MainModel {
     public String  codecode;
     public String  codecname;
     public String flag;
+    public String newflag;
 
     public LDCode(){}
     public LDCode(String codetype, String codecode, String codecname, String flag) {
@@ -20,5 +21,14 @@ public class LDCode extends MainModel {
         this.codecode = codecode;
         this.codecname = codecname;
         this.flag = flag;
+
+    }
+
+    public LDCode(String codetype, String codecode, String codecname, String flag, String newflag) {
+        this.codetype = codetype;
+        this.codecode = codecode;
+        this.codecname = codecname;
+        this.flag = flag;
+        this.newflag = newflag;
     }
 }

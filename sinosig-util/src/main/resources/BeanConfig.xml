@@ -216,7 +216,7 @@
     </bean>
 
     <bean id="stage_nvpolicy" class="com.zg.bean.entity.OptionDB">
-        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvpolstage</property>
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvpolsta</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
         <property name="username" type="java.lang.String">nvpolicy</property>
@@ -226,7 +226,7 @@
     </bean>
 
     <bean id="stage_nvproposal" class="com.zg.bean.entity.OptionDB">
-        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprostage</property>
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprosta</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
         <property name="username" type="java.lang.String">nvproposal</property>
@@ -236,7 +236,7 @@
     </bean>
 
     <bean id="stage_nvendorsement" class="com.zg.bean.entity.OptionDB">
-        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprostage</property>
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprosta</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
         <property name="username" type="java.lang.String">nvendorsement</property>
@@ -246,7 +246,7 @@
     </bean>
 
     <bean id="stage_nvportal" class="com.zg.bean.entity.OptionDB">
-        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprostage</property>
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprosta</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
         <property name="username" type="java.lang.String">nvportal</property>
@@ -256,7 +256,7 @@
     </bean>
 
     <bean id="stage_nvfactory" class="com.zg.bean.entity.OptionDB">
-        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvpolstage</property>
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvpolsta</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
         <property name="username" type="java.lang.String">nvfactory</property>
@@ -266,7 +266,7 @@
     </bean>
 
     <bean id="stage_nvsun" class="com.zg.bean.entity.OptionDB">
-        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvsunstage</property>
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvsunsta</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
         <property name="username" type="java.lang.String">nvpolicy</property>
@@ -298,15 +298,44 @@
 
 
     <bean id="test" class="com.zg.bean.entity.OptionDB">
-        <property name="url" type="java.lang.String">jdbc:h2:mem:test;MODE=Oracle;DB_CLOSE_DELAY=-1</property>
+        <property name="url" type="java.lang.String">jdbc:h2:mem:test;MODE=Oracle</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">org.h2.Driver</property>
         <property name="username" type="java.lang.String">su</property>
         <property name="password" type="java.lang.String"></property>
         <property name="DBType" type="java.lang.String">H2</property>
-        <property name="DBPType" type="java.lang.String">ZGDBP</property>
     </bean>
 
+    <bean id="CreateSVNDirTask" class="com.zg.bean.entity.JobEntity">
+        <property name="name" type="java.lang.String">CreateSVNDirTask</property>
+        <property name="group" type="java.lang.String">1</property>
+        <property name="description" type="java.lang.String">自动创建svn目录</property>
+        <property name="className" type="java.lang.String">com.zg.task.CreateSVNDirTask</property>
+    </bean>
+
+    <bean id="CreateSVNDirTiming" class="com.zg.bean.entity.JobTriggerEntity">
+        <property name="jobEntity" ref="CreateSVNDirTask"></property>
+        <property name="name" type="java.lang.String">CreateSVNDirTiming</property>
+        <property name="group" type="java.lang.String">1</property>
+        <property name="startAt" type="java.lang.String">2022-01-01</property>
+        <property name="cron" type="java.lang.String">0 40 9 * * ?</property>
+    </bean>
+
+
+    <bean id="SQLExcuteTask" class="com.zg.bean.entity.JobEntity">
+        <property name="name" type="java.lang.String">SQLExcuteTask</property>
+        <property name="group" type="java.lang.String">1</property>
+        <property name="description" type="java.lang.String">当日uat脚本自动执行</property>
+        <property name="className" type="java.lang.String">com.zg.task.SQLExcuteTask</property>
+    </bean>
+
+    <bean id="SQLExcuteTaskTiming" class="com.zg.bean.entity.JobTriggerEntity">
+        <property name="jobEntity" ref="SQLExcuteTask"></property>
+        <property name="name" type="java.lang.String">SQLExcuteTaskTiming</property>
+        <property name="group" type="java.lang.String">1</property>
+        <property name="startAt" type="java.lang.String">2022-01-01</property>
+        <property name="cron" type="java.lang.String">0 30 17 * * ?</property>
+    </bean>
 
 
     <bean id="optionMGDB" class="com.zg.bean.entity.OptionMGDB">

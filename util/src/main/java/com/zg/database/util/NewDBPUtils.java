@@ -8,6 +8,9 @@ import com.zg.database.pool.DataBaseInte;
 import com.zg.database.pool.ZGDBP;
 import com.zg.init.Config;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,6 +51,23 @@ public class NewDBPUtils {
     }
 
 
+    public static Connection getConnection(String dataSource) throws SQLException, ClassNotFoundException {
+        Connection connection;
+        DataBaseInte databasePool=dataBaseInteMap.get(dataSource);
+        if(databasePool==null){
+            databasePool=  createDataBasePool(dataSource);
+        }
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        if(optionDB.getDBPType()==null||"".equals(optionDB.getDBPType())){
+            Class.forName(optionDB.driver);
+            connection = DriverManager.getConnection(optionDB.url, optionDB.username, optionDB.password);
+            connection.setAutoCommit(false);
+        }else{
+           connection= databasePool.getConnection();
+        }
+
+        return connection;
+    }
 
 
 }

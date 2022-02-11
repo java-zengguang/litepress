@@ -4,6 +4,7 @@ import com.zg.handler.ProxyUtils;
 import com.zg.util.reflect.ClassUtil;
 import com.zg.webdemo.entity.DatabaseTableStructureEntity;
 import com.zg.webdemo.entity.LDCode;
+import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureService;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureServiceImpl;
 import com.zg.webdemo.service.ldcode.LDCodeService;
@@ -11,6 +12,7 @@ import com.zg.webdemo.service.ldcode.LDCodeServiceImpl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,6 +20,10 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
     private String rootDir = "";
     DatabaseTableStrcutureService strcutureService = (DatabaseTableStrcutureService) ProxyUtils.getProxyClass(new DatabaseTableStrcutureServiceImpl(), "insertDataBaseTableStructures,reloadDataBaseTableStructures");
     LDCodeService ldCodeService = (LDCodeService) ProxyUtils.getProxyClass(new LDCodeServiceImpl(), "reLoadPRPTable");
+
+    public SimpleLoadDataBaseStructure(){
+
+    }
 
     public SimpleLoadDataBaseStructure(String rootDir) {
         this.rootDir = rootDir;
@@ -62,9 +68,10 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
                 for (String s : array) {
                     List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure(s, databaseName);
                 }
-                List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs), databaseName);
-                databaseTableStructureEntitieList.addAll(porList);
+
             }
+            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
+            databaseTableStructureEntitieList.addAll(porList);
         }
         //老核心数据加载
         if (true) {
@@ -77,7 +84,7 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
                     databaseTableStructureEntitieList.addAll(stageList);
                 }
             }
-            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs), "切割库");
+            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
             databaseTableStructureEntitieList.addAll(porList);
         }
 
@@ -89,17 +96,66 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
         }
     }
 
+
+
     @Override
-    public boolean loadStructure() throws Exception {
-        return true;
+    public boolean reLoadStructure(List<SinoSigSQLLogEntity> list) throws Exception {
+        Set<String> environmentSet=new HashSet<>();
+     for(SinoSigSQLLogEntity sinoSigSQLLogEntity:list){
+         if("DDL".equals(sinoSigSQLLogEntity.sqltype) &&"3".equals(sinoSigSQLLogEntity.executestate)){
+             environmentSet.add(sinoSigSQLLogEntity.environment) ;
+         }
+     }
+
+     for(String environment:environmentSet){
+         reLoadStructure(environment);
+     }
+        return false;
     }
 
     @Override
-    public boolean reLoadStructure() throws Exception {
+    public boolean loadStructure() throws Exception {
         if (reloadBaseTable() && reloadDatabaseStrucure()) {
             return true;
         } else {
             return false;
         }
     }
+
+
+
+
+    private boolean reLoadStructure(String environment) throws Exception {
+        List<DatabaseTableStructureEntity> list = new ArrayList<>();
+        if("pro".equals(environment) ) { //生产数据库
+            String dirs = rootDir + "\\新一代";
+            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
+            list.addAll(porList);
+        }else if("old".equals(environment) ) { //生产数据库
+            String dirs = rootDir + "\\老核心";
+            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
+            list.addAll(porList);
+        }else if("old_dev".equals(environment) ){  //老核心测试库
+            String[] databaseNames = {"保单库", "投保单库"};
+            for (String databaseName : databaseNames) {
+                list.addAll(GetDataStructure.getDataStructure(environment, databaseName));
+            }
+        }else{ //新一代数据库
+            String[] databaseNames = {"保单库", "投保单库", "批单修改库"};
+            for (String databaseName : databaseNames) {
+                list.addAll(GetDataStructure.getDataStructure(environment, databaseName));
+            }
+        }
+
+
+        strcutureService.reloadDataBaseTableStructures(list,environment);
+        return false;
+    }
+
+
+    public static void main(String args[]) throws Exception {
+        SimpleLoadDataBaseStructure simpleLoadDataBaseStructure=new SimpleLoadDataBaseStructure();
+        simpleLoadDataBaseStructure.reLoadStructure("int");
+    }
+
 }
