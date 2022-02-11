@@ -8,6 +8,7 @@ import com.zg.util.io.POIUtils;
 import com.zg.util.reflect.ClassUtil;
 import com.zg.webdemo.entity.DatabaseTableStructureEntity;
 import com.zg.webdemo.entity.LDCode;
+import com.zg.webdemo.entity.TableRelationShipEntity;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureService;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureServiceImpl;
 import com.zg.webdemo.service.ldcode.LDCodeService;
@@ -37,7 +38,7 @@ public class CompareDataBase {
     List<DatabaseTableStructureEntity> databaseTableStructureEntitieList = new ArrayList<>();
     DatabaseTableStrcutureService strcutureService = (DatabaseTableStrcutureService) ProxyUtils.getProxyClass(new DatabaseTableStrcutureServiceImpl(), "insertDataBaseTableStructures");
     LDCodeService ldCodeService = (LDCodeService) ProxyUtils.getProxyClass(new LDCodeServiceImpl(), "reLoadPRPTable");
-    TableRelationService tableRelationService = (TableRelationService) ProxyUtils.getProxyInterface(TableRelationServiceImpl.class, new CommitInterfaceHandler(new TableRelationServiceImpl(),"reLoadTableRelation"));
+    TableRelationService tableRelationService = (TableRelationService) ProxyUtils.getProxyInterface(TableRelationServiceImpl.class, new CommitInterfaceHandler(new TableRelationServiceImpl(), "reLoadTableRelation,reLoadTableRelationA"));
 
     public CompareDataBase() {
 
@@ -45,48 +46,52 @@ public class CompareDataBase {
     }
 
     private boolean loadBaseTable() {
-
-        String[] packageNames = {"com.sinosig.nonveh.model.agreepolicy.po", "com.sinosig.nonveh.model.agreeproposal.po"
-                , "com.sinosig.nonveh.model.endorse.po", "com.sinosig.nonveh.model.platform.po"
-                , "com.sinosig.nonveh.model.policy.po", "com.sinosig.nonveh.model.project.po", "com.sinosig.nonveh.model.proposal.po"
-                , "com.sinosig.nonveh.model.quotation.po", "com.sinosig.nonveh.model.undwrt.po"};
+        List<TableRelationShipEntity> tableRelationShipEntityList = new ArrayList<>();
         List<LDCode> tableNameList = new ArrayList<>();
-        for (String packageName : packageNames) {
-            Set<Class<?>> classSet = ClassUtil.getClasses(packageName);
-            for (Class baseClass : classSet) {
-                Class superclass = baseClass.getSuperclass();
-                TableName baseTableName = (TableName) baseClass.getAnnotation(TableName.class);
-                String baseTableNameStr = "";
-                String superTableNameStr = "";
-                String suffix="";
-                String prefix="";
-                if (baseTableName!=null) {
-                     baseTableNameStr = baseTableName.value();
-                }
-                if(superclass!=null){
-                    superTableNameStr =superclass.getSimpleName().toUpperCase();
-                    if(superTableNameStr.contains("PRP")){
-                        superTableNameStr=superTableNameStr.replace("PRP","");
-                    }
-                }
-                if(!"".equals(superTableNameStr)) {
-                    prefix = baseTableNameStr.replace(superTableNameStr,"");
-                    if(prefix.contains("ORIGIN")){
-                        suffix = "ORIGIN";
-                        prefix=prefix.replace(suffix,"");
-                    }
-                }
+        if (true) {
+            String[] packageNames = {"com.sinosig.nonveh.model.agreepolicy.po", "com.sinosig.nonveh.model.agreeproposal.po"
+                    , "com.sinosig.nonveh.model.endorse.po", "com.sinosig.nonveh.model.platform.po"
+                    , "com.sinosig.nonveh.model.policy.po", "com.sinosig.nonveh.model.project.po", "com.sinosig.nonveh.model.proposal.po"
+                    , "com.sinosig.nonveh.model.quotation.po", "com.sinosig.nonveh.model.undwrt.po"};
 
-                if(!"".equals(baseTableNameStr) || "".equals(superTableNameStr)) {
-                    tableNameList.add(new LDCode("table_relationship", baseTableNameStr, prefix , superTableNameStr, suffix));
+            for (String packageName : packageNames) {
+                Set<Class<?>> classSet = ClassUtil.getClasses(packageName);
+                for (Class baseClass : classSet) {
+                    Class superclass = baseClass.getSuperclass();
+                    TableName baseTableName = (TableName) baseClass.getAnnotation(TableName.class);
+                    String baseTableNameStr = "";
+                    String superTableNameStr = "";
+                    String suffix = "";
+                    String prefix = "";
+                    if (baseTableName != null) {
+                        baseTableNameStr = baseTableName.value();
+                    }
+                    if (superclass != null) {
+                        superTableNameStr = superclass.getSimpleName().toUpperCase();
+                        if (superTableNameStr.contains("PRP")) {
+                            superTableNameStr = superTableNameStr.replace("PRP", "");
+                        }
+                    }
+                    if (!"".equals(superTableNameStr)) {
+                        prefix = baseTableNameStr.replace(superTableNameStr, "");
+                        if (prefix.contains("ORIGIN")) {
+                            suffix = "ORIGIN";
+                            prefix = prefix.replace(suffix, "");
+                        }
+                    }
+
+                    if (!"".equals(baseTableNameStr) || "".equals(superTableNameStr)) {
+                        tableNameList.add(new LDCode("table_relationship", baseTableNameStr, prefix, superTableNameStr, suffix));
+                    }
                 }
             }
         }
 
 
-        String packageName = "com.sinosig.nonveh.model.prpbase";
-        Set<Class<?>> classSet = ClassUtil.getClasses(packageName);
-        for (Class classes : classSet) {
+        if (true) {
+            String packageName = "com.sinosig.nonveh.model.prpbase";
+            Set<Class<?>> classSet = ClassUtil.getClasses(packageName);
+            /*        for (Class classes : classSet) {
             String baseTableName = classes.getSimpleName();
             String baseName = baseTableName.replaceFirst("Prp", "");
             tableNameList.add(new LDCode("prp_table", "PRPC" + baseName.toUpperCase() + "ORIGIN", "保单库", baseName.toUpperCase()));
@@ -97,11 +102,26 @@ public class CompareDataBase {
             tableNameList.add(new LDCode("prp_table", "PRPCOPY" + baseName.toUpperCase(), "批单修改库", baseName.toUpperCase()));
             tableNameList.add(new LDCode("prp_table", "PRPP" + baseName.toUpperCase(), "批单修改库", baseName.toUpperCase()));
             tableNameList.add(new LDCode("prp_table", "PRPT" + baseName.toUpperCase(), "投保单库", baseName.toUpperCase()));
+        }*/
+            for (Class classes : classSet) {
+                String baseTableName = classes.getSimpleName();
+                String baseName = baseTableName.replaceFirst("Prp", "");
+                tableRelationShipEntityList.add(new TableRelationShipEntity("PRPC" + baseName.toUpperCase() + "ORIGIN", baseName.toUpperCase(), "保单库", "PRPC", "ORIGIN", "baseModel"));
+                tableRelationShipEntityList.add(new TableRelationShipEntity("PRPC" + baseName.toUpperCase(), baseName.toUpperCase(), "保单库", "PRPC", "", "baseModel"));
+                tableRelationShipEntityList.add(new TableRelationShipEntity("PRPCOPY" + baseName.toUpperCase(), baseName.toUpperCase(), "保单库", "PRPCOPY", "", "baseModel"));
+                tableRelationShipEntityList.add(new TableRelationShipEntity("PRPP" + baseName.toUpperCase(), baseName.toUpperCase(), "保单库", "PRPP", "", "baseModel"));
+                tableRelationShipEntityList.add(new TableRelationShipEntity("PRPCP" + baseName.toUpperCase(), baseName.toUpperCase(), "批单修改库", "PRPCP", "", "baseModel"));
+                tableRelationShipEntityList.add(new TableRelationShipEntity("PRPCOPY" + baseName.toUpperCase(), baseName.toUpperCase(), "批单修改库", "PRPCOPY", "", "baseModel"));
+                tableRelationShipEntityList.add(new TableRelationShipEntity("PRPP" + baseName.toUpperCase(), baseName.toUpperCase(), "批单修改库", "PRPP", "", "baseModel"));
+                tableRelationShipEntityList.add(new TableRelationShipEntity("PRPT" + baseName.toUpperCase(), baseName.toUpperCase(), "投保单库", "PRPT", "", "baseModel"));
+
+            }
         }
         try {
-           // ldCodeService.reLoadPRPTable(tableNameList);
+            tableRelationService.reLoadTableRelationA(tableNameList);
+            tableRelationService.reLoadTableRelation(tableRelationShipEntityList);
+            // ldCodeService.reLoadPRPTable(tableNameList);
 
-            tableRelationService.reLoadTableRelation(tableNameList);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -123,7 +143,7 @@ public class CompareDataBase {
                     List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure(s, databaseName);
                     databaseTableStructureEntitieList.addAll(stageList);
                 }
-             //   sqlList = GetDataStructure.readFileToSqlList(new File(dirs), databaseName);
+                //   sqlList = GetDataStructure.readFileToSqlList(new File(dirs), databaseName);
             }
             List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
             databaseTableStructureEntitieList.addAll(porList);
@@ -244,9 +264,9 @@ public class CompareDataBase {
 
         CompareDataBase compareDataBase = new CompareDataBase();
         try {
-             compareDataBase.loadBaseTable();
-             compareDataBase.load();
-             compareDataBase.getCompareExcel();
+           compareDataBase.loadBaseTable();
+            /*   compareDataBase.load();*/
+            compareDataBase.getCompareExcel();
         } catch (Exception e) {
             e.printStackTrace();
         }

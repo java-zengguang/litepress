@@ -19,6 +19,6 @@ public class TableRelationMapper {
     }
 
     public List<TableRelationShipEntity> getTableReationFromLDcode() throws Exception {
-      return   JDBCUtils.select("select t1.codecode as 'tablename',t1.flag as 'basetablename',t1.codecname as 'prefix' ,t1.newflag as 'suffix' ,t2.codecname as 'databasename' from (select *from ldcode l where l.codetype ='table_relationship' ) t1,(select *from ldcode l where l.codetype ='prefix') t2 where t2.codecode=t1.codecname and t1.newflag=t2.flag  ",TableRelationShipEntity.class);
+      return   JDBCUtils.select("select t1.codecode as 'tablename',t1.flag as 'basetablename',t1.codecname as 'prefix' ,t1.newflag as 'suffix' ,t2.codecname as 'databasename','realizationModel' as 'type' from (select *from ldcode l where l.codetype ='table_relationship' ) t1,(select *from ldcode l where l.codetype ='prefix') t2 where t2.codecode=t1.codecname and t1.newflag=t2.flag  ",TableRelationShipEntity.class);
     }
 }
