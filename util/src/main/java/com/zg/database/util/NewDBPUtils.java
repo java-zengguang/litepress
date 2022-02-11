@@ -59,6 +59,7 @@ public class NewDBPUtils {
         }
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         if(optionDB.getDBPType()==null||"".equals(optionDB.getDBPType())){
+            System.out.println("使用JDBC链接");
             Class.forName(optionDB.driver);
             connection = DriverManager.getConnection(optionDB.url, optionDB.username, optionDB.password);
             connection.setAutoCommit(false);

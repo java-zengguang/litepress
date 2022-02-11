@@ -1,22 +1,29 @@
 package com.zg.sinosig.check;
 
+import com.zg.handler.CommitInterfaceHandler;
 import com.zg.handler.ProxyUtils;
 import com.zg.util.sinosing.NewJDBCUtil;
 import com.zg.webdemo.entity.DatabaseTableStructureEntity;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureService;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureServiceImpl;
+import com.zg.webdemo.service.sinosigsqllog.SinoSigSQLLogService;
+import com.zg.webdemo.service.sinosigsqllog.SinoSigSQLLogServiceImpl;
 
 import java.sql.SQLException;
 import java.util.*;
 
-public class VerificationCheck {
+public class VerificationCheck implements CheckSQL {
     private NewJDBCUtil jdbcUtil;
     DatabaseTableStrcutureService strcutureService = (DatabaseTableStrcutureService) ProxyUtils.getProxyClass(new DatabaseTableStrcutureServiceImpl(), "insertDataBaseTableStructures,reloadDataBaseTableStructures");
+    private SinoSigSQLLogService sinoSigSQLLogService = (SinoSigSQLLogService) ProxyUtils.getProxyInterface(SinoSigSQLLogServiceImpl.class, new CommitInterfaceHandler(new SinoSigSQLLogServiceImpl(), "insertSinoSingSQLLog,updateStateSinoSingSQLLog"));
 
+    public VerificationCheck() {
+        this.jdbcUtil = new NewJDBCUtil("test");
+    }
 
     public VerificationCheck(String dataSource) {
-        this.jdbcUtil = new NewJDBCUtil("test");
+        this.jdbcUtil = new NewJDBCUtil(dataSource);
     }
 
     private List<String> getInitSQL(SinoSigSQLLogEntity sinoSigSQLLogEntity) throws Exception {
@@ -63,9 +70,6 @@ public class VerificationCheck {
             String opreate = list.get(0);
             String opreateObject = list.get(1);
             String tableName = list.get(2);
-      /*      if (tableName.contains(".")) {
-                tableName = tableName.substring(tableName.indexOf(".") + 1, tableName.length());
-            }*/
             if (opreate.trim().contains("alter") && "table".equals(opreateObject.trim())) {
                 tableNameSet.add(tableName);
             }
@@ -103,9 +107,7 @@ public class VerificationCheck {
     }
 
 
-
-
-    private boolean initTestEnvironment(List<SinoSigSQLLogEntity> list){
+    private boolean initTestEnvironment(List<SinoSigSQLLogEntity> list) {
 
 
         try {
@@ -118,14 +120,6 @@ public class VerificationCheck {
             initSQLList.add(" create SCHEMA nvpolicy ");
             initSQLList.add(" create SCHEMA nvproposal ");
             initSQLList.add(" create SCHEMA nvendorsement ");
-            //初始化套表关系
-/*            initSQLList.add(" CREATE TABLE `ldcode` (\n" +
-                    "  `codetype` varchar(20) NOT NULL,\n" +
-                    "  `codecode` varchar(100) NOT NULL,\n" +
-                    "  `codecname` varchar(600) NOT NULL,\n" +
-                    "  `flag` varchar(100) DEFAULT NULL,\n" +
-                    "  PRIMARY KEY (`codetype`,`codecode`,`codecname`)\n" +
-                    ") ");*/
 
             for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
                 //模拟环境复制对象
@@ -140,7 +134,7 @@ public class VerificationCheck {
 
             }
 
-            jdbcUtil.batchSql(initSQLList,true);
+            jdbcUtil.batchSql(initSQLList, true);
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -154,91 +148,120 @@ public class VerificationCheck {
     public List<SinoSigSQLLogEntity> checkDDL(List<SinoSigSQLLogEntity> list) throws Exception {
         //将所有脚本在模拟环境运行后，可运行检查，做逻辑性检查，套表检查，按批次做
 
-            String errorMessage="";
-            String stageFlag="3";
+        String errorMessage = "";
+        String stageFlag = "3";
 
-            if(!initTestEnvironment(list)){
-                errorMessage="环境初始化失败";
-                stageFlag="-1";
-            }else{
+        if (!initTestEnvironment(list)) {
+            errorMessage = "环境初始化失败";
+            stageFlag = "-1";
+        } else {
 
-                for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
-                    List<String> executeSQLList = formatSQL(sinoSigSQLLogEntity.basesql);
-                    try {
-                        jdbcUtil.batchSql(executeSQLList, true);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        stageFlag="-1";
-                        String message=e.getMessage().replaceAll("'","");
-                        if (message.length()>100){
-                            message=message.substring(0,100);
-                        }
-                        sinoSigSQLLogEntity.setErrormassage("脚本执行错误"+message);
-                        continue;
+            for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
+                List<String> executeSQLList = formatSQL(sinoSigSQLLogEntity.basesql);
+                try {
+                    jdbcUtil.batchSql(executeSQLList, true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    stageFlag = "-1";
+                    String message = e.getMessage().replaceAll("'", "");
+                    if (message.length() > 100) {
+                        message = message.substring(0, 100);
                     }
+                    sinoSigSQLLogEntity.setErrormassage("脚本执行错误" + message);
+                    continue;
                 }
-
-                //加载表结构到本地Mysql
-
-                String sql="select\n" +
-                        "\t(case\n" +
-                        "\t\twhen a.TABLE_SCHEMA = 'NVPROPOSAL' then '投保单库'\n" +
-                        "\t\twhen a.TABLE_SCHEMA = 'NVENDORSEMENT' then '批单修改库'\n" +
-                        "\t\twhen a.TABLE_SCHEMA = 'NVPOLICY' then ' 保单库'\n" +
-                        "\t\telse a.TABLE_SCHEMA end ) as \"databaseName\",\n" +
-                        "\ta.TABLE_SCHEMA as \"owner\",\n" +
-                        "\t'test' as \"environment\" ,\n" +
-                        "\ta.TABLE_NAME as \"tableName\" ,\n" +
-                        "\t(a.data_type||CHARACTER_MAXIMUM_LENGTH||NUMERIC_PRECISION||NUMERIC_SCALE) as \"columnType\",\n" +
-                        "\ta.COLUMN_NAME as \"columnName\" ,\n" +
-                        "\t'' as \"nullAble\",\n" +
-                        "\t'' as \"dataDefault\",\n" +
-                        "\t'' as \"comments\"\n" +
-                        "from\n" +
-                        "\tINFORMATION_SCHEMA.COLUMNS a"+
-                        " where a.TABLE_SCHEMA  in ('NVENDORSEMENT','NVPROPOSAL','NVPOLICY')  ";
-                List<DatabaseTableStructureEntity> list1= jdbcUtil.select(sql,DatabaseTableStructureEntity.class);
-                strcutureService.reloadDataBaseTableStructures(list1,"test");
-                List<Map> checkResult=new ArrayList<>();
-
-                checkResult=strcutureService.getCompareResult("test","CT");
-                if(checkResult!=null&&checkResult.size()>1){//里面自带表头
-                    errorMessage=errorMessage+"当前批次套表字段类型检查不通过;";
-                    errorMessage=errorMessage+checkResult;
-                    stageFlag="-1";
-                }
-                checkResult=strcutureService.getCompareResult("test","CTC");
-                if(checkResult!=null&&checkResult.size()>1){//自带表头，所以>1
-                    errorMessage=errorMessage+"当前批次套表缺少字段检查不通过;";
-                    errorMessage=errorMessage+checkResult;
-                    stageFlag="-1";
-                }
-
-/*        checkResult=strcutureService.getCompareResult("test","CTT");
-        if(checkResult!=null&&checkResult.size()>0){
-            errorMessage=errorMessage+"套表缺失检查不通过;";
-        }*/
-
             }
 
+            //加载表结构到本地Mysql
 
-            for(SinoSigSQLLogEntity sinoSigSQLLogEntity :list){
-                sinoSigSQLLogEntity.setErrormassage(errorMessage);
-                sinoSigSQLLogEntity.executestate=stageFlag;
+            String sql = "select\n" +
+                    "\t(case\n" +
+                    "\t\twhen a.TABLE_SCHEMA = 'NVPROPOSAL' then '投保单库'\n" +
+                    "\t\twhen a.TABLE_SCHEMA = 'NVENDORSEMENT' then '批单修改库'\n" +
+                    "\t\twhen a.TABLE_SCHEMA = 'NVPOLICY' then ' 保单库'\n" +
+                    "\t\telse a.TABLE_SCHEMA end ) as \"databaseName\",\n" +
+                    "\ta.TABLE_SCHEMA as \"owner\",\n" +
+                    "\t'test' as \"environment\" ,\n" +
+                    "\ta.TABLE_NAME as \"tableName\" ,\n" +
+                    "\t(a.data_type||CHARACTER_MAXIMUM_LENGTH||NUMERIC_PRECISION||NUMERIC_SCALE) as \"columnType\",\n" +
+                    "\ta.COLUMN_NAME as \"columnName\" ,\n" +
+                    "\t'' as \"nullAble\",\n" +
+                    "\t'' as \"dataDefault\",\n" +
+                    "\t'' as \"comments\"\n" +
+                    "from\n" +
+                    "\tINFORMATION_SCHEMA.COLUMNS a" +
+                    " where a.TABLE_SCHEMA  in ('NVENDORSEMENT','NVPROPOSAL','NVPOLICY')  ";
+            List<DatabaseTableStructureEntity> list1 = jdbcUtil.select(sql, DatabaseTableStructureEntity.class);
+            strcutureService.reloadDataBaseTableStructures(list1, "test");
+            List<Map> checkResult = new ArrayList<>();
+
+            checkResult = strcutureService.getCompareResult("test", "CT");
+            if (checkResult != null && checkResult.size() > 1) {//里面自带表头
+                errorMessage = errorMessage + "当前批次套表字段类型检查不通过;";
+                errorMessage = errorMessage + checkResult;
+                stageFlag = "-1";
             }
-            //回滚环境，删除数据库
-            List<String> initSQLList = new ArrayList();
-            //初始化环境
-            //初始化模拟环境数据库，创建三个模拟库 强制删除
-            initSQLList.add(" drop SCHEMA nvpolicy CASCADE");
-            initSQLList.add(" drop SCHEMA nvproposal CASCADE");
-            initSQLList.add(" drop SCHEMA nvendorsement CASCADE");
-            jdbcUtil.batchSql(initSQLList,true);
+            checkResult = strcutureService.getCompareResult("test", "CTC");
+            if (checkResult != null && checkResult.size() > 1) {//自带表头，所以>1
+                errorMessage = errorMessage + "当前批次套表缺少字段检查不通过;";
+                errorMessage = errorMessage + checkResult;
+                stageFlag = "-1";
+            }
 
-            //最后提交，H2数据库消失
-            jdbcUtil.commit();
-            jdbcUtil.release();
-            return list;
+            checkResult = strcutureService.getCompareResult("test", "CTT");
+            if (checkResult != null && checkResult.size() > 0) {
+                errorMessage = errorMessage + "套表缺失检查不通过;";
+            }
+
+        }
+
+
+        for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
+            sinoSigSQLLogEntity.setErrormassage(errorMessage);
+            sinoSigSQLLogEntity.executestate = stageFlag;
+        }
+        //回滚环境，删除数据库
+        List<String> initSQLList = new ArrayList();
+        //初始化环境
+        //初始化模拟环境数据库，创建三个模拟库 强制删除
+        initSQLList.add(" drop SCHEMA nvpolicy CASCADE");
+        initSQLList.add(" drop SCHEMA nvproposal CASCADE");
+        initSQLList.add(" drop SCHEMA nvendorsement CASCADE");
+        jdbcUtil.batchSql(initSQLList, true);
+
+        //最后提交，H2数据库消失
+        jdbcUtil.commit();
+        jdbcUtil.release();
+        return list;
     }
+
+    @Override
+    public List<SinoSigSQLLogEntity> checkSQL(List<SinoSigSQLLogEntity> list) throws Exception {
+        //分组+单个校验
+        List<SinoSigSQLLogEntity> ddlList=new ArrayList<>();
+        List<SinoSigSQLLogEntity> dmlList=new ArrayList<>();
+
+        for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
+            //初步校验失败的不进入分组校验
+           if("3".equals(sinoSigSQLLogEntity)){
+                //分组
+                if ("DDL".equals(sinoSigSQLLogEntity.getSqltype())) {
+                    ddlList.add(sinoSigSQLLogEntity);
+                } else if("DML".equals(sinoSigSQLLogEntity.getSqltype())){
+                    dmlList.add(sinoSigSQLLogEntity);
+                }
+            }
+        }
+        if(ddlList!=null&&ddlList.size()>0) {
+            checkDDL(ddlList);
+        }
+
+        for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
+            sinoSigSQLLogService.updateStateSinoSingSQLLog(sinoSigSQLLogEntity);
+        }
+
+        return list;
+    }
+
 
 }

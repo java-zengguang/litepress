@@ -13,8 +13,6 @@ import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureServi
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureServiceImpl;
 import com.zg.webdemo.service.ldcode.LDCodeService;
 import com.zg.webdemo.service.ldcode.LDCodeServiceImpl;
-import com.zg.webdemo.service.sinosigsqllog.SinoSigSQLLogService;
-import com.zg.webdemo.service.sinosigsqllog.SinoSigSQLLogServiceImpl;
 import com.zg.webdemo.service.tableRelation.TableRelationService;
 import com.zg.webdemo.service.tableRelation.TableRelationServiceImpl;
 import jxl.read.biff.BiffException;
