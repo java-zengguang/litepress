@@ -135,6 +135,21 @@ public class DatabaseTableStructureMapper {
         return JDBCUtils.selectToMapList(deffSQL);
     }
 
+    public List<Map> compareToOldTable(String environment) throws SQLException {
+        String deffSQL="select '新库','新表','新表字段数','老库','老表','老表字段数' from  dual union \n"; //表头
+         deffSQL=deffSQL+"select t3.PDB,t3.PTB,CONCAT(t3.PCN,''),t3.ODB,t3.OTB,CONCAT(t3.OCN,'') from  (\n" +
+                 "select t1.databasename as 'PDB',t1.tablename as 'PTB',t1.columncount as 'PCN',  t2.databasename as 'ODB',t2.tablename as 'OTB',t2.columncount as 'OCN' from \n" +
+                "(select d.databaseName ,d.tablename,count(1) as columncount from databasetablestructure d where d.environment ='"+environment+"' and d.databaseName <>'' group by d.databaseName ,d.tablename ) t1,\n" +
+                "(select d.databaseName ,d.tablename,count(1) as columncount from databasetablestructure d where d.environment ='old' and d.databaseName <>'' group by d.databaseName ,d.tablename) t2\n" +
+                "where   t1.tablename=t2.tablename and t1.columncount<> t2.columncount\n" +
+                "union all\n" +
+                "select '','',0,d.databaseName,d.tablename,count(1) from databasetablestructure d where d.environment ='"+environment+"' \n" +
+                "and  not exists  (select 1 from databasetablestructure d2 where d2.environment ='old' and  d2.tablename=d.tablename )  group by d.databaseName ,d.tablename\n" +
+                "union all\n" +
+                "select d.databaseName,d.tablename,count(1),'','',0 from databasetablestructure d where d.environment ='old'  \n" +
+                "and  not exists  (select 1 from databasetablestructure d2 where d2.environment ='"+environment+"' and  d2.tablename=d.tablename )  group by d.databaseName ,d.tablename ) t3";
+        return JDBCUtils.selectToMapList(deffSQL);
+    }
     public List<Map> compareToOld(String environment) throws SQLException {
         String deffSQL="select '新库','新表','新字段名','新字段类型','老库','老表','老字段名','老字段类型' from  dual union \n";
          deffSQL=deffSQL+"select t1.databasename as 'PDB',t1.tablename as 'PTB',t1.columnname as 'PCN',t1.columntype as 'PCT', t2.databasename as 'ODB',t2.tablename as 'OTB',t2.columnname as 'OCN',t2.columntype as 'OCT' from \n" +
@@ -153,14 +168,20 @@ public class DatabaseTableStructureMapper {
 
     public List<Map> compareT(String environment) throws SQLException {
 
-        String deffSQL="select 'SDN','STN','SCN','SCT','TDN','TTN','TCN','TCT' from  dual union \n";
-         deffSQL=deffSQL+"select t1.databasename as 'SDN',t1.tablename as 'STN',t1.columnname as 'SCN',t1.columntype as 'SCT' ,t2.databasename as 'TDN',t2.tablename as 'TTN',t2.columnname as 'TCN',t2.columntype as 'TCT' from \n" +
+      /*   String deffSQL="select 'SDN','STN','SCN','SCT','TDN','TTN','TCN','TCT' from  dual union \n";
+        deffSQL=deffSQL+"select t1.databasename as 'SDN',t1.tablename as 'STN',t1.columnname as 'SCN',t1.columntype as 'SCT' ,t2.databasename as 'TDN',t2.tablename as 'TTN',t2.columnname as 'TCN',t2.columntype as 'TCT' from \n" +
                 "(select distinct REPLACE(REPLACE(REPLACE( REPLACE( REPLACE(t.tablename,'PRPCOPY',''),'PRPCP',''),'PRPP',''),'PRPT',''),'PRPC','') as x,\n" +
                 "t.databasename,t.tablename,t.columnname,t.columntype  from (select * from databasetablestructure d where d.environment ='"+environment+"' and d.databaseName in ('保单库','投保单库','批单修改库') and d.tablename REGEXP  'prp[ctp].*') t) t1\n" +
                 "inner join \n" +
                 "(select distinct REPLACE(REPLACE(REPLACE( REPLACE( REPLACE(t.tablename,'PRPCOPY',''),'PRPCP',''),'PRPP',''),'PRPT',''),'PRPC','') as x,\n" +
                 "t.databasename,t.tablename,t.columnname,t.columntype  from (select * from databasetablestructure d where d.environment ='"+environment+"' and d.databaseName in ('保单库','投保单库','批单修改库') and d.tablename REGEXP  'prp[ctp].*') t) t2\n" +
-                "on t2.x=t1.x and t1.columnname=t2.columnname  where 1=1 and t1.columntype<>t2.columntype  ";
+                "on t2.x=t1.x and t1.columnname=t2.columnname  where 1=1 and t1.columntype<>t2.columntype  ";*/
+        String deffSQL="select 'SDB','STB','SCN','SCT','TDB','TTB','TCN','TCT' from  dual union \n";
+        deffSQL=deffSQL+"select t1.databasename as 'SDB',t1.tablename as 'STB',t1.columnname as 'SCN',t1.columntype as 'SCT',t2.databasename as 'TDB',t2.tablename as 'TTB',t2.columnname as 'TCN',t2.columntype as 'TCT' from\n" +
+                "(select t.basetablename,d.* from databasetablestructure d ,(select *from tablerelationship l where l.`type` ='baseModel' ) t where d.environment ='"+environment+"' and   d.databaseName =t.databaseName and   d.tableName =t.tableName ) t1,\n" +
+                "(select  t.basetablename,d.*  from databasetablestructure d ,(select *from tablerelationship l where l.`type` ='baseModel') t where  d.environment ='"+environment+"' and   d.databaseName =t.databasename and   d.tableName =t.tableName ) t2\n" +
+                "where t1.basetablename=t2.basetablename and t1.columnname=t2.columnname and t1.columntype<>t2.columntype";
+
         return JDBCUtils.selectToMapList(deffSQL);
 
     }
@@ -168,23 +189,36 @@ public class DatabaseTableStructureMapper {
     //获取套表里缺少的字段
     public List<Map> compareTColumn(String environment) throws SQLException {
 
-        String deffSQL=" select '表名','库名','字段名','字段类型' from  dual union \n ";
-        deffSQL=deffSQL+" select *from (select distinct CONCAT(t2.codecode,t1.x) as tablename,t2.codecname as databasename,t1.columnname,t1.columntype from (select distinct REPLACE(REPLACE(REPLACE( REPLACE( REPLACE(t.tablename,'PRPCOPY',''),'PRPCP',''),'PRPP',''),'PRPT',''),'PRPC','') as x,t.columnname,t.columntype  \n" +
+/*        String deffSQL=" select '表名','库名','字段名','字段类型' from  dual union \n ";
+        deffSQL=deffSQL+" select *from (select distinct CONCAT(t2.codecode,t1.x) as tablename,t2.codecname as databasename,t1.columnname,t1.columntype from (select distinct REPLACE(REPLACE(REPLACE(REPLACE( REPLACE( REPLACE(t.tablename,'PRPCOPY',''),'PRPCP',''),'PRPP',''),'PRPT',''),'PRPC',''),'ORIGIN','') as x,t.columnname,t.columntype  \n" +
                 "from (select * from databasetablestructure d where d.environment ='"+environment+"' and d.databaseName in ('保单库','投保单库','批单修改库') and d.tablename REGEXP  'prp[ctp].*') t ) t1\n" +
                 "cross join (select codecode,codecname from ldcode where codetype='prefix') t2 ) t3 where \n" +
                 "exists (select 1 from databasetablestructure d2 where d2.environment ='"+environment+"' and d2.databaseName =t3.databaseName and d2.tablename =t3.tablename) \n" +
                 "and not exists (select 1 from databasetablestructure d2 where d2.environment ='"+environment+"' and d2.databaseName =t3.databaseName and d2.tablename =t3.tablename and t3.columnname=d2.columnname ) ";
+       */
+
+        String deffSQL=" select '表名','库名','字段名','字段类型' from  dual union \n ";
+        deffSQL=deffSQL+" \n" +
+                "select tablename,databasename,columnname,columntype from  (select t1.basetablename,d1.columnname,max(d1.columntype) as 'columntype' from (select *from tablerelationship t where t.`type` ='baseModel' )t1 ,(select *from databasetablestructure d where d.environment ='"+environment+"') d1\n" +
+                "where  t1.tablename=d1.tablename group by  t1.basetablename,d1.columnname )t2,(select *from tablerelationship t where t.`type` ='baseModel' )t3  where 1=1 and t2.basetablename=t3.basetablename\n" +
+                "and exists (select *from databasetablestructure d2 where d2.environment ='"+environment+"' and d2.databaseName =t3.databasename and d2.tableName =t3.tablename )\n" +
+                "and not exists (select *from databasetablestructure d2 where d2.environment ='"+environment+"' and d2.databaseName =t3.databasename and d2.tableName =t3.tablename and d2.columnName = t2.columnname)";
+
+
         return JDBCUtils.selectToMapList(deffSQL);
 
     }
 
 
     public List<Map> compareTTable(String environment) throws SQLException {
-        String deffSQL=" select '库名','表名','生产库名','生产表名' from  dual union \n ";
+/*        String deffSQL=" select '库名','表名','生产库名','生产表名' from  dual union \n ";
         deffSQL=deffSQL+" select codecname ,codecode ,databasename,tablename from \n" +
                 "(select *from ldcode l where l.codetype ='prp_table' ) t1 left join \n" +
                 "(select distinct databaseName ,tablename from databasetablestructure d2 where d2.environment ='"+environment+"' ) t2\n" +
-                "on t2.databaseName =t1.codecname and t2.tablename =t1.codecode where t2.databasename is null ";
+                "on t2.databaseName =t1.codecname and t2.tablename =t1.codecode where t2.databasename is null ";*/
+        String deffSQL=" select '套表名','库名','表名' from  dual union \n ";
+        deffSQL=deffSQL+" select t.basetablename ,t.databasename ,t.tablename from tablerelationship t where t.`type` ='baseModel' \n" +
+                "and not exists (select 1 from databasetablestructure d where d.environment ='"+environment+"' and d.databaseName =t.databasename and d.tableName =t.tablename ) ";
         return JDBCUtils.selectToMapList(deffSQL);
     }
 

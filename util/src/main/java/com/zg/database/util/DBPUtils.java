@@ -3,9 +3,11 @@ package com.zg.database.util;
 import com.zg.bean.entity.OptionDB;
 import com.zg.bean.factory.BeanFactory;
 import com.zg.database.pool.C3p0;
+import com.zg.database.pool.C3p0Impl;
 import com.zg.database.pool.DataBaseInte;
 import com.zg.database.pool.ZGDBP;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +23,7 @@ public class DBPUtils {
         DataBaseInte databasePool=null;
         OptionDB optionDB = (OptionDB) BeanFactory.createBean(dataSource);
         if ("C3p0".equals(optionDB.getDBPType())) {
-            databasePool= C3p0.getInstance(optionDB);
+            databasePool= new C3p0(optionDB);
         }else if ("ZGDBP".equals(optionDB.getDBPType())) {
             databasePool = ZGDBP.getInstance(optionDB);
         }else{
@@ -44,6 +46,17 @@ public class DBPUtils {
         }
         return databasePool;
     }
+
+    public static Connection getConnection(String dataSource){
+        DataBaseInte databasePool=dataBaseInteMap.get(dataSource);
+        if(databasePool==null){
+            databasePool=  createDataBasePool(dataSource);
+
+        }
+        Connection connection= databasePool.getConnection();
+        return connection;
+    }
+
 
 
 

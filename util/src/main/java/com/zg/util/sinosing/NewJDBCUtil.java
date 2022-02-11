@@ -23,9 +23,8 @@ import java.util.*;
 public class NewJDBCUtil {
     private final Logger LOGGER = LoggerFactory.getLogger(NewJDBCUtil.class);
     private String dataSource;
-    private DataBaseInte dataBasePool;
+
     private Connection conn;
-    private ThreadLocal<Connection> threadLocal = new ThreadLocal();
 
     public NewJDBCUtil(String dataSource) {
         this.dataSource = dataSource;
@@ -33,24 +32,20 @@ public class NewJDBCUtil {
     }
 
 
+
     private boolean init() {
-        if (dataBasePool == null) {
-            dataBasePool = NewDBPUtils.getInstance(dataSource);
-        }
-        if (conn == null) {
-            conn = getConnection();
+        if(conn==null) {
+            try {
+                conn =NewDBPUtils.getConnection(dataSource);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
         return true;
     }
 
-    public Connection getConnection() {
-        Connection conn = threadLocal.get();
-        if (conn == null) {
-            conn = dataBasePool.getConnection();
-            threadLocal.set(conn);
-        }
-        return conn;
-    }
 
     public int insertTable(Object model) throws SQLException, IllegalAccessException {
         List list = new ArrayList();
@@ -74,6 +69,9 @@ public class NewJDBCUtil {
         String memS = "";
         String valS = "";
         Field[] modelFields = modelClass.getFields();
+        if(conn==null){
+            init();
+        }
         Statement stmt = conn.createStatement();
         LOGGER.info("-----------------start batch-----------");
         for (Object model : modelList) {
@@ -126,6 +124,7 @@ public class NewJDBCUtil {
     //获取表格信息
     public Map<String, String> tableInfo(String sql) throws SQLException {
         Map map = new HashMap();
+        init();
         PreparedStatement pstmt = conn.prepareStatement(sql);
         ResultSet rs;
         rs = pstmt.executeQuery();
@@ -147,6 +146,7 @@ public class NewJDBCUtil {
         // 记录error级别的信息
         LOGGER.info(sql);
         List list = new ArrayList();
+        init();
         PreparedStatement pstmt = conn.prepareStatement(sql);
         ResultSet rs = pstmt.executeQuery();
         ResultSetMetaData rsmd = rs.getMetaData();
@@ -168,15 +168,16 @@ public class NewJDBCUtil {
     }
 
     //转义特殊字符
-    private String formatSQL(String sql){
-        sql=sql.replaceAll("'","\'");
-        sql=sql.replaceAll("\"","\"");
+    private String formatSQL(String sql) {
+        sql = sql.replaceAll("'", "\'");
+        sql = sql.replaceAll("\"", "\"");
         return sql;
     }
 
     //执行增删改
     public Integer operation(String sql) throws SQLException {
         LOGGER.info(sql);
+        init();
         PreparedStatement pstmt = conn.prepareStatement(sql);
         int x = pstmt.executeUpdate();
         pstmt.close();
@@ -215,6 +216,7 @@ public class NewJDBCUtil {
 
         int i[] = null;
         Statement stmt;
+        init();
         stmt = conn.createStatement();
         LOGGER.info("--------------start batch-----------");
         for (String sql : sqlList) {
@@ -243,15 +245,14 @@ public class NewJDBCUtil {
         return list;
     }
 
-    public void release() {
-        dataBasePool.release(conn);
-        threadLocal.remove();
+    public void release() throws SQLException {
+
+        conn.close();
     }
 
-    public boolean commit() {
+    public boolean commit() throws SQLException {
 
-        dataBasePool.commit(conn);
-        release();
+        conn.commit();
         return true;
     }
 
@@ -266,17 +267,11 @@ public class NewJDBCUtil {
     }
 
 
-    public void colseConnect() {
-        try {
-            conn.close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
 
 
     public List<String> selectOneColList(String sql) throws SQLException {
         List list = new ArrayList();
+        init();
         PreparedStatement pstmt = conn.prepareStatement(sql);
         ResultSet rs;
         rs = pstmt.executeQuery();
@@ -286,7 +281,6 @@ public class NewJDBCUtil {
         }
         rs.close();
         pstmt.close();
-        conn.close();
         //dataBasePool.release(conn);
         return list;
     }

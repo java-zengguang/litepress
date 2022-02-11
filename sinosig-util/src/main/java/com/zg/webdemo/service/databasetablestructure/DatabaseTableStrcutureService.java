@@ -18,6 +18,5 @@ public interface DatabaseTableStrcutureService {
     Map<String,List<Map>> getCompareResult(String Type) throws SQLException;
     List<Map> getCompareResult(String environment,String type) throws SQLException;
     List<Map> getTableNotNullColumn(String sourceEnvironment, String sourceDatabase, String table) throws SQLException;
-
     List<DatabaseTableStructureEntity> getTableStructure(String environment, String databaseName, String tableName) throws Exception;
 }

@@ -245,9 +245,9 @@ public class JDBCUtils {
     }
 
 
-    public static void release() {
+    public static void release() throws SQLException {
         Connection conn = getConnection();
-        dataBasePool.release(conn);
+        conn.close();
         threadLocal.remove();
     }
 

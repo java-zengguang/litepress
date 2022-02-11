@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +45,12 @@ public class CommitInterfaceHandler implements InvocationHandler {
             JDBCUtils.commit();
             return result;
         } else {
-            LOGGER.info(method.getName() + " 事务未被提交");
-            JDBCUtils.release();
+           // LOGGER.info(method.getName() + " 事务未被提交");
+            try {
+                JDBCUtils.release();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             return result;
         }
 
