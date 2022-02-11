@@ -16,11 +16,16 @@ public class TableRelationServiceImpl extends CommitClassHandler implements Tabl
 
 
     @Override
-    public void reLoadTableRelation(List<LDCode> ldCodes) throws Exception {
+    public void reLoadTableRelationA(List<LDCode> ldCodes) throws Exception {
         tableRelationMapper.deleteTableRelation();
         ldCodeMapper.deletePRPTableLDCode();
         ldCodeMapper.insertLDCode(ldCodes);
         List<TableRelationShipEntity> tableRelationShipEntityList=tableRelationMapper.getTableReationFromLDcode();
         tableRelationMapper.insertTableRelation(tableRelationShipEntityList);
+    }
+
+    @Override
+    public void reLoadTableRelation(List<TableRelationShipEntity> tableRelationShipEntities) throws Exception {
+        tableRelationMapper.insertTableRelation(tableRelationShipEntities);
     }
 }

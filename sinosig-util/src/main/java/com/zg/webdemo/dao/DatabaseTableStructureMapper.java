@@ -177,9 +177,10 @@ public class DatabaseTableStructureMapper {
                 "t.databasename,t.tablename,t.columnname,t.columntype  from (select * from databasetablestructure d where d.environment ='"+environment+"' and d.databaseName in ('保单库','投保单库','批单修改库') and d.tablename REGEXP  'prp[ctp].*') t) t2\n" +
                 "on t2.x=t1.x and t1.columnname=t2.columnname  where 1=1 and t1.columntype<>t2.columntype  ";*/
         String deffSQL="select 'SDB','STB','SCN','SCT','TDB','TTB','TCN','TCT' from  dual union \n";
-        deffSQL=deffSQL+"select t1.databasename as 'SDB',t1.tablename as 'STB',t1.columnname as 'SCN',t1.columntype as 'SCT',t2.databasename as 'TDB',t2.tablename as 'TTB',t2.columnname as 'TCN',t2.columntype as 'TCT' from  (select *from databasetablestructure d ,(select *from ldcode l where codetype ='prp_table' ) t where d.environment ='"+environment+"' and   d.databaseName =t.codecname and   d.tableName =t.codecode ) t1,\n" +
-                "(select *from databasetablestructure d ,(select *from ldcode l where codetype ='prp_table' ) t where  d.environment ='"+environment+"' and   d.databaseName =t.codecname and   d.tableName =t.codecode ) t2\n" +
-                "where t1.flag=t2.flag and t1.columnname=t2.columnname and t1.columntype<>t2.columntype";
+        deffSQL=deffSQL+"select t1.databasename as 'SDB',t1.tablename as 'STB',t1.columnname as 'SCN',t1.columntype as 'SCT',t2.databasename as 'TDB',t2.tablename as 'TTB',t2.columnname as 'TCN',t2.columntype as 'TCT' from\n" +
+                "(select t.basetablename,d.* from databasetablestructure d ,(select *from tablerelationship l where l.`type` ='baseModel' ) t where d.environment ='"+environment+"' and   d.databaseName =t.databaseName and   d.tableName =t.tableName ) t1,\n" +
+                "(select  t.basetablename,d.*  from databasetablestructure d ,(select *from tablerelationship l where l.`type` ='baseModel') t where  d.environment ='"+environment+"' and   d.databaseName =t.databasename and   d.tableName =t.tableName ) t2\n" +
+                "where t1.basetablename=t2.basetablename and t1.columnname=t2.columnname and t1.columntype<>t2.columntype";
 
         return JDBCUtils.selectToMapList(deffSQL);
 
@@ -198,10 +199,10 @@ public class DatabaseTableStructureMapper {
 
         String deffSQL=" select '表名','库名','字段名','字段类型' from  dual union \n ";
         deffSQL=deffSQL+" \n" +
-                "select *from (select t3.codecode as 'tablename' ,t3.codecname as 'databasename' ,t2.columnname,t2.columntype  from (select  t.flag,d.columnName,max(columnType) as 'columntype' from databasetablestructure d ,(select *from ldcode l where codetype ='prp_table' ) t\n" +
-                "where d.environment ='"+environment+"' and   d.databaseName =t.codecname and   d.tableName =t.codecode group by t.flag,d.columnName ) t2 ,(select *from ldcode l where codetype ='prp_table') t3 where t2.flag=t3.flag ) t1\n" +
-                "where exists (select *from databasetablestructure d where d.environment ='"+environment+"' and t1.databasename=d.databaseName and t1.tablename=d.tableName )\n" +
-                "and not exists (select *from databasetablestructure d where  d.environment ='"+environment+"' and t1.databasename=d.databaseName and t1.tablename=d.tableName and t1.columnname=d.columnName )";
+                "select tablename,databasename,columnname,columntype from  (select t1.basetablename,d1.columnname,max(d1.columntype) as 'columntype' from (select *from tablerelationship t where t.`type` ='baseModel' )t1 ,(select *from databasetablestructure d where d.environment ='"+environment+"') d1\n" +
+                "where  t1.tablename=d1.tablename group by  t1.basetablename,d1.columnname )t2,(select *from tablerelationship t where t.`type` ='baseModel' )t3  where 1=1 and t2.basetablename=t3.basetablename\n" +
+                "and exists (select *from databasetablestructure d2 where d2.environment ='"+environment+"' and d2.databaseName =t3.databasename and d2.tableName =t3.tablename )\n" +
+                "and not exists (select *from databasetablestructure d2 where d2.environment ='"+environment+"' and d2.databaseName =t3.databasename and d2.tableName =t3.tablename and d2.columnName = t2.columnname)";
 
 
         return JDBCUtils.selectToMapList(deffSQL);
@@ -216,8 +217,8 @@ public class DatabaseTableStructureMapper {
                 "(select distinct databaseName ,tablename from databasetablestructure d2 where d2.environment ='"+environment+"' ) t2\n" +
                 "on t2.databaseName =t1.codecname and t2.tablename =t1.codecode where t2.databasename is null ";*/
         String deffSQL=" select '套表名','库名','表名' from  dual union \n ";
-        deffSQL=deffSQL+" select l.flag ,l.codecname ,l.codecode from ldcode l where codetype ='prp_table'\n" +
-                "and not exists (select 1 from databasetablestructure d where d.environment ='"+environment+"' and d.databaseName =l.codecname and d.tableName =l.codecode ) ";
+        deffSQL=deffSQL+" select t.basetablename ,t.databasename ,t.tablename from tablerelationship t where t.`type` ='baseModel' \n" +
+                "and not exists (select 1 from databasetablestructure d where d.environment ='"+environment+"' and d.databaseName =t.databasename and d.tableName =t.tablename ) ";
         return JDBCUtils.selectToMapList(deffSQL);
     }
 
