@@ -296,7 +296,6 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-
     <bean id="test" class="com.zg.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:h2:mem:test;MODE=Oracle</property>
         <property name="maxPoolSize" type="int">10</property>
@@ -304,6 +303,16 @@
         <property name="username" type="java.lang.String">su</property>
         <property name="password" type="java.lang.String"></property>
         <property name="DBType" type="java.lang.String">H2</property>
+    </bean>
+
+    <bean id="dev_platform" class="com.zg.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.30:1521/platuat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">basecode</property>
+        <property name="password" type="java.lang.String">basecode</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
     <bean id="CreateSVNDirTask" class="com.zg.bean.entity.JobEntity">

@@ -1,5 +1,6 @@
 package com.zg.sinosig.result;
 
+import com.zg.sinosig.driver.SunAutoDriver;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 
 import java.util.List;

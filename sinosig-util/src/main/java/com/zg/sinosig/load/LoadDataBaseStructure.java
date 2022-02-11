@@ -1,6 +1,5 @@
 package com.zg.sinosig.load;
 
-import com.zg.webdemo.entity.DatabaseTableStructureEntity;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 
 import java.util.List;

@@ -40,10 +40,25 @@ public class SinoSigSQLLogEntity extends MainModel {
     public String sqldescribe;
     public String needpowertables;
     public String executebatchno;  //执行批次号
+    public String systemflag; //系统标识  new-non-auto 非车新一代   old-non-auto  老非车  platform  平台
     @NotCommitField
     public String[] needPowerTableArray;
 
+    public String getSqltype() {
+        return sqltype.toUpperCase();
+    }
 
+    public void setSqltype(String sqltype) {
+        this.sqltype = sqltype;
+    }
+
+    public String getSystemflag() {
+        return systemflag;
+    }
+
+    public void setSystemflag(String systemflag) {
+        this.systemflag = systemflag;
+    }
 
     public String getBatchno() {
         return batchno;
@@ -179,6 +194,11 @@ public class SinoSigSQLLogEntity extends MainModel {
 
             case "汇总库":{
                 database="nvsun";
+                break;
+            }
+
+            case "平台库":{
+                database="platform";
                 break;
             }
 

@@ -1,4 +1,4 @@
-package com.zg.sinosig.check;
+package com.zg.webdemo.util.sinosig;
 
 import com.zg.database.util.JDBCUtils;
 

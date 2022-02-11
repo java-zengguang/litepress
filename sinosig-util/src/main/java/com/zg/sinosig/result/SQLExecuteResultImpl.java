@@ -38,17 +38,28 @@ public class SQLExecuteResultImpl implements SQLExecuteResult{
         fileName = fileName + sinoSigSQLLogEntity.demandname + ".sql";
         String content = sinoSigSQLLogEntity.prosql;
         Calendar cal = Calendar.getInstance();
-        String path = executeRoot + "temp\\" + sinoSigSQLLogEntity.planname;
+        String systemFlag=sinoSigSQLLogEntity.systemflag;
+        String systemName="";
+        switch (systemFlag) {
+            case "新一代脚本": {
+                systemName = "new-non-auto";
+                break;
+            }
+            case "平台配置脚本": {
+                systemName = "platform";
+                break;
+            }
+            case "老核心脚本": {
+                systemName = "old-non-auto";
+                break;
+            }
+        }
+
+        String path = executeRoot + "temp\\" + sinoSigSQLLogEntity.planname+"\\"+systemName;
 
         File pathFile = new File(path);
         if (!pathFile.exists()) {
             pathFile.mkdir();
-        }
-
-        if ("是".equals(sinoSigSQLLogEntity.isconfig.trim())) {
-            path = path + "\\开关管理";
-        } else {
-            path = path + "\\脚本管理";
         }
 
         pathFile = new File(path);
@@ -152,4 +163,6 @@ public class SQLExecuteResultImpl implements SQLExecuteResult{
             e.printStackTrace();
         }
     }
+
+
 }

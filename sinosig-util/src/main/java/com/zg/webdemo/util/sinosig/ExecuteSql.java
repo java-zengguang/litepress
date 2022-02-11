@@ -2,7 +2,6 @@ package com.zg.webdemo.util.sinosig;
 
 
 import com.zg.bean.entity.OptionDB;
-import com.zg.sinosig.check.SQLUtils;
 import com.zg.util.io.POIUtils;
 import com.zg.util.sinosing.DatabaseUtil;
 import com.zg.util.sinosing.JDBCUtil;
