@@ -12,6 +12,7 @@ public class DatabaseTableStructureEntity extends MainModel {
     @AutoIncrease
     @NotCommitField
     public Long id;
+    public String systemflag;
     public String environment;
     public String databaseName;
     public String tableName;

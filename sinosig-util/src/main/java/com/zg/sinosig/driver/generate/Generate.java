@@ -1,4 +1,4 @@
-package com.zg.sinosig.generate;
+package com.zg.sinosig.driver.generate;
 
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 

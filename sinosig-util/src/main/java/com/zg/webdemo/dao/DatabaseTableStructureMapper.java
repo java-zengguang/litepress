@@ -233,16 +233,16 @@ public class DatabaseTableStructureMapper {
 
     }
 
-    public void deleteDatabaseAllStructures(String environment) throws IllegalAccessException, ParseException, IOException, InstantiationException, SQLException, ClassNotFoundException {
-        JDBCUtils.execute("delete from databasetablestructure where environment='"+environment+"' ");
+    public void deleteDatabaseAllStructures(String environment,String systemFlag) throws IllegalAccessException, ParseException, IOException, InstantiationException, SQLException, ClassNotFoundException {
+        JDBCUtils.execute("delete from databasetablestructure where environment='"+environment+"' and systemFlag='"+systemFlag+"' ");
 
     }
 
-    public List<DatabaseTableStructureEntity> getTableStructure(String environment, String databaseName, String tableName) throws Exception {
+    public List<DatabaseTableStructureEntity> getTableStructure(String systemFlag, String environment, String databaseName, String tableName) throws Exception {
         if (tableName.contains(".")) {
             tableName = tableName.substring(tableName.indexOf(".") + 1, tableName.length());
         }
-        List<DatabaseTableStructureEntity> tableMapList= JDBCUtils.select("select *from databasetablestructure d where d.environment ='"+ environment +"' and d.databasename='"+ databaseName +"'  " +
+        List<DatabaseTableStructureEntity> tableMapList= JDBCUtils.select("select *from databasetablestructure d where d.environment ='"+ environment +"' and d.databasename='"+ databaseName +"' and d.systemflag='"+systemFlag+"' " +
                 "and d.tablename= '"+tableName+"'",DatabaseTableStructureEntity.class);
         return tableMapList;
    }

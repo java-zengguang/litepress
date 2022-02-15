@@ -1,10 +1,9 @@
 package com.zg.sinosig.driver.platform;
 
 import com.zg.sinosig.driver.SunAutoDriver;
-import com.zg.sinosig.generate.SimpleGenerate;
+import com.zg.sinosig.driver.generate.SimpleGenerate;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleGeneratePF extends SimpleGenerate implements SunAutoDriver {
@@ -23,6 +22,7 @@ public class SimpleGeneratePF extends SimpleGenerate implements SunAutoDriver {
         for(SinoSigSQLLogEntity sinoSigSQLLogEntity:list){
             sinoSigSQLLogEntity.devsql=sinoSigSQLLogEntity.basesql;
             sinoSigSQLLogEntity.prosql=sinoSigSQLLogEntity.basesql;
+            sinoSigSQLLogEntity.owner="platform";
             sinoSigSQLLogEntity.environment="dev";
             sinoSigSQLLogEntity.executestate="3";
         }

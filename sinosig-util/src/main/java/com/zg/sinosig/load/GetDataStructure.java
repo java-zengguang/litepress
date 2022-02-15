@@ -1,27 +1,137 @@
 package com.zg.sinosig.load;
 
-import com.zg.bean.entity.OptionDB;
 import com.zg.database.util.JDBCUtils;
 import com.zg.util.io.POIUtils;
-import com.zg.util.sinosing.DatabaseUtil;
-import com.zg.util.sinosing.JDBCUtil;
+import com.zg.util.sinosing.NewJDBCUtil;
 import com.zg.webdemo.entity.DatabaseTableStructureEntity;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.python.antlr.ast.Str;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public  class  GetDataStructure {
+public class GetDataStructure {
 
+    public static List<String> getOwner(String environment, String database, String systemFlag) {
+        List<String> owners = new ArrayList<>();
+        if ("new-non-auto".equals(systemFlag)) {
+            switch (database) {
+                case "保单库": {
+                    owners = Arrays.asList("nvpolicy");
+                    break;
+                }
+                case "投保单库": {
+                    owners = Arrays.asList("nvproposal");
+                    break;
+                }
+                case "批单修改库": {
+                    owners = Arrays.asList("nvendorsement");
+                    break;
+                }
+            }
+        }
+        if ("old-non-auto".equals(systemFlag)) {
+            if ("pro".equals(environment)) {
+                switch (database) {
+                    case "保单库": {
+                        owners = Arrays.asList("sunshine");
+                        break;
+                    }
+                    case "投保单库": {
+                        owners = Arrays.asList("prpins");
+                        break;
+                    }
+                }
+                if ("dev".equals(environment)) {
+                    switch (database) {
+                        case "保单库": {
+                            owners = Arrays.asList("sinosoft", "stageapp");
+                            break;
+                        }
+                        case "投保单库": {
+                            owners = Arrays.asList("basecode");
+                            break;
+                        }
 
-    public static List<DatabaseTableStructureEntity> getDataStructure(String type, String database) throws Exception {
-        OptionDB optionDB = DatabaseUtil.getOptionDB(type, database);
-        System.out.println(optionDB.getUrl() + "    " + optionDB.getUsername() + "    " + optionDB.getPassword() + "    " + optionDB.getDriver());
-        JDBCUtil jdbcUtil = new JDBCUtil(optionDB);
-        String sql = "select '"+database+"' as \"databaseName\",'"+type+"' as \"environment\",a.table_name as \"tableName\",\n" +
+                    }
+                }
+            }
+
+        }
+
+        if ("platform".equals(systemFlag)) {
+            switch (database) {
+                case "平台库": {
+                    owners = Arrays.asList("basecode", "platform");
+                    break;
+                }
+            }
+        }
+        return owners;
+    }
+
+    public static String getDataSource(String environment, String database, String systemFlag) {
+        String flag = "";
+        if ("new-non-auto".equals(systemFlag)) {
+            switch (database) {
+                case "保单库": {
+                    flag = "nvpolicy";
+                    break;
+                }
+                case "投保单库": {
+                    flag = "nvproposal";
+                    break;
+                }
+                case "批单修改库": {
+                    flag = "nvendorsement";
+                    break;
+                }
+            }
+        }
+        if ("old-non-auto".equals(systemFlag)) {
+            switch (database) {
+                case "保单库": {
+                    flag = "sunshine";
+                    break;
+                }
+                case "投保单库": {
+                    flag = "prpins";
+                    break;
+                }
+
+            }
+        }
+
+        if ("platform".equals(systemFlag)) {
+            switch (database) {
+                case "平台库": {
+                    flag = "platform";
+                    break;
+                }
+            }
+        }
+        return environment + "_" + systemFlag + "_" + flag;
+    }
+
+    public static List<DatabaseTableStructureEntity> getDataStructure(String environment, String database, String systemFlag) throws Exception {
+
+        NewJDBCUtil jdbcUtil = new NewJDBCUtil(getDataSource(environment, database, systemFlag));
+        List<String> ownerList=getOwner(environment,database,systemFlag);
+        String owners = "";
+        for(String owner:ownerList){
+            owners=owners+"'"+owner+"',";
+        }
+        if(owners.contains(",")){
+            owners=owners.substring(0,owners.length()-1);
+            owners=owners.toUpperCase();
+        }
+
+        String sql = "select '" + database + "' as \"databaseName\",'" + environment + "' as \"environment\",'" + systemFlag + "' as \"systemflag\"," +
+                "       a.table_name as \"tableName\",\n" +
                 "       a.column_id as \"columnId\",\n" +
                 "       a.column_name as \"columnName\",\n" +
                 "       (case\n" +
@@ -58,50 +168,51 @@ public  class  GetDataStructure {
                 "         when a.data_type = 'LONG RAW' then\n" +
                 "          'LONG RAW'\n" +
                 "       end) as \"columnType\",\n" +
-                "   (select 'pk' from  user_constraints con,user_cons_columns col where  con.constraint_name=col.constraint_name and con.constraint_type='P' and a.TABLE_NAME=con.TABLE_NAME and a.COLUMN_NAME=col.COLUMN_NAME  ) as \"keyType\",\n"+
+                "   (select 'pk' from  all_constraints con,all_cons_columns col where  con.constraint_name=col.constraint_name and con.constraint_type='P' and a.TABLE_NAME=con.TABLE_NAME and a.COLUMN_NAME=col.COLUMN_NAME and a.OWNER=col.OWNER and col.OWNER=con.OWNER ) as \"keyType\",\n" +
                 "       a.nullable as \"nullAble\",\n" +
                 "       a.data_default as \"dataDefault\",\n" +
                 "       b.comments as \"comments\" \n" +
-                "  from user_tab_columns a, user_col_comments b, user_tables c\n" +
+                "  from all_tab_columns a, all_col_comments b, all_tables  c\n" +
                 " where a.table_name = b.table_name\n" +
                 "   and a.table_name = c.table_name\n" +
                 "   and a.column_name = b.column_name\n" +
+                " and c.owner in (" + owners + ")" +
                 " order by 1, 2, 3 ";
         List<DatabaseTableStructureEntity> list = jdbcUtil.select(sql, DatabaseTableStructureEntity.class);
-        jdbcUtil.colseConnect();
+        jdbcUtil.release();
         return list;
     }
 
     public static List<DatabaseTableStructureEntity> getDataStructureByExcel(File dirFile) throws IOException {
-        List<DatabaseTableStructureEntity> list=new ArrayList<>();
-        if(dirFile.exists() && dirFile.isDirectory()){
-           File[] files= dirFile.listFiles(new FilenameFilter() {
+        List<DatabaseTableStructureEntity> list = new ArrayList<>();
+        if (dirFile.exists() && dirFile.isDirectory()) {
+            File[] files = dirFile.listFiles(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {
-                    if(name.endsWith(".xls")){
+                    if (name.endsWith(".xls")) {
                         return true;
-                    }else {
+                    } else {
                         return false;
                     }
                 }
             });
-            for(File file:files) {
+            for (File file : files) {
                 InputStream inputStream = new FileInputStream(file);
                 HSSFWorkbook hssfWorkbook = new HSSFWorkbook(inputStream);
                 List<Map> mapList = POIUtils.readExcel(hssfWorkbook, "SQL Results");
                 mapList.remove(0);  //去掉第一条表头
-                for(Map<String,String> map:mapList){
-                    DatabaseTableStructureEntity databaseTableStructureEntity=new DatabaseTableStructureEntity();
-                    databaseTableStructureEntity.environment=map.get("environment");
-                    databaseTableStructureEntity.databaseName=map.get("databasename");
-                    databaseTableStructureEntity.tableName=map.get("tableName");
-                    databaseTableStructureEntity.owner=map.get("owner");
-                    databaseTableStructureEntity.columnId=map.get("columnId");
-                    databaseTableStructureEntity.columnName=map.get("columnName");
-                    databaseTableStructureEntity.columnType=map.get("columnType");
-                    databaseTableStructureEntity.nullAble=map.get("nullAble");
-                    databaseTableStructureEntity.dataDefault=map.get("dataDefault");
-                    databaseTableStructureEntity.comments=map.get("comments");
+                for (Map<String, String> map : mapList) {
+                    DatabaseTableStructureEntity databaseTableStructureEntity = new DatabaseTableStructureEntity();
+                    databaseTableStructureEntity.environment = map.get("environment");
+                    databaseTableStructureEntity.databaseName = map.get("databasename");
+                    databaseTableStructureEntity.tableName = map.get("tableName");
+                    databaseTableStructureEntity.owner = map.get("owner");
+                    databaseTableStructureEntity.columnId = map.get("columnId");
+                    databaseTableStructureEntity.columnName = map.get("columnName");
+                    databaseTableStructureEntity.columnType = map.get("columnType");
+                    databaseTableStructureEntity.nullAble = map.get("nullAble");
+                    databaseTableStructureEntity.dataDefault = map.get("dataDefault");
+                    databaseTableStructureEntity.comments = map.get("comments");
                     list.add(databaseTableStructureEntity);
                 }
 
@@ -111,21 +222,21 @@ public  class  GetDataStructure {
     }
 
 
-    public static List<String> readFileToSqlList(File dirFile,String database) throws IOException {
-        List<String> sqlList=new ArrayList<>();
-        if(dirFile.exists() && dirFile.isDirectory()){
-            File[] files= dirFile.listFiles(new FilenameFilter() {
+    public static List<String> readFileToSqlList(File dirFile, String database) throws IOException {
+        List<String> sqlList = new ArrayList<>();
+        if (dirFile.exists() && dirFile.isDirectory()) {
+            File[] files = dirFile.listFiles(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {
-                    if(name.equals(database+".sql")){
+                    if (name.equals(database + ".sql")) {
                         return true;
-                    }else {
+                    } else {
                         return false;
                     }
                 }
             });
-            for(File file:files) {
-               sqlList.addAll(JDBCUtils.batchSqlFile(file));
+            for (File file : files) {
+                sqlList.addAll(JDBCUtils.batchSqlFile(file));
             }
         }
         return sqlList;

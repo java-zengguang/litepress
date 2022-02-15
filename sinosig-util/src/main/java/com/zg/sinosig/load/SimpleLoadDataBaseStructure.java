@@ -21,7 +21,7 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
     DatabaseTableStrcutureService strcutureService = (DatabaseTableStrcutureService) ProxyUtils.getProxyClass(new DatabaseTableStrcutureServiceImpl(), "insertDataBaseTableStructures,reloadDataBaseTableStructures");
     LDCodeService ldCodeService = (LDCodeService) ProxyUtils.getProxyClass(new LDCodeServiceImpl(), "reLoadPRPTable");
 
-    public SimpleLoadDataBaseStructure(){
+    public SimpleLoadDataBaseStructure() {
 
     }
 
@@ -37,13 +37,13 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
         for (Class classes : classSet) {
             String baseTableName = classes.getSimpleName();
             String baseName = baseTableName.replaceFirst("Prp", "");
-            tableNameList.add(new LDCode("prp_table", "PRPC" + baseName.toUpperCase(), "保单库",baseName.toUpperCase()));
-            tableNameList.add(new LDCode("prp_table", "PRPCOPY" + baseName.toUpperCase(), "保单库",baseName.toUpperCase()));
-            tableNameList.add(new LDCode("prp_table", "PRPP" + baseName.toUpperCase(), "保单库",baseName.toUpperCase()));
-            tableNameList.add(new LDCode("prp_table", "PRPCP" + baseName.toUpperCase(), "批单修改库",baseName.toUpperCase()));
-            tableNameList.add(new LDCode("prp_table", "PRPCOPY" + baseName.toUpperCase(), "批单修改库",baseName.toUpperCase()));
-            tableNameList.add(new LDCode("prp_table", "PRPP" + baseName.toUpperCase(), "批单修改库",baseName.toUpperCase()));
-            tableNameList.add(new LDCode("prp_table", "PRPT" + baseName.toUpperCase(), "投保单库",baseName.toUpperCase()));
+            tableNameList.add(new LDCode("prp_table", "PRPC" + baseName.toUpperCase(), "保单库", baseName.toUpperCase()));
+            tableNameList.add(new LDCode("prp_table", "PRPCOPY" + baseName.toUpperCase(), "保单库", baseName.toUpperCase()));
+            tableNameList.add(new LDCode("prp_table", "PRPP" + baseName.toUpperCase(), "保单库", baseName.toUpperCase()));
+            tableNameList.add(new LDCode("prp_table", "PRPCP" + baseName.toUpperCase(), "批单修改库", baseName.toUpperCase()));
+            tableNameList.add(new LDCode("prp_table", "PRPCOPY" + baseName.toUpperCase(), "批单修改库", baseName.toUpperCase()));
+            tableNameList.add(new LDCode("prp_table", "PRPP" + baseName.toUpperCase(), "批单修改库", baseName.toUpperCase()));
+            tableNameList.add(new LDCode("prp_table", "PRPT" + baseName.toUpperCase(), "投保单库", baseName.toUpperCase()));
         }
         try {
             ldCodeService.reLoadPRPTable(tableNameList);
@@ -62,11 +62,11 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
         //新一代数据加载
         if (true) {
             String dirs = rootDir + "\\新一代";
-            String databaseNames[] = {"保单库", "投保单库", "批单修改库", "汇总库"};
+            String databaseNames[] = {"保单库", "批单修改库", "投保单库"};
             for (String databaseName : databaseNames) {
                 String[] array = {"int", "uat", "stage"};
                 for (String s : array) {
-                    List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure(s, databaseName);
+                    List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure(s, databaseName, "new-non-auto");
                 }
 
             }
@@ -80,13 +80,21 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
             for (String databaseName : databaseNames) {
                 String[] array = {"old_dev"};
                 for (String s : array) {
-                    List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure(s, databaseName);
+                    List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure(s, databaseName, "old-non-auto");
                     databaseTableStructureEntitieList.addAll(stageList);
                 }
             }
             List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
             databaseTableStructureEntitieList.addAll(porList);
         }
+
+        //平台测试库加载
+        if (true) {
+
+            List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure("dev", "平台库", "platform");
+            databaseTableStructureEntitieList.addAll(stageList);
+        }
+
 
         //重新加载表结构
         if (strcutureService.reloadDataBaseTableStructures(databaseTableStructureEntitieList)) {
@@ -97,19 +105,18 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
     }
 
 
-
     @Override
     public boolean reLoadStructure(List<SinoSigSQLLogEntity> list) throws Exception {
-        Set<String> environmentSet=new HashSet<>();
-     for(SinoSigSQLLogEntity sinoSigSQLLogEntity:list){
-         if("DDL".equals(sinoSigSQLLogEntity.sqltype) &&"3".equals(sinoSigSQLLogEntity.executestate)){
-             environmentSet.add(sinoSigSQLLogEntity.environment) ;
-         }
-     }
 
-     for(String environment:environmentSet){
-         reLoadStructure(environment);
-     }
+        Set<String> environmentFlagSet = new HashSet<>();
+        for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
+            if ("DDL".equals(sinoSigSQLLogEntity.sqltype) && "3".equals(sinoSigSQLLogEntity.executestate)) {
+                environmentFlagSet.add(sinoSigSQLLogEntity.environment+","+sinoSigSQLLogEntity.systemflag);
+            }
+        }
+        for (String environmentFlag : environmentFlagSet) {
+            reLoadStructure(environmentFlag);
+        }
         return false;
     }
 
@@ -123,39 +130,16 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
     }
 
 
-
-
-    private boolean reLoadStructure(String environment) throws Exception {
-        List<DatabaseTableStructureEntity> list = new ArrayList<>();
-        if("pro".equals(environment) ) { //生产数据库
-            String dirs = rootDir + "\\新一代";
-            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
-            list.addAll(porList);
-        }else if("old".equals(environment) ) { //生产数据库
-            String dirs = rootDir + "\\老核心";
-            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
-            list.addAll(porList);
-        }else if("old_dev".equals(environment) ){  //老核心测试库
-            String[] databaseNames = {"保单库", "投保单库"};
-            for (String databaseName : databaseNames) {
-                list.addAll(GetDataStructure.getDataStructure(environment, databaseName));
-            }
-        }else{ //新一代数据库
-            String[] databaseNames = {"保单库", "投保单库", "批单修改库"};
-            for (String databaseName : databaseNames) {
-                list.addAll(GetDataStructure.getDataStructure(environment, databaseName));
-            }
-        }
-
-
-        strcutureService.reloadDataBaseTableStructures(list,environment);
+    private boolean reLoadStructure(String environmentFlag) throws Exception {
+        String[] strings=environmentFlag.split(",");
+        strcutureService.reloadDataBaseTableStructures(strings[0],strings[1]);
         return false;
     }
 
 
     public static void main(String args[]) throws Exception {
-        SimpleLoadDataBaseStructure simpleLoadDataBaseStructure=new SimpleLoadDataBaseStructure();
-        simpleLoadDataBaseStructure.reLoadStructure("int");
+        SimpleLoadDataBaseStructure simpleLoadDataBaseStructure = new SimpleLoadDataBaseStructure();
+        simpleLoadDataBaseStructure.reLoadStructure("int,new-non-auto");
     }
 
 }
