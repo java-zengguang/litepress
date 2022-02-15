@@ -2,8 +2,9 @@ package com.zg.sinosig.driver.generate;
 
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface Generate {
-    List<SinoSigSQLLogEntity> execute(List<SinoSigSQLLogEntity> list);
+    List<SinoSigSQLLogEntity> execute(List<SinoSigSQLLogEntity> list) throws SQLException, IllegalAccessException;
 }

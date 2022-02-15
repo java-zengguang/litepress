@@ -12,17 +12,25 @@ public class SimpleGenerateNNASTAGE extends SimpleGenerate implements SunAutoDri
 
     @Override
     public List<SinoSigSQLLogEntity> doExecute(String systemFlag, List<SinoSigSQLLogEntity> list) throws Exception {
+        List resultList = new ArrayList();
         if ("new-non-auto".equals(systemFlag)) {
-           list= execute(list);
+            for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
+                if (checkCustomModelRule(sinoSigSQLLogEntity)) {
+                    SinoSigSQLLogEntity entity = machiningSQL(sinoSigSQLLogEntity);
+                    resultList.add(sinoSigSQLLogEntity);
+                    resultList.add(entity);
+                }
+            }
         }
-        return list;
+        resultList = execute(resultList);
+        return resultList;
     }
 
 
     boolean checkCustomModelRule(SinoSigSQLLogEntity baseEntity) {
-        if("3".equals(baseEntity.executestate)||"1".equals(baseEntity.executestate)){
+        if ("3".equals(baseEntity.executestate) || "1".equals(baseEntity.executestate)) {
             return true;
-        }else{
+        } else {
             return false;
         }
 
@@ -30,24 +38,13 @@ public class SimpleGenerateNNASTAGE extends SimpleGenerate implements SunAutoDri
 
     //以入口为模板复制加工处新的对象
     private SinoSigSQLLogEntity machiningSQL(SinoSigSQLLogEntity sinoSigSQLLogEntity) {
-        sinoSigSQLLogEntity= (SinoSigSQLLogEntity) sinoSigSQLLogEntity.clone();
-        sinoSigSQLLogEntity.executestate="3";
-        sinoSigSQLLogEntity.errormassage="";
-        sinoSigSQLLogEntity.environment="stage";
+        sinoSigSQLLogEntity = (SinoSigSQLLogEntity) sinoSigSQLLogEntity.clone();
+        sinoSigSQLLogEntity.executestate = "3";
+        sinoSigSQLLogEntity.errormassage = "";
+        sinoSigSQLLogEntity.environment = "stage";
         return sinoSigSQLLogEntity;
     }
 
-//重新加载uat已执行通过的数据
-    public List<SinoSigSQLLogEntity> execute(List<SinoSigSQLLogEntity> list) {
-        List resultList=new ArrayList();
-        for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
-            if (checkCustomModelRule(sinoSigSQLLogEntity)) {
-                SinoSigSQLLogEntity entity=machiningSQL(sinoSigSQLLogEntity);
-                resultList.add(sinoSigSQLLogEntity);
-                resultList.add(entity);
-            }
-        }
-        return resultList;
-    }
+
 
 }

@@ -3,6 +3,7 @@ package com.zg.sinosig.driver.newnonauto;
 import com.zg.sinosig.driver.SunAutoDriver;
 import com.zg.sinosig.driver.generate.SimpleGenerate;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
+import com.zg.webdemo.service.sinosigsqllog.SinoSigSQLLogService;
 
 import java.util.List;
 
@@ -12,8 +13,15 @@ public class SimpleGenerateNNAUAT extends SimpleGenerate implements SunAutoDrive
     @Override
     public List<SinoSigSQLLogEntity> doExecute(String systemFlag, List<SinoSigSQLLogEntity> list) throws Exception {
         if ("new-non-auto".equals(systemFlag)) {
-            execute(list);
+            for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
+                if (checkCustomModelRule(sinoSigSQLLogEntity)) {
+                    sinoSigSQLLogEntity = machiningSQL(sinoSigSQLLogEntity);
+                    sinoSigSQLLogEntity.environment = "uat";
+                    sinoSigSQLLogEntity.executestate = "3";
+                }
+            }
         }
+       list= execute(list);
         return list;
     }
 
@@ -121,15 +129,5 @@ public class SimpleGenerateNNAUAT extends SimpleGenerate implements SunAutoDrive
     }
 
 
-    public List<SinoSigSQLLogEntity> execute(List<SinoSigSQLLogEntity> list) {
-        for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
-            if (checkCustomModelRule(sinoSigSQLLogEntity)) {
-                sinoSigSQLLogEntity = machiningSQL(sinoSigSQLLogEntity);
-                sinoSigSQLLogEntity.environment = "uat";
-                sinoSigSQLLogEntity.executestate = "3";
-            }
-        }
-        return list;
-    }
 
 }

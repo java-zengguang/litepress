@@ -12,20 +12,15 @@ public class SimpleGeneratePF extends SimpleGenerate implements SunAutoDriver {
     @Override
     public List<SinoSigSQLLogEntity> doExecute(String systemFlag, List<SinoSigSQLLogEntity> list) throws Exception {
         if("platform".equals(systemFlag)) {
-            execute(list);
+            for(SinoSigSQLLogEntity sinoSigSQLLogEntity:list){
+                sinoSigSQLLogEntity.devsql=sinoSigSQLLogEntity.basesql;
+                sinoSigSQLLogEntity.prosql=sinoSigSQLLogEntity.basesql;
+                sinoSigSQLLogEntity.owner="platform";
+                sinoSigSQLLogEntity.environment="dev";
+                sinoSigSQLLogEntity.executestate="3";
+            }
         }
-        return list;
-    }
-
-    @Override
-    public List<SinoSigSQLLogEntity> execute(List<SinoSigSQLLogEntity> list) {
-        for(SinoSigSQLLogEntity sinoSigSQLLogEntity:list){
-            sinoSigSQLLogEntity.devsql=sinoSigSQLLogEntity.basesql;
-            sinoSigSQLLogEntity.prosql=sinoSigSQLLogEntity.basesql;
-            sinoSigSQLLogEntity.owner="platform";
-            sinoSigSQLLogEntity.environment="dev";
-            sinoSigSQLLogEntity.executestate="3";
-        }
+       list= execute(list);
         return list;
     }
 }
