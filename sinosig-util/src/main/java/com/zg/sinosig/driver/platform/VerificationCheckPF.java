@@ -11,7 +11,7 @@ public class VerificationCheckPF extends VerificationCheck implements SunAutoDri
     @Override
     public List<SinoSigSQLLogEntity> doExecute(String systemFlag, List<SinoSigSQLLogEntity> list) throws Exception {
         if("platform".equals(systemFlag)) {
-          //  checkSQL(list);
+            checkSQL(list);
         }
         return list;
     }

@@ -1,10 +1,9 @@
 package com.zg.webdemo.util.sinosig;
 
-import com.zg.bean.entity.OptionDB;
 import com.zg.handler.ProxyUtils;
+import com.zg.sinosig.load.GetDataStructure;
 import com.zg.util.io.POIUtils;
-import com.zg.util.sinosing.DatabaseUtil;
-import com.zg.util.sinosing.JDBCUtil;
+import com.zg.util.sinosing.NewJDBCUtil;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureService;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureServiceImpl;
 import jxl.write.WriteException;
@@ -156,7 +155,7 @@ public class SnySum {
         }
     }
 
-    private Map<String, List<Map>> excuteCheckData(Map<String,Map> mapMap) throws InterruptedException {
+    private Map<String, List<Map>> excuteCheckData(Map<String,Map> mapMap) throws InterruptedException, SQLException {
         Map<String, List<Map>> resultMap=new HashMap();
         Set<String> flagSet=mapMap.keySet();
         for (String flag:flagSet) {
@@ -171,10 +170,9 @@ public class SnySum {
                 System.out.println("-------执行脚本insert----start--");
                 List<String> insertSqlList = (List<String>) map.get("insert");
                 if (insertSqlList != null && insertSqlList.size() > 0) {
-                    OptionDB optionDB = DatabaseUtil.getOptionDB(sourceEnvironment, sourceDatabase);
-                    JDBCUtil jdbcUtil = new JDBCUtil(optionDB);
+                    NewJDBCUtil jdbcUtil = new NewJDBCUtil(GetDataStructure.getDataSource(sourceEnvironment,sourceDatabase,"new-non-auto"));
                     try {
-                        jdbcUtil.batchSql(insertSqlList);
+                        jdbcUtil.batchSql(insertSqlList,true);
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     } finally {
@@ -190,8 +188,7 @@ public class SnySum {
             if(true) {
                 System.out.println("-------执行脚本check----start--");
                 List<String> checkSqlList = (List<String>) map.get("check");
-                OptionDB optionDB = DatabaseUtil.getOptionDB(targetEnvironment, targetDatabase);
-                JDBCUtil jdbcUtil = new JDBCUtil(optionDB);
+                NewJDBCUtil jdbcUtil = new NewJDBCUtil(GetDataStructure.getDataSource(targetEnvironment,targetDatabase,"new-non-auto"));
                 if (checkSqlList != null && checkSqlList.size() > 0) {
                     String checkSql="";
                     for(String sql:checkSqlList){
@@ -214,11 +211,10 @@ public class SnySum {
                 System.out.println("-------执行脚本delete----start--");
                 List<String> deleteSqlList = (List<String>) map.get("delete");
                 if (deleteSqlList != null && deleteSqlList.size() > 0) {
-                    OptionDB optionDB = DatabaseUtil.getOptionDB(sourceEnvironment, sourceDatabase);
-                    JDBCUtil jdbcUtil = new JDBCUtil(optionDB);
+                    NewJDBCUtil jdbcUtil = new NewJDBCUtil(GetDataStructure.getDataSource(targetEnvironment,targetDatabase,"new-non-auto"));
                     System.out.println("数据删除开始");
                     try {
-                        jdbcUtil.batchSql(deleteSqlList);
+                        jdbcUtil.batchSql(deleteSqlList,true);
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     } finally {

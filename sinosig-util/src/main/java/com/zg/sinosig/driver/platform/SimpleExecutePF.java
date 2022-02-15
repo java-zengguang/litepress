@@ -1,7 +1,7 @@
 package com.zg.sinosig.driver.platform;
 
 import com.zg.sinosig.driver.SunAutoDriver;
-import com.zg.sinosig.execute.SimpleExecute;
+import com.zg.sinosig.driver.execute.SimpleExecute;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 
 import java.util.List;

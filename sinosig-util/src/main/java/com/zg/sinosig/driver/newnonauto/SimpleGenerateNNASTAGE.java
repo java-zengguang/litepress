@@ -1,7 +1,7 @@
 package com.zg.sinosig.driver.newnonauto;
 
 import com.zg.sinosig.driver.SunAutoDriver;
-import com.zg.sinosig.generate.SimpleGenerate;
+import com.zg.sinosig.driver.generate.SimpleGenerate;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class SimpleGenerateNNASTAGE extends SimpleGenerate implements SunAutoDri
 
 
     boolean checkCustomModelRule(SinoSigSQLLogEntity baseEntity) {
-        if("3".equals(baseEntity.executestate)){
+        if("3".equals(baseEntity.executestate)||"1".equals(baseEntity.executestate)){
             return true;
         }else{
             return false;
@@ -37,7 +37,7 @@ public class SimpleGenerateNNASTAGE extends SimpleGenerate implements SunAutoDri
         return sinoSigSQLLogEntity;
     }
 
-
+//重新加载uat已执行通过的数据
     public List<SinoSigSQLLogEntity> execute(List<SinoSigSQLLogEntity> list) {
         List resultList=new ArrayList();
         for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {

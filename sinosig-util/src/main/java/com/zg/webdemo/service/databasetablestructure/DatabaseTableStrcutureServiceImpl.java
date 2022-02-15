@@ -1,14 +1,12 @@
 package com.zg.webdemo.service.databasetablestructure;
 
 import com.zg.handler.CommitClassHandler;
+import com.zg.sinosig.load.GetDataStructure;
 import com.zg.webdemo.dao.DatabaseTableStructureMapper;
 import com.zg.webdemo.entity.DatabaseTableStructureEntity;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DatabaseTableStrcutureServiceImpl extends CommitClassHandler implements DatabaseTableStrcutureService{
 
@@ -22,8 +20,34 @@ public class DatabaseTableStrcutureServiceImpl extends CommitClassHandler implem
     }
 
     @Override
-    public boolean reloadDataBaseTableStructures(List<DatabaseTableStructureEntity> databaseTableStructureEntityList, String environment) throws Exception {
-        mapper.deleteDatabaseAllStructures(environment);
+    public boolean reloadDataBaseTableStructures(List<DatabaseTableStructureEntity> databaseTableStructureEntityList,String environment,String systemFlag) throws Exception {
+        mapper.deleteDatabaseAllStructures( environment, systemFlag);
+        mapper.insertDataBaseTableStructures(databaseTableStructureEntityList);
+        return true;
+    }
+
+    @Override
+    public boolean reloadDataBaseTableStructures( String environment,String systemFlag) throws Exception {
+        List<DatabaseTableStructureEntity> databaseTableStructureEntityList =new ArrayList();
+        List<String> databaseList=new ArrayList();
+        switch (systemFlag){
+            case "new-non-auto":{
+                databaseList=Arrays.asList("保单库","投保单库","批单修改库");
+                break;
+            }
+            case "old-non-auto":{
+                databaseList=Arrays.asList("保单库","投保单库");
+                break;
+            }
+            case "platform":{
+                databaseList=Arrays.asList("平台库");
+                break;
+            }
+        }
+        for(String databaseName:databaseList) {
+            GetDataStructure.getDataStructure(environment,databaseName,systemFlag);
+        }
+        mapper.deleteDatabaseAllStructures(environment,systemFlag);
         mapper.insertDataBaseTableStructures(databaseTableStructureEntityList);
         return true;
     }
@@ -127,7 +151,7 @@ public class DatabaseTableStrcutureServiceImpl extends CommitClassHandler implem
     }
 
     @Override
-    public List<DatabaseTableStructureEntity> getTableStructure(String environment, String databaseName, String tableName) throws Exception {
-        return mapper.getTableStructure(environment,databaseName,tableName);
+    public List<DatabaseTableStructureEntity> getTableStructure(String environment, String databaseName, String tableName,String systemFlag) throws Exception {
+        return mapper.getTableStructure(systemFlag,environment,databaseName,tableName);
     }
 }

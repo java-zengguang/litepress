@@ -11,15 +11,16 @@ public class SimpleAutoDriver implements AutoDriver {
     private List<String> getLinkClasses(String systemFlag) {
         List<String> list=new ArrayList<>();
         if ("new-non-auto".equals(systemFlag)) {
-            String[] calssLine = {"com.zg.sinosig.driver.newnonauto.SimpleGenerateNNAUAT","com.zg.sinosig.driver.newnonauto.SimpleGenerateNNASTAGE", "com.zg.sinosig.driver.newnonauto.CommonCheckSQLNNA","com.zg.sinosig.driver.newnonauto.VerificationCheckNNA", "com.zg.sinosig.driver.newnonauto.SimpleExecuteNNA"};
+            String[] calssLine = {"com.zg.sinosig.driver.newnonauto.SimpleGenerateNNAUAT", "com.zg.sinosig.driver.newnonauto.CommonCheckSQLNNA", "com.zg.sinosig.driver.newnonauto.VerificationCheckNNA","com.zg.sinosig.driver.newnonauto.CheckTableRelationNNA", "com.zg.sinosig.driver.newnonauto.SimpleExecuteNNA,com.zg.sinosig.driver.result.SimpleResultImpl"
+                    ,"com.zg.sinosig.driver.newnonauto.SimpleGenerateNNASTAGE", "com.zg.sinosig.driver.newnonauto.CommonCheckSQLNNA", "com.zg.sinosig.driver.newnonauto.VerificationCheckNNA","com.zg.sinosig.driver.newnonauto.CheckTableRelationNNA", "com.zg.sinosig.driver.newnonauto.SimpleExecuteNNA","com.zg.sinosig.driver.result.SimpleResultImpl"};
             list=Arrays.asList(calssLine);
         }
         if ("old-non-auto".equals(systemFlag)) {
-            String[] calssLine = {"com.zg.sinosig.driver.oldnonauto.SimpleGenerateONA", "com.zg.sinosig.driver.oldnonauto.CommonCheckSQLONA","com.zg.sinosig.driver.oldnonauto.VerificationCheckONA", "com.zg.sinosig.driver.oldnonauto.SimpleExecuteONA"};
+            String[] calssLine = {"com.zg.sinosig.driver.oldnonauto.SimpleGenerateONA", "com.zg.sinosig.driver.oldnonauto.CommonCheckSQLONA","com.zg.sinosig.driver.oldnonauto.VerificationCheckONA", "com.zg.sinosig.driver.oldnonauto.SimpleExecuteONA","com.zg.sinosig.driver.result.SimpleResultImpl"};
             list=Arrays.asList(calssLine);
         }
         if ("platform".equals(systemFlag)) {
-            String[] calssLine = {"com.zg.sinosig.driver.platform.SimpleGeneratePF", "com.zg.sinosig.driver.platform.CommonCheckSQLPF","com.zg.sinosig.driver.platform.VerificationCheckPF", "com.zg.sinosig.driver.platform.SimpleExecutePF"};
+            String[] calssLine = {"com.zg.sinosig.driver.platform.SimpleGeneratePF", "com.zg.sinosig.driver.platform.CommonCheckSQLPF","com.zg.sinosig.driver.platform.VerificationCheckPF", "com.zg.sinosig.driver.platform.SimpleExecutePF","com.zg.sinosig.driver.result.SimpleResultImpl"};
             list=Arrays.asList(calssLine);
         }
 

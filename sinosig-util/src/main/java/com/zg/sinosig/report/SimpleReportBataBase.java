@@ -1,8 +1,9 @@
-package com.zg.sinosig.result;
+package com.zg.sinosig.report;
 
 import com.sinosig.saab.util.DateUtil;
 import com.sinosig.saab.util.FileUtils;
 import com.zg.database.util.SvnUtil;
+import com.zg.sinosig.result.SQLExecuteResult;
 import com.zg.util.io.POIUtils;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 import org.tmatesoft.svn.core.SVNException;
@@ -19,7 +20,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 
-public class SQLExecuteResultImpl implements SQLExecuteResult{
+public class SimpleReportBataBase implements ReportDataBase {
     private String executeRoot="D:\\test\\SQLExecuteTask\\";
 
     private String name = "zengguang-phq";

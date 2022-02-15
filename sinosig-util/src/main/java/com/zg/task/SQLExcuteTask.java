@@ -3,15 +3,15 @@ package com.zg.task;
 
 import com.zg.sinosig.driver.AutoDriver;
 import com.zg.sinosig.driver.SimpleAutoDriver;
-import com.zg.sinosig.execute.ExecuteSQL;
-import com.zg.sinosig.execute.SimpleExecute;
+import com.zg.sinosig.driver.execute.ExecuteSQL;
+import com.zg.sinosig.driver.execute.SimpleExecute;
 import com.zg.sinosig.introduce.IntroduceSQL;
 
 import com.zg.sinosig.introduce.SimpleIntroduceSQL;
 import com.zg.sinosig.load.LoadDataBaseStructure;
 import com.zg.sinosig.load.SimpleLoadDataBaseStructure;
-import com.zg.sinosig.result.SQLExecuteResult;
-import com.zg.sinosig.result.SQLExecuteResultImpl;
+import com.zg.sinosig.report.ReportDataBase;
+import com.zg.sinosig.report.SimpleReportBataBase;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -57,7 +57,7 @@ public class SQLExcuteTask implements Job {
 
         //执行结果同步svn
         if(true){
-            SQLExecuteResult sqlExecuteResult=new SQLExecuteResultImpl();
+            ReportDataBase sqlExecuteResult=new SimpleReportBataBase();
             sqlExecuteResult.doResult(resultList);
         }
 

@@ -6,6 +6,7 @@ import com.zg.database.pool.C3p0;
 import com.zg.database.pool.C3p0Impl;
 import com.zg.database.pool.DataBaseInte;
 import com.zg.database.pool.ZGDBP;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import java.util.Map;
 public class DBPUtils {
 
     private static Map<String,DataBaseInte> dataBaseInteMap=new HashMap<>();
-
+    private static Logger logger = Logger.getLogger(DBPUtils.class);
 
     private static DataBaseInte createDataBasePool(String dataSource){
         DataBaseInte databasePool=null;
@@ -26,8 +27,10 @@ public class DBPUtils {
             databasePool= new C3p0(optionDB);
         }else if ("ZGDBP".equals(optionDB.getDBPType())) {
             databasePool = ZGDBP.getInstance(optionDB);
+        }else if (optionDB.getDBPType()==null||"".equals(optionDB.getDBPType())) {
+            logger.info("未使用链接池");
         }else{
-            System.out.println(JDBCUtils.class+"====没找到数据源");
+            logger.info("未找到对应链接池");
         }
         dataBaseInteMap.put(dataSource,databasePool);
         return databasePool;

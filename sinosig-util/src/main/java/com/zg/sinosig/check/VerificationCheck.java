@@ -1,5 +1,6 @@
 package com.zg.sinosig.check;
 
+import com.zg.error.BizError;
 import com.zg.handler.CommitInterfaceHandler;
 import com.zg.handler.ProxyUtils;
 import com.zg.util.sinosing.NewJDBCUtil;
@@ -61,17 +62,34 @@ public class VerificationCheck implements CheckSQL {
         return sqlList;
     }
 
-    private Set<String> getTableFromSQL(String sourceSQL) {
+    //读取sql脚本里的表名
+    private Set<String> getTableFromSQL(String sourceSQL,String sqlType) {
         Set<String> tableNameSet = new HashSet<>();
-        List<String> sqlList = formatSQL(sourceSQL);
+        if("DDL".equals(sqlType)) {
+            List<String> sqlList = formatSQL(sourceSQL);
+            for (String sql : sqlList) {
+                List<String> list = Arrays.asList(sql.trim().split("\\s+"));
+                String opreate = list.get(0);
+                String opreateObject = list.get(1);
+                String tableName = list.get(2);
+                if (opreate.trim().contains("alter") && "table".equals(opreateObject.trim())) {
+                    tableNameSet.add(tableName);
+                }
+            }
+        }
+        if("DML".equals(sqlType)) {
+            List<String> sqlList = formatSQL(sourceSQL);
+            for (String sql : sqlList) {
+                List<String> list = Arrays.asList(sql.trim().split("\\s+"));
+                String opreate = list.get(0);
 
-        for (String sql : sqlList) {
-            List<String> list = Arrays.asList(sql.trim().split("\\s+"));
-            String opreate = list.get(0);
-            String opreateObject = list.get(1);
-            String tableName = list.get(2);
-            if (opreate.trim().contains("alter") && "table".equals(opreateObject.trim())) {
-                tableNameSet.add(tableName);
+                if (opreate.trim().contains("update")) {
+                    tableNameSet.add(list.get(1));
+                }
+                if (opreate.trim().contains("insert")) {
+                    tableNameSet.add(list.get(2));
+                }
+
             }
         }
 
@@ -82,13 +100,11 @@ public class VerificationCheck implements CheckSQL {
     private List<String> createTableSQL(SinoSigSQLLogEntity sinoSigSQLLogEntity) throws Exception {
         List<String> list = new ArrayList<>();
 
-        Set<String> tableNames = getTableFromSQL(sinoSigSQLLogEntity.getBasesql());
+        Set<String> tableNames = getTableFromSQL(sinoSigSQLLogEntity.getBasesql(),sinoSigSQLLogEntity.sqltype);
         for (String tableName : tableNames) {
             String sql = "";
-            List<DatabaseTableStructureEntity> databaseTableStructureEntities = strcutureService.getTableStructure(sinoSigSQLLogEntity.environment, sinoSigSQLLogEntity.databasename, tableName);
+            List<DatabaseTableStructureEntity> databaseTableStructureEntities = strcutureService.getTableStructure(sinoSigSQLLogEntity.environment, sinoSigSQLLogEntity.databasename, tableName,sinoSigSQLLogEntity.systemflag);
             if (databaseTableStructureEntities != null && databaseTableStructureEntities.size() > 0) {
-
-
                 String columns = "";
                 for (DatabaseTableStructureEntity databaseTableStructureEntity : databaseTableStructureEntities) {
                     columns = columns + "  \"" + databaseTableStructureEntity.columnName + "\"   " + databaseTableStructureEntity.columnType;
@@ -101,6 +117,8 @@ public class VerificationCheck implements CheckSQL {
                 columns = columns.substring(0, columns.length() - 1);
                 sql = "create table " + tableName + " ( \r\n" + columns + " \r\n);";
                 list.add(sql);
+            }else{
+                throw new Exception("未找到待加载表名"+tableName);
             }
         }
         return list;
@@ -120,16 +138,24 @@ public class VerificationCheck implements CheckSQL {
             initSQLList.add(" create SCHEMA nvpolicy ");
             initSQLList.add(" create SCHEMA nvproposal ");
             initSQLList.add(" create SCHEMA nvendorsement ");
-
             for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
                 //模拟环境复制对象
                 SinoSigSQLLogEntity testEntity = (SinoSigSQLLogEntity) sinoSigSQLLogEntity.clone();
                 testEntity.environment = "test";
                 testEntitys.add(testEntity);
-                //拉长字段和增加字段，需要在目标环境建表
-                if ("增加字段".equals(sinoSigSQLLogEntity.sqlpurpose) || "拉长字段".equals(sinoSigSQLLogEntity.sqlpurpose)) {
-                    List<String> sqlList = getInitSQL(sinoSigSQLLogEntity);
-                    initSQLList.addAll(sqlList);
+                //初始化新建表
+                List<String> sqlList = getInitSQL(sinoSigSQLLogEntity);
+                initSQLList.addAll(sqlList);
+
+                if("DDL".equals(sinoSigSQLLogEntity.sqltype)) {
+                    if ("增加字段".equals(sinoSigSQLLogEntity.sqlpurpose) || "拉长字段".equals(sinoSigSQLLogEntity.sqlpurpose)) {
+
+                    }
+                }
+                if("DML".equals(sinoSigSQLLogEntity.sqltype)) {
+                    if ("插入数据".equals(sinoSigSQLLogEntity.sqlpurpose) || "更新数据".equals(sinoSigSQLLogEntity.sqlpurpose)) {
+
+                    }
                 }
 
             }
@@ -192,26 +218,7 @@ public class VerificationCheck implements CheckSQL {
                     "\tINFORMATION_SCHEMA.COLUMNS a" +
                     " where a.TABLE_SCHEMA  in ('NVENDORSEMENT','NVPROPOSAL','NVPOLICY')  ";
             List<DatabaseTableStructureEntity> list1 = jdbcUtil.select(sql, DatabaseTableStructureEntity.class);
-            strcutureService.reloadDataBaseTableStructures(list1, "test");
-            List<Map> checkResult = new ArrayList<>();
-
-            checkResult = strcutureService.getCompareResult("test", "CT");
-            if (checkResult != null && checkResult.size() > 1) {//里面自带表头
-                errorMessage = errorMessage + "当前批次套表字段类型检查不通过;";
-                errorMessage = errorMessage + checkResult;
-                stageFlag = "-1";
-            }
-            checkResult = strcutureService.getCompareResult("test", "CTC");
-            if (checkResult != null && checkResult.size() > 1) {//自带表头，所以>1
-                errorMessage = errorMessage + "当前批次套表缺少字段检查不通过;";
-                errorMessage = errorMessage + checkResult;
-                stageFlag = "-1";
-            }
-
-            checkResult = strcutureService.getCompareResult("test", "CTT");
-            if (checkResult != null && checkResult.size() > 0) {
-                errorMessage = errorMessage + "套表缺失检查不通过;";
-            }
+            strcutureService.reloadDataBaseTableStructures(list1,"test", "new-non-auto");
 
         }
 
@@ -235,6 +242,39 @@ public class VerificationCheck implements CheckSQL {
         return list;
     }
 
+
+    private void checkDML(List<SinoSigSQLLogEntity> list) {
+
+        String errorMessage = "";
+        String stageFlag = "3";
+
+        if (!initTestEnvironment(list)) {
+            errorMessage = "环境初始化失败";
+            stageFlag = "-1";
+        } else {
+
+            for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
+                List<String> executeSQLList = formatSQL(sinoSigSQLLogEntity.basesql);
+                try {
+                    jdbcUtil.batchSql(executeSQLList, true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    stageFlag = "-1";
+                    String message = e.getMessage().replaceAll("'", "");
+                    if (message.length() > 100) {
+                        message = message.substring(0, 100);
+                    }
+                    sinoSigSQLLogEntity.setErrormassage("脚本执行错误" + message);
+                    continue;
+                }
+            }
+        }
+        for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
+            sinoSigSQLLogEntity.setErrormassage(errorMessage);
+            sinoSigSQLLogEntity.executestate = stageFlag;
+        }
+    }
+
     @Override
     public List<SinoSigSQLLogEntity> checkSQL(List<SinoSigSQLLogEntity> list) throws Exception {
         //分组+单个校验
@@ -243,7 +283,7 @@ public class VerificationCheck implements CheckSQL {
 
         for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
             //初步校验失败的不进入分组校验
-           if("3".equals(sinoSigSQLLogEntity)){
+           if("3".equals(sinoSigSQLLogEntity.executestate)){
                 //分组
                 if ("DDL".equals(sinoSigSQLLogEntity.getSqltype())) {
                     ddlList.add(sinoSigSQLLogEntity);
@@ -256,12 +296,17 @@ public class VerificationCheck implements CheckSQL {
             checkDDL(ddlList);
         }
 
+        if(dmlList!=null&&dmlList.size()>0) {
+            checkDML(dmlList);
+        }
+
         for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
             sinoSigSQLLogService.updateStateSinoSingSQLLog(sinoSigSQLLogEntity);
         }
 
         return list;
     }
+
 
 
 }
