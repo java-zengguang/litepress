@@ -3,7 +3,6 @@ package com.zg.sinosig.report;
 import com.sinosig.saab.util.DateUtil;
 import com.sinosig.saab.util.FileUtils;
 import com.zg.database.util.SvnUtil;
-import com.zg.sinosig.result.SQLExecuteResult;
 import com.zg.util.io.POIUtils;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 import org.tmatesoft.svn.core.SVNException;
