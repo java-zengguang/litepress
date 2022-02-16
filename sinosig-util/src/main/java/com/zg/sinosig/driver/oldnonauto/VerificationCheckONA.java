@@ -11,7 +11,7 @@ public class VerificationCheckONA extends VerificationCheck implements SunAutoDr
     @Override
     public List<SinoSigSQLLogEntity> doExecute(String systemFlag, List<SinoSigSQLLogEntity> list) throws Exception {
         if("old-non-auto".equals(systemFlag)) {
-           // checkSQL(list);
+            checkSQL(list);
         }
         return list;
     }

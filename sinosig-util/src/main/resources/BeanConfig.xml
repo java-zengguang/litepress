@@ -296,6 +296,26 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
+    <bean id="old_old-non-auto_sunshine" class="com.zg.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.29:1521/stagedb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">stageapp</property>
+        <property name="password" type="java.lang.String">stageapp1154</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="old_old-non-auto_prpins" class="com.zg.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.29:1521/pcoreuat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">basecode</property>
+        <property name="password" type="java.lang.String">basecode</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
     <bean id="test" class="com.zg.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:h2:mem:test;MODE=Oracle</property>
         <property name="maxPoolSize" type="int">10</property>

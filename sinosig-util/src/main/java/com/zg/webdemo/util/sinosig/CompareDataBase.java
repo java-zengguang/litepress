@@ -144,26 +144,24 @@ public class CompareDataBase {
                 }
                 //   sqlList = GetDataStructure.readFileToSqlList(new File(dirs), databaseName);
             }
-            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
+            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs),"new-non-auto");
             databaseTableStructureEntitieList.addAll(porList);
         }
 
-/*
         //老核心数据加载
         if (true) {
             String dirs = dir + "\\老核心";
-            String databaseNames[] = {"sunshine", "prpins"};
+/*            String databaseNames[] = {"保单库", "投保单库"};
             for (String databaseName : databaseNames) {
                 String[] array = {"dev"};
                 for (String s : array) {
                     List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure(s, databaseName,"old-non-auto");
                     databaseTableStructureEntitieList.addAll(stageList);
                 }
-            }
-            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
+            }*/
+            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs),"old-non-auto");
             databaseTableStructureEntitieList.addAll(porList);
         }
-*/
         if(true){
             List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure("dev", "平台库","platform");
             databaseTableStructureEntitieList.addAll(stageList);

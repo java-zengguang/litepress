@@ -16,7 +16,8 @@ public class SimpleAutoDriver implements AutoDriver {
             list=Arrays.asList(calssLine);
         }
         if ("old-non-auto".equals(systemFlag)) {
-            String[] calssLine = {"com.zg.sinosig.driver.oldnonauto.SimpleGenerateONA", "com.zg.sinosig.driver.oldnonauto.CommonCheckSQLONA","com.zg.sinosig.driver.oldnonauto.VerificationCheckONA", "com.zg.sinosig.driver.oldnonauto.SimpleExecuteONA","com.zg.sinosig.driver.result.SimpleResultImpl"};
+            //, "com.zg.sinosig.driver.oldnonauto.SimpleExecuteONA","com.zg.sinosig.driver.result.SimpleResultImpl"
+            String[] calssLine = {"com.zg.sinosig.driver.oldnonauto.SimpleGenerateONA", "com.zg.sinosig.driver.oldnonauto.CommonCheckSQLONA","com.zg.sinosig.driver.oldnonauto.VerificationCheckONA"};
             list=Arrays.asList(calssLine);
         }
         if ("platform".equals(systemFlag)) {

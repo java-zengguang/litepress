@@ -46,21 +46,21 @@ public class GetDataStructure {
                         break;
                     }
                 }
-                if ("dev".equals(environment)) {
-                    switch (database) {
-                        case "保单库": {
-                            owners = Arrays.asList("sinosoft", "stageapp");
-                            break;
-                        }
-                        case "投保单库": {
-                            owners = Arrays.asList("basecode");
-                            break;
-                        }
 
+            }
+            if ("dev".equals(environment)) {
+                switch (database) {
+                    case "保单库": {
+                        owners = Arrays.asList("sinosoft", "stageapp");
+                        break;
                     }
+                    case "投保单库": {
+                        owners = Arrays.asList("basecode");
+                        break;
+                    }
+
                 }
             }
-
         }
 
         if ("platform".equals(systemFlag)) {
@@ -120,14 +120,14 @@ public class GetDataStructure {
     public static List<DatabaseTableStructureEntity> getDataStructure(String environment, String database, String systemFlag) throws Exception {
 
         NewJDBCUtil jdbcUtil = new NewJDBCUtil(getDataSource(environment, database, systemFlag));
-        List<String> ownerList=getOwner(environment,database,systemFlag);
+        List<String> ownerList = getOwner(environment, database, systemFlag);
         String owners = "";
-        for(String owner:ownerList){
-            owners=owners+"'"+owner+"',";
+        for (String owner : ownerList) {
+            owners = owners + "'" + owner + "',";
         }
-        if(owners.contains(",")){
-            owners=owners.substring(0,owners.length()-1);
-            owners=owners.toUpperCase();
+        if (owners.contains(",")) {
+            owners = owners.substring(0, owners.length() - 1);
+            owners = owners.toUpperCase();
         }
 
         String sql = "select '" + database + "' as \"databaseName\",'" + environment + "' as \"environment\",'" + systemFlag + "' as \"systemflag\"," +
@@ -183,7 +183,7 @@ public class GetDataStructure {
         return list;
     }
 
-    public static List<DatabaseTableStructureEntity> getDataStructureByExcel(File dirFile) throws IOException {
+    public static List<DatabaseTableStructureEntity> getDataStructureByExcel(File dirFile,String systemFlag) throws IOException {
         List<DatabaseTableStructureEntity> list = new ArrayList<>();
         if (dirFile.exists() && dirFile.isDirectory()) {
             File[] files = dirFile.listFiles(new FilenameFilter() {
@@ -213,6 +213,7 @@ public class GetDataStructure {
                     databaseTableStructureEntity.nullAble = map.get("nullAble");
                     databaseTableStructureEntity.dataDefault = map.get("dataDefault");
                     databaseTableStructureEntity.comments = map.get("comments");
+                    databaseTableStructureEntity.systemflag=systemFlag;
                     list.add(databaseTableStructureEntity);
                 }
 
