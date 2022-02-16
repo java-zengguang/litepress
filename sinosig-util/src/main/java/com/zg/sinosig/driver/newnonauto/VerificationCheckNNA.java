@@ -1,7 +1,7 @@
 package com.zg.sinosig.driver.newnonauto;
 
 import com.zg.sinosig.driver.SunAutoDriver;
-import com.zg.sinosig.check.VerificationCheck;
+import com.zg.sinosig.driver.check.VerificationCheck;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 
 import java.util.*;

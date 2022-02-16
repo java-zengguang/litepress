@@ -2,7 +2,7 @@ package com.zg.sinosig.driver.newnonauto;
 
 import com.zg.database.util.JDBCUtils;
 import com.zg.sinosig.driver.SunAutoDriver;
-import com.zg.sinosig.check.BaseCheckSQL;
+import com.zg.sinosig.driver.check.BaseCheckSQL;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 
 import java.util.ArrayList;

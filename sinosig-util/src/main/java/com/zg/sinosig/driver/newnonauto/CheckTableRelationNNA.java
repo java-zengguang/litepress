@@ -1,7 +1,6 @@
 package com.zg.sinosig.driver.newnonauto;
 
 import com.zg.handler.ProxyUtils;
-import com.zg.sinosig.check.VerificationCheck;
 import com.zg.sinosig.driver.SunAutoDriver;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureService;
@@ -35,8 +34,10 @@ public class CheckTableRelationNNA  implements SunAutoDriver {
         }
 
         checkResult = strcutureService.getCompareResult("test", "CTT");
-        if (checkResult != null && checkResult.size() > 0) {
+        if (checkResult != null && checkResult.size() > 1) {//自带表头，所以>1
             errorMessage = errorMessage + "套表缺失检查不通过;";
+            errorMessage = errorMessage + checkResult;
+            stageFlag = "-1";
         }
 
         for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
