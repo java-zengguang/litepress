@@ -23,8 +23,8 @@ public class SimpleGenerateONA extends SimpleGenerate implements SunAutoDriver {
                 }
                 sinoSigSQLLogEntity.environment = "old";
                 sinoSigSQLLogEntity.executestate = "3";
-                sinoSigSQLLogEntity.devsql=new String(sinoSigSQLLogEntity.basesql);
-                sinoSigSQLLogEntity.prosql=new String(sinoSigSQLLogEntity.basesql);
+                sinoSigSQLLogEntity.devsql=sinoSigSQLLogEntity.basesql;
+                sinoSigSQLLogEntity.prosql=sinoSigSQLLogEntity.basesql;
             }
         }
         list=execute(list);

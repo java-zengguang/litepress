@@ -1,4 +1,4 @@
-package com.zg.sinosig.check;
+package com.zg.sinosig.driver.check;
 
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 

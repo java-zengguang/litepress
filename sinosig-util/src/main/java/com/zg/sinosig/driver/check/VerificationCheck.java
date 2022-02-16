@@ -1,6 +1,5 @@
-package com.zg.sinosig.check;
+package com.zg.sinosig.driver.check;
 
-import com.zg.error.BizError;
 import com.zg.handler.CommitInterfaceHandler;
 import com.zg.handler.ProxyUtils;
 import com.zg.util.sinosing.NewJDBCUtil;
@@ -177,6 +176,8 @@ public class VerificationCheck implements CheckSQL {
         String errorMessage = "";
         String stageFlag = "3";
 
+
+
         if (!initTestEnvironment(list)) {
             errorMessage = "环境初始化失败";
             stageFlag = "-1";
@@ -198,13 +199,14 @@ public class VerificationCheck implements CheckSQL {
                 }
             }
 
+
             //加载表结构到本地Mysql
 
             String sql = "select\n" +
                     "\t(case\n" +
                     "\t\twhen a.TABLE_SCHEMA = 'NVPROPOSAL' then '投保单库'\n" +
                     "\t\twhen a.TABLE_SCHEMA = 'NVENDORSEMENT' then '批单修改库'\n" +
-                    "\t\twhen a.TABLE_SCHEMA = 'NVPOLICY' then ' 保单库'\n" +
+                    "\t\twhen a.TABLE_SCHEMA = 'NVPOLICY' then '保单库'\n" +
                     "\t\telse a.TABLE_SCHEMA end ) as \"databaseName\",\n" +
                     "\ta.TABLE_SCHEMA as \"owner\",\n" +
                     "\t'test' as \"environment\" ,\n" +

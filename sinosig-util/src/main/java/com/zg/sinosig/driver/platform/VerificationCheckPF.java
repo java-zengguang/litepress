@@ -1,6 +1,6 @@
 package com.zg.sinosig.driver.platform;
 
-import com.zg.sinosig.check.VerificationCheck;
+import com.zg.sinosig.driver.check.VerificationCheck;
 import com.zg.sinosig.driver.SunAutoDriver;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 

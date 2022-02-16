@@ -1,6 +1,6 @@
 package com.zg.sinosig.driver.oldnonauto;
 
-import com.zg.sinosig.check.BaseCheckSQL;
+import com.zg.sinosig.driver.check.BaseCheckSQL;
 import com.zg.sinosig.driver.SunAutoDriver;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 

@@ -218,7 +218,8 @@ public class DatabaseTableStructureMapper {
                 "on t2.databaseName =t1.codecname and t2.tablename =t1.codecode where t2.databasename is null ";*/
         String deffSQL=" select '套表名','库名','表名' from  dual union \n ";
         deffSQL=deffSQL+" select t.basetablename ,t.databasename ,t.tablename from tablerelationship t where t.`type` ='baseModel' \n" +
-                "and not exists (select 1 from databasetablestructure d where d.environment ='"+environment+"' and d.databaseName =t.databasename and d.tableName =t.tablename ) ";
+                " and basetablename in (select distinct t2.basetablename from databasetablestructure d,tablerelationship t2 where  d.environment ='"+environment+"' and d.databaseName =t2.databasename and d.tableName =t2.tablename )\n" +
+                "and not exists (select 1 from databasetablestructure d where d.environment ='"+environment+"' and d.databaseName =t.databasename and d.tableName =t.tablename ) \n";
         return JDBCUtils.selectToMapList(deffSQL);
     }
 

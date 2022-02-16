@@ -1,25 +1,29 @@
 package com.zg.sinosig.report;
 
 import com.sinosig.saab.util.DateUtil;
+import com.sinosig.saab.util.FileUtils;
+import com.zg.database.util.SvnUtil;
 import com.zg.util.io.POIUtils;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
-
-
+import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
+import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
+import org.tmatesoft.svn.core.wc.ISVNOptions;
+import org.tmatesoft.svn.core.wc.SVNClientManager;
+import org.tmatesoft.svn.core.wc.SVNWCUtil;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 
-public class SimpleReportBataBase implements ReportDataBase {
-    private String executeRoot;
+public class SVNSimpleReportBataBase implements ReportDataBase {
+    private String executeRoot= com.zg.util.io.FileUtils.PATH;
 
     private String name = "zengguang-phq";
     private String password = "";
 
-    public SimpleReportBataBase(String executeRoot) {
-        this.executeRoot = executeRoot;
-    }
 
     private boolean saveSqlFile(SinoSigSQLLogEntity sinoSigSQLLogEntity) throws IOException {
 
@@ -49,6 +53,7 @@ public class SimpleReportBataBase implements ReportDataBase {
                 break;
             }
         }
+
 
         String path = executeRoot + "temp\\" + sinoSigSQLLogEntity.planname;
 
@@ -130,7 +135,25 @@ public class SimpleReportBataBase implements ReportDataBase {
         String fileName=DateUtil.format(new Date(),"yyyy-MM-dd-HHmmss") + ".xlsx";
         File resultFile = new File(executeRoot + "out" ,fileName);
         POIUtils.writeXLSX(resultMap, resultFile);
+        Date currentDate=new Date();
+        String svnUrl="http://it_doc.sinosig.com/SPIS/非车新一代/01项目范围管理/UAT脚本发布提交/"+DateUtil.format(currentDate,"yyyyMM")+"/"+DateUtil.format(currentDate,"yyyyMMdd")+"/执行结果";
+        upLoadToSVN(resultFile,new File("D:\\test\\UAT脚本发布提交\\"+DateUtil.format(currentDate,"yyyyMM")+"\\"+DateUtil.format(currentDate,"yyyyMMdd")+"\\执行结果",fileName),svnUrl);
+    }
 
+
+    private void upLoadToSVN(File sourceFile, File targetFile,String svnUrl) throws IOException, SVNException {
+        System.out.println("提交结果到SVN"+svnUrl);
+        SVNRepositoryFactoryImpl.setup();
+        FileUtils.copyFile(sourceFile,targetFile);
+        ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
+        SVNClientManager  ourClientManager = SVNClientManager.newInstance((DefaultSVNOptions) options, name, password);
+        SVNURL svnURL=SVNURL.parseURIEncoded(svnUrl);
+        if (SvnUtil.isURLExist(svnURL, name, password)) {
+            SvnUtil.addEntry(ourClientManager,targetFile);
+            SvnUtil.commit(ourClientManager, targetFile,true,"执行结果");
+        } else {
+            System.out.println("目录不存在！");
+        }
     }
 
     @Override
