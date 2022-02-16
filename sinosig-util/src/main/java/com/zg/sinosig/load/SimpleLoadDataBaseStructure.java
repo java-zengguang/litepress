@@ -70,7 +70,7 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
                 }
 
             }
-            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
+            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs),"new-non-auto");
             databaseTableStructureEntitieList.addAll(porList);
         }
         //老核心数据加载
@@ -84,7 +84,7 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
                     databaseTableStructureEntitieList.addAll(stageList);
                 }
             }
-            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
+            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs),"old-non-auto");
             databaseTableStructureEntitieList.addAll(porList);
         }
 

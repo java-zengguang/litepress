@@ -16,12 +16,12 @@ public  class SimpleGenerate implements Generate {
 
     //重新加载uat已执行通过的数据
     public List<SinoSigSQLLogEntity> execute(List<SinoSigSQLLogEntity> list) throws SQLException, IllegalAccessException {
-        List resultList=new ArrayList();
+
         for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
             if("3".equals(sinoSigSQLLogEntity.executestate)){
                 sinoSigSQLLogService.insertSinoSingSQLLog(sinoSigSQLLogEntity);
             }
         }
-        return resultList;
+        return list;
     }
 }

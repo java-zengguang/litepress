@@ -18,6 +18,6 @@ public class CommonCheckSQLONA extends BaseCheckSQL implements SunAutoDriver {
 
     @Override
     public boolean checkCustomSQLRule(SinoSigSQLLogEntity sinoSigSQLLogEntity) {
-        return false;
+        return true;
     }
 }
