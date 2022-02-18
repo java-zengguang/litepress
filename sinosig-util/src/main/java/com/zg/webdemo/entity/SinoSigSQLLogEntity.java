@@ -158,6 +158,10 @@ public class SinoSigSQLLogEntity extends MainModel {
         return errormassage;
     }
 
+    public String getOwner() {
+        return owner;
+    }
+
     public void setErrormassage(String errormassage) {
         if (this.errormassage==null){
             this.errormassage="";

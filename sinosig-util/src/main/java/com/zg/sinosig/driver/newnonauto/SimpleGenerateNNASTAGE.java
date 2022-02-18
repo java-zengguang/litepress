@@ -17,7 +17,6 @@ public class SimpleGenerateNNASTAGE extends SimpleGenerate implements SunAutoDri
             for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
                 if (checkCustomModelRule(sinoSigSQLLogEntity)) {
                     SinoSigSQLLogEntity entity = machiningSQL(sinoSigSQLLogEntity);
-                    resultList.add(sinoSigSQLLogEntity);
                     resultList.add(entity);
                 }
             }

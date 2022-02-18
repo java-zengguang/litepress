@@ -130,7 +130,7 @@ public class CommonCheckSQLNNA extends BaseCheckSQL implements SunAutoDriver {
                                 }
                                 flag1 = JDBCUtils.getOneValue("select 1 from databasetablestructure d where d.environment  in ('old','old_dev') and d.tablename ='" + tableName + "' and d.columnname ='" + columnName + "'  and d.columntype <> '" + columnType + "' ");
                                 if ("1".equals(flag1)) {
-                                    sinoSigSQLLogEntity.setErrormassage("检查未通过:老核心已有此字段，且字段类型或长度不一致" + "tablename:" + tableName + " columnname:" + columnName);
+                                    sinoSigSQLLogEntity.setErrormassage("请注意:老核心已有此字段，且字段类型或长度不一致" + "tablename:" + tableName + " columnname:" + columnName);
                                     // return false;
                                 }
 

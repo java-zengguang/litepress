@@ -32,6 +32,7 @@ public class CheckTableRelationNNA  implements SunAutoDriver {
             errorMessage = errorMessage + checkResult;
             stageFlag = "-1";
         }
+/*
 
         checkResult = strcutureService.getCompareResult("test", "CTT");
         if (checkResult != null && checkResult.size() > 1) {//自带表头，所以>1
@@ -39,6 +40,7 @@ public class CheckTableRelationNNA  implements SunAutoDriver {
             errorMessage = errorMessage + checkResult;
             stageFlag = "-1";
         }
+*/
 
         for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
             sinoSigSQLLogEntity.setErrormassage(errorMessage);
