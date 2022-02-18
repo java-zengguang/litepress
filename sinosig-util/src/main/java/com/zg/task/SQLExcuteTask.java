@@ -33,7 +33,7 @@ public class SQLExcuteTask implements Job {
         // 执行
         if (true) {
             List<SinoSigSQLLogEntity> executeList = new ArrayList<>();
-            IntroduceSQL introduceSQL = new SimpleIntroduceSQL(executeRoot, executeBatchNo);
+            IntroduceSQL introduceSQL = new SVNSimpleIntroduceSQL(executeRoot, executeBatchNo);
             List<SinoSigSQLLogEntity> list = introduceSQL.initLoadSinoSigSQL();
             for(SinoSigSQLLogEntity sinoSigSQLLogEntity:list){
                 SinoSigSQLLogEntity sigSQLLogEntity= (SinoSigSQLLogEntity) sinoSigSQLLogEntity.clone();

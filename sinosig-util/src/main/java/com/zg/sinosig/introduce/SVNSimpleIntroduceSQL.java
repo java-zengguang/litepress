@@ -40,7 +40,7 @@ public class SVNSimpleIntroduceSQL implements IntroduceSQL {
 
     // private SinoSigSQLLogService sinoSigSQLLogService = (SinoSigSQLLogService) ProxyUtils.getProxyClass(new SinoSigSQLLogServiceImpl(), "insertSinoSingSQLLog,updateStateSinoSingSQLLog");
 
-    private SinoSigSQLLogService sinoSigSQLLogService = (SinoSigSQLLogService) ProxyUtils.getProxyInterface(SinoSigSQLLogServiceImpl.class, new CommitInterfaceHandler(new SinoSigSQLLogServiceImpl(), "insertSinoSingSQLLog,updateStateSinoSingSQLLog"));
+  //  private SinoSigSQLLogService sinoSigSQLLogService = (SinoSigSQLLogService) ProxyUtils.getProxyInterface(SinoSigSQLLogServiceImpl.class, new CommitInterfaceHandler(new SinoSigSQLLogServiceImpl(), "insertSinoSingSQLLog,updateStateSinoSingSQLLog"));
 
     public SVNSimpleIntroduceSQL(String executeRoot, String executeBatchNo) {
         this.executeRoot = executeRoot;
@@ -218,7 +218,7 @@ public class SVNSimpleIntroduceSQL implements IntroduceSQL {
                             }
 
                             logEntities.add(baseEntity);
-                            sinoSigSQLLogService.insertSinoSingSQLLog(baseEntity);
+                          //  sinoSigSQLLogService.insertSinoSingSQLLog(baseEntity);
                         }
 
                     }
