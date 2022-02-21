@@ -67,6 +67,7 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
                 String[] array = {"int", "uat", "stage"};
                 for (String s : array) {
                     List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure(s, databaseName, "new-non-auto");
+                    databaseTableStructureEntitieList.addAll(stageList);
                 }
 
             }

@@ -14,8 +14,8 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class VerificationCheck implements CheckSQL {
-    private NewJDBCUtil jdbcUtil;
+public abstract class VerificationCheck implements CheckSQL {
+    public NewJDBCUtil jdbcUtil;
     DatabaseTableStrcutureService strcutureService = (DatabaseTableStrcutureService) ProxyUtils.getProxyClass(new DatabaseTableStrcutureServiceImpl(), "insertDataBaseTableStructures,reloadDataBaseTableStructures");
     private SinoSigSQLLogService sinoSigSQLLogService = (SinoSigSQLLogService) ProxyUtils.getProxyInterface(SinoSigSQLLogServiceImpl.class, new CommitInterfaceHandler(new SinoSigSQLLogServiceImpl(), "insertSinoSingSQLLog,updateStateSinoSingSQLLog"));
 
@@ -224,7 +224,7 @@ public class VerificationCheck implements CheckSQL {
         String[] lines = sourceSQL.split("\n");
         String exeSQL = "";
         for (String line : lines) {
-            if (line.contains("--")) {
+            if (line.contains("--") &&!line.contains(";")) {
                 line = "";
             }
             exeSQL = exeSQL + line;
@@ -235,33 +235,15 @@ public class VerificationCheck implements CheckSQL {
     }
 
 
+    public abstract void saveDataBaseStrucutre() throws Exception ;
+
+
     public List<SinoSigSQLLogEntity> checkDDL(List<SinoSigSQLLogEntity> list) throws Exception {
         //将所有脚本在模拟环境运行后，可运行检查，做逻辑性检查，套表检查，按批次做
         if (!executeTestEnvironment(list)) {
 
         } else {
-
-            //加载表结构到本地Mysql
-
-            String sql = "select\n" +
-                    "\t(case\n" +
-                    "\t\twhen a.TABLE_SCHEMA = 'NVPROPOSAL' then '投保单库'\n" +
-                    "\t\twhen a.TABLE_SCHEMA = 'NVENDORSEMENT' then '批单修改库'\n" +
-                    "\t\twhen a.TABLE_SCHEMA = 'NVPOLICY' then '保单库'\n" +
-                    "\t\telse a.TABLE_SCHEMA end ) as \"databaseName\",\n" +
-                    "\ta.TABLE_SCHEMA as \"owner\",\n" +
-                    "\t'test' as \"environment\" ,\n" +
-                    "\ta.TABLE_NAME as \"tableName\" ,\n" +
-                    "\t(a.data_type||CHARACTER_MAXIMUM_LENGTH||NUMERIC_PRECISION||NUMERIC_SCALE) as \"columnType\",\n" +
-                    "\ta.COLUMN_NAME as \"columnName\" ,\n" +
-                    "\t'' as \"nullAble\",\n" +
-                    "\t'' as \"dataDefault\",\n" +
-                    "\t'' as \"comments\"\n" +
-                    "from\n" +
-                    "\tINFORMATION_SCHEMA.COLUMNS a" +
-                    " where a.TABLE_SCHEMA  in ('NVENDORSEMENT','NVPROPOSAL','NVPOLICY')  ";
-            List<DatabaseTableStructureEntity> list1 = jdbcUtil.select(sql, DatabaseTableStructureEntity.class);
-            strcutureService.reloadDataBaseTableStructures(list1, "test", "new-non-auto");
+            saveDataBaseStrucutre();
 
         }
 

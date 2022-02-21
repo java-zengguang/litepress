@@ -15,4 +15,9 @@ public class VerificationCheckPF extends VerificationCheck implements SunAutoDri
         }
         return list;
     }
+
+    @Override
+    public void saveDataBaseStrucutre() throws Exception {
+
+    }
 }

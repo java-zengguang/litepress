@@ -19,7 +19,7 @@ public  class SimpleGenerate implements Generate {
 
         for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
             if("3".equals(sinoSigSQLLogEntity.executestate)){
-           //     sinoSigSQLLogService.insertSinoSingSQLLog(sinoSigSQLLogEntity);
+                sinoSigSQLLogService.insertSinoSingSQLLog(sinoSigSQLLogEntity);
             }
         }
         return list;
