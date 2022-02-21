@@ -45,7 +45,7 @@ public class DatabaseTableStrcutureServiceImpl extends CommitClassHandler implem
             }
         }
         for(String databaseName:databaseList) {
-            GetDataStructure.getDataStructure(environment,databaseName,systemFlag);
+            databaseTableStructureEntityList.addAll(GetDataStructure.getDataStructure(environment,databaseName,systemFlag));
         }
         mapper.deleteDatabaseAllStructures(environment,systemFlag);
         mapper.insertDataBaseTableStructures(databaseTableStructureEntityList);

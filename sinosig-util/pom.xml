@@ -20,7 +20,13 @@
         <nonveh-model.version>22.01.22</nonveh-model.version>
     </properties>
 
-
+    <repositories>
+        <repository>
+            <id>pentaho-releases</id>
+            <name>Kettle</name>
+            <url>https://nexus.pentaho.org/content/groups/omni/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
@@ -117,6 +123,20 @@
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
+
+       <!-- 添加kettle依赖-->
+        <dependency>
+            <groupId>pentaho-kettle</groupId>
+            <artifactId>kettle-core</artifactId>
+            <version>7.1.0.0-12</version>
+        </dependency>
+        <dependency>
+            <groupId>pentaho-kettle</groupId>
+            <artifactId>kettle-engine</artifactId>
+            <version>7.1.0.0-12</version>
+        </dependency>
+
+
 
 
 

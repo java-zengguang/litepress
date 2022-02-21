@@ -15,4 +15,9 @@ public class VerificationCheckONA extends VerificationCheck implements SunAutoDr
         }
         return list;
     }
+
+    @Override
+    public void saveDataBaseStrucutre() throws Exception {
+
+    }
 }
