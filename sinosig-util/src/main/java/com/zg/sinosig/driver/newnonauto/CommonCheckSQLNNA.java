@@ -97,20 +97,30 @@ public class CommonCheckSQLNNA extends BaseCheckSQL implements SunAutoDriver {
                     }
                     if ("table".equals(opreateObject)) {
 
+                        if(true) {
 
-                        String flag = JDBCUtils.getOneValue("select owner from databasetablestructure d where d.environment  in ('pro')  and d.tablename ='" + tableName + "'");
-                        flag = flag.toLowerCase();
-                        if ("".equals(flag) && "alter".equals(opreate) && !sql.contains("constraint")) {
-                            sinoSigSQLLogEntity.setErrormassage("检查未通过:生产没有这个表 " + "tablename:" + tableName);
-                            return false;
+                            String flag = JDBCUtils.getOneValue("select owner from databasetablestructure d where d.environment  in ('pro')  and d.tablename ='" + tableName + "'");
+                            flag = flag.toLowerCase();
+                            if ("".equals(flag) && "alter".equals(opreate) && !sql.contains("constraint")) {
+                                sinoSigSQLLogEntity.setErrormassage("检查未通过:生产没有这个表 " + "tablename:" + tableName);
+                                return false;
+                            }
+                            if (!"".equals(flag) && "create".equals(opreate)) {
+                                sinoSigSQLLogEntity.setErrormassage("检查未通过:生产已经有这个表了 " + "tablename:" + tableName);
+                                return false;
+                            }
+                            if (!"".equals(flag) && !"nvpolicy".equals(flag) && !"nvproposal".equals(flag) && !"nvendorsement".equals(flag)) {
+                                sinoSigSQLLogEntity.setErrormassage("检查未通过:生产环境这个表归属不是承保系统 " + "tablename:" + tableName + " owner:" + flag);
+                                return false;
+                            }
                         }
-                        if (!"".equals(flag) && "create".equals(opreate)) {
-                            sinoSigSQLLogEntity.setErrormassage("检查未通过:生产已经有这个表了 " + "tablename:" + tableName);
-                            return false;
-                        }
-                        if (!"".equals(flag) && !"nvpolicy".equals(flag) && !"nvproposal".equals(flag) && !"nvendorsement".equals(flag)) {
-                            sinoSigSQLLogEntity.setErrormassage("检查未通过:生产环境这个表归属不是承保系统 " + "tablename:" + tableName + " owner:" + flag);
-                            return false;
+                        if(true) {
+                            String flag = JDBCUtils.getOneValue("select 1 from tablerelationship d where 1=1  and d.tablename ='" + tableName + "'");
+                            flag = flag.toLowerCase();
+                            if ("".equals(flag) && "create".equals(opreate)&& tableName.contains("prp")) {
+                                sinoSigSQLLogEntity.setErrormassage("检查未通过:新建套表需先维护套表关系 " + "tablename:" + tableName);
+                                return false;
+                            }
                         }
 
                         if (("alter").equals(opreate)) {

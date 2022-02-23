@@ -27,9 +27,17 @@ public abstract class VerificationCheck implements CheckSQL {
         this.jdbcUtil = new NewJDBCUtil(dataSource);
     }
 
-    private List<String> getInitSQL(SinoSigSQLLogEntity sinoSigSQLLogEntity) throws Exception {
+    private List<String> getInitSQL(SinoSigSQLLogEntity sinoSigSQLLogEntity) {
 
-        List<String> list = createTableSQL(sinoSigSQLLogEntity);
+        List<String> list = new ArrayList<>();
+        try {
+            list = createTableSQL(sinoSigSQLLogEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            sinoSigSQLLogEntity.executestate = "-1";
+            sinoSigSQLLogEntity.errormassage = "表结构加载失败";
+
+        }
 
         return list;
     }
@@ -118,69 +126,60 @@ public abstract class VerificationCheck implements CheckSQL {
     }
 
     private boolean executeOneTestEnvironment(SinoSigSQLLogEntity sinoSigSQLLogEntity) {
+        List<String> targetSQLList = splitSQL(sinoSigSQLLogEntity.basesql);
         try {
-            String owner = sinoSigSQLLogEntity.owner;
-            List<String> initSQLList = new ArrayList<>();
-            //模拟环境复制对象
-            String baseSql=formatSQL(sinoSigSQLLogEntity.basesql, owner);
-            sinoSigSQLLogEntity.basesql =baseSql; //格式化脚本，并添加上属主
-            //解析获取表初始化语句
-            List<String> initTableSQLList = getInitSQL(sinoSigSQLLogEntity);//表执行脚本
-            initSQLList.addAll(initTableSQLList);
-            jdbcUtil.batchSql(initSQLList, true);
-
-            if ("3".equals(sinoSigSQLLogEntity.executestate)) {
-                List<String> targetSQLList = splitSQL(sinoSigSQLLogEntity.basesql);
-                jdbcUtil.batchSql(targetSQLList, true);
-            }
-
-        } catch (Exception e) {
+            jdbcUtil.batchSql(targetSQLList, true);
+        } catch (SQLException e) {
             e.printStackTrace();
-            String message = e.getMessage().replaceAll("'", "");
+            String message = e.getMessage();
             if (message.length() > 100) {
-                message = message.substring(0, 100);
+                message.substring(100);
             }
-            sinoSigSQLLogEntity.executestate = "-1";
             sinoSigSQLLogEntity.setErrormassage(message);
+            sinoSigSQLLogEntity.executestate = "-1";
             return false;
         }
         return true;
     }
 
-    private boolean executeTestEnvironment(List<SinoSigSQLLogEntity> list) {
-
-
+    private boolean initTestEnvironment(List<SinoSigSQLLogEntity> list) {
         //解析脚本，获取操作的表，检验套表规范
         //初始化环境，根据属主创建测试库
         Map<String, List<SinoSigSQLLogEntity>> ownerMapList = list.stream().collect(Collectors.groupingBy(SinoSigSQLLogEntity::getOwner)); //按属主分类
         Set<String> ownerSet = ownerMapList.keySet();
         for (String owner : ownerSet) {
-            String flag="3";
-            String errorMassage="";
+            String flag = "3";
+            String errorMassage = "";
             List<SinoSigSQLLogEntity> sinoSigSQLLogEntities = ownerMapList.get(owner);
-            ArrayList initSQLList = new ArrayList();
-            initSQLList.add(" create SCHEMA " + owner +" ");//创建属主空间
+            List<String> initSQLList = new ArrayList();
+            initSQLList.add(" create SCHEMA " + owner + " ");//创建属主空间
+            //去重处理
+            Set<String> initSet=new HashSet<>();
+
+            for (SinoSigSQLLogEntity sinoSigSQLLogEntity : sinoSigSQLLogEntities) {
+                if ("3".equals(flag)) {
+
+                    //模拟环境复制对象
+                    String baseSql = formatSQL(sinoSigSQLLogEntity.basesql, owner);
+                    sinoSigSQLLogEntity.basesql = baseSql; //格式化脚本，并添加上属主
+                    //解析获取表初始化语句
+                    List<String> initTableSQLList = getInitSQL(sinoSigSQLLogEntity);//表执行脚本
+                    initSet.addAll(initTableSQLList);
+                } else {
+                    sinoSigSQLLogEntity.setErrormassage(errorMassage);
+                    sinoSigSQLLogEntity.executestate = flag;
+                }
+            }
+
             try {
+
+                initSQLList.addAll(initSet);
                 jdbcUtil.batchSql(initSQLList, true);
             } catch (SQLException e) {
                 e.printStackTrace();
-                errorMassage="创建属主空间失败"+owner;
-                flag="-1";
+                return false;
             }
-
-            for (SinoSigSQLLogEntity sinoSigSQLLogEntity : sinoSigSQLLogEntities) {
-                if("3".equals(flag)){
-                    executeOneTestEnvironment(sinoSigSQLLogEntity);
-                }else{
-                    sinoSigSQLLogEntity.setErrormassage(errorMassage);
-                    sinoSigSQLLogEntity.executestate=flag;
-                }
-
-            }
-
         }
-
-
         return true;
     }
 
@@ -189,7 +188,7 @@ public abstract class VerificationCheck implements CheckSQL {
         basesql = formatSQL(basesql);
         List<String> sqlList = splitSQL(basesql);
         for (String sql : sqlList) {
-            String newSQL="";
+            String newSQL = "";
             List<String> list = Arrays.asList(sql.trim().split("\\s+"));
             String s1 = list.get(0);
             String s2 = list.get(1);
@@ -203,16 +202,15 @@ public abstract class VerificationCheck implements CheckSQL {
                 list.set(1, s2);
             }
             if (s1.trim().contains("insert") && "into".equals(s2.trim()) && !s3.contains(".")) {
-                s3 = owner + "." + s3;//ddl语句为表名添加属主
+                s3 = owner + "." + s3;//dml语句为表名添加属主
                 list.set(2, s3);
             }
 
-            for(String s:list){
-                newSQL=newSQL+s+" ";
+            for (String s : list) {
+                newSQL = newSQL + s + " ";
             }
             resultSQL = resultSQL + newSQL + ";\n";
         }
-
 
 
         return resultSQL;
@@ -224,7 +222,7 @@ public abstract class VerificationCheck implements CheckSQL {
         String[] lines = sourceSQL.split("\n");
         String exeSQL = "";
         for (String line : lines) {
-            if (line.contains("--") &&!line.contains(";")) {
+            if (line.contains("--") && !line.contains(";")) {
                 line = "";
             }
             exeSQL = exeSQL + line;
@@ -235,34 +233,45 @@ public abstract class VerificationCheck implements CheckSQL {
     }
 
 
-    public abstract void saveDataBaseStrucutre() throws Exception ;
+    public abstract void saveDataBaseStrucutre() throws Exception;
 
 
-    public List<SinoSigSQLLogEntity> checkDDL(List<SinoSigSQLLogEntity> list) throws Exception {
+    public void checkDDL(List<SinoSigSQLLogEntity> list) throws Exception {
         //将所有脚本在模拟环境运行后，可运行检查，做逻辑性检查，套表检查，按批次做
-        if (!executeTestEnvironment(list)) {
+        String errorMessage = "";
+        String stageFlag = "3";
 
+        if (!initTestEnvironment(list)) {
+            errorMessage = "环境初始化失败";
+            stageFlag = "-1";
         } else {
-            saveDataBaseStrucutre();
 
+            for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
+                List<String> executeSQLList = splitSQL(sinoSigSQLLogEntity.basesql);
+                try {
+                    jdbcUtil.batchSql(executeSQLList, true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    stageFlag = "-1";
+                    String message = e.getMessage().replaceAll("'", "");
+                    if (message.length() > 100) {
+                        message = message.substring(0, 100);
+                    }
+                    sinoSigSQLLogEntity.setErrormassage("脚本执行错误" + message);
+                    continue;
+                }
+            }
+        }
+        for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
+            sinoSigSQLLogEntity.setErrormassage(errorMessage);
+            sinoSigSQLLogEntity.executestate = stageFlag;
         }
 
-/*        //回滚环境，删除数据库
-        List<String> initSQLList = new ArrayList();
-        //初始化环境
-        //初始化模拟环境数据库，创建三个模拟库 强制删除
-        initSQLList.add(" drop SCHEMA nvpolicy CASCADE");
-        initSQLList.add(" drop SCHEMA nvproposal CASCADE");
-        initSQLList.add(" drop SCHEMA nvendorsement CASCADE");
-        initSQLList.add(" drop SCHEMA prpins CASCADE");
-        initSQLList.add(" drop SCHEMA sunshine CASCADE");
-        initSQLList.add(" drop SCHEMA splitquery CASCADE");
-        jdbcUtil.batchSql(initSQLList, true);*/
+        saveDataBaseStrucutre(); //ddl表结构回调
 
         //最后提交，H2数据库消失
         jdbcUtil.commit();
         jdbcUtil.release();
-        return list;
     }
 
 
@@ -271,7 +280,7 @@ public abstract class VerificationCheck implements CheckSQL {
         String errorMessage = "";
         String stageFlag = "3";
 
-        if (!executeTestEnvironment(list)) {
+        if (!initTestEnvironment(list)) {
             errorMessage = "环境初始化失败";
             stageFlag = "-1";
         } else {
