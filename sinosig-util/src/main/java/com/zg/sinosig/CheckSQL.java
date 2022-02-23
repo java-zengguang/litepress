@@ -19,7 +19,7 @@ import java.util.List;
 public class CheckSQL implements Job {
 
 
-    private String executeRoot= "D:\\test\\CheckSQLV2.0\\";
+    private String executeRoot= FileUtils.PATH;
 
     private List<SinoSigSQLLogEntity> doExecute() throws Exception {
 
