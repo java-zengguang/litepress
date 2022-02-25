@@ -157,7 +157,7 @@ public abstract class VerificationCheck implements CheckSQL {
             Set<String> initSet=new HashSet<>();
 
             for (SinoSigSQLLogEntity sinoSigSQLLogEntity : sinoSigSQLLogEntities) {
-                if ("3".equals(flag)) {
+                if ("3".equals(flag)&&!"建表".equals(sinoSigSQLLogEntity.sqlpurpose)) {
 
                     //模拟环境复制对象
                     String baseSql = formatSQL(sinoSigSQLLogEntity.basesql, owner);
@@ -209,6 +209,7 @@ public abstract class VerificationCheck implements CheckSQL {
             for (String s : list) {
                 newSQL = newSQL + s + " ";
             }
+            System.out.println(s3);
             resultSQL = resultSQL + newSQL + ";\n";
         }
 

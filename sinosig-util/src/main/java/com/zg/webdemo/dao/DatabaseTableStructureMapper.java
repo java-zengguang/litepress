@@ -244,7 +244,13 @@ public class DatabaseTableStructureMapper {
             tableName = tableName.substring(tableName.indexOf(".") + 1, tableName.length());
         }
         List<DatabaseTableStructureEntity> tableMapList= JDBCUtils.select("select *from databasetablestructure d where d.environment ='"+ environment +"' and d.databasename='"+ databaseName +"' and d.systemflag='"+systemFlag+"' " +
-                "and d.tablename= '"+tableName+"'",DatabaseTableStructureEntity.class);
+                "and d.tablename= '"+tableName+"' order by columnid ",DatabaseTableStructureEntity.class);
         return tableMapList;
    }
+
+    public List<Map> getTableStructureToMap(String sourceEnvironment, String sourceDatabase, String systemFlag, String table) throws SQLException {
+        List<Map> tableMapList= JDBCUtils.selectToMapList("select *from databasetablestructure d where d.environment ='"+ sourceEnvironment +"' and d.databasename='"+ sourceDatabase +"' and d.systemflag='"+systemFlag+"' " +
+                "and d.tablename= '"+table+"' order by columnid ");
+        return tableMapList;
+    }
 }

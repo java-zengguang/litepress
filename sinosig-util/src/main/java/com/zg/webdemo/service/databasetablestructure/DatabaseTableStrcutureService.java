@@ -21,4 +21,5 @@ public interface DatabaseTableStrcutureService {
     List<Map> getTableNotNullColumn(String sourceEnvironment, String sourceDatabase, String table) throws SQLException;
     List<DatabaseTableStructureEntity> getTableStructure(String environment, String databaseName, String tableName,String systemFlag) throws Exception;
 
+    List<Map> getKeyColumn(String sourceEnvironment, String sourceDatabase, String systemFlag, String table) throws SQLException;
 }

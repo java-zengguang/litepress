@@ -21,6 +21,9 @@ public class SimpleGenerateONA extends SimpleGenerate implements SunAutoDriver {
                 if("保单库".equals(sinoSigSQLLogEntity.databasename)){
                     sinoSigSQLLogEntity.owner="sunshine";
                 }
+                if("切割库".equals(sinoSigSQLLogEntity.databasename)){
+                    sinoSigSQLLogEntity.owner="Splitquery";
+                }
                 sinoSigSQLLogEntity.environment = "old";
                 sinoSigSQLLogEntity.executestate = "3";
                 sinoSigSQLLogEntity.devsql=sinoSigSQLLogEntity.basesql;
