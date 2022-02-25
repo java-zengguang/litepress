@@ -90,6 +90,10 @@ public class GetDataStructure {
                     flag = "nvendorsement";
                     break;
                 }
+                case "汇总库":{
+                    flag="nvsun";
+                    break;
+                }
             }
         }
         if ("old-non-auto".equals(systemFlag)) {
@@ -114,6 +118,7 @@ public class GetDataStructure {
                 }
             }
         }
+        System.out.println(environment + "_" + systemFlag + "_" + flag);
         return environment + "_" + systemFlag + "_" + flag;
     }
 

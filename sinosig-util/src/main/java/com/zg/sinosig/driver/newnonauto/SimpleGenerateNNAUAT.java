@@ -21,7 +21,7 @@ public class SimpleGenerateNNAUAT extends SimpleGenerate implements SunAutoDrive
                 }
             }
         }
-       list= execute(list);
+        list = execute(list);
         return list;
     }
 
@@ -78,9 +78,11 @@ public class SimpleGenerateNNAUAT extends SimpleGenerate implements SunAutoDrive
 
         String proEmpowermentSqlALL = "";
         String devEmpowermentSqlALL = "";
+        String proSynSqlALL = "";
+        String devSynSqlALL = "";
         String empowermentTableStr = sinoSigSQLLogEntity.needpowertables;
         String databaseName = sinoSigSQLLogEntity.databasename;
-        String owner="";
+        String owner = "";
 
         switch (databaseName) {
             case "保单库": {
@@ -98,36 +100,50 @@ public class SimpleGenerateNNAUAT extends SimpleGenerate implements SunAutoDrive
         }
         sinoSigSQLLogEntity.owner = owner;  //获取属主
         if (empowermentTableStr != null && !empowermentTableStr.equals("")) {
-            String[] empowermentTables = empowermentTableStr.split("/");
+            String[] empowermentTables = sinoSigSQLLogEntity.needPowerTableArray;
             for (String empowermentTable : empowermentTables) {
                 empowermentTable = empowermentTable.trim();
                 String proEmpowermentSql = "";
+                String proSynSql = "";
                 String devEmpowermentSql = "";
+                String devSynSql = "";
 
                 if (true) {
-                    String[] proPowerUsers = {"wushengrun-phq", "zengguang-phq", "tangjunxiang_ghq", "luweijun_ghq", "zhenglixue_phq"};
+                    String[] proPowerUsers = {"nonveh", "wushengrun_phq", "zengguang_phq", "tangjunxiang_ghq", "luweijun_ghq", "zhenglixue_phq", "liangyaoze_phq"};
                     for (String powerUser : proPowerUsers) {
-                        proEmpowermentSql = proEmpowermentSql + "grant select on " + databaseName + "." + empowermentTable + " to " + powerUser + " ;\n" +
-                                "create or replace " + powerUser + "." + empowermentTable + " for " + databaseName + "." + empowermentTable + " ;\n";
+                        if ("nonvehwrite".equals(powerUser)||"nonveh".equals(powerUser) ) {
+                            proEmpowermentSql = proEmpowermentSql + "grant select,insert,update,delete  on " + owner + "." + empowermentTable + " to " + powerUser + " ;\n" ;
+                            proSynSql=proSynSql+    "create or replace  synonym " + powerUser + "." + empowermentTable + " for " + owner + "." + empowermentTable + " ;\n";
+                        }else {
+                            proEmpowermentSql = proEmpowermentSql + "grant select on " + owner + "." + empowermentTable + " to " + powerUser + " ;\n" ;
+                            proSynSql=proSynSql+    "create or replace  synonym " + powerUser + "." + empowermentTable + " for " + owner + "." + empowermentTable + " ;\n";
+                        }
                     }
 
-                    String[] devPowerUser = {"nonvehread","nonvehwrite","nonveh"};
+                    String[] devPowerUser = {"nonvehread", "nonvehwrite", "nonveh"};
                     for (String powerUser : devPowerUser) {
-                        devEmpowermentSql = devEmpowermentSql + "grant select on " + databaseName + "." + empowermentTable + " to " + powerUser + " ;\n" +
-                                "create or replace " + powerUser + "." + empowermentTable + " for " + databaseName + "." + empowermentTable + " ;\n";
+                        if ("nonvehwrite".equals(powerUser)) {
+                            devEmpowermentSql = devEmpowermentSql + "grant  select,insert,update,delete on " + owner + "." + empowermentTable + " to " + powerUser + " ;\n" ;
+                            devSynSql=devSynSql+     "create or replace  synonym " + powerUser + "." + empowermentTable + " for " + owner + "." + empowermentTable + " ;\n";
+
+                        } else {
+                            devEmpowermentSql = devEmpowermentSql + "grant select on " + owner + "." + empowermentTable + " to " + powerUser + " ;\n" ;
+                            devSynSql=devSynSql+   "create or replace  synonym " + powerUser + "." + empowermentTable + " for " + owner + "." + empowermentTable + " ;\n";
+                        }
                     }
 
                     devEmpowermentSqlALL = devEmpowermentSqlALL + devEmpowermentSql;
                     proEmpowermentSqlALL = proEmpowermentSqlALL + proEmpowermentSql;
+                    devSynSqlALL = devSynSqlALL + devSynSql;
+                    proSynSqlALL = proSynSqlALL + proSynSql;
                 }
 
             }
         }
-        sinoSigSQLLogEntity.devsql = sinoSigSQLLogEntity.basesql + "\r\n" + devEmpowermentSqlALL;
-        sinoSigSQLLogEntity.prosql = sinoSigSQLLogEntity.basesql + "\r\n" + proEmpowermentSqlALL;
+        sinoSigSQLLogEntity.devsql = sinoSigSQLLogEntity.basesql + "\r\n" + devEmpowermentSqlALL+ "\r\n" + devSynSqlALL;
+        sinoSigSQLLogEntity.prosql = sinoSigSQLLogEntity.basesql + "\r\n" + proEmpowermentSqlALL + "\r\n" + proSynSqlALL;
         return sinoSigSQLLogEntity;
     }
-
 
 
 }

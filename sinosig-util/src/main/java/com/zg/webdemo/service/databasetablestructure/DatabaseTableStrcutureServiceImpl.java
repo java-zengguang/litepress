@@ -154,4 +154,11 @@ public class DatabaseTableStrcutureServiceImpl extends CommitClassHandler implem
     public List<DatabaseTableStructureEntity> getTableStructure(String environment, String databaseName, String tableName,String systemFlag) throws Exception {
         return mapper.getTableStructure(systemFlag,environment,databaseName,tableName);
     }
+
+    @Override
+    public List<Map> getKeyColumn(String sourceEnvironment, String sourceDatabase, String systemFlag, String table) throws SQLException {
+        return mapper.getTableStructureToMap(sourceEnvironment,sourceDatabase,systemFlag,table);
+    }
+
+
 }

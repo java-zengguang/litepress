@@ -248,8 +248,15 @@ public class NewJDBCUtil {
     public void release() throws SQLException {
 
         conn.close();
+        conn=null;
     }
 
+
+    public void deleteConn() throws SQLException {
+
+        conn.close();
+        conn=null;
+    }
     public boolean commit() throws SQLException {
 
         conn.commit();

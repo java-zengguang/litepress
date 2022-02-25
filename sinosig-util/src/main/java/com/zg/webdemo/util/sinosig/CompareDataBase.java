@@ -266,7 +266,7 @@ public class CompareDataBase {
 
         CompareDataBase compareDataBase = new CompareDataBase();
         try {
-           compareDataBase.loadBaseTable();
+      //     compareDataBase.loadBaseTable();
                compareDataBase.load();
             compareDataBase.getCompareExcel();
         } catch (Exception e) {
