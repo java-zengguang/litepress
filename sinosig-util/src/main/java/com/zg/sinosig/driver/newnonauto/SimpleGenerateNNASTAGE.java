@@ -22,7 +22,8 @@ public class SimpleGenerateNNASTAGE extends SimpleGenerate implements SunAutoDri
             }
         }
         resultList = execute(resultList);
-        return resultList;
+        list.addAll(resultList);
+        return list;
     }
 
 
