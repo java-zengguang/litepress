@@ -1,6 +1,15 @@
 package com.zg.database.pool;
 
 import com.zg.bean.entity.OptionDB;
+import com.zg.database.util.JDBCUtils;
+import com.zg.handler.CommitInterfaceHandler;
+import com.zg.handler.ProxyUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -89,6 +98,7 @@ public class ZGDBP implements DataBaseInte {
 
             Class.forName(Driver);
             conn = DriverManager.getConnection(url, username, password);
+            conn=(Connection) ProxyUtils.getProxyInterface(conn.getClass(),new ZGDBPConnection(conn));
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -99,8 +109,9 @@ public class ZGDBP implements DataBaseInte {
 
     //获取一个线程池里的数据
     public Connection getConnection() {
-        if (flag == 0)
+        if (flag == 0) {
             inits();
+        }
         Connection conn = null;
         if (connectPool.size() == 0) {
             try {
@@ -126,27 +137,30 @@ public class ZGDBP implements DataBaseInte {
 
     //重置连接
     public boolean release(Connection conn) {
-
-/*        try {
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }*/
         return connectPool.add(conn);
     }
 
 
-    //提交事务
-    public boolean commit(Connection conn) {
-        try {
-            conn.commit();
-            release(conn);
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return false;
+
+    public class ZGDBPConnection implements  InvocationHandler {
+        private Connection target;
+
+        public ZGDBPConnection(Connection target) {
+            this.target = target;
         }
-        return true;
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+            Object result = null;
+            if("close".equals(method.getName())){
+                release(target);
+            }else {
+                result = method.invoke(target, args);
+            }
+
+            return result;
+
+        }
     }
 
 

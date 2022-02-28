@@ -252,9 +252,9 @@ public class BaseDao {
     }
 
 
-    public  void release() {
+    public  void release() throws SQLException {
         Connection conn = getConnection();
-        dataBasePool.release(conn);
+        conn.close();
         threadLocal.remove();
     }
 
