@@ -238,6 +238,10 @@ public class DatabaseTableStructureMapper {
         JDBCUtils.execute("delete from databasetablestructure where environment='"+environment+"' and systemFlag='"+systemFlag+"' ");
 
     }
+    public void deleteDatabaseAllStructures(String environment,String databasename,String systemFlag) throws IllegalAccessException, ParseException, IOException, InstantiationException, SQLException, ClassNotFoundException {
+        JDBCUtils.execute("delete from databasetablestructure where environment='"+environment+"' and databasename='"+databasename+"' and systemFlag='"+systemFlag+"' ");
+
+    }
 
     public List<DatabaseTableStructureEntity> getTableStructure(String systemFlag, String environment, String databaseName, String tableName) throws Exception {
         if (tableName.contains(".")) {

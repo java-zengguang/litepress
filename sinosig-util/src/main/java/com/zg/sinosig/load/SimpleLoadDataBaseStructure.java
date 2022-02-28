@@ -111,7 +111,7 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
 
         Set<String> environmentFlagSet = new HashSet<>();
         for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
-            if ("DDL".equals(sinoSigSQLLogEntity.sqltype) && "3".equals(sinoSigSQLLogEntity.executestate)) {
+            if ("DDL".equals(sinoSigSQLLogEntity.sqltype) && "1".equals(sinoSigSQLLogEntity.executestate)) {
                 environmentFlagSet.add(sinoSigSQLLogEntity.environment+","+sinoSigSQLLogEntity.systemflag);
             }
         }
