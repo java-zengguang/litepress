@@ -15,18 +15,17 @@
         <module>util</module>
         <module>web</module>
         <module>sinosig-util</module>
-<!--        <module>webdemo</module>
+        <module>direction</module>
+        <module>incache</module>
+        <module>webdemo</module>
         <module>scala</module>
         <module>webiodemo</module>
         <module>sso</module>
         <module>network-util</module>
         <module>admin</module>
-        <module>direction</module>
         <module>im</module>
-        <module>incache</module>
         <module>search</module>
-        <module>login-provider</module>-->
-
+        <module>login-provider</module>
     </modules>
 
     <repositories>
