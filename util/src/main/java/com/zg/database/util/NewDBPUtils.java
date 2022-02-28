@@ -7,6 +7,7 @@ import com.zg.database.pool.C3p0Impl;
 import com.zg.database.pool.DataBaseInte;
 import com.zg.database.pool.ZGDBP;
 import com.zg.init.Config;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -19,6 +20,7 @@ import java.util.Map;
  */
 public class NewDBPUtils {
 
+    private static Logger logger = Logger.getLogger(NewDBPUtils.class);
     private static Map<String,DataBaseInte> dataBaseInteMap=new HashMap<>();
 
 
@@ -29,8 +31,10 @@ public class NewDBPUtils {
             databasePool= C3p0Impl.getInstance(dataSource);
         }else if ("ZGDBP".equals(optionDB.getDBPType())) {
             databasePool = ZGDBP.getInstance(optionDB);
+        }else if (optionDB.getDBPType()==null||"".equals(optionDB.getDBPType())) {
+            logger.info("未使用链接池");
         }else{
-            System.out.println(JDBCUtils.class+"====没找到数据源");
+            logger.info("未找到对应链接池");
         }
         dataBaseInteMap.put(dataSource,databasePool);
         return databasePool;
@@ -59,6 +63,7 @@ public class NewDBPUtils {
         }
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         if(optionDB.getDBPType()==null||"".equals(optionDB.getDBPType())){
+            logger.info("使用JDBC链接");
             Class.forName(optionDB.driver);
             connection = DriverManager.getConnection(optionDB.url, optionDB.username, optionDB.password);
             connection.setAutoCommit(false);
