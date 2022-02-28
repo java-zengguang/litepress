@@ -1,10 +1,9 @@
 package com.zg.webdemo.util.sinosig;
 
-import com.zg.bean.entity.OptionDB;
 import com.zg.handler.ProxyUtils;
+import com.zg.sinosig.load.GetDataStructure;
 import com.zg.util.io.POIUtils;
-import com.zg.util.sinosing.DatabaseUtil;
-import com.zg.util.sinosing.JDBCUtil;
+import com.zg.util.sinosing.NewJDBCUtil;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureService;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureServiceImpl;
 import jxl.write.WriteException;
@@ -18,8 +17,8 @@ public class SnySum {
     private DatabaseTableStrcutureService strcutureService = (DatabaseTableStrcutureService) ProxyUtils.getProxyClass(new DatabaseTableStrcutureServiceImpl(), "insertDataBaseTableStructures");
 
 
-    private Map createChcekSUMSQL(String sourceEnvironment, String sourceDatabase,String targetEnvironment, String targetDatabase) throws SQLException {
-        String policyNo="abcd1234567890";
+    private Map createChcekSUMSQL(String sourceEnvironment, String sourceDatabase,String targetEnvironment, String targetDatabase,String systemFlag,String policyNo) throws SQLException {
+
         Map resultMap=new HashMap();
         List<String> insertList=new ArrayList();
         List<String> deleteList=new ArrayList();
@@ -126,24 +125,35 @@ public class SnySum {
         resultMap.put("sourceDatabase", sourceDatabase);
         resultMap.put("targetEnvironment", targetEnvironment);
         resultMap.put("targetDatabase", targetDatabase);
+        resultMap.put("systemFlag", systemFlag);
+
+
 
         return resultMap;
     }
 
+
+
     public void doMain(){
         try {
-            Map<String,Map> opreateMap=new HashMap<>();
-            opreateMap.put("uat新一代汇总情况",createChcekSUMSQL("uat","保单库","uat","汇总库"));
-            opreateMap.put("int新一代汇总情况",createChcekSUMSQL("int","保单库","int","汇总库"));
-            opreateMap.put("stage新一代汇总情况",createChcekSUMSQL("stage","保单库","stage","汇总库"));
-            opreateMap.put("uat老核心汇总情况", createChcekSUMSQL("old_dev","保单库","uat","汇总库"));
-            opreateMap.put("int老核心汇总情况", createChcekSUMSQL("old_dev","保单库","int","汇总库"));
-            opreateMap.put("stage老核心汇总情况", createChcekSUMSQL("old_dev","保单库","stage","汇总库"));
+            if(true) {
+                String policyNo = "abcd1234567890";
+                Map<String, Map> opreateMap = new HashMap<>();
+            //    opreateMap.put("uat新一代汇总情况", createChcekSUMSQL("uat", "保单库", "uat", "汇总库", policyNo));
+                opreateMap.put("int新一代汇总情况", createChcekSUMSQL("int", "保单库", "int","汇总库","new-non-auto",  policyNo));
+/*
+                opreateMap.put("stage新一代汇总情况", createChcekSUMSQL("stage", "保单库", "stage", "汇总库", policyNo));
+                opreateMap.put("uat老核心汇总情况", createChcekSUMSQL("old_dev", "保单库", "uat", "汇总库", policyNo));
+                opreateMap.put("int老核心汇总情况", createChcekSUMSQL("old_dev", "保单库", "int", "汇总库", policyNo));
+                opreateMap.put("stage老核心汇总情况", createChcekSUMSQL("old_dev", "保单库", "stage", "汇总库", policyNo));
+*/
 
-            //执行校验
-            Map<String, List<Map>> resultMap= excuteCheckData(opreateMap);
+                //执行校验
+                Map<String, List<Map>> resultMap = excuteCheckData(opreateMap);
 
-            POIUtils.writeXLSX(resultMap,new File("D:\\test\\同步汇总检查.xlsx"));
+                POIUtils.writeXLSX(resultMap, new File("D:\\test\\同步汇总检查.xlsx"));
+            }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -156,7 +166,11 @@ public class SnySum {
         }
     }
 
-    private Map<String, List<Map>> excuteCheckData(Map<String,Map> mapMap) throws InterruptedException {
+
+
+
+
+    private Map<String, List<Map>> excuteCheckData(Map<String,Map> mapMap) throws InterruptedException, SQLException {
         Map<String, List<Map>> resultMap=new HashMap();
         Set<String> flagSet=mapMap.keySet();
         for (String flag:flagSet) {
@@ -167,14 +181,14 @@ public class SnySum {
             String sourceDatabase=(String) map.get("sourceDatabase");
             String targetEnvironment=(String) map.get("targetEnvironment");
             String targetDatabase=(String) map.get("targetDatabase");
+            String systemFlag=(String) map.get("systemFlag");
             if(true) {
                 System.out.println("-------执行脚本insert----start--");
                 List<String> insertSqlList = (List<String>) map.get("insert");
                 if (insertSqlList != null && insertSqlList.size() > 0) {
-                    OptionDB optionDB = DatabaseUtil.getOptionDB(sourceEnvironment, sourceDatabase);
-                    JDBCUtil jdbcUtil = new JDBCUtil(optionDB);
+                    NewJDBCUtil jdbcUtil = new NewJDBCUtil(GetDataStructure.getDataSource(sourceEnvironment,sourceDatabase,systemFlag));
                     try {
-                        jdbcUtil.batchSql(insertSqlList);
+                        jdbcUtil.batchSql(insertSqlList,true);
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     } finally {
@@ -190,8 +204,7 @@ public class SnySum {
             if(true) {
                 System.out.println("-------执行脚本check----start--");
                 List<String> checkSqlList = (List<String>) map.get("check");
-                OptionDB optionDB = DatabaseUtil.getOptionDB(targetEnvironment, targetDatabase);
-                JDBCUtil jdbcUtil = new JDBCUtil(optionDB);
+                NewJDBCUtil jdbcUtil = new NewJDBCUtil(GetDataStructure.getDataSource(targetEnvironment,targetDatabase,systemFlag));
                 if (checkSqlList != null && checkSqlList.size() > 0) {
                     String checkSql="";
                     for(String sql:checkSqlList){
@@ -201,7 +214,7 @@ public class SnySum {
                     try {
 
                         resultMap.put(flag,jdbcUtil.selectToMapList(checkSql));
-
+                      //  jdbcUtil.deleteConn();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -214,11 +227,10 @@ public class SnySum {
                 System.out.println("-------执行脚本delete----start--");
                 List<String> deleteSqlList = (List<String>) map.get("delete");
                 if (deleteSqlList != null && deleteSqlList.size() > 0) {
-                    OptionDB optionDB = DatabaseUtil.getOptionDB(sourceEnvironment, sourceDatabase);
-                    JDBCUtil jdbcUtil = new JDBCUtil(optionDB);
+                    NewJDBCUtil jdbcUtil = new NewJDBCUtil(GetDataStructure.getDataSource(sourceEnvironment,sourceDatabase,systemFlag));
                     System.out.println("数据删除开始");
                     try {
-                        jdbcUtil.batchSql(deleteSqlList);
+                        jdbcUtil.batchSql(deleteSqlList,true);
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     } finally {

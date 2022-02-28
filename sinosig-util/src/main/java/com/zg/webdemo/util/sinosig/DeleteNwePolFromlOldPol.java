@@ -1,10 +1,7 @@
 package com.zg.webdemo.util.sinosig;
 
 
-import com.zg.bean.entity.OptionDB;
 import com.zg.handler.ProxyUtils;
-import com.zg.util.sinosing.DatabaseUtil;
-import com.zg.util.sinosing.JDBCUtil;
 import com.zg.util.sinosing.NewJDBCUtil;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureService;
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureServiceImpl;
@@ -68,14 +65,14 @@ public class DeleteNwePolFromlOldPol {
 
     public List<String> loadData(String tableName) throws SQLException {
         //新库保单号
-        OptionDB newOptionDB = DatabaseUtil.getOptionDB("uat", "保单库");
-        JDBCUtil newJdbcUtil = new JDBCUtil(newOptionDB);
+        NewJDBCUtil newJdbcUtil = new NewJDBCUtil("uat_new-non-auto_nvpolicy");
         List<String> newPolicy = newJdbcUtil.selectOneColList(" select distinct policyno from " + tableName + " a ");
+        newJdbcUtil.release();
         System.out.println(tableName+"新保单库数据加载完成");
         //老库保单号
-        OptionDB oldOptionDB = DatabaseUtil.getOptionDB("old_dev", "保单库");
-        JDBCUtil oldOdbcUtil = new JDBCUtil(oldOptionDB);
+        NewJDBCUtil oldOdbcUtil = new NewJDBCUtil("dev_old-non-auto_sunshine");
         List<String> oldPolicy = oldOdbcUtil.selectOneColList(" select distinct policyno from " + tableName + " a ");
+        newJdbcUtil.release();
         System.out.println(tableName+"老保单库数据加载完成");
 
         //对比
@@ -101,8 +98,7 @@ public class DeleteNwePolFromlOldPol {
                 sqlList.add(sql);
             }
             if(sqlList!=null&&sqlList.size()>0) {
-                OptionDB optionDB = DatabaseUtil.getOptionDB("old_dev", "保单库");
-                NewJDBCUtil jdbcUtil = new NewJDBCUtil(optionDB.dataSourceName);
+                NewJDBCUtil jdbcUtil = new NewJDBCUtil("dev_old-non-auto_sunshine");
                 System.out.println("数据删除开始");
                 try {
                     jdbcUtil.batchSql(sqlList,true);

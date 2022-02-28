@@ -218,7 +218,8 @@ public class DatabaseTableStructureMapper {
                 "on t2.databaseName =t1.codecname and t2.tablename =t1.codecode where t2.databasename is null ";*/
         String deffSQL=" select '套表名','库名','表名' from  dual union \n ";
         deffSQL=deffSQL+" select t.basetablename ,t.databasename ,t.tablename from tablerelationship t where t.`type` ='baseModel' \n" +
-                "and not exists (select 1 from databasetablestructure d where d.environment ='"+environment+"' and d.databaseName =t.databasename and d.tableName =t.tablename ) ";
+                " and basetablename in (select distinct t2.basetablename from databasetablestructure d,tablerelationship t2 where  d.environment ='"+environment+"' and d.databaseName =t2.databasename and d.tableName =t2.tablename )\n" +
+                "and not exists (select 1 from databasetablestructure d where d.environment ='"+environment+"' and d.databaseName =t.databasename and d.tableName =t.tablename ) \n";
         return JDBCUtils.selectToMapList(deffSQL);
     }
 
@@ -233,17 +234,27 @@ public class DatabaseTableStructureMapper {
 
     }
 
-    public void deleteDatabaseAllStructures(String environment) throws IllegalAccessException, ParseException, IOException, InstantiationException, SQLException, ClassNotFoundException {
-        JDBCUtils.execute("delete from databasetablestructure where environment='"+environment+"' ");
+    public void deleteDatabaseAllStructures(String environment,String systemFlag) throws IllegalAccessException, ParseException, IOException, InstantiationException, SQLException, ClassNotFoundException {
+        JDBCUtils.execute("delete from databasetablestructure where environment='"+environment+"' and systemFlag='"+systemFlag+"' ");
+
+    }
+    public void deleteDatabaseAllStructures(String environment,String databasename,String systemFlag) throws IllegalAccessException, ParseException, IOException, InstantiationException, SQLException, ClassNotFoundException {
+        JDBCUtils.execute("delete from databasetablestructure where environment='"+environment+"' and databasename='"+databasename+"' and systemFlag='"+systemFlag+"' ");
 
     }
 
-    public List<DatabaseTableStructureEntity> getTableStructure(String environment, String databaseName, String tableName) throws Exception {
+    public List<DatabaseTableStructureEntity> getTableStructure(String systemFlag, String environment, String databaseName, String tableName) throws Exception {
         if (tableName.contains(".")) {
             tableName = tableName.substring(tableName.indexOf(".") + 1, tableName.length());
         }
-        List<DatabaseTableStructureEntity> tableMapList= JDBCUtils.select("select *from databasetablestructure d where d.environment ='"+ environment +"' and d.databasename='"+ databaseName +"'  " +
-                "and d.tablename= '"+tableName+"'",DatabaseTableStructureEntity.class);
+        List<DatabaseTableStructureEntity> tableMapList= JDBCUtils.select("select *from databasetablestructure d where d.environment ='"+ environment +"' and d.databasename='"+ databaseName +"' and d.systemflag='"+systemFlag+"' " +
+                "and d.tablename= '"+tableName+"' order by columnid ",DatabaseTableStructureEntity.class);
         return tableMapList;
    }
+
+    public List<Map> getTableStructureToMap(String sourceEnvironment, String sourceDatabase, String systemFlag, String table) throws SQLException {
+        List<Map> tableMapList= JDBCUtils.selectToMapList("select *from databasetablestructure d where d.environment ='"+ sourceEnvironment +"' and d.databasename='"+ sourceDatabase +"' and d.systemflag='"+systemFlag+"' " +
+                "and d.tablename= '"+table+"' order by columnid ");
+        return tableMapList;
+    }
 }

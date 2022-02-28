@@ -6,10 +6,6 @@ import com.zg.bean.annotation.Model;
 import com.zg.bean.annotation.NotCommitField;
 import com.zg.bean.entity.MainModel;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 
 @Model(tableName = "sinosigsqllog")
@@ -26,6 +22,8 @@ public class SinoSigSQLLogEntity extends MainModel {
     public String applyusername;
     public String environment;
     public String databasename;
+    @NotCommitField
+    public String owner;
     public String isconfig;
     public String sqltype;
     public String basesql;
@@ -33,17 +31,32 @@ public class SinoSigSQLLogEntity extends MainModel {
     public String prosql;
     @NotCommitField
     public String executetime;
-    //0-初始化  1-脚本执行成功  -1-脚本校验失败  -2-校验失败  -3-未知异常 2-处理完成
+    //0-初始化  1-流程完成  3-待下一节点执行  -1-处理失败
     public String executestate;
     public String errormassage;
     public String sqlpurpose;
     public String sqldescribe;
     public String needpowertables;
     public String executebatchno;  //执行批次号
+    public String systemflag; //系统标识  new-non-auto 非车新一代   old-non-auto  老非车  platform  平台
     @NotCommitField
     public String[] needPowerTableArray;
 
+    public String getSqltype() {
+        return sqltype.toUpperCase();
+    }
 
+    public void setSqltype(String sqltype) {
+        this.sqltype = sqltype;
+    }
+
+    public String getSystemflag() {
+        return systemflag;
+    }
+
+    public void setSystemflag(String systemflag) {
+        this.systemflag = systemflag;
+    }
 
     public String getBatchno() {
         return batchno;
@@ -145,6 +158,10 @@ public class SinoSigSQLLogEntity extends MainModel {
         return errormassage;
     }
 
+    public String getOwner() {
+        return owner;
+    }
+
     public void setErrormassage(String errormassage) {
         if (this.errormassage==null){
             this.errormassage="";
@@ -155,7 +172,7 @@ public class SinoSigSQLLogEntity extends MainModel {
     public String getDataSource() {
         String database=databasename;
 
-        switch (database){
+/*        switch (database){
             case "保单库":{
                 database="nvpolicy";
                 break;
@@ -182,8 +199,13 @@ public class SinoSigSQLLogEntity extends MainModel {
                 break;
             }
 
-        }
-        database=environment+"_"+database;
+            case "平台库":{
+                database="platform";
+                break;
+            }
+
+        }*/
+        database=environment+"_"+systemflag+"_"+owner;
 
         return database;
     }

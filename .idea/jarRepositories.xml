@@ -22,6 +22,11 @@
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="pentaho-releases" />
+      <option name="name" value="Kettle" />
+      <option name="url" value="https://nexus.pentaho.org/content/groups/omni/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="http://public.repo.sinosig.com:9081/repository/maven-public/" />

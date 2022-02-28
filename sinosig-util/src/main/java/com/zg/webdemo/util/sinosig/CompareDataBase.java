@@ -13,8 +13,6 @@ import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureServi
 import com.zg.webdemo.service.databasetablestructure.DatabaseTableStrcutureServiceImpl;
 import com.zg.webdemo.service.ldcode.LDCodeService;
 import com.zg.webdemo.service.ldcode.LDCodeServiceImpl;
-import com.zg.webdemo.service.sinosigsqllog.SinoSigSQLLogService;
-import com.zg.webdemo.service.sinosigsqllog.SinoSigSQLLogServiceImpl;
 import com.zg.webdemo.service.tableRelation.TableRelationService;
 import com.zg.webdemo.service.tableRelation.TableRelationServiceImpl;
 import jxl.read.biff.BiffException;
@@ -136,33 +134,37 @@ public class CompareDataBase {
         //新一代数据加载
         if (true) {
             String dirs = dir + "\\新一代";
-            String databaseNames[] = {"保单库", "投保单库", "批单修改库", "汇总库"};
+          //  String databaseNames[] = {"nvpolicy", "nvproposal", "nvendorsement", "nvsun"};
+            String databaseNames[] = {"保单库", "批单修改库", "投保单库"};
             for (String databaseName : databaseNames) {
                 String[] array = {"int", "uat", "stage"};
                 for (String s : array) {
-                    List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure(s, databaseName);
+                    List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure(s, databaseName,"new-non-auto");
                     databaseTableStructureEntitieList.addAll(stageList);
                 }
                 //   sqlList = GetDataStructure.readFileToSqlList(new File(dirs), databaseName);
             }
-            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
+            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs),"new-non-auto");
             databaseTableStructureEntitieList.addAll(porList);
         }
-
 
         //老核心数据加载
         if (true) {
             String dirs = dir + "\\老核心";
-            String databaseNames[] = {"保单库", "投保单库"};
+/*            String databaseNames[] = {"保单库", "投保单库"};
             for (String databaseName : databaseNames) {
-                String[] array = {"old_dev"};
-    /*            for (String s : array) {
-                    List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure(s, databaseName);
+                String[] array = {"dev"};
+                for (String s : array) {
+                    List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure(s, databaseName,"old-non-auto");
                     databaseTableStructureEntitieList.addAll(stageList);
-                }*/
-            }
-            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs));
+                }
+            }*/
+            List<DatabaseTableStructureEntity> porList = GetDataStructure.getDataStructureByExcel(new File(dirs),"old-non-auto");
             databaseTableStructureEntitieList.addAll(porList);
+        }
+        if(true){
+            List<DatabaseTableStructureEntity> stageList = GetDataStructure.getDataStructure("dev", "平台库","platform");
+            databaseTableStructureEntitieList.addAll(stageList);
         }
 
 
@@ -264,8 +266,8 @@ public class CompareDataBase {
 
         CompareDataBase compareDataBase = new CompareDataBase();
         try {
-           compareDataBase.loadBaseTable();
-            /*   compareDataBase.load();*/
+      //     compareDataBase.loadBaseTable();
+               compareDataBase.load();
             compareDataBase.getCompareExcel();
         } catch (Exception e) {
             e.printStackTrace();
