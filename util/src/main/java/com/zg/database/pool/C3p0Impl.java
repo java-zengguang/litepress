@@ -18,21 +18,15 @@ import java.util.Map;
 
 public class C3p0Impl implements DataBaseInte {
 
-    private  static Map<String,C3p0Impl> c3p0Map=new HashMap<>();
-    private static DataSource dataSource = null;
+    private  static Map<String,DataSource> dataSourceMap=new HashMap<>();
+    private final static C3p0Impl c3p0=new C3p0Impl();
 
+    private C3p0Impl(){
 
-    public  static C3p0Impl getInstance(String dataOptionName){
-        C3p0Impl c3p0=c3p0Map.get(dataOptionName);
-        if(c3p0==null){
-            c3p0=new C3p0Impl(dataOptionName);
-            c3p0Map.put(dataOptionName,c3p0);
-        }
-        return c3p0;
     }
 
-    private C3p0Impl(String dataOptionName){
-        this.dataSource=createCPDS(dataOptionName);
+    public  static C3p0Impl getInstance(){
+        return c3p0;
     }
 
     private  ComboPooledDataSource createCPDS(String dataOptionName){
@@ -54,6 +48,15 @@ public class C3p0Impl implements DataBaseInte {
     }
 
 
+    private DataSource getDataSource(String dataSourceName){
+        DataSource dataSource=dataSourceMap.get(dataSourceName);
+        if (dataSource==null){
+            dataSource= createCPDS(dataSourceName);
+            dataSourceMap.put(dataSourceName,dataSource);
+        }
+        return dataSource;
+    }
+
     /**
      * 获取连接
      *
@@ -61,8 +64,14 @@ public class C3p0Impl implements DataBaseInte {
      * @throws SQLException
      */
     public Connection getConnection() {
+        return getConnection("optionDB");
+    }
+
+    @Override
+    public Connection getConnection(String dataSourceName) {
         Connection connection = null;
         try {
+            DataSource dataSource= getDataSource(dataSourceName);
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
         } catch (SQLException e) {
@@ -70,8 +79,6 @@ public class C3p0Impl implements DataBaseInte {
         }
         return connection;
     }
-
-
 
 
 }

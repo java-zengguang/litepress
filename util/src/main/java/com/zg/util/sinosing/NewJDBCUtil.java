@@ -1,9 +1,6 @@
 package com.zg.util.sinosing;
 
 import com.zg.bean.entity.MainModel;
-import com.zg.bean.entity.OptionDB;
-import com.zg.database.pool.DataBaseInte;
-import com.zg.database.util.DBPUtils;
 import com.zg.database.util.ModelSQLUtils;
 import com.zg.database.util.NewDBPUtils;
 import com.zg.database.util.SerializeObjectUtils;

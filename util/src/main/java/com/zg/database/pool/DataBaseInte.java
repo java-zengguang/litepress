@@ -10,4 +10,6 @@ public interface DataBaseInte {
 
     Connection getConnection();
 
+    Connection getConnection(String dataSource);
+
 }

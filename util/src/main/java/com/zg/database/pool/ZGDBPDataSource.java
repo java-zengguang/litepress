@@ -1,11 +1,7 @@
 package com.zg.database.pool;
 
 import com.zg.bean.entity.OptionDB;
-import com.zg.database.util.JDBCUtils;
-import com.zg.handler.CommitInterfaceHandler;
 import com.zg.handler.ProxyUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -20,9 +16,9 @@ import java.util.Map;
 /**
  * Created by Administrator on 2018/11/27 0027.
  */
-public class ZGDBP implements DataBaseInte {
+public class ZGDBPDataSource  {
 
-    private static ZGDBP zgdbp=null;
+    private static ZGDBPDataSource zgdbp=null;
     private String url = null;
     private static int MAX_CONN_SIZE = 10;
     private static Integer MAX_POOL_SIZE = 5;
@@ -36,13 +32,13 @@ public class ZGDBP implements DataBaseInte {
 
 
     //构造方法
-    private ZGDBP(Map<String, String> option) {
+    private ZGDBPDataSource(Map<String, String> option) {
         setConfig(option);
     }
 
 
     //构造方法
-    private ZGDBP(OptionDB optionDB) {
+    private ZGDBPDataSource(OptionDB optionDB) {
         this.url = optionDB.getUrl();
         this.MAX_CONN_SIZE = optionDB.getMaxPoolSize();
         Driver = optionDB.getDriver();
@@ -50,16 +46,16 @@ public class ZGDBP implements DataBaseInte {
         this.password = optionDB.getPassword();
     }
 
-    public static ZGDBP getInstance(OptionDB optionDB){
+    public static ZGDBPDataSource getInstance(OptionDB optionDB){
         if (zgdbp==null){
-            zgdbp=new ZGDBP(optionDB);
+            zgdbp=new ZGDBPDataSource(optionDB);
         }
         return zgdbp;
     }
 
-    public static ZGDBP getInstance(Map map){
+    public static ZGDBPDataSource getInstance(Map map){
         if (zgdbp==null){
-            zgdbp=new ZGDBP(map);
+            zgdbp=new ZGDBPDataSource(map);
         }
         return zgdbp;
     }
