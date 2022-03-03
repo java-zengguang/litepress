@@ -108,11 +108,11 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
 
     @Override
     public boolean reLoadStructure(List<SinoSigSQLLogEntity> list) throws Exception {
-
+        //做去重处理
         Set<String> environmentFlagSet = new HashSet<>();
         for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
-            if ("DDL".equals(sinoSigSQLLogEntity.sqltype) && "1".equals(sinoSigSQLLogEntity.executestate)) {
-                environmentFlagSet.add(sinoSigSQLLogEntity.environment+","+sinoSigSQLLogEntity.systemflag);
+            if ("DDL".equals(sinoSigSQLLogEntity.sqltype) && "1".equals(sinoSigSQLLogEntity.executestate ) && "new-non-auto".equals(sinoSigSQLLogEntity.systemflag)) {
+                environmentFlagSet.add(sinoSigSQLLogEntity.environment+","+sinoSigSQLLogEntity.databasename+","+sinoSigSQLLogEntity.systemflag);
             }
         }
         for (String environmentFlag : environmentFlagSet) {
@@ -133,7 +133,7 @@ public class SimpleLoadDataBaseStructure implements LoadDataBaseStructure {
 
     private boolean reLoadStructure(String environmentFlag) throws Exception {
         String[] strings=environmentFlag.split(",");
-        strcutureService.reloadDataBaseTableStructures(strings[0],strings[1]);
+        strcutureService.reloadDataBaseTableStructures(strings[0],strings[1],strings[2]);
         return false;
     }
 

@@ -54,6 +54,15 @@ public class DatabaseTableStrcutureServiceImpl extends CommitClassHandler implem
     }
 
     @Override
+    public boolean reloadDataBaseTableStructures(String environment, String databaseName, String systemFlag) throws Exception {
+        List<DatabaseTableStructureEntity> databaseTableStructureEntityList =new ArrayList();
+        databaseTableStructureEntityList.addAll(GetDataStructure.getDataStructure(environment,databaseName,systemFlag));
+        mapper.deleteDatabaseAllStructures(environment,databaseName,systemFlag);
+        mapper.insertDataBaseTableStructures(databaseTableStructureEntityList);
+        return true;
+    }
+
+    @Override
     public boolean insertDataBaseTableStructures(List<DatabaseTableStructureEntity> databaseTableStructureEntityList,List<String> sqlList) throws Exception {
         try {
             mapper.insertDataBaseTableStructures(databaseTableStructureEntityList);

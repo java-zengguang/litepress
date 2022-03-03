@@ -35,16 +35,11 @@ public class SQLExcuteTask implements Job {
             List<SinoSigSQLLogEntity> executeList = new ArrayList<>();
             IntroduceSQL introduceSQL = new SVNSimpleIntroduceSQL(executeRoot, executeBatchNo);
             List<SinoSigSQLLogEntity> list = introduceSQL.initLoadSinoSigSQL();
-            for(SinoSigSQLLogEntity sinoSigSQLLogEntity:list){
-                SinoSigSQLLogEntity sigSQLLogEntity= (SinoSigSQLLogEntity) sinoSigSQLLogEntity.clone();
-                executeList.add(sigSQLLogEntity);
-            }
             AutoDriver autoDriver=new SimpleAutoDriver();
             list=autoDriver.doStart(list);
             resultList.addAll(list);
 
         }
-
 
         if(true) {
             //重新加载表结构

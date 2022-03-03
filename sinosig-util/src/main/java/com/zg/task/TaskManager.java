@@ -45,8 +45,6 @@ public class TaskManager {
             scheduler.scheduleJob(jobDetail, trigger);
         }
 
-
-
         scheduler.start();
 
     }

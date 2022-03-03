@@ -10,6 +10,8 @@ public interface DatabaseTableStrcutureService {
     boolean reloadDataBaseTableStructures(List<DatabaseTableStructureEntity> databaseTableStructureEntityList) throws Exception;
     boolean reloadDataBaseTableStructures(List<DatabaseTableStructureEntity> databaseTableStructureEntityList,String environment,String systemFlag) throws Exception;
     boolean reloadDataBaseTableStructures(String environment,String systemFlag) throws Exception;
+    boolean reloadDataBaseTableStructures(String environment,String databaseName,String systemFlag) throws Exception;
+
 
     boolean insertDataBaseTableStructures(List<DatabaseTableStructureEntity> databaseTableStructureEntityList,List<String> sqlList) throws Exception;
     boolean deleteDatabaseTableStrcuture(Map<String,String> map);

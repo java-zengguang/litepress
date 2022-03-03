@@ -12,7 +12,7 @@ public class SimpleGenerateNNASTAGE extends SimpleGenerate implements SunAutoDri
 
     @Override
     public List<SinoSigSQLLogEntity> doExecute(String systemFlag, List<SinoSigSQLLogEntity> list) throws Exception {
-        List resultList = new ArrayList();
+        List<SinoSigSQLLogEntity> resultList = new ArrayList();
         if ("new-non-auto".equals(systemFlag)) {
             for (SinoSigSQLLogEntity sinoSigSQLLogEntity : list) {
                 if (checkCustomModelRule(sinoSigSQLLogEntity)) {

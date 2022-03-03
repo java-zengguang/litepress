@@ -5,6 +5,7 @@ import com.sinosig.saab.util.FileUtils;
 import com.zg.database.util.SvnUtil;
 import com.zg.handler.CommitInterfaceHandler;
 import com.zg.handler.ProxyUtils;
+import com.zg.sinosig.driver.SunAutoDriver;
 import com.zg.util.io.POIUtils;
 import com.zg.webdemo.entity.SinoSigSQLLogEntity;
 import com.zg.webdemo.service.sinosigsqllog.SinoSigSQLLogService;
@@ -23,7 +24,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 
-public class SimpleResultImpl implements Result {
+public class SimpleResultImpl implements Result, SunAutoDriver {
 
     private SinoSigSQLLogService sinoSigSQLLogService = (SinoSigSQLLogService) ProxyUtils.getProxyInterface(SinoSigSQLLogServiceImpl.class, new CommitInterfaceHandler(new SinoSigSQLLogServiceImpl(), "insertSinoSingSQLLog,updateStateSinoSingSQLLog"));
 
@@ -43,4 +44,9 @@ public class SimpleResultImpl implements Result {
     }
 
 
+    @Override
+    public List<SinoSigSQLLogEntity> doExecute(String systemFlag, List<SinoSigSQLLogEntity> list) throws Exception {
+        getResult(list);
+       return list;
+    }
 }
