@@ -276,7 +276,7 @@ public abstract class VerificationCheck implements CheckSQL {
     }
 
 
-    private void checkDML(List<SinoSigSQLLogEntity> list) {
+    private void checkDML(List<SinoSigSQLLogEntity> list) throws SQLException {
 
         String errorMessage = "";
         String stageFlag = "3";
@@ -306,6 +306,9 @@ public abstract class VerificationCheck implements CheckSQL {
             sinoSigSQLLogEntity.setErrormassage(errorMessage);
             sinoSigSQLLogEntity.executestate = stageFlag;
         }
+        jdbcUtil.commit();
+        //最后提交 关闭链接，H2数据库消失
+        jdbcUtil.release();
     }
 
     @Override
