@@ -1,7 +1,8 @@
 package com.zg.bean.factory;
 
+import com.zg.database.util.PassWordUtil;
 import com.zg.util.io.FileUtils;
-import com.zg.util.reflect.FieldUtils;
+import com.zg.util.reflect.EntityUtils;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 
@@ -29,7 +30,7 @@ public class BeanFactory {
                         Field field = Class.forName(beanClassName).getField(name);
                         field.setAccessible(true);
                         if (property.attributeValue("type") != null) {
-                            FieldUtils.setField(field, o, property.getStringValue());
+                            EntityUtils.setField(field, o, property.getStringValue());
                         }
                         if (property.attributeValue("ref") != null) {
                             field.set(o, BeanFactory.createBean(property.attributeValue("ref")));
@@ -75,11 +76,10 @@ public class BeanFactory {
                             String value=property.getStringValue();
                             //对密码做个加密
                             if("password".equals(name)){
-                                if("新一代数据库".equals(value)){
-                                    value="HvgaE#7ML_";
-                                }
+                                value=PassWordUtil.decrypt(value);
+
                             }
-                            FieldUtils.setField(field, o,value);
+                            EntityUtils.setField(field, o,value);
                         }
                         if (property.attributeValue("ref") != null) {
                             field.set(o, BeanFactory.createBean(property.attributeValue("ref")));

@@ -6,9 +6,10 @@ import com.zg.bean.annotation.NotCommitField;
 import com.zg.bean.entity.OptionDB;
 import com.zg.database.util.DataBaseUtil;
 import com.zg.init.Config;
-import org.python.antlr.ast.Str;
+import org.apache.commons.net.ntp.TimeStamp;
 
 import java.lang.reflect.Field;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -18,32 +19,28 @@ import java.util.*;
  */
 
 
-public class FieldUtils {
+public class EntityUtils {
     public static String dateFormat = "yyyy-MM-dd HH:mm:ss";
     public static SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
     private static OptionDB optionDB = (OptionDB) Config.getConfig("optionDB");
+
     public static void setDateFormat(String dateFormat) {
-        FieldUtils.dateFormat = dateFormat;
-        FieldUtils.sdf = new SimpleDateFormat(dateFormat);
+        EntityUtils.dateFormat = dateFormat;
+        EntityUtils.sdf = new SimpleDateFormat(dateFormat);
     }
 
 
     //为类的公共属性赋值
     public static void setField(Field field, Object object, Object value, String fieldType) throws IllegalArgumentException, IllegalAccessException {
 
-        if (value != null) {
-
-            if ("null".equals(value) || "".equals(value)) {
-
-            } else {
-                if(value instanceof String) {
-                    value = translateType((String) value, fieldType);
-                }
-                if("String".equals(fieldType)){
-                    value=value.toString();
-                }
-                field.set(object, value);
+        if (value != null && !"null".equals(value) && !"".equals(value)) {
+            if (value instanceof String) {
+                value = translateType((String) value, fieldType);
             }
+            if ("String".equals(fieldType)) {
+                value = value.toString();
+            }
+            field.set(object, value);
         }
     }
 
@@ -53,46 +50,9 @@ public class FieldUtils {
         setField(field, object, value, fieldType);
     }
 
-    public static String getFieldString(Field field, Object object) throws IllegalArgumentException, IllegalAccessException {
-        String value = null;
-        String fieldType = field.getType().getSimpleName();
-        switch (fieldType) {
-            case "int": {
-                value = String.valueOf(field.get(object));
-                break;
-            }
-            case "String": {
-                value =  String.valueOf(field.get(object)) ;
-
-                if(value.contains("'")){
-                    value=value.replace("'","\\'");
-                }
-                if("null".equals(value)){
-                    value="";
-                }
-
-                value="'" +value+ "'";
-                break;
-            }
-
-            case "Date": {
-                value = sdf.format(field.get(object));
-                break;
-            }
-
-         /*   default:{
-                value=field.get(object).toString();
-            }*/
-        }
-        if (value == null) {
-            value = "";
-        }
-        return value;
-    }
-
-    public static String fieldtoString(Object object){
-        String value="";
-        String classType=object.getClass().getTypeName();
+    public static String fieldtoString(Object object) {
+        String value = "";
+        String classType = object.getClass().getTypeName();
 
         switch (classType) {
             case "int": {
@@ -109,126 +69,65 @@ public class FieldUtils {
                 break;
             }
 
-            default:{
-              break;
+            default: {
+                break;
             }
         }
 
         return value;
     }
 
-
-
-
-
-    public static Object getFieldJSON(Field field, Object object) throws IllegalArgumentException, IllegalAccessException {
-        Object value;
-        if (field.get(object) == null) {
-            value = "null";
-        } else {
-            String fieldType = field.getType().getSimpleName();
-            switch (fieldType) {
-                case "int": {
-                    value = field.get(object);
-                    break;
-                }
-                case "String": {
-                    value = field.get(object);
-                    break;
-                }
-
-                case "Date": {
-                    value = sdf.format(field.get(object));
-                    break;
-                }
-
-                case "boolean": {
-                    value = field.get(object);
-                    break;
-                }
-
-                default: {
-                    value = field.get(object);
-                    break;
-                }
-            }
-        }
-        if (value == null) {
-            value = "";
-        }
-        return value;
-    }
 
     public static Object translateNull(Object o) throws IllegalArgumentException, IllegalAccessException {
-        Field fields[] = o.getClass().getFields();
-        for (Field field : fields) {
-            if (String.valueOf(field.get(o)).equals("null"))
-                field.set(o, "");
-        }
-
-        return o;
-    }
-
-    public static Object Nulltranslate(Object o) throws IllegalArgumentException, IllegalAccessException {
         Field fields[] = o.getClass().getFields();
         for (Field field : fields) {
             if (String.valueOf(field.get(o)).equals(""))
                 field.set(o, "null");
         }
-
         return o;
     }
 
 
-    public static Object translateType(String value,Class type){
-        String fieldType=type.getSimpleName();
-        return translateType(value,fieldType);
+    public static Object translateType(String value, Class type) {
+        String fieldType = type.getSimpleName();
+        return translateType(value, fieldType);
     }
 
-    public static Object translateType(String value, String fieldType) {
+    private static Object translateType(String value, String fieldType) {
 
         Object object = null;
 
+        switch (fieldType) {
+            case "int": {
+                object = Integer.valueOf(value);
+                break;
+            }
+            case "Integer": {
+                object = Integer.valueOf(value);
+                break;
+            }
+            case "String": {
+                object = value;
+                break;
+            }
+            case "long": {
+                object = Long.valueOf(value);
+                break;
+            }
+            case "boolean": {
+                object = Boolean.valueOf(value);
+                break;
+            }
+            case "Date": {
 
-                switch (fieldType) {
-                    case "int": {
-                        object = Integer.valueOf(value);
-                        break;
-                    }
+                object = sdf.format(value);
+                break;
+            }
+            default: {
 
-                    case "Integer": {
-                        object = Integer.valueOf(value);
-                        break;
-                    }
-                    case "String": {
-                        object = value;
-                        break;
-                    }
-
-                    case "long": {
-                        object= Long.valueOf(value);
-                        break;
-                    }
-
-                    case "boolean":{
-                        object= Boolean.valueOf(value);
-                        break;
-                    }
-
-                    case "Date": {
-                        try {
-                            object = sdf.parse(value);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                    }
-
-                    default:{
-
-                        object=value;
-                        break;
-                    }
+                object = value;
+                break;
+            }
 
         }
         return object;
@@ -242,12 +141,16 @@ public class FieldUtils {
                 s = "String";
                 break;
 
+            case "NVARCHAR2":
+                s = "String";
+                break;
+
             case "VARCHAR":
                 s = "String";
                 break;
 
             case "NUMBER":
-                s = "int";
+                s = "java.math.BigDecimal";
                 break;
 
             case "DATE":
@@ -265,7 +168,6 @@ public class FieldUtils {
 
         return s;
     }
-
 
 
     public static boolean isPrimitive(Field field) {
@@ -295,25 +197,6 @@ public class FieldUtils {
             return true;
         }
 
-        return false;
-    }
-
-
-
-
-    public static boolean isCollection(Field field) {
-        Class type = field.getType();
-        if ("List".equals(type.getSimpleName()) || "Set".equals(type.getSimpleName())) {
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean isMainModel(Field field) {
-        Class type = field.getType().getSuperclass();
-        if (type != null && "MainModel".equals(type.getSimpleName())) {
-            return true;
-        }
         return false;
     }
 
@@ -441,7 +324,6 @@ public class FieldUtils {
     }
 
 
-
     public static int toCompare(Object o1, Map termMap) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         int fruit = 0;
         Set<String> terms = termMap.keySet();
@@ -473,10 +355,10 @@ public class FieldUtils {
                 if (type == String.class) {
                     String s1 = (String) field.get(o1);
                     String s2 = (String) termMap.get(term);
-                    if(s1==s2){
+                    if (s1 == s2) {
                         return 0;
                     }
-                    if(s1==null || s2==null){
+                    if (s1 == null || s2 == null) {
                         return -1;
                     }
                     fruit = s1.length() - s2.length();
@@ -520,8 +402,6 @@ public class FieldUtils {
     }
 
 
-
-
     public static List<String> getNoCommitFields(Class modelClass) {
 
         List<String> list = new ArrayList();
@@ -542,20 +422,20 @@ public class FieldUtils {
 
     public static String serialize(Object object) {
 
-        if (object instanceof String){
-            return (String)object;
-        }else {
+        if (object instanceof String) {
+            return (String) object;
+        } else {
             return JsonUtils.objectToJsonString(object);
         }
 
     }
 
-    public static Object unSerialize(String str,Class classType) {
-        Object value=null;
-        if(isPrimitive(classType)){
-            value=translateType(str,classType);
-        }else{
-            value=JsonUtils.jsonToObject(str,classType);
+    public static Object unSerialize(String str, Class classType) {
+        Object value = null;
+        if (isPrimitive(classType)) {
+            value = translateType(str, classType);
+        } else {
+            value = JsonUtils.jsonToObject(str, classType);
         }
         return value;
     }
@@ -564,16 +444,16 @@ public class FieldUtils {
     private static String getFieldOrcale(Field field, Object object) throws IllegalArgumentException, IllegalAccessException {
         String value = null;
         String fieldType = null;
-        Map<String, String> tableInfo =null;
-        String tableName=FieldUtils.getTableNameFromModel(object.getClass());
+        Map<String, String> tableInfo = null;
+        String tableName = EntityUtils.getTableNameFromModel(object.getClass());
         tableInfo = DataBaseUtil.getTableInfo(tableName);
 
 
-        if(tableInfo!=null) {
-            fieldType=tableInfo.get(field.getName().toLowerCase());
+        if (tableInfo != null) {
+            fieldType = tableInfo.get(field.getName().toLowerCase());
         }
-        if(fieldType==null){
-            fieldType=field.getType().getSimpleName().toLowerCase();
+        if (fieldType == null) {
+            fieldType = field.getType().getSimpleName().toLowerCase();
         }
 
         switch (fieldType) {
@@ -591,7 +471,7 @@ public class FieldUtils {
             }
 
             case "Date": {
-                value = "to_date(" + sdf.format(field.get(object)) + ",'" + dateFormat + "')";
+                value = "to_date('" + sdf.format(field.get(object)) + "','yyyy-MM-dd hh24:mi:ss')";
                 break;
             }
 
@@ -606,15 +486,15 @@ public class FieldUtils {
     private static String getFieldMySql(Field field, Object object) throws IllegalArgumentException, IllegalAccessException {
         String value = null;
         String fieldType = null;
-        Map<String, String> tableInfo =null;
-        String tableName=FieldUtils.getTableNameFromModel(object.getClass());
+        Map<String, String> tableInfo = null;
+        String tableName = EntityUtils.getTableNameFromModel(object.getClass());
         tableInfo = DataBaseUtil.getTableInfo(tableName);
 
-        if(tableInfo!=null) {
-            fieldType=tableInfo.get(field.getName().toLowerCase());
+        if (tableInfo != null) {
+            fieldType = tableInfo.get(field.getName().toLowerCase());
         }
-        if(fieldType==null){
-            fieldType=field.getType().getSimpleName().toLowerCase();
+        if (fieldType == null) {
+            fieldType = field.getType().getSimpleName().toLowerCase();
         }
 
         switch (fieldType) {
@@ -622,23 +502,22 @@ public class FieldUtils {
                 value = String.valueOf(field.get(object));
                 break;
             }
-            case "tinyint":{
-                if((Boolean) field.get(object)){
-                    value="1";
-                }else{
-                    value="0";
+            case "tinyint": {
+                if ((Boolean) field.get(object)) {
+                    value = "1";
+                } else {
+                    value = "0";
                 }
                 break;
             }
-            case "boolean":{
-                if((Boolean) field.get(object)){
-                    value="1";
-                }else{
-                    value="0";
+            case "boolean": {
+                if ((Boolean) field.get(object)) {
+                    value = "1";
+                } else {
+                    value = "0";
                 }
                 break;
             }
-
 
 
             case "varchar": {
@@ -690,42 +569,42 @@ public class FieldUtils {
 
     private static void setFieldMySql(Field field, Object object, Object value) throws IllegalArgumentException, IllegalAccessException, ParseException {
 
-        Map<String,String> tableInfo=null;
+        Map<String, String> tableInfo = null;
 
-        String tableName=FieldUtils.getTableNameFromModel(object.getClass());
+        String tableName = EntityUtils.getTableNameFromModel(object.getClass());
         tableInfo = DataBaseUtil.getTableInfo(tableName);
 
-        String fieldType =null;
-        if(tableInfo==null){
-            fieldType=field.getType().getSimpleName().toLowerCase();
+        String fieldType = null;
+        if (tableInfo == null) {
+            fieldType = field.getType().getSimpleName().toLowerCase();
         } else {
-            fieldType=tableInfo.get(field.getName().toLowerCase());
+            fieldType = tableInfo.get(field.getName().toLowerCase());
         }
-        if (value == null || value.equals("") || value.equals("null") ) {
+        if (value == null || value.equals("") || value.equals("null")) {
 
-            if("String".equals(fieldType) || "varchar".equals(fieldType)){
-                field.set(object,"");
+            if ("String".equals(fieldType) || "varchar".equals(fieldType)) {
+                field.set(object, "");
             }
 
             return;
         }
         switch (fieldType) {
             case "int": {
-                field.set(object, (Integer)object);
+                field.set(object, (Integer) object);
                 break;
             }
             case "varchar": {
-                field.set(object, (String)object);
+                field.set(object, (String) object);
                 break;
             }
 
-            case "string":{
-                field.set(object,(String)value);
+            case "string": {
+                field.set(object, (String) value);
                 break;
             }
 
-            case "text":{
-                field.set(object,(String)value);
+            case "text": {
+                field.set(object, (String) value);
                 break;
             }
 
@@ -741,28 +620,20 @@ public class FieldUtils {
                 break;
             }
 
-            case "boolean":{
-                if("true".endsWith((String) value)){
-                    field.set(object,true);
+            case "boolean": {
+                if ("true".endsWith((String) value)) {
+                    field.set(object, true);
                 }
-                if("false".endsWith((String) value)){
-                    field.set(object,true);
+                if ("false".endsWith((String) value)) {
+                    field.set(object, true);
                 }
 
                 break;
             }
 
-      /*      case "tinyint":{
-                if("true".endsWith(value)){
-                    field.set(object,true);
-                }
-                if("false".endsWith(value)){
-                    field.set(object,true);
-                }
-                break;
-            }*/
+
             case "tinyint": {
-                field.set(object, (Integer)object);
+                field.set(object, (Integer) object);
                 break;
             }
 
@@ -771,185 +642,155 @@ public class FieldUtils {
     }
 
 
-    private static String getFieldSql(Field field, Object object) throws IllegalAccessException {
+    private static void setFieldOrcale(Field field, Object object, Object value) throws IllegalAccessException, ParseException {
 
-        if("MYSQL".equals(optionDB.DBType)){
-            return getFieldMySql(field,object);
-        }else if("ORCALE".equals(optionDB.DBType)){
-            return getFieldOrcale(field,object);
-        }else{
-            System.out.println(FieldUtils.class+"====数据源未初始化");
-            return null;
+        Map<String, String> tableInfo = null;
+
+        String tableName = EntityUtils.getTableNameFromModel(object.getClass());
+        tableInfo = DataBaseUtil.getTableInfo(tableName);
+
+        String fieldType = null;
+        if (tableInfo == null) {
+            fieldType = field.getType().getSimpleName().toLowerCase();
+        } else {
+            fieldType = tableInfo.get(field.getName().toLowerCase());
+        }
+        if (value == null || value.equals("") || value.equals("null")) {
+
+            if ("String".equals(fieldType) || "varchar".equals(fieldType)) {
+                field.set(object, "");
+            }
+
+            return;
+        }
+        switch (fieldType) {
+            case "int": {
+                field.set(object, (Integer) object);
+                break;
+            }
+            case "varchar": {
+                field.set(object, (String) object);
+                break;
+            }
+
+            case "string": {
+                field.set(object, (String) value);
+                break;
+            }
+
+            case "text": {
+                field.set(object, (String) value);
+                break;
+            }
+
+            case "date": {
+                //  SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+                field.set(object, sdf.parse((String) value));
+                break;
+            }
+
+            case "datetime": {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                field.set(object, sdf.parse((String) value));
+                break;
+            }
+
+            case "boolean": {
+                if ("true".endsWith((String) value)) {
+                    field.set(object, true);
+                }
+                if ("false".endsWith((String) value)) {
+                    field.set(object, true);
+                }
+
+                break;
+            }
+
+
+            case "tinyint": {
+                field.set(object, (Integer) object);
+                break;
+            }
+
         }
     }
 
-    private static void setFieldSql(Field field, Object object,Object value) throws IllegalAccessException, ParseException {
 
-        if("MYSQL".equals(optionDB.DBType)){
-            setFieldMySql(field,object,value);
+    private static void setFieldSql(Field field, Object object, Object value) throws IllegalAccessException, ParseException {
+
+        if ("MYSQL".equals(optionDB.DBType)) {
+            setFieldMySql(field, object, value);
             return;
-        }else if("ORCALE".equals(optionDB.DBType)){
-            // getFieldOrcale(field,object);
+        } else if ("ORCALE".equals(optionDB.DBType)) {
+            setFieldOrcale(field, object, value);
             return;
-        }else{
-            System.out.println(FieldUtils.class+"====数据源未初始化");
+        } else {
+            System.out.println(EntityUtils.class + "====数据源未初始化");
             return;
         }
     }
 
-    public static void setFieldObject(Field field, Object object,Object value) throws IllegalAccessException, ParseException {
+
+    public static void setFieldObject(Field field, Object object, Object value) throws IllegalAccessException, ParseException {
         FieldTypeMode typeMode = (FieldTypeMode) object.getClass().getAnnotation(FieldTypeMode.class);
         if ("database".equals(typeMode.typeMode())) {
             setFieldSql(field, object, value);
-        }else{
-            FieldUtils.setField(field,object,value);
+        } else {
+            EntityUtils.setField(field, object, value);
         }
     }
 
     public static String getFieldObject(Field field, Object object) throws IllegalAccessException {
-        FieldTypeMode typeMode = (FieldTypeMode) object.getClass().getAnnotation(FieldTypeMode.class);
+        FieldTypeMode typeMode = object.getClass().getAnnotation(FieldTypeMode.class);
         if ("database".equals(typeMode.typeMode())) {
-            return getFieldSql(field,object);
-        }else{
-            return FieldUtils.getFieldString(field,object);
+            if ("MYSQL".equals(optionDB.DBType)) {
+                return getFieldMySql(field, object);
+            } else if ("ORCALE".equals(optionDB.DBType)) {
+                return getFieldOrcale(field, object);
+            } else {
+                System.out.println(EntityUtils.class + "====数据源未初始化");
+                return null;
+            }
+        } else {
+            String value = null;
+            String fieldType = field.getType().getSimpleName();
+            switch (fieldType) {
+                case "int": {
+                    value = String.valueOf(field.get(object));
+                    break;
+                }
+                case "String": {
+                    value = String.valueOf(field.get(object));
+
+                    if (value.contains("'")) {
+                        value = value.replace("'", "\\'");
+                    }
+                    if ("null".equals(value)) {
+                        value = "";
+                    }
+                    value = "'" + value + "'";
+                    break;
+                }
+
+                case "Date": {
+                    if(field.get(object)!=null){
+                        value = "to_date('" + sdf.format(field.get(object)) + "','yyyy-MM-dd hh24:mi:ss')";
+                    }else{
+                        value="";
+                    }
+
+                    break;
+                }
+
+            }
+            if (value == null) {
+                value = "";
+            }
+            return value;
         }
 
     }
 
 }
 
-/*
- * 这个方法用来比较object和map格式化的object中的数据
- * 参数object,map<String name,Object value>
- * 返回int
- * */
-/*	public static int toCompare(Object o1,Map termMap) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
-		int fruit=0;
-		Set<String> terms=termMap.keySet();
-		for(String term:terms){
-		Field field=o1.getClass().getField(term);
-		Class type= field.getType();
 
-
-		if(type==int.class ){
-			fruit=field.getInt(o1)-Integer.valueOf( (String) termMap.get(term));
-			if(fruit!=0){
-				return fruit;
-			}
-		}
-		if(type==String.class){
-			 String s1=(String) field.get(o1);
-			 String s2=(String) termMap.get(term);
-			 fruit=s1.length()-s2.length();
-			 if(fruit!=0){
-				 return fruit;
-			 }
-			 fruit=((String)field.get(o1)).compareTo((String) termMap.get(term));
-			if(fruit!=0){
-				return fruit;
-			}
-
-		}
-
-		}
-		return fruit;
-	}*/
-
-
-      /*  public static boolean isCollection(Object object){
-        Class type=object.getClass();
-        if ("List".equals(type.getSimpleName()) || "Set".equals(type.getSimpleName())){
-            return true;
-        }
-        return false;
-    }*/
-
-
-/*
- * 比较两个object对象中的数据是否相同
- * */
-	/*public static int toCompare(Object o1,Object o2) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
-
-		if(!o1.getClass().equals(o2.getClass())){
-			return -1;
-		}
-		int fruit=0;
-		for(Field field:o1.getClass().getFields()){
-		Class type= field.getType();
-
-		if(type==int.class ){
-
-			fruit=field.getInt(o1)-field.getInt(o2);
-			if(fruit!=0){
-				return fruit;
-			}
-		}
-		if(type==String.class){
-			 String s1=(String) field.get(o1);
-			 String s2=(String) field.get(o2);
-			 if(s1==null){
-				 if(s2==null){
-					 return 0;
-				 }else{
-					 return 1;
-				 }
-			 }
-			 if(s2==null){
-				 if(s1==null){
-					 return 0;
-				 }else{
-					 return -1;
-				 }
-			 }
-
-			 fruit=s1.length()-s2.length();
-			 if(fruit!=0){
-				 return fruit;
-			 }
-			 fruit=((String)field.get(o1)).compareTo((String)field.get(o2));
-			if(fruit!=0){
-				return fruit;
-			}
-
-		}
-
-		}
-		return fruit;
-	}
-*/
-
-
-/*根据terms来比较object
- * 返回0时两个相等
- * terms是传入的比较规则
- * */
-/*	public static int toCompare(Object o1,Object o2,String... terms) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
-		int fruit=0;
-		for(String term:terms){
-		Field field=o1.getClass().getField(term);
-		Class type= field.getType();
-
-
-		if(type==int.class ){
-			fruit=field.getInt(o1)-field.getInt(o2);
-			if(fruit!=0){
-				return fruit;
-			}
-		}
-		if(type==String.class){
-			 String s1=(String) field.get(o1);
-			 String s2=(String) field.get(o2);
-			 fruit=s1.length()-s2.length();
-			 if(fruit!=0){
-				 return fruit;
-			 }
-			 fruit=((String)field.get(o1)).compareTo((String)field.get(o2));
-			if(fruit!=0){
-				return fruit;
-			}
-
-		}
-
-		}
-		return fruit;
-	}*/

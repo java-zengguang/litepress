@@ -6,7 +6,7 @@ import com.zg.mvc.entity.ViewObject;
 import com.zg.mvc.util.FileUpLoad;
 import com.zg.mvc.util.ResolveAnnotation;
 import com.zg.mvc.util.io.IOUtils;
-import com.zg.util.reflect.FieldUtils;
+import com.zg.util.reflect.EntityUtils;
 import com.zg.util.reflect.JsonUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
@@ -176,10 +176,10 @@ public class ControllerAdapter {
                     parameterValues[i] = response;
                 }
             } else {
-                if (FieldUtils.isPrimitive(paramentType)) {
+                if (EntityUtils.isPrimitive(paramentType)) {
 
-                    parameterValues[i] = FieldUtils.translateType(request.getParameter(parameters[i].getName()),paramentType);
-                } else if (FieldUtils.isMap(paramentType)) {
+                    parameterValues[i] = EntityUtils.translateType(request.getParameter(parameters[i].getName()),paramentType);
+                } else if (EntityUtils.isMap(paramentType)) {
                     Map valueMap = new HashedMap();
                     Enumeration paNames = request.getParameterNames();
                     while (paNames.hasMoreElements()) {
@@ -193,7 +193,7 @@ public class ControllerAdapter {
                     Field fields[] = object.getClass().getFields();
                     for (Field field : fields) {
                         String value = request.getParameter(paramentName + "." + field.getName());
-                        FieldUtils.setField(field, object, value);
+                        EntityUtils.setField(field, object, value);
                     }
                     parameterValues[i] = object;
                 }

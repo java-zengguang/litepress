@@ -1,6 +1,6 @@
 package com.zg.mvc.util;
 
-import com.zg.util.reflect.FieldUtils;
+import com.zg.util.reflect.EntityUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
@@ -15,7 +15,7 @@ public class ExtractionParameter {
         for (Field field : fields) {
             String value = request.getParameter(field.getName());
             if (value != null) {
-                FieldUtils.setField(field, model, value);
+                EntityUtils.setField(field, model, value);
             }
         }
 

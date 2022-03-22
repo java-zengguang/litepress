@@ -2,7 +2,7 @@ package com.zg.database.util;
 
 import com.zg.bean.entity.MainModel;
 import com.zg.util.reflect.DynamicClass;
-import com.zg.util.reflect.FieldUtils;
+import com.zg.util.reflect.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class NewJDBCUtil {
     }
 
     public int[] insertTables(List modelLIst, Class modelClass) throws SQLException, IllegalAccessException {
-        String tableName = FieldUtils.getTableNameFromModel(modelClass);
+        String tableName = EntityUtils.getTableNameFromModel(modelClass);
         return insertTables(modelLIst, modelClass, tableName);
     }
 
@@ -88,7 +88,7 @@ public class NewJDBCUtil {
         List list = new ArrayList();
         Map tableInfoMap = tableInfo(sql);
         list = selectToMapList(sql);
-        Object model = DynamicClass.getDynamicClass(Arrays.asList("com.zg.bean.Model.MainModel"), getTableName(sql), tableInfoMap, null, "MainModel");
+        Object model = DynamicClass.getDynamicClass(Arrays.asList("com.zg.bean.entity.MainModel","com.zg.bean.annotation.FieldTypeMode","com.zg.bean.annotation.Model","java.math.BigDecimal"), getTableName(sql), tableInfoMap, null, "MainModel");
         list = SerializeObjectUtils.setMember(list, model.getClass());
         return list;
     }
@@ -125,7 +125,7 @@ public class NewJDBCUtil {
         int columncount = 0;
         columncount = rsmd.getColumnCount();
         for (int i = 1; i < columncount + 1; i++) {
-            map.put(FieldUtils.dataTranslateJava(rsmd.getColumnLabel(i)), FieldUtils.dataTranslateJava(rsmd.getColumnTypeName(i)));
+            map.put(rsmd.getColumnLabel(i), EntityUtils.dataTranslateJava(rsmd.getColumnTypeName(i)));
         }
         rs.close();
         pstmt.close();
@@ -149,7 +149,9 @@ public class NewJDBCUtil {
             Map map = new LinkedHashMap();
             columncount = rsmd.getColumnCount();
             for (int i = 1; i < columncount + 1; i++) {
-                map.put(rsmd.getColumnLabel(i), rs.getObject(i) + "");
+                String columnLabel = rsmd.getColumnLabel(i);
+                Object columnValue = rs.getObject(i);
+                map.put(columnLabel, columnValue);
             }
 
             list.add(map);

@@ -3,11 +3,8 @@ package com.zg.direction.client;
 import com.zg.direction.entity.DTPResponse;
 import com.zg.network.common.client.BaseClientHandler;
 import com.zg.network.common.MessgeReceivedListener;
-import com.zg.util.reflect.FieldUtils;
-import com.zg.util.reflect.SerializeUtils;
+import com.zg.util.reflect.EntityUtils;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.io.IOException;
 
 public class ConsumerClientHandler extends BaseClientHandler<String> {
 
@@ -17,13 +14,13 @@ public class ConsumerClientHandler extends BaseClientHandler<String> {
 
 
     private Object unSerialize(String str,Class classType) throws IllegalAccessException, InstantiationException {
-       Object object= FieldUtils.unSerialize(str,classType);
+       Object object= EntityUtils.unSerialize(str,classType);
         return object;
     }
 
 
     private String serialize(Object object) throws IllegalAccessException {
-        String data=FieldUtils.serialize(object);
+        String data= EntityUtils.serialize(object);
         return data;
     }
 

@@ -5,8 +5,7 @@ import com.zg.network.bean.ChannelBean;
 import com.zg.network.bean.ZGMPBean;
 import com.zg.network.common.service.BaseServiceHandler;
 import com.zg.network.im.login.LoginManager;
-import com.zg.util.reflect.FieldUtils;
-import com.zg.util.reflect.JsonUtils;
+import com.zg.util.reflect.EntityUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -32,7 +31,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) {
         // System.out.println(" get msg >> " + msg);
-        ZGMPBean request = (ZGMPBean) FieldUtils.unSerialize(msg, ZGMPBean.class);//把JSON数据进行反序列化
+        ZGMPBean request = (ZGMPBean) EntityUtils.unSerialize(msg, ZGMPBean.class);//把JSON数据进行反序列化
         ZGMPBean response = new ZGMPBean("RESPONSE");
         response.sendTime = System.currentTimeMillis();
         request.sendTime = System.currentTimeMillis();
@@ -40,7 +39,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
         if (request == null) {
             response.status = -1;
             response.errorStr = "Request error";
-            String json = FieldUtils.serialize(response);
+            String json = EntityUtils.serialize(response);
             ctx.writeAndFlush(json);
             return;
         }
@@ -80,7 +79,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                             if(request.operationType!=null && !"".equals(request.operationType)){
                                 request.methodType=request.operationType;
                             }
-                            String json = FieldUtils.serialize(request);
+                            String json = EntityUtils.serialize(request);
                             channel.writeAndFlush(json + "\r\n");  //转发数据
                         }
                         response.message = "Send ok";
@@ -96,13 +95,13 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                             if(request.operationType!=null && !"".equals(request.operationType)){
                                 request.methodType=request.operationType;
                             }
-                            String json = FieldUtils.serialize(request);
+                            String json = EntityUtils.serialize(request);
                             channel.writeAndFlush(json + "\r\n");  //转发数据
                             response.message = "Send ok";
                         }
                     }
                     response.methodType = "SYS";
-                    String resonseJson = FieldUtils.serialize(response);
+                    String resonseJson = EntityUtils.serialize(response);
                     ctx.writeAndFlush(resonseJson + "\r\n");
                     break;
                 }
@@ -121,7 +120,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                         response.errorStr = "Logout error";
 
                     }
-                    String json = FieldUtils.serialize(response);
+                    String json = EntityUtils.serialize(response);
                     ctx.writeAndFlush(json + "\r\n");
                     break;
                 }
@@ -162,7 +161,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                 default: {
                     response.errorStr = "Status error";
                     response.status = -1; //状态码
-                    String json = FieldUtils.serialize(response);
+                    String json = EntityUtils.serialize(response);
                     ctx.writeAndFlush(json + "\r\n");
                     break;
                 }

@@ -1,6 +1,6 @@
 package com.zg.cache.util;
 
-import com.zg.util.reflect.FieldUtils;
+import com.zg.util.reflect.EntityUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -37,7 +37,7 @@ public abstract class BaseRomCache implements RomCacheInte {
             int i = 0;
             Object model =modelClass.newInstance();
             for (Field f : fields) {
-                FieldUtils.setField(f, model, values[i].trim());
+                EntityUtils.setField(f, model, values[i].trim());
                 i++;
             }
             modelList.set(index, model);
@@ -81,7 +81,7 @@ public abstract class BaseRomCache implements RomCacheInte {
         for (int i = 0; i < modelList.size(); i++) {
             for (int j = 0; j < modelList.size() - i - 1; j++) {
                 try {
-                    if (FieldUtils.toCompare(modelList.get(j), modelList.get(j + 1), terms) > 0) {
+                    if (EntityUtils.toCompare(modelList.get(j), modelList.get(j + 1), terms) > 0) {
                         Object copyJ = modelList.get(j);
                         modelList.set(j, modelList.get(j + 1));
                         modelList.set(j + 1, copyJ);
@@ -116,7 +116,7 @@ public abstract class BaseRomCache implements RomCacheInte {
         for (int i = 0; i < modelList.size(); i++) {
 
             Object modelX = modelList.get(i);
-            if (FieldUtils.toCompare(modelX, termMap) == 0) {
+            if (EntityUtils.toCompare(modelX, termMap) == 0) {
                 num_list.add(i);
 
             }

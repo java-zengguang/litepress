@@ -4,11 +4,9 @@ import com.zg.network.bean.ChannelBean;
 import com.zg.network.bean.ZGMPBean;
 import com.zg.network.im.login.LoginManager;
 import com.zg.network.common.heartbeat.BaseHeartbeatHandle;
-import com.zg.util.reflect.FieldUtils;
-import com.zg.util.reflect.JsonUtils;
+import com.zg.util.reflect.EntityUtils;
 import io.netty.channel.Channel;
 
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -51,7 +49,7 @@ public class IMHeartbeatHandle extends BaseHeartbeatHandle {
                     response.methodType = "HEARTBEAT";
                     response.heartBeatID = channelBean.heartBeatID;
                     response.sendTime = new Date().getTime();
-                    json = FieldUtils.serialize(response);
+                    json = EntityUtils.serialize(response);
                     channel.writeAndFlush(json + "\r\n");
                     channelBean.time = new Date().getTime();
                     channelBean.count--;

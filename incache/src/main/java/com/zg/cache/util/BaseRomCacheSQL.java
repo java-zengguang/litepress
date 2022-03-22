@@ -4,7 +4,7 @@ import com.zg.bean.entity.ContainModel;
 import com.zg.bean.entity.MainModel;
 import com.zg.database.util.JDBCUtils;
 import com.zg.database.util.ModelSQLUtils;
-import com.zg.util.reflect.FieldUtils;
+import com.zg.util.reflect.EntityUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -30,7 +30,7 @@ public  abstract class BaseRomCacheSQL extends BaseRomCache implements RomCacheS
             } else if (model instanceof ContainModel) {
                 Field[] fields = modelClass.getFields();
                 for (Field field : fields) {
-                    if (FieldUtils.isPrimitive(field.getType())) {
+                    if (EntityUtils.isPrimitive(field.getType())) {
                         List<String> subSqlList = new ArrayList();
                         List<Object> subModelList = new ArrayList<Object>();
                         List<Object> subBankList = new ArrayList<Object>();

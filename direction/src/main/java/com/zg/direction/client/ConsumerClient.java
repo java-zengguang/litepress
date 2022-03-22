@@ -2,8 +2,7 @@ package com.zg.direction.client;
 
 import com.zg.network.common.client.BaseClient;
 import com.zg.network.common.client.BaseClientHandler;
-import com.zg.util.reflect.FieldUtils;
-import com.zg.util.reflect.JsonUtils;
+import com.zg.util.reflect.EntityUtils;
 
 public class ConsumerClient extends BaseClient {
     public ConsumerClient(BaseClientHandler<String> clientHandler, String host, int port) {
@@ -13,7 +12,7 @@ public class ConsumerClient extends BaseClient {
     @Override
     public String resovleProtocol(Object object)  {
         String json =null;
-        json= FieldUtils.serialize(object);
+        json= EntityUtils.serialize(object);
         return json;
     }
 }

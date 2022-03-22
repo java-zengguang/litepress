@@ -4,13 +4,10 @@ import com.zg.direction.entity.DTPRequest;
 import com.zg.direction.entity.DTPResponse;
 import com.zg.direction.entity.ParamterEntity;
 import com.zg.network.common.service.BaseServiceHandler;
-import com.zg.util.reflect.FieldUtils;
+import com.zg.util.reflect.EntityUtils;
 import com.zg.util.reflect.JsonUtils;
-import com.zg.util.reflect.SerializeUtils;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -46,8 +43,8 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             result = new Object[paramterTypes.length];
 
             for (int i = 0; i < paramterTypes.length; i++) {
-                if (FieldUtils.isPrimitive(paramterTypes[i])) {
-                    result[i] = FieldUtils.translateType(paramterValues.get(i), paramterTypes[i]);
+                if (EntityUtils.isPrimitive(paramterTypes[i])) {
+                    result[i] = EntityUtils.translateType(paramterValues.get(i), paramterTypes[i]);
                 }
             }
 
@@ -58,12 +55,12 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
 
 
     private String serialize(Object object) throws IllegalAccessException {
-        String data=FieldUtils.serialize(object);
+        String data= EntityUtils.serialize(object);
         return data;
     }
 
     private Object unSerialize(String str,Class classType) throws IllegalAccessException, InstantiationException {
-        Object object= FieldUtils.unSerialize(str,classType);
+        Object object= EntityUtils.unSerialize(str,classType);
         return object;
     }
 

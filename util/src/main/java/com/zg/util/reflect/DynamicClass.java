@@ -20,13 +20,15 @@ public class DynamicClass {
         if (calssName == null || natureMap.size() == 0) {
             throw new Exception();
         } else {
-            sb.append("package com.zg.bean.Model;\r\n");
+            sb.append("package com.zg.bean.entity;\r\n");
             if (referenceList != null && referenceList.size() > 0) {
                 for (String reference : referenceList) {
                     sb.append("import " + reference + ";\r\n");
                 }
             }
             sb.append("import java.util.*;\r\n");
+            sb.append("@Model(tableName = \""+calssName.toUpperCase()+"\")\n");
+            sb.append("@FieldTypeMode(typeMode = \"entity\")\n");
             sb.append("public class ");
             sb.append(calssName);
             if (parentClass != null)
@@ -48,7 +50,26 @@ public class DynamicClass {
 
         return sb.toString();
     }
+/*    private static String produceEntityJavaCode(Map<String,Object> map,String tableName) throws Exception {
+        Map<String,String> natureMap=new HashMap<>();
+        Set<String> keySet=map.keySet();
+        for(String key:keySet){
+            natureMap.put(key,map.get(key).getClass().getTypeName());
+        }
+        return produceEntityJavaCode(Arrays.asList("com.zg.bean.entity.MainModel","com.zg.bean.annotation.FieldTypeMode","com.zg.bean.annotation.Model"),tableName,natureMap, null, "MainModel");
+    }
 
+    public static Object getDynamicClass(Map<String,Object> map,String tableName){
+        String javaCode;
+        try {
+            javaCode = produceEntityJavaCode(map,tableName);
+            return getDynamicClass(tableName, javaCode);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+    }*/
 
     public static Object getDynamicClass(List<String> referenceList, String className, Map<String, String> natureMap, List<String> interfaceList, String parentClass) {
         String javaCode;
@@ -77,7 +98,7 @@ public class DynamicClass {
         List<? extends JavaFileObject> jfos = Arrays.asList(jfo);
         CompilationTask task = compiler.getTask(null, stdManager, null, options, null, jfos);
         if (task.call()) {
-            o = Class.forName("com.zg.bean.Model." + name).newInstance();
+            o = Class.forName("com.zg.bean.entity." + name).newInstance();
             return o;
         } else {
             return null;

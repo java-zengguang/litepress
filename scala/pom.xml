@@ -71,7 +71,6 @@
             <groupId>com.zg.mvc</groupId>
             <artifactId>web</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <type>war</type>
         </dependency>
 
         <dependency>

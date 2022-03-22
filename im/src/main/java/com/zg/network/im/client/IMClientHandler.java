@@ -2,8 +2,6 @@ package com.zg.network.im.client;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.zg.bean.factory.BeanFactory;
-import com.zg.init.Config;
 import com.zg.network.bean.UserBean;
 import com.zg.network.bean.ZGMPBean;
 import com.zg.network.common.client.BaseClientHandler;
@@ -12,15 +10,13 @@ import com.zg.network.common.fileservcie.ReceiveFile;
 import com.zg.network.common.fileservcie.SendFile;
 import com.zg.network.im.utils.AudioUtils;
 import com.zg.prestuctural.manager.CacheManager;
-import com.zg.util.reflect.FieldUtils;
-import com.zg.util.reflect.JsonUtils;
+import com.zg.util.reflect.EntityUtils;
 import com.zg.util.url.GetServerRealPathUnit;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Scanner;
 
 /**
  * Created by Administrator on 2019/2/22 0022.
@@ -100,7 +96,7 @@ public class IMClientHandler extends BaseClientHandler<String> {
                 jsonObject.put("filePath",request.message);
                 message=JSON.toJSONString(jsonObject);
                 request.message=message;
-                String json = FieldUtils.serialize(request);
+                String json = EntityUtils.serialize(request);
                 ctx.writeAndFlush(json + "\r\n");
                 break;
             }
@@ -126,7 +122,7 @@ public class IMClientHandler extends BaseClientHandler<String> {
                 request.uuid = response.uuid;
                 request.message = "维持心跳";
                 request.heartBeatID = response.heartBeatID;
-                json = FieldUtils.serialize(request);
+                json = EntityUtils.serialize(request);
                 ctx.writeAndFlush(json + "\r\n");
                 break;
             }

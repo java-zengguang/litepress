@@ -1,7 +1,6 @@
 package com.zg.database.util;
 
-import com.zg.util.reflect.FieldUtils;
-import com.zg.util.reflect.FieldUtils;
+import com.zg.util.reflect.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,13 +30,13 @@ public class ModelSQLUtils {
             member_list.add(name);
 
             f.setAccessible(true);
-            values_list.add(FieldUtils.getFieldObject(f, models));
+            values_list.add(EntityUtils.getFieldObject(f, models));
         }
 
     }
 
     public static String getSelect(Object model, String... terms) throws SQLException, IllegalAccessException {
-        String tableName = FieldUtils.getTableNameFromModel(model.getClass());
+        String tableName = EntityUtils.getTableNameFromModel(model.getClass());
         return getSelect(model, tableName, terms);
     }
 
@@ -61,7 +60,7 @@ public class ModelSQLUtils {
 
 
     public static String insert(Object model) throws IllegalArgumentException, IllegalAccessException, SQLException {
-        String tableName = FieldUtils.getTableNameFromModel(model.getClass());
+        String tableName = EntityUtils.getTableNameFromModel(model.getClass());
         return insert(model, tableName);
     }
 
@@ -70,7 +69,7 @@ public class ModelSQLUtils {
 
 
         fillSql(model);
-        List<String> notCommitFields = FieldUtils.getNoCommitFields(model.getClass());
+        List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
         String sql = null;
         StringBuffer member = new StringBuffer();
         StringBuffer values = new StringBuffer();
@@ -112,7 +111,7 @@ public class ModelSQLUtils {
         StringBuffer condition = new StringBuffer();
         Field[] fields = o.getClass().getFields();
         for (Field field : fields) {
-            condition.append(field.getName() + "=" + FieldUtils.getFieldObject(field, o) + " and ");
+            condition.append(field.getName() + "=" + EntityUtils.getFieldObject(field, o) + " and ");
         }
         condition = condition.delete(condition.length() - 4, condition.length());
         String sql = delete(o.getClass().getSimpleName(), condition.toString());
@@ -130,9 +129,9 @@ public class ModelSQLUtils {
             for (String term : terms) {
                 condition = condition + " and " + term;
             }
-            String tableName = FieldUtils.getTableNameFromModel(model.getClass());
+            String tableName = EntityUtils.getTableNameFromModel(model.getClass());
             fillSql(model);
-            List<String> notCommitFields = FieldUtils.getNoCommitFields(model.getClass());
+            List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
             StringBuffer member_values = new StringBuffer();
 
             for (int i = 0; i < member_list.size(); i++) {
@@ -220,23 +219,23 @@ public class ModelSQLUtils {
 
         List deleteList = new ArrayList();
         for (Object o : target) {
-            o = FieldUtils.Nulltranslate(o);
+            o = EntityUtils.translateNull(o);
         }
 
         for (Object o : source) {
-            o = FieldUtils.Nulltranslate(o);
+            o = EntityUtils.translateNull(o);
         }
 
         //
 
         for (Object o : target) {
-            if (!FieldUtils.contains(o, source)) {
+            if (!EntityUtils.contains(o, source)) {
                 deleteList.add(o);
             }
         }
         List addList = new ArrayList();
         for (Object o : source) {
-            if (!FieldUtils.contains(o, target)) {
+            if (!EntityUtils.contains(o, target)) {
                 addList.add(o);
             }
         }
@@ -277,7 +276,7 @@ private static boolean isTrue(String string,Object object){
                     sql = sql.replace("#{"+bracket+"}", map.get(bracket.trim()));
                 } else {
                     Field field = object.getClass().getField(bracket.trim());
-                    sql = sql.replace("#{"+bracket+"}", FieldUtils.getFieldObject(field, object));
+                    sql = sql.replace("#{"+bracket+"}", EntityUtils.getFieldObject(field, object));
                 }
             }
             return sql = resovleSQL(sql, key, object);   //递归执行

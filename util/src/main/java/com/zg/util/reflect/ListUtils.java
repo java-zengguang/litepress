@@ -1,10 +1,6 @@
 package com.zg.util.reflect;
 
-import com.zg.bean.annotation.Model;
-import org.apache.poi.hssf.record.formula.functions.T;
-
 import java.lang.reflect.Field;
-import java.rmi.MarshalledObject;
 import java.util.*;
 
 /**
@@ -40,7 +36,7 @@ public class ListUtils {
             int i = 0;
             model = model.getClass().newInstance();
             for (Field f : fields) {
-                FieldUtils.setField(f, model, values[i].trim());
+                EntityUtils.setField(f, model, values[i].trim());
                 i++;
             }
             modelList.set(index, model);
@@ -79,7 +75,7 @@ public class ListUtils {
         for (int i = 0; i < modelList.size(); i++) {
             for (int j = 0; j < modelList.size() - i - 1; j++) {
                 try {
-                    if (FieldUtils.toCompare(modelList.get(j), modelList.get(j + 1), terms) > 0) {
+                    if (EntityUtils.toCompare(modelList.get(j), modelList.get(j + 1), terms) > 0) {
                         Object copyJ = modelList.get(j);
                         modelList.set(j, modelList.get(j + 1));
                         modelList.set(j + 1, copyJ);
@@ -114,7 +110,7 @@ public class ListUtils {
         for (int i = 0; i < modelList.size(); i++) {
 
             Object modelX = modelList.get(i);
-            if (FieldUtils.toCompare(modelX, termMap) == 0) {
+            if (EntityUtils.toCompare(modelX, termMap) == 0) {
                 num_list.add(i);
 
             }
@@ -141,17 +137,5 @@ public class ListUtils {
         return sub_list;
     }
 
-/*    public static List<Object> mapToModelList(List <Map> mapList, Class classes) throws IllegalAccessException {
-        List<Object> list=new ArrayList();
-        for(Map<String,String> map:mapList){
-            Object object= classes.getInterfaces();
-            Field[] fields= classes.getFields();
-            for(Field field:fields){
-                field.set(object,map.get(field.getName()));
-            }
-            list.add(object);
-        }
-        return list;
-    }*/
 
 }

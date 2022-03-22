@@ -121,12 +121,6 @@
             <version>8.5.16</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.sinosig</groupId>
-            <artifactId>nonveh-model</artifactId>
-            <version>${nonveh-model.version}</version>
-        </dependency>
-
 
         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
         <dependency>
