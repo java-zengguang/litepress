@@ -9,6 +9,7 @@ import com.zg.init.Config;
 import org.apache.commons.net.ntp.TimeStamp;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,6 +67,10 @@ public class EntityUtils {
 
             case "Date": {
                 value = sdf.format(object);
+                break;
+            }
+            case "BigDecimal": {
+                value = String.valueOf(object);
                 break;
             }
 
@@ -194,6 +199,9 @@ public class EntityUtils {
             return true;
         }
         if (type == Date.class) {
+            return true;
+        }
+        if (type == BigDecimal.class) {
             return true;
         }
 
@@ -778,7 +786,10 @@ public class EntityUtils {
                     }else{
                         value="";
                     }
-
+                    break;
+                }
+                case "BigDecimal":{
+                    value = String.valueOf(field.get(object));
                     break;
                 }
 

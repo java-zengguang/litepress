@@ -3,9 +3,9 @@ package com.zg.mvc.adapter;
 import com.zg.init.Config;
 import com.zg.mvc.entity.MVCOption;
 import com.zg.mvc.entity.ViewObject;
-import com.zg.mvc.util.FileUpLoad;
 import com.zg.mvc.util.ResolveAnnotation;
 import com.zg.mvc.util.io.IOUtils;
+import com.zg.mvc.util.io.ResovleUploadThread;
 import com.zg.util.reflect.EntityUtils;
 import com.zg.util.reflect.JsonUtils;
 import org.apache.commons.collections.map.HashedMap;
@@ -206,25 +206,10 @@ public class ControllerAdapter {
 
     //用于处理文件上传
     private static Object[] getInputStream(HttpServletRequest request, HttpServletResponse response, Method method, String inputFilePath) throws IOException, InterruptedException {
-        Object[] objects = new Object[2];
-        InputStream inputStream = request.getInputStream();
-        String contentType = request.getContentType();
-        String targetS = contentType.substring(contentType.lastIndexOf("boundary=") + 9, contentType.length());
+        Object[] objects = new Object[1];
 
-        String inputFileName=targetS;
-
-        //生成临时文件
-        if(IOUtils.createTemporaryFile(inputStream, inputFilePath,inputFileName)==-1){
-            LOGGER.info("文件上传失败");
-            objects[0]="上传失败";
-            return objects;
-        }
-        FileUpLoad fileUpLoad = new FileUpLoad(targetS,inputFilePath,targetS, mvcOption.upLoadPath);
-        fileUpLoad.upload();
-
-        objects[0] = fileUpLoad.fileAbsolutePath;  //返回文件的路径
-        objects[1] = fileUpLoad.fileLogitchPath;  //返回文件的路径
-
+        ResovleUploadThread fileUpLoad =new ResovleUploadThread();
+        objects[0]=fileUpLoad.execate(request,inputFilePath);
 
         return objects;
     }

@@ -14,7 +14,7 @@
         <module>direction</module>
         <module>incache</module>
         <module>webdemo</module>
-        <module>scala</module>
+   <!--     <module>scala</module>-->
         <module>webiodemo</module>
         <module>sso</module>
         <module>network-util</module>
