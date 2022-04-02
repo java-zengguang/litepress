@@ -39,28 +39,18 @@ public class CommitClassHandler extends BaseClassHandler {
     @Override
     public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Exception {
         Object result = null;
-        Boolean flag = false;
+
         try {
             result = methodProxy.invokeSuper(o, objects); //调用业务类（父类中）的方法
-            flag = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (flag && methodList.contains(method.getName())) {
+            if ( methodList.contains(method.getName())) {
                 LOGGER.info(method.getName() + " 事务被提交");
                 JDBCUtils.commit();
-
-            } else {
-             //   System.out.println(method.getName() + " 事务未被提交");
-                JDBCUtils.release();
-                if (!flag) {
-                    throw new Exception("事务提交失败！");
-                }
-
             }
-            return result;
-
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            throw new Exception("事务提交失败！");
         }
+        return result;
     }
 
 

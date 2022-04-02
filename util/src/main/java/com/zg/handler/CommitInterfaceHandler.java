@@ -43,16 +43,8 @@ public class CommitInterfaceHandler implements InvocationHandler {
         if (methodList.contains(method.getName())) {
             LOGGER.info(method.getName() + " 事务被提交");
             JDBCUtils.commit();
-            return result;
-        } else {
-           // LOGGER.info(method.getName() + " 事务未被提交");
-            try {
-                JDBCUtils.release();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return result;
         }
+        return result;
 
     }
 }

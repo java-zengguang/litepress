@@ -42,7 +42,11 @@ public class C3p0Impl implements DataBaseInte {
         cpds.setPassword(optionDB.getPassword());
         cpds.setMinPoolSize(5);
         cpds.setAcquireIncrement(5);
+        cpds.setAcquireRetryDelay(1000);
         cpds.setMaxPoolSize(20);
+        cpds.setTestConnectionOnCheckout(true);
+        cpds.setIdleConnectionTestPeriod(1800);
+        cpds.setMaxIdleTime(3600);
 
         return cpds;
     }

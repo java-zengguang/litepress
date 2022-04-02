@@ -451,35 +451,35 @@ public class EntityUtils {
 
     private static String getFieldOrcale(Field field, Object object) throws IllegalArgumentException, IllegalAccessException {
         String value = null;
-        String fieldType = null;
-        Map<String, String> tableInfo = null;
-        String tableName = EntityUtils.getTableNameFromModel(object.getClass());
-        tableInfo = DataBaseUtil.getTableInfo(tableName);
-
-
-        if (tableInfo != null) {
-            fieldType = tableInfo.get(field.getName().toLowerCase());
-        }
-        if (fieldType == null) {
-            fieldType = field.getType().getSimpleName().toLowerCase();
-        }
-
+        String fieldType = field.getType().getSimpleName();
         switch (fieldType) {
-            case "number": {
+            case "int": {
                 value = String.valueOf(field.get(object));
                 break;
             }
             case "String": {
-                if (field.get(object) == null || field.get(object).equals("")) {
-                    value = "'null'";
-                } else {
-                    value = "'" + String.valueOf(field.get(object)) + "'";
+                value = String.valueOf(field.get(object));
+
+                if (value.contains("'")) {
+                    value = value.replace("'", "''");
                 }
+                if ("null".equals(value)) {
+                    value = "";
+                }
+                value = "'" + value + "'";
                 break;
             }
 
             case "Date": {
-                value = "to_date('" + sdf.format(field.get(object)) + "','yyyy-MM-dd hh24:mi:ss')";
+                if(field.get(object)!=null){
+                    value = "to_date('" + sdf.format(field.get(object)) + "','yyyy-MM-dd hh24:mi:ss')";
+                }else{
+                    value="";
+                }
+                break;
+            }
+            case "BigDecimal":{
+                value = String.valueOf(field.get(object));
                 break;
             }
 
@@ -753,7 +753,7 @@ public class EntityUtils {
         if ("database".equals(typeMode.typeMode())) {
             if ("MYSQL".equals(optionDB.DBType)) {
                 return getFieldMySql(field, object);
-            } else if ("ORCALE".equals(optionDB.DBType)) {
+            } else if ("ORACLE".equals(optionDB.DBType)) {
                 return getFieldOrcale(field, object);
             } else {
                 System.out.println(EntityUtils.class + "====数据源未初始化");
@@ -771,7 +771,7 @@ public class EntityUtils {
                     value = String.valueOf(field.get(object));
 
                     if (value.contains("'")) {
-                        value = value.replace("'", "\\'");
+                        value = value.replace("'", "''");
                     }
                     if ("null".equals(value)) {
                         value = "";

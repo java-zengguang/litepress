@@ -262,10 +262,7 @@ public class ControllerAdapter {
             }
 
         }else{
-           /* if(mvcOption.projectRoot!=null && !"".equals(mvcOption.projectRoot)){
-                int index=requestURI.indexOf("/",6);
-                requestURI=requestURI.substring(0,index)+mvcOption.projectRoot+requestURI.substring(index,requestURI.length());
-            }*/
+            System.out.println("走defaultServlet");
         }
 
     }
