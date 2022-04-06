@@ -3,7 +3,7 @@ package com.zg.database.util;
 public class PassWordUtil {
     public static String decrypt(String password){
         String result="";
-        if(!"".equals(password)){
+        if(!"".equals(password)&&password.length()==16){
             EncryptUtil encryptUtil=EncryptUtil.getInstance();
             result=encryptUtil.AESdecode(password,"hello");
         }

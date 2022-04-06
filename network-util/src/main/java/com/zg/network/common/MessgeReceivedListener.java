@@ -1,6 +1,7 @@
 package com.zg.network.common;
 
-import org.apache.coyote.Response;
+
+import javax.xml.ws.Response;
 
 /**
  * Created by Administrator on 2019/2/22 0022.

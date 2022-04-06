@@ -97,9 +97,12 @@ public class ResovleUploadThread {
         raf.seek(startPoint);
         String formHead = raf.readLine();   //获取表单头信息
         SimpleFileEntity fileEntity= analysisFormHead(formHead);//分析表头信息
+        fileEntity.fileParentPath=inputFilePath;
         raf.readLine();
         raf.readLine();
         long writerStart = raf.getFilePointer();   //得到需要写入的信息
+
+
         File targetFile = new File(fileEntity.fileParentPath, fileEntity.fileName);
         IOUtils.createFile(targetFile);
         LOGGER.info("OUTPUT线程开始");

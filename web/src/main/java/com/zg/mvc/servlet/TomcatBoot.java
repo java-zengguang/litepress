@@ -39,7 +39,6 @@ public class TomcatBoot {
         tomcat.addWebapp(contextPath, baseDir);
         tomcat.enableNaming();
 
-
         if(true) {
             //创建上下文
             Context context = tomcat.addContext("/static", "../static");

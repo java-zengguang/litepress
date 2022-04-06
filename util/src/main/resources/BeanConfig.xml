@@ -94,7 +94,6 @@
     </bean>
 
 
-
     <bean id="int_new-non-auto_nvpolicy" class="com.zg.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvpolint</property>
         <property name="maxPoolSize" type="int">10</property>
@@ -134,8 +133,6 @@
         <property name="password" type="java.lang.String">QAerUDN#VlrQ1pX0_</property>
         <property name="DBType" type="java.lang.String">MYSQL</property>
     </bean>
-
-
 
 
     <bean id="int_new-non-auto_nvfactory" class="com.zg.bean.entity.OptionDB">
@@ -431,7 +428,11 @@
         <property name="controllerSuffix" type="java.lang.String">.do</property>
         <property name="upLoadPackage" type="java.lang.String">com.zg.mvc.controller</property>
         <property name="upLoadSuffix" type="java.lang.String">.file</property>
-        <property name="temporaryFilePath" type="java.lang.String">E:\\upFile\\input.txt</property>
+        <property name="temporaryFilePath" type="java.lang.String">E:\\upFile\\</property>
+    </bean>
+
+    <bean id="initConfig" class="com.zg.bean.entity.InitEntity">
+        <property name="packageType" type="java.lang.String">jar</property>
     </bean>
 
     <bean id="tableMapper" class="com.zg.webdemo.dao.TableMapper">
@@ -441,7 +442,8 @@
         <property name="tableMapper" ref="tableMapper"></property>
     </bean>
 
-    <proxy package="com.zg.webdemo.service.table" handler="com.zg.handler.CommitInterfaceHandler" method="deleteTableDate"></proxy>
+    <proxy package="com.zg.webdemo.service.table" handler="com.zg.handler.CommitInterfaceHandler"
+           method="deleteTableDate"></proxy>
 
 
 </beans>

@@ -1,5 +1,8 @@
 package com.zg.util.io;
 
+import com.zg.bean.entity.InitEntity;
+import com.zg.init.Config;
+import com.zg.util.reflect.ClassUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -10,12 +13,13 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
  * Created by Administrator on 2018/11/27 0027.
  */
-public class FileUtils {
+public class FileUtils extends org.apache.commons.io.FileUtils {
 
     static {
         //获取项目的相对路径
@@ -25,20 +29,22 @@ public class FileUtils {
 
             if (FileUtils.class.getResource("/")!=null){
                 path = FileUtils.class.getResource("/").toURI().getPath();
-            }else{
+            }
+/*            else{
                path= FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
                File file=new File(path);
                path=file.getParent();
                path = java.net.URLDecoder.decode(path, "UTF-8");
                path=path+"\\";
 
-            }
+            }*/
+
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } /*catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }
+        }*/
         System.out.println("----"+path);
 
 
@@ -89,30 +95,21 @@ public class FileUtils {
     }
 
     public static List getClassFormPackage(String packageName, boolean isAnnotation, Class annotation) throws ClassNotFoundException {
-        List classList = new ArrayList();
-        String packagePath = PATH + packageName.replace(".", "/");
-        System.out.println(FileUtils.class+"====packagePath"+packagePath);
-        File packageFile = new File(packagePath);
-        File files[] = packageFile.listFiles();
-        for (File file : files) {
-            if (!file.getName().endsWith(".class")) {
-                continue;
-            }
 
-            //ClassLoader loader=Object.class.getClassLoader();
-            String className = packageName + "." + file.getName().substring(0, file.getName().length() - 6);
-            Class c = Class.forName(className);
+        List<Class> classList=getClassFormPackage(packageName);
+        for (Class c : classList) {
             if (!isAnnotation || !c.isAnnotationPresent(annotation)) {
                 continue;
             }
             classList.add(c);
         }
+
         return classList;
     }
 
     public static List getClassFormPackage(String packageName) throws ClassNotFoundException {
         List classList = new ArrayList();
-        String packagePath = PATH + packageName.replace(".", "/");
+/*        String packagePath = PATH + packageName.replace(".", File.separator);
         System.out.println(packagePath);
         File packageFile = new File(packagePath);
         File files[] = packageFile.listFiles();
@@ -125,7 +122,9 @@ public class FileUtils {
             String className = packageName + "." + file.getName().substring(0, file.getName().length() - 6);
             Class c = Class.forName(className);
             classList.add(c);
-        }
+        }*/
+        Set classSet= ClassUtil.getClasses(packageName);
+        classList.addAll(classSet);
         return classList;
     }
 
