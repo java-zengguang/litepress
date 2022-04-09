@@ -9,7 +9,7 @@ $(function () {
         $.ajax({
             type: "POST",
             url: '/users/AjaxServer/checkis.ashx',
-            data: { typex: 1 },
+            data: {typex: 1},
             async: false,
             success: function (data) {///去更新cookies
                 if (data == "NotLogin") {
@@ -44,13 +44,13 @@ $(function () {
     $("#Retrievenow").click(function () {
         var usrmail = $("#usrmail").val();
         if (!Test_email(usrmail)) {
-           // alert(msgggg.pssjs1);
+            // alert(msgggg.pssjs1);
             return false;
         }
         $.ajax({
             type: "POST",
             url: '/users/AjaxServer/checkis.ashx',
-            data: { typex: 5, usrmail: usrmail },
+            data: {typex: 5, usrmail: usrmail},
             success: function (data) {//
 
                 alert(data);
@@ -86,8 +86,7 @@ $(function () {
         var issavecookies = "NO";
         if ($("#save_me").attr("checked") == true) {
             issavecookies = "Yes";
-        }
-        else {
+        } else {
             issavecookies = "NO";
         }
         var l_dot = screenwidth + "*" + screenheight;
@@ -99,7 +98,7 @@ $(function () {
                 $.ajax({
                     type: "POST",
                     url: '/users/AjaxServer/Ajax_User_Loading.ashx',
-                    data: { username: username, userpwd: userpwd, issavecookies: issavecookies, l_dot: l_dot, typex: 2 },
+                    data: {username: username, userpwd: userpwd, issavecookies: issavecookies, l_dot: l_dot, typex: 2},
                     success: function (data) {///去更新cookies
                         if (current.indexOf("index.aspx") > -1) {
 
@@ -124,7 +123,7 @@ $(function () {
             $.ajax({
                 type: "POST",
                 url: '/users/AjaxServer/Ajax_User_Loading.ashx',
-                data: { username: username, userpwd: userpwd, issavecookies: issavecookies, l_dot: l_dot, typex: 1 },
+                data: {username: username, userpwd: userpwd, issavecookies: issavecookies, l_dot: l_dot, typex: 1},
                 success: function (data) {///去更新cookies
                     if (data == "0" || data == "1") {
                         window.location.href = "http://home.wopop.com/UserHome/ot5lst/website.aspx";
@@ -140,5 +139,10 @@ $(function () {
 
 
 });
+
 //Email 规则以后重新整理所有网站关于js 验证
-function Test_email(strEmail) { var myReg = /^[-a-z0-9\._]+@([-a-z0-9\-]+\.)+[a-z0-9]{2,3}$/i; if (myReg.test(strEmail)) return true; return false; }
+function Test_email(strEmail) {
+    var myReg = /^[-a-z0-9\._]+@([-a-z0-9\-]+\.)+[a-z0-9]{2,3}$/i;
+    if (myReg.test(strEmail)) return true;
+    return false;
+}

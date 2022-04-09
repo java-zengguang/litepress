@@ -16,16 +16,16 @@ import java.util.Map;
 /**
  * Created by Administrator on 2018/11/27 0027.
  */
-public class ZGDBPDataSource  {
+public class ZGDBPDataSource {
 
-    private static ZGDBPDataSource zgdbp=null;
+    private static ZGDBPDataSource zgdbp = null;
     private String url = null;
     private static int MAX_CONN_SIZE = 10;
     private static Integer MAX_POOL_SIZE = 5;
     private String Driver = null;
     private String username = null;
     private String password = null;
-  //  public final ThreadLocal<Connection> tl = new ThreadLocal<Connection>();
+    //  public final ThreadLocal<Connection> tl = new ThreadLocal<Connection>();
     private static Connection conn[] = new Connection[MAX_POOL_SIZE];
     private static List connectPool = new ArrayList();
     private static int flag = 0;
@@ -46,16 +46,16 @@ public class ZGDBPDataSource  {
         this.password = optionDB.getPassword();
     }
 
-    public static ZGDBPDataSource getInstance(OptionDB optionDB){
-        if (zgdbp==null){
-            zgdbp=new ZGDBPDataSource(optionDB);
+    public static ZGDBPDataSource getInstance(OptionDB optionDB) {
+        if (zgdbp == null) {
+            zgdbp = new ZGDBPDataSource(optionDB);
         }
         return zgdbp;
     }
 
-    public static ZGDBPDataSource getInstance(Map map){
-        if (zgdbp==null){
-            zgdbp=new ZGDBPDataSource(map);
+    public static ZGDBPDataSource getInstance(Map map) {
+        if (zgdbp == null) {
+            zgdbp = new ZGDBPDataSource(map);
         }
         return zgdbp;
     }
@@ -94,7 +94,7 @@ public class ZGDBPDataSource  {
 
             Class.forName(Driver);
             conn = DriverManager.getConnection(url, username, password);
-            conn=(Connection) ProxyUtils.getProxyInterface(conn.getClass(),new ZGDBPConnection(conn));
+            conn = (Connection) ProxyUtils.getProxyInterface(conn.getClass(), new ZGDBPConnection(conn));
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -127,7 +127,7 @@ public class ZGDBPDataSource  {
             e.printStackTrace();
         }
 
-     //   tl.set(conn);
+        //   tl.set(conn);
         return conn;
     }
 
@@ -137,8 +137,7 @@ public class ZGDBPDataSource  {
     }
 
 
-
-    public class ZGDBPConnection implements  InvocationHandler {
+    public class ZGDBPConnection implements InvocationHandler {
         private Connection target;
 
         public ZGDBPConnection(Connection target) {
@@ -148,9 +147,9 @@ public class ZGDBPDataSource  {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
             Object result = null;
-            if("close".equals(method.getName())){
+            if ("close".equals(method.getName())) {
                 release(target);
-            }else {
+            } else {
                 result = method.invoke(target, args);
             }
 

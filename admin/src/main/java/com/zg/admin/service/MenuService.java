@@ -10,12 +10,12 @@ import java.util.List;
 
 public class MenuService extends CommitClassHandler {
 
-    private MenuDao menuDao=new MenuDao();
+    private MenuDao menuDao = new MenuDao();
 
-    public List getMenuTree(int id,int level,Class modelClass) {
-        List list=new ArrayList();
+    public List getMenuTree(int id, int level, Class modelClass) {
+        List list = new ArrayList();
         try {
-             list= menuDao.getMenuTree("id",id,level,modelClass);
+            list = menuDao.getMenuTree("id", id, level, modelClass);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -24,10 +24,10 @@ public class MenuService extends CommitClassHandler {
     }
 
 
-    public List getMenuById(String id,Class modelClass){
-        List list=null;
+    public List getMenuById(String id, Class modelClass) {
+        List list = null;
 
-        if(id!=null) {
+        if (id != null) {
             try {
                 list = menuDao.getMenuById(Integer.valueOf(id), modelClass);
             } catch (Exception e) {
@@ -37,11 +37,11 @@ public class MenuService extends CommitClassHandler {
         return list;
     }
 
-    public boolean insertMenu(MenuInfo menuInfo){
+    public boolean insertMenu(MenuInfo menuInfo) {
 
         try {
-            menuInfo.status="0";
-            if(menuDao.insertMenu(menuInfo)>0){
+            menuInfo.status = "0";
+            if (menuDao.insertMenu(menuInfo) > 0) {
                 return true;
             }
         } catch (SQLException e) {
@@ -57,9 +57,9 @@ public class MenuService extends CommitClassHandler {
     }
 
 
-    public boolean updateMenu(MenuInfo menuInfo,Integer id){
+    public boolean updateMenu(MenuInfo menuInfo, Integer id) {
         try {
-            if(menuDao.updateMenu(menuInfo,id)>0) {
+            if (menuDao.updateMenu(menuInfo, id) > 0) {
                 return true;
             }
         } catch (SQLException e) {

@@ -15,20 +15,18 @@ public class BaseChannelGroups {
     public static Map<String, ChannelBean> channelGroups = new ConcurrentHashMap<>();
 
 
-
-
-    public static void put(String key,ChannelBean channelBean){
-        channelGroups.put(key,channelBean);
+    public static void put(String key, ChannelBean channelBean) {
+        channelGroups.put(key, channelBean);
     }
 
-    public static ChannelBean get(String key){
+    public static ChannelBean get(String key) {
         return channelGroups.get(key);
     }
 
-    public static List<ChannelBean> getAll(){
-        List list=new ArrayList();
-        Set<String> keySet=channelGroups.keySet();
-        for(String key:keySet){
+    public static List<ChannelBean> getAll() {
+        List list = new ArrayList();
+        Set<String> keySet = channelGroups.keySet();
+        for (String key : keySet) {
             list.add(channelGroups.get(key));
         }
         return list;
@@ -39,7 +37,7 @@ public class BaseChannelGroups {
         channelGroups.remove(key);
     }
 
-    public static Map<String,ChannelBean> getChanelGroups(){
+    public static Map<String, ChannelBean> getChanelGroups() {
         return channelGroups;
     }
 }

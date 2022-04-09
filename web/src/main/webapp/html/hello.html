@@ -9,21 +9,25 @@
 <script src="/js/autoEntityTable.js"></script>
 <script type="text/javascript">
     $(function () {
-        loadTable('/firstController/toHello.do','','hello')
+        loadTable('/firstController/toHello.do', '', 'hello')
     });
 
 
 
 </script>
 <style>
-    * { padding: 0; margin: 0; }
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
     table {
         border-collapse: collapse;
         border-spacing: 0;
         border: 1px solid #c0c0c0;
     }
 
-    th,td {
+    th, td {
         border: 1px solid #d0d0d0;
         color: #404060;
         padding: 10px;
@@ -38,9 +42,11 @@
     td {
         font: 14px "微软雅黑";
     }
+
     tbody tr {
         background-color: #f0f0f0;
     }
+
     tbody tr:hover {
         cursor: pointer;
         background-color: #fafafa;

@@ -1,7 +1,6 @@
 package com.zg.sso.filter;
 
 
-
 import com.zg.init.Config;
 import com.zg.sso.common.LoginInte;
 import com.zg.sso.common.SSOAdapter;
@@ -14,13 +13,13 @@ import java.io.IOException;
 /**
  * Created by Administrator on 2019/2/13 0013.
  */
-public  class LoginFilter implements Filter {
+public class LoginFilter implements Filter {
 
-    LoginInte simpleLogin =new SimpleLogin();
+    LoginInte simpleLogin = new SimpleLogin();
 
     private SSOOpthion ssoOpthion = (SSOOpthion) Config.getConfig("SSOOpthion");
 
-    private SSOAdapter ssoAdapter=SSOAdapter.getInstanse(ssoOpthion, simpleLogin);
+    private SSOAdapter ssoAdapter = SSOAdapter.getInstanse(ssoOpthion, simpleLogin);
 
 
     @Override
@@ -31,8 +30,8 @@ public  class LoginFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
-        if(ssoAdapter.doFilter(servletRequest,servletResponse)){
-            filterChain.doFilter(servletRequest,servletResponse);
+        if (ssoAdapter.doFilter(servletRequest, servletResponse)) {
+            filterChain.doFilter(servletRequest, servletResponse);
         }
 
     }

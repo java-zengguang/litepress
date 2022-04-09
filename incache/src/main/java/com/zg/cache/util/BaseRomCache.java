@@ -13,8 +13,8 @@ public abstract class BaseRomCache implements RomCacheInte {
     public List bankList = new ArrayList();
 
 
-    public BaseRomCache(Class modelClass){
-        this.modelClass=modelClass;
+    public BaseRomCache(Class modelClass) {
+        this.modelClass = modelClass;
     }
 
 
@@ -35,7 +35,7 @@ public abstract class BaseRomCache implements RomCacheInte {
         Field fields[] = modelClass.getFields();
         if (values.length == fields.length) {
             int i = 0;
-            Object model =modelClass.newInstance();
+            Object model = modelClass.newInstance();
             for (Field f : fields) {
                 EntityUtils.setField(f, model, values[i].trim());
                 i++;
@@ -175,7 +175,7 @@ public abstract class BaseRomCache implements RomCacheInte {
     }
 
     @Override
-    public boolean addModel(Object model){
+    public boolean addModel(Object model) {
         modelList.add(model);
         return true;
     }

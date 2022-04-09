@@ -8,51 +8,50 @@ import java.util.Set;
 
 public class RedisUtils {
 
-    private  static  JedisPool jedisPool;
-    private static boolean initFlag=true;
+    private static JedisPool jedisPool;
+    private static boolean initFlag = true;
 
 
-
-    private static void init(){
-        if(jedisPool==null && initFlag) {
+    private static void init() {
+        if (jedisPool == null && initFlag) {
             jedisPool = new JedisPool("localhost", 6379);
-            initFlag=false;
+            initFlag = false;
         }
     }
 
-    public static Jedis getConnection(){
+    public static Jedis getConnection() {
         init();
-        Jedis jedis =null;
+        Jedis jedis = null;
 
-        jedis=jedisPool.getResource();
+        jedis = jedisPool.getResource();
         return jedis;
     }
 
-    public static void append(Map<String,String> map){
-        if(map!=null){
-            Set<String> keySet=map.keySet();
-            for(String key:keySet){
-                append(key,map.get(key));
+    public static void append(Map<String, String> map) {
+        if (map != null) {
+            Set<String> keySet = map.keySet();
+            for (String key : keySet) {
+                append(key, map.get(key));
             }
         }
     }
 
-    public static long append(String key,String value){
-        Jedis jedis=null;
-        jedis=getConnection();
-        return jedis.append(key,value);
+    public static long append(String key, String value) {
+        Jedis jedis = null;
+        jedis = getConnection();
+        return jedis.append(key, value);
     }
 
-    public static long  delete(String key){
-        Jedis jedis=null;
-        jedis=getConnection();
+    public static long delete(String key) {
+        Jedis jedis = null;
+        jedis = getConnection();
         return jedis.del(key);
     }
 
-    public static String get(String key){
+    public static String get(String key) {
         System.out.println("获取树");
-        Jedis jedis=null;
-        jedis=getConnection();
+        Jedis jedis = null;
+        jedis = getConnection();
         return jedis.get(key);
     }
 

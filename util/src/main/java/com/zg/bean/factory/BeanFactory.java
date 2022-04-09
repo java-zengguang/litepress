@@ -11,11 +11,11 @@ import java.lang.reflect.*;
 
 public class BeanFactory {
 
-    public static Object createBean(String rootPath,String id) {
+    public static Object createBean(String rootPath, String id) {
         Object o = null;
         Element root;
         try {
-            root = FileUtils.getRootElement(rootPath,"BeanConfig.xml");
+            root = FileUtils.getRootElement(rootPath, "BeanConfig.xml");
 
             for (Object beanO : root.elements("bean")) {
                 Element bean = (Element) beanO;
@@ -73,13 +73,13 @@ public class BeanFactory {
                         Field field = Class.forName(beanClassName).getField(name);
                         field.setAccessible(true);
                         if (property.attributeValue("type") != null) {
-                            String value=property.getStringValue();
+                            String value = property.getStringValue();
                             //对密码做个加密
-                            if("password".equals(name)){
-                                value=PassWordUtil.decrypt(value);
+                            if ("password".equals(name)) {
+                                value = PassWordUtil.decrypt(value);
 
                             }
-                            EntityUtils.setField(field, o,value);
+                            EntityUtils.setField(field, o, value);
                         }
                         if (property.attributeValue("ref") != null) {
                             field.set(o, BeanFactory.createBean(property.attributeValue("ref")));

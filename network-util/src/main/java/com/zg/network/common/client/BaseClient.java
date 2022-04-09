@@ -41,13 +41,13 @@ public abstract class BaseClient implements Runnable {
     /**
      * 客户端业务处理Handler
      */
-    private  BaseClientHandler clientHandler ;
+    private BaseClientHandler clientHandler;
 
 
-    public BaseClient(BaseClientHandler<String> clientHandler ,String host,int port){
-        this.clientHandler=clientHandler;
-        this.host=host;
-        this.port=port;
+    public BaseClient(BaseClientHandler<String> clientHandler, String host, int port) {
+        this.clientHandler = clientHandler;
+        this.host = host;
+        this.port = port;
     }
 
 
@@ -70,7 +70,7 @@ public abstract class BaseClient implements Runnable {
     private boolean run = true;
 
 
-    private void execute(){
+    private void execute() {
         //工作线程
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         //辅助启动类
@@ -106,7 +106,7 @@ public abstract class BaseClient implements Runnable {
             while (run) {
                 Object request = requests.take();
 
-                String json=resovleProtocol(request);
+                String json = resovleProtocol(request);
                 // Sends the received line to the server.
                 lastWriteFuture = channel.writeAndFlush(json + "\r\n");
 

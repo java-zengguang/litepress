@@ -26,8 +26,6 @@ public class IMServerHandle extends BaseServiceHandler<String> {
     private final long TIMEOUT = 10 * 1000;
 
 
-
-
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) {
         // System.out.println(" get msg >> " + msg);
@@ -76,8 +74,8 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                         List<Channel> channelList = IMChannelGroups.getAllChannel();
                         for (Channel channel : channelList) {
                             request.direction = "RESPONSE";
-                            if(request.operationType!=null && !"".equals(request.operationType)){
-                                request.methodType=request.operationType;
+                            if (request.operationType != null && !"".equals(request.operationType)) {
+                                request.methodType = request.operationType;
                             }
                             String json = EntityUtils.serialize(request);
                             channel.writeAndFlush(json + "\r\n");  //转发数据
@@ -92,8 +90,8 @@ public class IMServerHandle extends BaseServiceHandler<String> {
 
                         } else {
                             request.direction = "RESPONSE";
-                            if(request.operationType!=null && !"".equals(request.operationType)){
-                                request.methodType=request.operationType;
+                            if (request.operationType != null && !"".equals(request.operationType)) {
+                                request.methodType = request.operationType;
                             }
                             String json = EntityUtils.serialize(request);
                             channel.writeAndFlush(json + "\r\n");  //转发数据
@@ -152,7 +150,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                     break;
                 }
 
-                case "FILESERVICEREADY":{
+                case "FILESERVICEREADY": {
                     System.out.println("文件服务已打开");
 
                     break;

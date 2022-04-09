@@ -7,19 +7,12 @@ import com.zg.mvc.annotation.controller.ResultMapping;
 import com.zg.mvc.controller.BaseController;
 import com.zg.mvc.entity.MessageBean;
 import com.zg.sso.common.WebCacheLogin;
-import com.zg.sso.entity.UserLogin;
-import com.zg.sso.service.LoginService;
 import com.zg.util.reflect.JsonUtils;
-import org.apache.catalina.User;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2019/2/12 0012.
@@ -57,14 +50,10 @@ public class CacheLoginController extends BaseController {
         //登陆逻辑获取id
         String uuid = "1";
         //登陆逻辑获取id
-        MessageBean messageBean = (MessageBean) loginService.doLogin(request, uuid,response);
+        MessageBean messageBean = (MessageBean) loginService.doLogin(request, uuid, response);
         System.out.println(1);
-        return "json::"+JsonUtils.objectToJson(messageBean);
+        return "json::" + JsonUtils.objectToJson(messageBean);
     }
-
-
-
-
 
 
 }

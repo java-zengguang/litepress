@@ -4,7 +4,6 @@ import com.zg.inte.LoginServiceInte;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 public class SimpleLoginService implements LoginServiceInte {
@@ -15,9 +14,9 @@ public class SimpleLoginService implements LoginServiceInte {
 
     @Override
     public Map<String, String> login(String password, String username, String token) {
-        Map map=new HashMap();
-        map.put("token",token);
-        map.put("uuid",username);
+        Map map = new HashMap();
+        map.put("token", token);
+        map.put("uuid", username);
         return map;
     }
 

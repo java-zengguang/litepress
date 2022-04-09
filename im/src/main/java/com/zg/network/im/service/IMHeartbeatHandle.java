@@ -2,12 +2,14 @@ package com.zg.network.im.service;
 
 import com.zg.network.bean.ChannelBean;
 import com.zg.network.bean.ZGMPBean;
-import com.zg.network.im.login.LoginManager;
 import com.zg.network.common.heartbeat.BaseHeartbeatHandle;
+import com.zg.network.im.login.LoginManager;
 import com.zg.util.reflect.EntityUtils;
 import io.netty.channel.Channel;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by Administrator on 2019/3/4 0004.

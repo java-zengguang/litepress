@@ -5,23 +5,23 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
 
-public class ReceiveFile implements Runnable{
+public class ReceiveFile implements Runnable {
 
     private int port;
     private File file;
-    private static Logger logger=Logger.getLogger(ReceiveFile.class.getName());
+    private static Logger logger = Logger.getLogger(ReceiveFile.class.getName());
 
     public ReceiveFile(int port, File file) {
         this.port = port;
         this.file = file;
     }
 
-    public  void execute() throws IOException {
+    public void execute() throws IOException {
 
-        if(file!=null ) {
-            if(file.exists()){
+        if (file != null) {
+            if (file.exists()) {
 
-            }else{
+            } else {
                 file.createNewFile();
             }
             byte[] b = new byte[10 * 1024];
@@ -43,7 +43,7 @@ public class ReceiveFile implements Runnable{
             socket.close();
             serverSocket.close();
 
-        }else{
+        } else {
             logger.info("文件存储路径出错");
         }
     }

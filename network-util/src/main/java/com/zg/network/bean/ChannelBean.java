@@ -15,11 +15,11 @@ public class ChannelBean {
     public String token;
     public String heartBeatID;
 
-    public ChannelBean(String uuid, Channel channel, long time,String token, int count, int status) {
+    public ChannelBean(String uuid, Channel channel, long time, String token, int count, int status) {
         this.uuid = uuid;
         this.channel = channel;
         this.time = time;
-        this.token=token;
+        this.token = token;
         this.count = count;
         this.status = status;
     }

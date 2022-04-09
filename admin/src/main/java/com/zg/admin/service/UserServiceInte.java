@@ -10,6 +10,7 @@ import java.util.List;
  */
 public interface UserServiceInte {
     List<User> getUserList(User user);
+
     void insertUser(User user);
 
     void deleteUsers(String ids) throws SQLException, ClassNotFoundException;

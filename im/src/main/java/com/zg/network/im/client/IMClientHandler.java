@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zg.network.bean.UserBean;
 import com.zg.network.bean.ZGMPBean;
-import com.zg.network.common.client.BaseClientHandler;
 import com.zg.network.common.MessgeReceivedListener;
+import com.zg.network.common.client.BaseClientHandler;
 import com.zg.network.common.fileservcie.ReceiveFile;
 import com.zg.network.common.fileservcie.SendFile;
 import com.zg.network.im.utils.AudioUtils;
@@ -29,7 +29,7 @@ public class IMClientHandler extends BaseClientHandler<String> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws UnknownHostException {
-          // System.out.println(" get msg >> " + msg);
+        // System.out.println(" get msg >> " + msg);
 
         ZGMPBean response = JSON.parseObject(msg, ZGMPBean.class);
 
@@ -70,43 +70,43 @@ public class IMClientHandler extends BaseClientHandler<String> {
             }
 
             case "FILESERVICEREQUEST": {
-                String fileName=new File(response.message).getName();
-                String rootPath= GetServerRealPathUnit.getPath("file");
-                System.out.println(response.uuid+" 发送来个文件"+fileName+"  存放在目录："+rootPath+" 下");
+                String fileName = new File(response.message).getName();
+                String rootPath = GetServerRealPathUnit.getPath("file");
+                System.out.println(response.uuid + " 发送来个文件" + fileName + "  存放在目录：" + rootPath + " 下");
                 //BeanFactory.createBean("IM");
-               // String rootPath="D:\\test";
-                File file=new File(rootPath,fileName);
-                Integer port=9999;
+                // String rootPath="D:\\test";
+                File file = new File(rootPath, fileName);
+                Integer port = 9999;
                 InetAddress localhost = InetAddress.getLocalHost();
-                String ip=localhost.getHostAddress();
-                ReceiveFile receiveFile=new ReceiveFile(port,file);
-                Thread thread=new Thread(receiveFile);
+                String ip = localhost.getHostAddress();
+                ReceiveFile receiveFile = new ReceiveFile(port, file);
+                Thread thread = new Thread(receiveFile);
                 thread.start();
-                ZGMPBean request=response;
-                request.methodType="SEND";
-                request.operationType="FILESERVICEREADY";
-                String uuid=request.targetUuid;
-                String  targetUuid=request.uuid;
-                request.targetUuid=targetUuid;
-                request.uuid=uuid;
-                String message="";
-                JSONObject jsonObject=new JSONObject();
-                jsonObject.put("ip",ip);
-                jsonObject.put("port",port);
-                jsonObject.put("filePath",request.message);
-                message=JSON.toJSONString(jsonObject);
-                request.message=message;
+                ZGMPBean request = response;
+                request.methodType = "SEND";
+                request.operationType = "FILESERVICEREADY";
+                String uuid = request.targetUuid;
+                String targetUuid = request.uuid;
+                request.targetUuid = targetUuid;
+                request.uuid = uuid;
+                String message = "";
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("ip", ip);
+                jsonObject.put("port", port);
+                jsonObject.put("filePath", request.message);
+                message = JSON.toJSONString(jsonObject);
+                request.message = message;
                 String json = EntityUtils.serialize(request);
                 ctx.writeAndFlush(json + "\r\n");
                 break;
             }
 
-            case "FILESERVICEREADY":{
+            case "FILESERVICEREADY": {
                 System.out.println("开始传输");
                 JSONObject jsonObj = JSON.parseObject(response.message);
-                File file=new File(jsonObj.getString("filePath"));
-                SendFile sendFile=new SendFile(file,jsonObj.getString("ip"),jsonObj.getInteger("port"));
-                Thread thread=new Thread(sendFile);
+                File file = new File(jsonObj.getString("filePath"));
+                SendFile sendFile = new SendFile(file, jsonObj.getString("ip"), jsonObj.getInteger("port"));
+                Thread thread = new Thread(sendFile);
                 thread.start();
                 break;
             }

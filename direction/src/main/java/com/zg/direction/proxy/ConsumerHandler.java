@@ -19,7 +19,7 @@ import java.util.List;
 public class ConsumerHandler implements InvocationHandler {
 
 
-    private ProviderConfig providerConfig= (ProviderConfig) Config.getConfig("providerConfig");
+    private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
 
     private String providerName;
 
@@ -29,8 +29,8 @@ public class ConsumerHandler implements InvocationHandler {
 
     private String className;
 
-    public ConsumerHandler(String providerName){
-        this.providerName=providerName;
+    public ConsumerHandler(String providerName) {
+        this.providerName = providerName;
         try {
             getClassName();
         } catch (IOException e) {
@@ -47,38 +47,38 @@ public class ConsumerHandler implements InvocationHandler {
     }
 
     private void getClassName() throws IOException, KeeperException, InterruptedException, InstantiationException, IllegalAccessException {
-        ZookeeperUtil zookeeperUtil=new ZookeeperUtil(providerConfig.registerURL);
-        String json= zookeeperUtil.findNode(providerName);
-        ProviderEntity providerEntity= (ProviderEntity) JsonUtils.jsonToObject(json,ProviderEntity.class);
-        this.host=providerEntity.host;
-        this.port=providerEntity.port;
-        this.className=providerEntity.className;
+        ZookeeperUtil zookeeperUtil = new ZookeeperUtil(providerConfig.registerURL);
+        String json = zookeeperUtil.findNode(providerName);
+        ProviderEntity providerEntity = (ProviderEntity) JsonUtils.jsonToObject(json, ProviderEntity.class);
+        this.host = providerEntity.host;
+        this.port = providerEntity.port;
+        this.className = providerEntity.className;
     }
 
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-        DTPRequest request=new DTPRequest();
-        request.className=className;
-        request.methodName=method.getName();
-        request.methodType=method.getReturnType().getName();
-        List methodParamters=new ArrayList<>();
-        List<String> methodParamterTypes=new ArrayList<>();
-        for(Object arg:args){
+        DTPRequest request = new DTPRequest();
+        request.className = className;
+        request.methodName = method.getName();
+        request.methodType = method.getReturnType().getName();
+        List methodParamters = new ArrayList<>();
+        List<String> methodParamterTypes = new ArrayList<>();
+        for (Object arg : args) {
 
-            Class classes=arg.getClass();
+            Class classes = arg.getClass();
             methodParamters.add(arg);
             methodParamterTypes.add(classes.getName());
         }
-        request.methodParamterTypes=methodParamterTypes;
-        request.methodParamters=methodParamters;
-        ConsumerClientHandler consumerClientHandler=new ConsumerClientHandler();
-        ConsumerClient consumerClient=new ConsumerClient(consumerClientHandler,host,port);
+        request.methodParamterTypes = methodParamterTypes;
+        request.methodParamters = methodParamters;
+        ConsumerClientHandler consumerClientHandler = new ConsumerClientHandler();
+        ConsumerClient consumerClient = new ConsumerClient(consumerClientHandler, host, port);
         consumerClient.addRequest(request);
-        Thread thread=new Thread(consumerClient);
+        Thread thread = new Thread(consumerClient);
         thread.start();
-        Object result=consumerClientHandler.getResult();
+        Object result = consumerClientHandler.getResult();
         return result;
     }
 }

@@ -4,14 +4,13 @@ import com.zg.util.reflect.EntityUtils;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class SerializeObjectUtils implements Runnable {
-
 
 
     private static boolean isCollection(Field field) {
@@ -39,7 +38,7 @@ public class SerializeObjectUtils implements Runnable {
         List model_list = new ArrayList();
         for (int i = 0; i < list.size(); i++) {
             Object model = modelClass.newInstance();
-           Map<String,Object> map = (Map) list.get(i);
+            Map<String, Object> map = (Map) list.get(i);
 
             for (Field f : model_fields) {
 
@@ -61,7 +60,7 @@ public class SerializeObjectUtils implements Runnable {
                 if (EntityUtils.isPrimitive(f)) {
                     f.setAccessible(true);
                     if (map.get(f.getName().toUpperCase()) != null) {
-                       // f.set(model, map.get(f.getName()));
+                        // f.set(model, map.get(f.getName()));
                         EntityUtils.setFieldObject(f, model, map.get(f.getName().toUpperCase()));
                     }
 

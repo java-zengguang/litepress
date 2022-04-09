@@ -14,7 +14,7 @@ public class MenuInfo extends MainModel {
     public int id;
     public int pid;
     public String text;
-    public String  status;
+    public String status;
     public int level;
     public String url;
     public String icon;

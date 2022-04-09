@@ -8,28 +8,28 @@ import com.zg.service.LoginService;
 
 import java.util.Map;
 
-@Provider(providerName="/login")
+@Provider(providerName = "/login")
 public class LoginProvider implements LoginServiceInte {
-    LoginServiceInte loginService= (LoginServiceInte) ProxyUtils.getProxyInterface(LoginService.class,new CommitInterfaceHandler(new LoginService(),"login,loginout,registToken,updateLoginInvalid"));
+    LoginServiceInte loginService = (LoginServiceInte) ProxyUtils.getProxyInterface(LoginService.class, new CommitInterfaceHandler(new LoginService(), "login,loginout,registToken,updateLoginInvalid"));
 
     @Override
     public String verification(String username, String passworld) {
-        return loginService.verification(username,passworld);
+        return loginService.verification(username, passworld);
     }
 
     @Override
     public Map<String, String> login(String password, String username, String token) {
-        return loginService.login(password,username,token);
+        return loginService.login(password, username, token);
     }
 
     @Override
     public String registToken(String url, String domain, String rootPath) {
-        return loginService.registToken(url,domain,rootPath);
+        return loginService.registToken(url, domain, rootPath);
     }
 
     @Override
     public Integer isLogin(String token, String uuid) {
-        return loginService.isLogin(token,uuid);
+        return loginService.isLogin(token, uuid);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class LoginProvider implements LoginServiceInte {
 
     @Override
     public Map<String, String> getTokenValue(String token, String del_flag) {
-        return loginService.getTokenValue(token,del_flag);
+        return loginService.getTokenValue(token, del_flag);
     }
 
     @Override
@@ -49,11 +49,11 @@ public class LoginProvider implements LoginServiceInte {
 
     @Override
     public Integer updateLoginValid(String uuid, String token) {
-        return loginService.updateLoginValid(uuid,token);
+        return loginService.updateLoginValid(uuid, token);
     }
 
     @Override
     public Integer updateLoginInvalid(String uuid, String token) {
-        return loginService.updateLoginInvalid(uuid,token);
+        return loginService.updateLoginInvalid(uuid, token);
     }
 }

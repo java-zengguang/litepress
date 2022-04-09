@@ -18,19 +18,19 @@ import java.util.Map;
 
 public class C3p0Impl implements DataBaseInte {
 
-    private  static Map<String,DataSource> dataSourceMap=new HashMap<>();
-    private final static C3p0Impl c3p0=new C3p0Impl();
+    private static Map<String, DataSource> dataSourceMap = new HashMap<>();
+    private final static C3p0Impl c3p0 = new C3p0Impl();
 
-    private C3p0Impl(){
+    private C3p0Impl() {
 
     }
 
-    public  static C3p0Impl getInstance(){
+    public static C3p0Impl getInstance() {
         return c3p0;
     }
 
-    private  ComboPooledDataSource createCPDS(String dataOptionName){
-        OptionDB optionDB= (OptionDB) Config.getConfig(dataOptionName);
+    private ComboPooledDataSource createCPDS(String dataOptionName) {
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataOptionName);
         ComboPooledDataSource cpds = new ComboPooledDataSource();
         try {
             cpds.setDriverClass(optionDB.getDriver());// loads the driver
@@ -59,11 +59,11 @@ public class C3p0Impl implements DataBaseInte {
     }
 
 
-    private DataSource getDataSource(String dataSourceName){
-        DataSource dataSource=dataSourceMap.get(dataSourceName);
-        if (dataSource==null){
-            dataSource= createCPDS(dataSourceName);
-            dataSourceMap.put(dataSourceName,dataSource);
+    private DataSource getDataSource(String dataSourceName) {
+        DataSource dataSource = dataSourceMap.get(dataSourceName);
+        if (dataSource == null) {
+            dataSource = createCPDS(dataSourceName);
+            dataSourceMap.put(dataSourceName, dataSource);
         }
         return dataSource;
     }
@@ -82,7 +82,7 @@ public class C3p0Impl implements DataBaseInte {
     public Connection getConnection(String dataSourceName) {
         Connection connection = null;
         try {
-            DataSource dataSource= getDataSource(dataSourceName);
+            DataSource dataSource = getDataSource(dataSourceName);
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
         } catch (SQLException e) {

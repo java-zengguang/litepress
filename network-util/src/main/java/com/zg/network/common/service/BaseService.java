@@ -19,25 +19,25 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by Administrator on 2019/2/22 0022.
  */
-public abstract class BaseService implements Runnable{
+public abstract class BaseService implements Runnable {
 
-    private Logger logger=LoggerFactory.getLogger(BaseService.class);
-    private  final StringDecoder DECODER = new StringDecoder();
-    private  final StringEncoder ENCODER = new StringEncoder();
-    private   NioEventLoopGroup bossGroup = null;
-    private  NioEventLoopGroup workerGroup = null;
+    private Logger logger = LoggerFactory.getLogger(BaseService.class);
+    private final StringDecoder DECODER = new StringDecoder();
+    private final StringEncoder ENCODER = new StringEncoder();
+    private NioEventLoopGroup bossGroup = null;
+    private NioEventLoopGroup workerGroup = null;
     private int port;
     private BaseServiceHandler baseServiceHandler;
 
-    public BaseService(BaseServiceHandler<String> baseServiceHandler,int port){
+    public BaseService(BaseServiceHandler<String> baseServiceHandler, int port) {
 
-        this.baseServiceHandler=baseServiceHandler;
-        this.port=port;
+        this.baseServiceHandler = baseServiceHandler;
+        this.port = port;
     }
 
     public abstract void startHeartbeat();
 
-    public  void getConnectin() {
+    public void getConnectin() {
 
         //boss线程监听端口，worker线程负责数据读写
         bossGroup = new NioEventLoopGroup(1);
@@ -73,7 +73,7 @@ public abstract class BaseService implements Runnable{
             Thread t=new Thread(IMHeartbeatHandle);
             t.start();*/
 
-        startHeartbeat();
+            startHeartbeat();
 
             //绑定端口
             // Bind and start to accept incoming connections.
@@ -95,16 +95,14 @@ public abstract class BaseService implements Runnable{
     }
 
 
-
     @Override
     public void run() {
-        if(port!=0 ) {
+        if (port != 0) {
             getConnectin();
-        }else {
+        } else {
             logger.info("没有定义端口");
         }
     }
-
 
 
 }

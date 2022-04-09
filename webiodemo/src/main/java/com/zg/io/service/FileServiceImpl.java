@@ -1,10 +1,10 @@
 package com.zg.io.service;
 
 
-
 import com.zg.handler.CommitClassHandler;
 import com.zg.io.dao.FileMapper;
 import com.zg.io.entity.FileEntity;
+
 import java.util.List;
 
 
@@ -14,7 +14,7 @@ import java.util.List;
 public class FileServiceImpl extends CommitClassHandler implements FileService {
 
 
-    public FileMapper tableMapper=new FileMapper();
+    public FileMapper tableMapper = new FileMapper();
 
 
     @Override

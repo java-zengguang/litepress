@@ -22,8 +22,6 @@
             </plugin>
 
 
-
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -62,10 +60,10 @@
     <dependencies>
 
         <dependency>
-        <groupId>org.scala-lang</groupId>
-        <artifactId>scala-library</artifactId>
-        <version>2.10.6</version>
-    </dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.10.6</version>
+        </dependency>
 
         <dependency>
             <groupId>com.zg.mvc</groupId>
@@ -81,10 +79,7 @@
         </dependency>
 
 
-
-
-
-      <dependency>
+        <dependency>
             <groupId>com.zg.database</groupId>
             <artifactId>util</artifactId>
             <version>1.0-SNAPSHOT</version>

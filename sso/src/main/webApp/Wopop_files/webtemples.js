@@ -5,8 +5,6 @@ var pageSize = 6;
 var pageIndex = 0;
 
 
-
-
 $(function () {
 
     ///模版里面分页 修改 
@@ -57,8 +55,8 @@ $(function () {
             }
         });
     }
-    ////////////////////////////修改与2011年10月26号 by jason
 
+    ////////////////////////////修改与2011年10月26号 by jason
 
 
     $('.us_line').show();
@@ -130,8 +128,7 @@ $(function () {
             }).bind('mouseleave', function () {
                 $(this).css("background-position", "0px -90px");
             }).css("background-position", "0px -90px");
-        }
-        else {
+        } else {
             $(this).find('.us_line').slideDown('100');
             $(this).find('.sub_edit').css("background-position", "0px -120px").unbind('mouseenter').unbind('mouseleave');
         }
@@ -157,30 +154,28 @@ $(function () {
 
     //-------------分頁show[start]---------------code jason----------
     $(".us_page a:eq(0)").hover(
-     function () {
-         $(this).empty();
+        function () {
+            $(this).empty();
 
-         $(this).append("<img src='/UserHome/images/left_w.gif'/>");
-     },
-   function () {
-       $(this).empty();
-       $(this).append("<img src='/UserHome/images/left_b.gif'/>");
-   }
+            $(this).append("<img src='/UserHome/images/left_w.gif'/>");
+        },
+        function () {
+            $(this).empty();
+            $(this).append("<img src='/UserHome/images/left_b.gif'/>");
+        }
     );
 
     $(".us_page a:eq(1)").hover(
-     function () {
-         $(this).empty();
+        function () {
+            $(this).empty();
 
-         $(this).append("<img src='/UserHome/images/right_w.gif'/>");
-     },
-   function () {
-       $(this).empty();
-       $(this).append("<img src='/UserHome/images/right_b.gif'/>");
-   }
+            $(this).append("<img src='/UserHome/images/right_w.gif'/>");
+        },
+        function () {
+            $(this).empty();
+            $(this).append("<img src='/UserHome/images/right_b.gif'/>");
+        }
     );
-
-
 
 
     $(".dud_button1").live("click", function () {//花时间去分离了数组 了 不知道还有没有好点的办法。。。。
@@ -212,8 +207,7 @@ $(function () {
             result_string = arrss[0];
             //alert(result_string);
             result_string = "";
-        }
-        else {
+        } else {
             result_string = "";
         }
 
@@ -225,14 +219,17 @@ $(function () {
             objbutt.parent("td").html("...Deletting..."); //
             objbutt.hide();
 
-            $.post("/UserHome/Ajax_Server/Ajax_All_V_ot51st.ashx", { pdtnme: pdtnme, result_string: result_string, typex: "2" }, function (jason) {
+            $.post("/UserHome/Ajax_Server/Ajax_All_V_ot51st.ashx", {
+                pdtnme: pdtnme,
+                result_string: result_string,
+                typex: "2"
+            }, function (jason) {
                 if (jason == "10000") {
                     obj.remove();
                     ot5_rigth_ert(msg.delting, "1");
                 } else if (jason == "TimeOut") {
                     window.location.href = "/users/Login.aspx";
-                }
-                else {
+                } else {
                     ot5alert(jason, 1);
                 }
 
@@ -294,8 +291,7 @@ $(function () {
                 $(this).parent(".info").next(".sub_more").find("ul li:eq(1)").find("a").attr("disabled", "disabled");
                 if ($(this).prev().attr("class") == "update") {
                     $(this).prev(".update").attr("disabled", "disabled");
-                }
-                else {
+                } else {
                     // alert("11");
                 }
             });
@@ -308,8 +304,7 @@ $(function () {
                 $(this).parent(".info").next(".sub_more").find("ul li:eq(1)").find("a").attr("disabled", "disabled");
                 if ($(this).prev().attr("class") == "update") {
                     $(this).prev(".update").attr("disabled", "disabled");
-                }
-                else {
+                } else {
                     // alert("11");
                 }
             });
@@ -388,8 +383,7 @@ $(function () {
         if (ismpt == "") {
             datacheck.empty();
             datacheck.append("<img src='../../images/cross.png' />" + msg.notEmpty + "");
-        }
-        else {
+        } else {
 
             // var msg = "<%=gbl["gongxi"]%>";
             //  alert((msg));
@@ -404,7 +398,7 @@ $(function () {
 
             });
 
-            $.post("/Ajax_WebServer/Ajax_get_dome.ashx", { 1: 1 }, function (results) {
+            $.post("/Ajax_WebServer/Ajax_get_dome.ashx", {1: 1}, function (results) {
 
                 $("#comornet").empty();
                 $("#comornet").append("<option>.com</option>");
@@ -438,7 +432,6 @@ $(function () {
     });
 
 
-
     $("#Website_Name").keydown(function (event) {
 
         if (event.keyCode == 13) {
@@ -447,8 +440,7 @@ $(function () {
             if (ismpt == "") {
                 datacheck.empty();
                 datacheck.append("<img src='../../images/cross.png' />" + msg.notEmpty + "");
-            }
-            else {
+            } else {
                 datacheck.empty();
                 datacheck.append("<img src='../../images/tick.png' />" + msg.Congratulations + "");
                 close_div();
@@ -458,7 +450,7 @@ $(function () {
                     modal: true,
                     resizable: false
                 });
-                $.post("/Ajax_WebServer/Ajax_get_dome.ashx", { 1: 1 }, function (results) {
+                $.post("/Ajax_WebServer/Ajax_get_dome.ashx", {1: 1}, function (results) {
 
                     $("#comornet").empty();
                     $("#comornet").append(results);
@@ -467,7 +459,6 @@ $(function () {
             }
         }
     });
-
 
 
     $("input[name='yearss']").live('click', function () {
@@ -517,7 +508,7 @@ $(function () {
                     resizable: false
                 });
                 $("#allprice2").html(New_Domain + comornet); //赋值给新域名的表单
-                $.post("/UserHome/Ajax_Server/Ajax_Domian_From.ashx", { comornet: comornet }, function (result) {
+                $.post("/UserHome/Ajax_Server/Ajax_Domian_From.ashx", {comornet: comornet}, function (result) {
                     if (result == "TimeOut") {
                         window.location.href = "/users/Login.aspx";
                     }
@@ -526,7 +517,7 @@ $(function () {
 
                 }, "html");
                 //弹出的div的 show 出用户余额
-                $.post("/UserHome/Ajax_Server/Ajax_getmemmny.ashx", { 1: 1 }, function (data) {
+                $.post("/UserHome/Ajax_Server/Ajax_getmemmny.ashx", {1: 1}, function (data) {
                     if (data == "TimeOut") {
                         window.location.href = "/users/Login.aspx";
                     }
@@ -535,8 +526,7 @@ $(function () {
                 }, "html");
             }
 
-        }
-        else if (($("input[name='radio_button']:checked").val() == "1") && ($("#chril_Domain_check").text() == msg.domereg)) {/////此二级域名可以注册!  domereg 直接去模版那里开通建站吧~
+        } else if (($("input[name='radio_button']:checked").val() == "1") && ($("#chril_Domain_check").text() == msg.domereg)) {/////此二级域名可以注册!  domereg 直接去模版那里开通建站吧~
             close_Website_Domain();
             $("#Has_Domain").val("");
             $("#choose_temple").dialog({
@@ -548,8 +538,7 @@ $(function () {
             });
 
             InitTable(0, ezsite_prd); /// 选模版
-        }
-        else if (($("input[name='radio_button']:checked").val() == "3") && ($("#Has_Domain_Msg").text() == msg.pass)) {//檢測通過
+        } else if (($("input[name='radio_button']:checked").val() == "3") && ($("#Has_Domain_Msg").text() == msg.pass)) {//檢測通過
 
             close_Website_Domain();
             $("#choose_temple").dialog({
@@ -566,8 +555,10 @@ $(function () {
 
     $("#chril_Domain,#New_Domain,#Has_Domain").keydown(function (event) {
         if (event.keyCode == 13) {
-            var New_Domain = $("#New_Domain").val(); var Has_Domain_Msg = $("#Has_Domain_Msg");
-            var chril_Domain = $("#chril_Domain").val(); var comornet = $("#comornet").val();
+            var New_Domain = $("#New_Domain").val();
+            var Has_Domain_Msg = $("#Has_Domain_Msg");
+            var chril_Domain = $("#chril_Domain").val();
+            var comornet = $("#comornet").val();
             var ezsite_prd = $("#getfreeORcharge").val();
             var New_Domain_Msg = $("#New_Domain_Msg").text(); //错误提示chril_Domain_check
             if (New_Domain_Msg == msg.alerdreg) {//该域名已被注册!
@@ -601,7 +592,7 @@ $(function () {
                         resizable: false
                     });
                     $("#allprice2").html(New_Domain + comornet); //赋值给新域名的表单
-                    $.post("/UserHome/Ajax_Server/Ajax_Domian_From.ashx", { comornet: comornet }, function (result) {
+                    $.post("/UserHome/Ajax_Server/Ajax_Domian_From.ashx", {comornet: comornet}, function (result) {
                         if (result == "TimeOut") {
                             window.location.href = "/users/Login.aspx";
                         }
@@ -609,7 +600,7 @@ $(function () {
                         $("#reg_years").append(result);
                     }, "html");
                     //弹出的div的 show 出用户余额
-                    $.post("/UserHome/Ajax_Server/Ajax_getmemmny.ashx", { 1: 1 }, function (data) {
+                    $.post("/UserHome/Ajax_Server/Ajax_getmemmny.ashx", {1: 1}, function (data) {
                         if (data == "TimeOut") {
                             window.location.href = "/users/Login.aspx";
                         }
@@ -618,8 +609,7 @@ $(function () {
                     }, "html");
                 }
 
-            }
-            else if (($("input[name='radio_button']:checked").val() == "1") && ($("#chril_Domain_check").text() == msg.domereg)) {//  此二级域名可以注册！///直接去模版那里开通建站吧~
+            } else if (($("input[name='radio_button']:checked").val() == "1") && ($("#chril_Domain_check").text() == msg.domereg)) {//  此二级域名可以注册！///直接去模版那里开通建站吧~
                 close_Website_Domain();
                 $("#choose_temple").dialog({
                     //  height: 730,
@@ -629,8 +619,7 @@ $(function () {
                     position: [318, 177]
                 });
                 InitTable(0, ezsite_prd); /// 选模版
-            }
-            else if (($("input[name='radio_button']:checked").val() == "3") && ($("#Has_Domain_Msg").text() == msg.pass)) {// "檢測通過！"
+            } else if (($("input[name='radio_button']:checked").val() == "3") && ($("#Has_Domain_Msg").text() == msg.pass)) {// "檢測通過！"
 
                 close_Website_Domain();
                 $("#choose_temple").dialog({
@@ -647,7 +636,6 @@ $(function () {
     });
 
 
-
     $("#upgrade_Jason").click(function () {
 
         var str = $("#User_Web_Info").attr("lang");
@@ -657,17 +645,17 @@ $(function () {
             modal: true,
             resizable: false
         });
-        $("#accordion").accordion({ autoHeight: false, active: 1 }); //升级服务
+        $("#accordion").accordion({autoHeight: false, active: 1}); //升级服务
         var aaa = document.getElementById('Clear2');
         aaa.disabled = true; //使用true或false，控制是否让按钮禁用
-        $.post("../../Ajax_WebServer/Ajax_UserSingle_Upgrade.ashx", { str: str }, function (upgrade) {
+        $.post("../../Ajax_WebServer/Ajax_UserSingle_Upgrade.ashx", {str: str}, function (upgrade) {
             if (upgrade == "TimeOut") {
                 window.location.href = "/users/Login.aspx";
             } else {
                 $("#upgrade").empty();
                 $("#upgrade").append(upgrade);
                 var aaa = document.getElementById('Clear2');
-                aaa.disabled =false; //使用true或false，控制是否让按钮禁用
+                aaa.disabled = false; //使用true或false，控制是否让按钮禁用
             }
         }, "html");
     });
@@ -680,8 +668,8 @@ $(function () {
             modal: true,
             resizable: false
         });
-        $("#accordion").accordion({ autoHeight: false, active: 0 }); //详细信息
-        $.post("/Ajax_WebServer/Ajax_UserSingle_WebInfo.ashx", { str: str }, function (info) {
+        $("#accordion").accordion({autoHeight: false, active: 0}); //详细信息
+        $.post("/Ajax_WebServer/Ajax_UserSingle_WebInfo.ashx", {str: str}, function (info) {
             $("#User_Web_Info").attr("lang", str);
             $("#webinfo").empty();
             $("#webinfo").append(info);
@@ -707,12 +695,11 @@ $(function () {
         if (s_nme.length >= 5 && isornot == true) {
             chril_Domain_check.empty();
             chril_Domain_check.append("<img src='/images/xiaozhanggei.gif' />");
-            $.post("/Ajax_WebServer/Ajax_Check_Data.ashx", { s_nme: s_nme }, function (data) {
+            $.post("/Ajax_WebServer/Ajax_Check_Data.ashx", {s_nme: s_nme}, function (data) {
                 if (data == 0) {
                     chril_Domain_check.empty();
                     chril_Domain_check.append("<img src='../../../images/cross.png' id='imgsrc'/>" + msg.aldrdome + ""); //此二级域名已经存在请换一个！
-                }
-                else if (data == 1) {
+                } else if (data == 1) {
                     chril_Domain_check.empty();
                     chril_Domain_check.append("<img src='../../../images/tick.png' />" + msg.domereg + ""); //此二级域名可以注册！
                 } else if (data == "TimeOut") {
@@ -733,7 +720,9 @@ $(function () {
     $("#check_domain").click(function () {
 
         //  alert($("input[name='radio_button']:checked").val());
-        var New_Domain = $("#New_Domain").val(); var comornet = $("#comornet").val(); var New_Domain_Msg = $("#New_Domain_Msg");
+        var New_Domain = $("#New_Domain").val();
+        var comornet = $("#comornet").val();
+        var New_Domain_Msg = $("#New_Domain_Msg");
         if (New_Domain.length > 3) {
             New_Domain_Msg.empty();
             New_Domain_Msg.append("<img src='/images/xiaozhanggei.gif' />");
@@ -742,12 +731,17 @@ $(function () {
                 url: "/Ajax_WebServer/Ajax_Check_NexDomain.ashx",
                 data: "New_Domain=" + New_Domain + "&comornet=" + comornet + "&rdn=" + Math.random(),
                 success: function (data) {
-                    if (data == 0)
-                    { New_Domain_Msg.empty(); New_Domain_Msg.append("<img src='../../../images/cross.png' id='imgsrc1' />" + msg.alerdreg + ""); } //该域名已被注册！
-                    else if (data == 1)
-                    { New_Domain_Msg.empty(); New_Domain_Msg.append("<img src='../../../images/tick.png' id='imgsrc9' />" + msg.okreg + ""); } //該域名可以註冊！
+                    if (data == 0) {
+                        New_Domain_Msg.empty();
+                        New_Domain_Msg.append("<img src='../../../images/cross.png' id='imgsrc1' />" + msg.alerdreg + "");
+                    } //该域名已被注册！
+                    else if (data == 1) {
+                        New_Domain_Msg.empty();
+                        New_Domain_Msg.append("<img src='../../../images/tick.png' id='imgsrc9' />" + msg.okreg + "");
+                    } //該域名可以註冊！
                     else if (data == 2) {
-                        New_Domain_Msg.empty(); New_Domain_Msg.append("<img src='../../../images/cross.png' id='imgsrc1' />" + msg.errsate + ""); //该域名异常！
+                        New_Domain_Msg.empty();
+                        New_Domain_Msg.append("<img src='../../../images/cross.png' id='imgsrc1' />" + msg.errsate + ""); //该域名异常！
                     } else if (data == "TimeOut") {
 
                         window.location.href = "/users/Login.aspx";
@@ -771,11 +765,10 @@ $(function () {
     $("#suerdiv").click(function () {
         $("#confrim").dialog("close");
         var chril_Domain = $("#chril_Domain").val(); //二级域名
-        $.post("/Ajax_WebServer/Ajax_User_Pay_Rez.ashx", { chril_Domain: chril_Domain }, function (data) {
+        $.post("/Ajax_WebServer/Ajax_User_Pay_Rez.ashx", {chril_Domain: chril_Domain}, function (data) {
             if (data == 0) {
 
-            }
-            else {
+            } else {
                 alert(data);
             }
 
@@ -789,13 +782,11 @@ $(function () {
         if ($(this).val().length < 5) {
             Has_Domain_Msg.empty();
             Has_Domain_Msg.append("<img src='../../../images/cross.png' />" + msg.limdome + ""); //域名不低於4位有效字符！
-        }
-        else {
+        } else {
             if (isdomain($(this).val()) == false) {
                 Has_Domain_Msg.empty();
                 Has_Domain_Msg.append("<img src='../../../images/cross.png' />" + msg.plseas + ""); //請輸入正確的域名！
-            }
-            else {
+            } else {
                 Has_Domain_Msg.empty();
                 Has_Domain_Msg.append("<img src='../../../images/tick.png' />" + msg.pass + ""); //檢測通過！
             }
@@ -862,21 +853,19 @@ $(function () {
             $("#loading_div").show(); //加载中
             $("#binddime").dialog("close"); //影藏绑定输入div
 
-            $.post("/Ajax_WebServer/Ajax_UserSingle_binddomain.ashx", { str: str, domian: domian }, function (upgrade) {
-                
+            $.post("/Ajax_WebServer/Ajax_UserSingle_binddomain.ashx", {str: str, domian: domian}, function (upgrade) {
+
                 if (upgrade == "TimeOut") {
                     window.location.href = "/users/Login.aspx";
                 } else {
                     $("#loading_div").hide(); //加载完成
                     if (upgrade == "1") {
                         ot5alert(msg.conts, "1"); //含有特殊字符！
-                    }
-                    else if (upgrade == "0") {
+                    } else if (upgrade == "0") {
 
                         ot5_rigth_ert(msg.binding, "1"); //恭喜，綁定成功！
-                    }
-                    else {
-                      
+                    } else {
+
                         ot5alert(upgrade, "1");
                     }
                 }
@@ -899,11 +888,16 @@ $(function () {
             resizable: false
         });
 
-        $.post("/Ajax_WebServer/Ajax_User_Order.ashx", { template_id: str, Website_Name: Website_Name, chril_Domain: chril_Domain, ezsite_prd: ezsite_prd, years: years }, function (jason) {
+        $.post("/Ajax_WebServer/Ajax_User_Order.ashx", {
+            template_id: str,
+            Website_Name: Website_Name,
+            chril_Domain: chril_Domain,
+            ezsite_prd: ezsite_prd,
+            years: years
+        }, function (jason) {
             if (jason == 0) {
                 self.location = "/pop/buy/cart.aspx";
-            }
-            else {
+            } else {
                 alert(jason);
             }
         }, "html");
@@ -955,18 +949,22 @@ $(function () {
         var tmetpe = $("input:radio[name='yearss'][checked]").next("span").next("span").next("input").val();
         var Real_value = $("input:radio[name='yearss'][checked]").parent("td").next("td").children("span").text(); //选中产品的价值。
         if (str.length > 0 && newproid.length > 0) {
-            $.post("/Ajax_WebServer/Ajax_UserSingle_Upgrade_Ing.ashx", { str: str, yeaer: yeaer, newproid: newproid, tmetpe: tmetpe, Real_value: Real_value }, function (data) {
+            $.post("/Ajax_WebServer/Ajax_UserSingle_Upgrade_Ing.ashx", {
+                str: str,
+                yeaer: yeaer,
+                newproid: newproid,
+                tmetpe: tmetpe,
+                Real_value: Real_value
+            }, function (data) {
                 if (data == "TimeOut") {
                     window.location.href = "/users/Login.aspx";
                 } else {
                     if (data == "10000") {
                         ot5_rigth_ert(msg.congr_grd, "1"); //恭喜您！升級成功！
                         location.reload();
-                    }
-                    else if (data.substring(0, 5) == "50000") {
+                    } else if (data.substring(0, 5) == "50000") {
                         self.location = "/UserHome/ot5lst/payupgrade/payupgrade.aspx?" + data;
-                    }
-                    else {
+                    } else {
                         ot5alert(data, 1);
 
                     }
@@ -974,8 +972,6 @@ $(function () {
             }, "html");
         }
     });
-
-
 
 
     //////////
@@ -1013,8 +1009,7 @@ $(function () {
                 $("#loading_div").hide(); //加载完成
                 if (data.split('||')[0] == "typeone") {
                     window.location.href = data.split('||')[1];
-                }
-                else if (data.split('||')[0] == "typetwo") {
+                } else if (data.split('||')[0] == "typetwo") {
                     ot5alert(data.split('||')[1].split('|')[0], data.split('||')[1].split('|')[1]);
                 }
             }
@@ -1031,12 +1026,14 @@ function close_div() {
     // alert($(this).attr("id"));
 
 }
+
 function close_Website_Domain() {
     $("#Website_Domain").dialog("close");
 }
+
 function gosoye(str) {//首页
     var ezsite_prd = $("#getfreeORcharge").val();
-    $.post("/Ajax_WebServer/Ajax_Templates.ashx", { ezsite_prd: ezsite_prd, rquestpage: str }, function (data) {
+    $.post("/Ajax_WebServer/Ajax_Templates.ashx", {ezsite_prd: ezsite_prd, rquestpage: str}, function (data) {
         //        if (data == "TimeOut") {
         //            window.location.href = "/users/Login.aspx";
         //        }
@@ -1045,11 +1042,12 @@ function gosoye(str) {//首页
     }, "html");
 
 }
+
 function goPage_N() {//下一页
     var str = $("#count").text()
     var ezsite_prd = $("#getfreeORcharge").val();
     str++;
-    $.post("/Ajax_WebServer/Ajax_Templates.ashx", { ezsite_prd: ezsite_prd, rquestpage: str }, function (data) {
+    $.post("/Ajax_WebServer/Ajax_Templates.ashx", {ezsite_prd: ezsite_prd, rquestpage: str}, function (data) {
         //        if (data == "TimeOut") {
         //            window.location.href = "/users/Login.aspx";
         //        }
@@ -1057,11 +1055,12 @@ function goPage_N() {//下一页
         $("#choose_temple").append(data);
     }, "html");
 }
+
 function goPage_P() {//上一页
     var str = $("#count").text();
     var ezsite_prd = $("#getfreeORcharge").val();
     str--;
-    $.post("/Ajax_WebServer/Ajax_Templates.ashx", { ezsite_prd: ezsite_prd, rquestpage: str }, function (data) {
+    $.post("/Ajax_WebServer/Ajax_Templates.ashx", {ezsite_prd: ezsite_prd, rquestpage: str}, function (data) {
         //        if (data == "TimeOut") {
         //            window.location.href = "/users/Login.aspx";
         //        }
@@ -1070,6 +1069,7 @@ function goPage_P() {//上一页
     }, "html");
 
 }
+
 function postdata(str) {// code by  jason
     $("#choose_temple").dialog("close");
     $("#loading").dialog({
@@ -1097,7 +1097,15 @@ function postdata(str) {// code by  jason
 
     // alert(ezsite_prd);
     if ((ezsite_prd != "") && (ezsite_prd != "freewebsite") && (ezsite_prd != "freeshop")) {//高级版   因为这是非免费版
-        $.post("/Ajax_WebServer/Ajax_User_Order.ashx", { template_id: str, Website_Name: Website_Name, chril_Domain: chril_Domain, New_Domain: New_Domain, Has_Domain: Has_Domain, ezsite_prd: ezsite_prd, years: years }, function (jason) {
+        $.post("/Ajax_WebServer/Ajax_User_Order.ashx", {
+            template_id: str,
+            Website_Name: Website_Name,
+            chril_Domain: chril_Domain,
+            New_Domain: New_Domain,
+            Has_Domain: Has_Domain,
+            ezsite_prd: ezsite_prd,
+            years: years
+        }, function (jason) {
             if (jason == 0) {//表示订单成功
 
                 //   if (New_Domain.length > 0 && Has_Domain.length > 0) {//新域名不为空并且 已有域名也不为空
@@ -1119,8 +1127,7 @@ function postdata(str) {// code by  jason
                 //  });
                 //  }
 
-            }
-            else if (jason = "NoSeesion") {// ot5alert(msg.NoSeesion, "1"); //登录超时
+            } else if (jason = "NoSeesion") {// ot5alert(msg.NoSeesion, "1"); //登录超时
 
 
                 //  ot5alert(msg.NoSeesion, "1"); //登录超时
@@ -1140,14 +1147,23 @@ function postdata(str) {// code by  jason
         }, "html");
 
 
-    }
-    else {// 免費版本
-        $.post("/Ajax_WebServer/Ajax_User_Order.ashx", { template_id: str, Website_Name: Website_Name, chril_Domain: chril_Domain, New_Domain: New_Domain, Has_Domain: Has_Domain, ezsite_prd: ezsite_prd }, function (data) {
+    } else {// 免費版本
+        $.post("/Ajax_WebServer/Ajax_User_Order.ashx", {
+            template_id: str,
+            Website_Name: Website_Name,
+            chril_Domain: chril_Domain,
+            New_Domain: New_Domain,
+            Has_Domain: Has_Domain,
+            ezsite_prd: ezsite_prd
+        }, function (data) {
             if (data == 0) {//表示订单成功
-                $.post("/Ajax_WebServer/Ajax_User_Pay_Rez.ashx", { chril_Domain: chril_Domain }, function (result) {
+                $.post("/Ajax_WebServer/Ajax_User_Pay_Rez.ashx", {chril_Domain: chril_Domain}, function (result) {
                     if (result == 0) { //表示购买、开通啦！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
                         if (New_Domain.length > 0 && Has_Domain.length > 0) {//新域名不为空并且 已有域名也不为空
-                            $.post("/Ajax_WebServer/Ajax_UserSingle_binddomain.ashx", { domian: New_Domain + comornet + "," + Has_Domain, str: chril_Domain }, function (json) {//第三部 绑定域名
+                            $.post("/Ajax_WebServer/Ajax_UserSingle_binddomain.ashx", {
+                                domian: New_Domain + comornet + "," + Has_Domain,
+                                str: chril_Domain
+                            }, function (json) {//第三部 绑定域名
                                 if (json == "TimeOut") {
                                     window.location.href = "/users/Login.aspx";
                                 } else {
@@ -1168,8 +1184,7 @@ function postdata(str) {// code by  jason
                                         } else {
                                             window.location.href = "/UserHome/ot5lst/website.aspx";
                                         }
-                                    }
-                                    else//绑定不成功
+                                    } else//绑定不成功
                                     {
                                         ///一個開通建站結束後清空的項目
                                         $("#Website_Name").val(""); //网站标题
@@ -1185,7 +1200,10 @@ function postdata(str) {// code by  jason
                                 }
                             }, "html");
                         } else if (New_Domain.length == 0 && Has_Domain.length > 0) { //表示 没有新域名 但是有现有的域名
-                            $.post("/Ajax_WebServer/Ajax_UserSingle_binddomain.ashx", { domian: Has_Domain, str: chril_Domain }, function (json) {//第三部 绑定域名
+                            $.post("/Ajax_WebServer/Ajax_UserSingle_binddomain.ashx", {
+                                domian: Has_Domain,
+                                str: chril_Domain
+                            }, function (json) {//第三部 绑定域名
                                 if (json == "TimeOut") {
                                     window.location.href = "/users/Login.aspx";
                                 } else {
@@ -1206,8 +1224,7 @@ function postdata(str) {// code by  jason
                                             window.location.href = "/UserHome/ot5lst/website.aspx";
                                         }
 
-                                    }
-                                    else//绑定不成功
+                                    } else//绑定不成功
                                     {
                                         ///一個開通建站結束後清空的項目
                                         $("#Website_Name").val(""); //网站标题
@@ -1223,7 +1240,10 @@ function postdata(str) {// code by  jason
                                 }
                             }, "html");
                         } else if (New_Domain.length > 0 && Has_Domain.length == 0) {//表示 有新域名 但是没有现有的域名
-                            $.post("/Ajax_WebServer/Ajax_UserSingle_binddomain.ashx", { domian: New_Domain + comornet, str: chril_Domain }, function (json) {//第三部 绑定域名
+                            $.post("/Ajax_WebServer/Ajax_UserSingle_binddomain.ashx", {
+                                domian: New_Domain + comornet,
+                                str: chril_Domain
+                            }, function (json) {//第三部 绑定域名
                                 if (json == "TimeOut") {
                                     window.location.href = "/users/Login.aspx";
                                 } else {
@@ -1244,8 +1264,7 @@ function postdata(str) {// code by  jason
                                         } else {
                                             window.location.href = "/UserHome/ot5lst/website.aspx";
                                         }
-                                    }
-                                    else//绑定不成功
+                                    } else//绑定不成功
                                     {
                                         ///一個開通建站結束後清空的項目
                                         $("#Website_Name").val(""); //网站标题
@@ -1261,8 +1280,7 @@ function postdata(str) {// code by  jason
                                     }
                                 }
                             }, "html");
-                        }
-                        else {
+                        } else {
                             ///一個開通建站結束後清空的項目
                             $("#Website_Name").val(""); //网站标题
                             $("#chril_Domain").val(""); //二级域名
@@ -1280,8 +1298,7 @@ function postdata(str) {// code by  jason
                                 window.location.href = "/UserHome/ot5lst/website.aspx";
                             }
                         }
-                    }
-                    else {
+                    } else {
                         ///一個開通建站結束後清空的項目
                         $("#Website_Name").val(""); //网站标题
                         $("#chril_Domain").val(""); //二级域名
@@ -1295,12 +1312,10 @@ function postdata(str) {// code by  jason
                         ot5alert(result, "1");
                     }
                 }, "html");
-            }
-            else if (data = "NoSeesion") { // ot5alert(msg.NoSeesion, "1"); //登录超时
+            } else if (data = "NoSeesion") { // ot5alert(msg.NoSeesion, "1"); //登录超时
 
                 self.location = "/users/Login.aspx";
-            }
-            else {//订单不成功
+            } else {//订单不成功
                 ///一個開通建站結束後清空的項目
                 $("#Website_Name").val(""); //网站标题
                 $("#chril_Domain").val(""); //二级域名
@@ -1324,14 +1339,11 @@ function isdomain(str) {
     var regg = /[\>@#\$%\^&\*)!(~<|。=?+\\\;；\、\/\{\}\[\]:：\'\"\“！……￥ `·]+/g;
     if (str.toLowerCase().indexOf("http://") == 0) {
         return false;
-    }
-    else if (!reg.test(str)) {
+    } else if (!reg.test(str)) {
         return false;
-    }
-    else if (regg.test(str)) {
+    } else if (regg.test(str)) {
         return false;
-    }
-    else {
+    } else {
 
         return true;
     }
@@ -1350,6 +1362,7 @@ function isDigit1(str) {
     //  if (!reg.exec(str)) return false
     //  return true 
 }
+
 function regcheck(pattern, obj, errInfos) {//z输入中文域名
     if (pattern.test(obj.value)) {
         alert(errInfos);
@@ -1358,6 +1371,7 @@ function regcheck(pattern, obj, errInfos) {//z输入中文域名
     }
     return true;
 }
+
 function price() {
     var yesars = $("#years").val();
     var prohg = $("#p_prohg").val();
@@ -1384,8 +1398,8 @@ function delectweb(obj) {//删除网站实体
 //            resizable: false
 //        });
 
-        //     var str = obj.parent("li").parent("ul").attr("id");
-        // var state = str.parent("div").parent("li").parent("div").attr("class");
+    //     var str = obj.parent("li").parent("ul").attr("id");
+    // var state = str.parent("div").parent("li").parent("div").attr("class");
 //        $("#sure2").click(function () {//确定
 //            // var str = location.href;
 //            var xx = window.location.search;
@@ -1417,8 +1431,7 @@ function delectweb(obj) {//删除网站实体
 //        });
 
 
-  //  });
-
+    //  });
 
 
 }
@@ -1428,11 +1441,12 @@ function webinfo(obj) {
         width: 770,
         modal: true,
         resizable: false
-      //  position:[100,200]
+        //  position:[100,200]
+
     });
     //   $("#accordion").accordion({ autoHeight: false, active: 0 });  //基本信息
     var str = obj.parent("li").parent("ul").attr("id");
-    $.post("/Ajax_WebServer/Ajax_UserSingle_WebInfo.ashx", { str: str }, function (info) {
+    $.post("/Ajax_WebServer/Ajax_UserSingle_WebInfo.ashx", {str: str}, function (info) {
         if (info == "TimeOut") {
             window.location.href = "/users/Login.aspx";
         } else {
@@ -1443,6 +1457,7 @@ function webinfo(obj) {
 
 
 }
+
 ///域名列表
 function binddomain(obj) {
     if (obj.attr("disabled") == "disabled") {
@@ -1460,31 +1475,29 @@ function binddomain(obj) {
     if (str != "") {
         var tobdy = "<table class='us_table1' width='100%' cellspacing=\"2\" cellpadding=\"0\" border=\"0\" >";
         tobdy += "<tr bgcolor=\"#D7EDFF\"><td height=\"22\" colspan=\"3\" class=txtcolor><div align=center><b>" + msg.bingdomess + "</font></b></div></td></tr>";
-        $.post("/UserHome/Ajax_Server/Ajax_All_V_ot51st.ashx", { str: str, typex: "1" }, function (jason) {
+        $.post("/UserHome/Ajax_Server/Ajax_All_V_ot51st.ashx", {str: str, typex: "1"}, function (jason) {
             if (jason == "1") {
                 $("#domeList").empty();
                 $("#domeList").append(msg.sorrys); //對不起！您暫時還沒有域名！請自行添加。
             } else if (jason == "TimeOut") {
                 window.location.href = "/users/Login.aspx";
-            }
-            else {
+            } else {
                 $.each(jason.jsonstr, function (i, vale) {
                     if (vale.s_o3.split(",") == "") {
                         $("#domeList").empty();
                         $("#domeList").append(msg.sorrys); //"對不起！您暫時還沒有域名！請自行添加。"
-                    }
-                    else {
+                    } else {
                         for (var j = 0; j < vale.s_o3.split(",").length; j++) {
                             tobdy += " <tr align=\"middle\" bgcolor=\"#ffffff\"><td width=\"25%\" height=\"22\"><p align=\"center\">" + (j + 1) + "</td><td class=\"jasonchen\" width=\"55%\">" + vale.s_o3.split(",")[j] + "</td> <td width=\"20%\" align=left> <input type=submit  name=" + vale.s_o3.split(",")[j] + " class='dud_button1 allsub' value=\"　" + msg.delebindname + "　\"> </td></tr>";
                         }
                     }
                     if (vale.g_prd == "freewebsite" || vale.g_prd == "freeshop")//此处赋值给ot5_dme_new  看看 是免费还是高级版本 以便判断1 还是10个域名绑定
                     {
-                       /// $("#ot5_dme_new").val(msg.stailing); //您可以綁定1個域名！
+                        /// $("#ot5_dme_new").val(msg.stailing); //您可以綁定1個域名！
                         $("#free_or").val("1"); //綁定一個域名
                     } else {
 
-                     ///   $("#ot5_dme_new").val(msg.ycanb); //"您可以綁定1到10個域名！"
+                        ///   $("#ot5_dme_new").val(msg.ycanb); //"您可以綁定1到10個域名！"
                         $("#free_or").val("10"); //可以10個域名
                     }
 
@@ -1503,14 +1516,14 @@ function binddomain(obj) {
 
 
 }
+
 function upgrade(obj) {
     var str = obj;
     var thispage = document.URL;
     var comfrompage;
     if (thispage.indexOf('UserHome/ot5lst/website.aspx') == -1) {
         comfrompage = "deluxeshop";
-    }
-    else {
+    } else {
         comfrompage = "deluxewebsite";
     }
     window.location.href = "/userhome/ot5lst/upgrade.aspx?str=" + str + "&comfrompage=" + comfrompage;
@@ -1531,8 +1544,14 @@ function upgrade(obj) {
 
 //    }, "html");
 }
+
 ///随机8位数
-function makeid() { var text = "pop"; var possible = "abcdefghijklmnopqrestuvwxyz12456789"; for (var i = 0; i < 9; i++) text += possible.charAt(Math.floor(Math.random() * possible.length)); return text; }
+function makeid() {
+    var text = "pop";
+    var possible = "abcdefghijklmnopqrestuvwxyz12456789";
+    for (var i = 0; i < 9; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
+}
 
 
 function upfree() {//升级按钮
@@ -1561,8 +1580,7 @@ function chooseretun() {
     var type = navigator.appName
     if (type == "Netscape") {
         var lang = navigator.language
-    }
-    else {
+    } else {
         var lang = navigator.userLanguage
     }
     //取得国家代码的前两个字母  
@@ -1595,12 +1613,10 @@ function ot5alert(mess, type) {
     $("#alertok").click(function () {
         if (type == "1") {//点击确定只需要关闭
             $("#all_err_msg").dialog("close");
-        }
-        else if (type == "2") {//点击确定关闭层 然后跳转 
+        } else if (type == "2") {//点击确定关闭层 然后跳转
             $("#all_err_msg").dialog("close");
             window.location.href = "/pop/buy/cart.aspx";
-        }
-        else {
+        } else {
             $("#all_err_msg").dialog("close");
             window.location.href = type;
         }
@@ -1620,14 +1636,11 @@ function ot5_rigth_ert(mess, type) {
         var ezsite_prd = $("#getfreeORcharge").val();
         if (type == "1") {//點擊關閉
             $("#all_rigtht").dialog("close");
-        }
-        else if (type == "2") { //等待命令
+        } else if (type == "2") { //等待命令
             $("#all_rigtht").dialog("close");
 
 
             InitTables(0, ezsite_prd); /// 选模版
-           
-
 
 
         }

@@ -19,20 +19,20 @@
         <plugins>
 
 
-<!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>com.zg.sinosing.SQLModel</mainClass> &lt;!&ndash; 你的主类名 &ndash;&gt;
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
--->
+            <!--
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-jar-plugin</artifactId>
+                            <configuration>
+                                <archive>
+                                    <manifest>
+                                        <addClasspath>true</addClasspath>
+                                        <mainClass>com.zg.sinosing.SQLModel</mainClass> &lt;!&ndash; 你的主类名 &ndash;&gt;
+                                    </manifest>
+                                </archive>
+                            </configuration>
+                        </plugin>
+            -->
 
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
@@ -85,8 +85,6 @@
             <artifactId>util</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
-
 
 
         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->

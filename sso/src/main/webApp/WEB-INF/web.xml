@@ -59,7 +59,7 @@
 
 
     <listener>
-    <listener-class>com.zg.sso.listener.CacheListener</listener-class>
+        <listener-class>com.zg.sso.listener.CacheListener</listener-class>
     </listener>
 
 

@@ -1,18 +1,8 @@
 package com.zg.search.util;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Date;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.IntPoint;
-import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -20,17 +10,21 @@ import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Date;
 
 
 /**
  * Lucene 创建索引
- * @author moonxy
  *
+ * @author moonxy
  */
 public class BaseIndexHelper {
 
     public static void main(String[] args) {
-
 
 
         // 开始时间
@@ -44,7 +38,7 @@ public class BaseIndexHelper {
         Directory dir = null;
         IndexWriter inWriter = null;
         // 存储索引的目录
-        Path indexPath = Paths.get("D:","test","index");
+        Path indexPath = Paths.get("D:", "test", "index");
 
         try {
             if (!Files.isReadable(indexPath)) {

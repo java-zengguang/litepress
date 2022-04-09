@@ -43,7 +43,6 @@
     </build>
 
 
-
     <dependencies>
         <dependency>
             <groupId>com.zg.mvc</groupId>
@@ -71,16 +70,12 @@
         </dependency>
 
 
-
         <!--    分頁助手-->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper</artifactId>
             <version>5.1.2</version>
         </dependency>
-
-
-
 
 
         <dependency>

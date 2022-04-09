@@ -6,11 +6,9 @@ import com.zg.bean.annotation.NotCommitField;
 import com.zg.bean.entity.OptionDB;
 import com.zg.database.util.DataBaseUtil;
 import com.zg.init.Config;
-import org.apache.commons.net.ntp.TimeStamp;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -471,14 +469,14 @@ public class EntityUtils {
             }
 
             case "Date": {
-                if(field.get(object)!=null){
+                if (field.get(object) != null) {
                     value = "to_date('" + sdf.format(field.get(object)) + "','yyyy-MM-dd hh24:mi:ss')";
-                }else{
-                    value="";
+                } else {
+                    value = "";
                 }
                 break;
             }
-            case "BigDecimal":{
+            case "BigDecimal": {
                 value = String.valueOf(field.get(object));
                 break;
             }
@@ -781,14 +779,14 @@ public class EntityUtils {
                 }
 
                 case "Date": {
-                    if(field.get(object)!=null){
+                    if (field.get(object) != null) {
                         value = "to_date('" + sdf.format(field.get(object)) + "','yyyy-MM-dd hh24:mi:ss')";
-                    }else{
-                        value="";
+                    } else {
+                        value = "";
                     }
                     break;
                 }
-                case "BigDecimal":{
+                case "BigDecimal": {
                     value = String.valueOf(field.get(object));
                     break;
                 }

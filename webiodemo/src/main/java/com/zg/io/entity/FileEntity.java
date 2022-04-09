@@ -77,7 +77,7 @@ public class FileEntity extends MainModel {
     }
 
     public Integer getTypeId() {
-        return typeId==null ? 999:typeId;
+        return typeId == null ? 999 : typeId;
     }
 
     public void setTypeId(Integer typeId) {

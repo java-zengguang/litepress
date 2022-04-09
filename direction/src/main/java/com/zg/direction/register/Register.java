@@ -13,13 +13,13 @@ import java.util.concurrent.CountDownLatch;
 public class Register implements Watcher {
 
 
-
     private static CountDownLatch connectedSemaphore = new CountDownLatch(1);
     private static ZooKeeper zk = null;
     private static Stat stat = new Stat();
 
 
-    public Register(){}
+    public Register() {
+    }
 
     public Register(String connectString) throws IOException {
         zk = new ZooKeeper(connectString, 5000,
@@ -27,13 +27,13 @@ public class Register implements Watcher {
     }
 
 
-    public void registProvider(Map<String,Object> map) throws InterruptedException, KeeperException, IllegalAccessException {
+    public void registProvider(Map<String, Object> map) throws InterruptedException, KeeperException, IllegalAccessException {
         connectedSemaphore.await();
 
-        Set<String> keySet=map.keySet();
-        for(String key:keySet) {
-            String path=key;
-            String value= JsonUtils.objectToJson(map.get(key)).toString();
+        Set<String> keySet = map.keySet();
+        for (String key : keySet) {
+            String path = key;
+            String value = JsonUtils.objectToJson(map.get(key)).toString();
             zk.create(path, value.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
             System.out.println("success create znode: " + path);
             System.out.println("success create data: " + value);
@@ -43,17 +43,14 @@ public class Register implements Watcher {
     }
 
 
-
     public static void main(String[] args) throws Exception {
 
         String connectString = "127.0.0.1:2181";
 
-        ProviderFactory providerFactory=ProviderFactory.getInstance();
-        Map map=providerFactory.getProviderMap();
-        Register register=new Register(connectString);
+        ProviderFactory providerFactory = ProviderFactory.getInstance();
+        Map map = providerFactory.getProviderMap();
+        Register register = new Register(connectString);
         register.registProvider(map);
-
-
 
 
     }

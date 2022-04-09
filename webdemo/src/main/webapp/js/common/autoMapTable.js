@@ -34,9 +34,9 @@ function autoFillList(result, target) {
 
 function createTH(object, target) {
     if (target.find("thead").length == 0) {
-       target.append("thead");
+        target.append("thead");
     }
-    target =target.children("thead");
+    target = target.children("thead");
     target.html("");
     var tableHead = "<tr>";
     for (i = 0; i < object.length; i++) {

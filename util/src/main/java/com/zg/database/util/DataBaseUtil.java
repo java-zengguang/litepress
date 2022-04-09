@@ -17,8 +17,8 @@ public class DataBaseUtil {
 
     private static Map loadTableInfo(String tableName) {
 
-        Map tableInfo=tableInfoMap.get(tableName);
-        if(tableInfo==null) {
+        Map tableInfo = tableInfoMap.get(tableName);
+        if (tableInfo == null) {
 
             String tableInfoSQL = "SELECT COLUMN_NAME,DATA_TYPE FROM " + "information_schema.columns" +
                     " WHERE  table_name='" + tableName + "' AND table_schema=(SELECT DATABASE())";
@@ -30,7 +30,7 @@ public class DataBaseUtil {
             } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
-             tableInfo = ListUtils.createMap(list, "COLUMN_NAME", "DATA_TYPE");
+            tableInfo = ListUtils.createMap(list, "COLUMN_NAME", "DATA_TYPE");
             if (tableInfo != null && !tableInfo.isEmpty()) {
                 tableInfoMap.put(tableName, tableInfo);
             }
@@ -40,9 +40,9 @@ public class DataBaseUtil {
     }
 
 
-    public static Map getTableInfo(String tableName)  {
-        Map map=null;
-        if(tableName!=null) {
+    public static Map getTableInfo(String tableName) {
+        Map map = null;
+        if (tableName != null) {
             map = loadTableInfo(tableName);
         }
         return map;

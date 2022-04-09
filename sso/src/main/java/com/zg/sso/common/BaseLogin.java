@@ -40,8 +40,9 @@ public abstract class BaseLogin implements LoginInte {
         cookie.setPath(rootPath);
         response.addCookie(cookie);
     }
+
     public void clearCookie(HttpServletResponse response, String key) {
-        SSOOpthion ssoOpthion= (SSOOpthion) Config.getConfig("SSOOpthion");
+        SSOOpthion ssoOpthion = (SSOOpthion) Config.getConfig("SSOOpthion");
         Cookie cookie = new Cookie(key, "");
         cookie.setMaxAge(0);
         cookie.setPath(ssoOpthion.domain);

@@ -9,13 +9,13 @@ import java.util.List;
 public class PowerService extends CommitClassHandler {
 
 
-    private PowerDao powerDao=new PowerDao();
+    private PowerDao powerDao = new PowerDao();
 
-    public List getPowerList(Power power){
+    public List getPowerList(Power power) {
 
-        List list=null;
+        List list = null;
         try {
-            list=powerDao.getPowerList(power);
+            list = powerDao.getPowerList(power);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans>  
+<beans>
 
 
     <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
@@ -12,15 +12,15 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-<!--    <bean id="MVCOption" class="com.zg.mvc.entity.MVCOption">
-        <property name="controllerPackage" type="java.lang.String">com.zg.io.controller</property>
-        <property name="controllerSuffix" type="java.lang.String">.do</property>
-        <property name="upLoadPackage" type="java.lang.String">com.zg.io.controller</property>
-        <property name="upLoadSuffix" type="java.lang.String">.file</property>
-        <property name="temporaryFilePath" type="java.lang.String">D:\\tempFile\\</property>
-        <property name="upLoadPath" type="java.lang.String">D:\\upFile\\</property>
-        <property name="projectRoot" type="java.lang.String">/webiodemo</property>
-    </bean>-->
+    <!--    <bean id="MVCOption" class="com.zg.mvc.entity.MVCOption">
+            <property name="controllerPackage" type="java.lang.String">com.zg.io.controller</property>
+            <property name="controllerSuffix" type="java.lang.String">.do</property>
+            <property name="upLoadPackage" type="java.lang.String">com.zg.io.controller</property>
+            <property name="upLoadSuffix" type="java.lang.String">.file</property>
+            <property name="temporaryFilePath" type="java.lang.String">D:\\tempFile\\</property>
+            <property name="upLoadPath" type="java.lang.String">D:\\upFile\\</property>
+            <property name="projectRoot" type="java.lang.String">/webiodemo</property>
+        </bean>-->
 
     <bean id="MVCOption" class="com.zg.mvc.entity.MVCOption">
         <property name="controllerPackage" type="java.lang.String">com.zg.io.controller</property>
@@ -50,7 +50,6 @@
     </bean>
 
 
-
     <bean id="SSOOpthion" class="com.zg.sso.entity.SSOOpthion">
         <property name="ssoURL" type="java.lang.String">http://localhost:8080/webiodemo</property>
         <property name="domain" type="java.lang.String">localhost</property>
@@ -66,7 +65,8 @@
         <property name="tableMapper" ref="tableMapper"></property>
     </bean>
 
-    <proxy package="com.zg.webdemo.service.table" handler="com.zg.handler.CommitInterfaceHandler" method="deleteTableDate"></proxy>
+    <proxy package="com.zg.webdemo.service.table" handler="com.zg.handler.CommitInterfaceHandler"
+           method="deleteTableDate"></proxy>
 
 
 </beans>

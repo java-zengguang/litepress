@@ -8,7 +8,7 @@ import com.zg.bean.entity.MainModel;
  */
 
 @Model(tableName = "user_user")
-public class User extends MainModel{
+public class User extends MainModel {
     public int id;
     public String nickname;
     public String phone;

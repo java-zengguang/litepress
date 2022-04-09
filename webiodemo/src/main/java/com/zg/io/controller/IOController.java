@@ -26,31 +26,31 @@ public class IOController {
     @ResultMapping("/toUpFile.do")
     public String toUpFile() throws Exception {
 
-         return "privateURL::/WEB-INF/upFile.html";
+        return "privateURL::/WEB-INF/upFile.html";
 
     }
 
 
     @ResultMapping("/upFile.file")
-    public  String upFile(String filePath,String logicPath) throws IOException, InterruptedException, IllegalAccessException {
+    public String upFile(String filePath, String logicPath) throws IOException, InterruptedException, IllegalAccessException {
 
-        FileEntity fileEntity=new FileEntity();
+        FileEntity fileEntity = new FileEntity();
         fileEntity.setFileName("");
         fileService.insertFileData(fileEntity);
-        Map json=new HashMap<>();
+        Map json = new HashMap<>();
 
-        json.put("path",filePath);
-        return "json::"+ JsonUtils.objectToJson(json);
+        json.put("path", filePath);
+        return "json::" + JsonUtils.objectToJson(json);
     }
 
     @ResultMapping("/toDownFile.do")
-    public String toDownFile(){
+    public String toDownFile() {
         return "privateURL::/WEB-INF/downFile.html";
     }
 
     @ResultMapping("/downFile.do")
-    public File downFile(String filePath){
-        File file=new File(filePath);
+    public File downFile(String filePath) {
+        File file = new File(filePath);
         return file;
     }
 

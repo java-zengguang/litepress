@@ -11,11 +11,12 @@ import java.util.Map;
 
 public class ProviderResovleAnnotation extends BaseResolveAnnotation {
 
-    private static ProviderResovleAnnotation pra=null;
+    private static ProviderResovleAnnotation pra = null;
 
-    private ProviderResovleAnnotation(){}
+    private ProviderResovleAnnotation() {
+    }
 
-    public static ProviderResovleAnnotation getInstance(){
+    public static ProviderResovleAnnotation getInstance() {
         synchronized (ProviderResovleAnnotation.class) {
             if (pra == null) {
                 pra = new ProviderResovleAnnotation();
@@ -24,34 +25,32 @@ public class ProviderResovleAnnotation extends BaseResolveAnnotation {
         return pra;
     }
 
-    private Logger logger= LoggerFactory.getLogger(ProviderResovleAnnotation.class);
+    private Logger logger = LoggerFactory.getLogger(ProviderResovleAnnotation.class);
 
-    private ProviderConfig providerConfig= (ProviderConfig) Config.getConfig("providerConfig");
+    private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
 
     @Override
     public String getResultName(Object annotationObject) throws IllegalAccessException, InstantiationException {
-        Provider provider= (Provider) annotationObject;
-        String providerName= provider.providerName();
+        Provider provider = (Provider) annotationObject;
+        String providerName = provider.providerName();
         return providerName;
     }
 
     @Override
     public Object getResultValue(Class classes) {
-        ProviderEntity provider=new ProviderEntity();
-         provider.className=classes.getName();
-         provider.host=providerConfig.DTPHost;
-         provider.port=providerConfig.DTPPort;
-       // provider.interfaceName=classes.getInterfaces()[0].getName();
+        ProviderEntity provider = new ProviderEntity();
+        provider.className = classes.getName();
+        provider.host = providerConfig.DTPHost;
+        provider.port = providerConfig.DTPPort;
+        // provider.interfaceName=classes.getInterfaces()[0].getName();
         return provider;
     }
 
-    public  Map<String,Object> getProviders() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public Map<String, Object> getProviders() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
 
-        Map<String,Object> providerMap=getAnnotationClass(providerConfig.packages,Provider.class);
-       return providerMap;
+        Map<String, Object> providerMap = getAnnotationClass(providerConfig.packages, Provider.class);
+        return providerMap;
     }
-
-
 
 
 }

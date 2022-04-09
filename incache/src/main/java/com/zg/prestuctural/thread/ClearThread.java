@@ -14,12 +14,12 @@ public class ClearThread implements Runnable {
     }
 
 
-    public synchronized void clearDate(){
-        long currentTime=System.currentTimeMillis();
-        Set<String> keySet= map.keySet();
-        for(String key:keySet){
-            CacheEntity cacheEntity=map.get(key);
-            if(cacheEntity==null || cacheEntity.validMillisecond+cacheEntity.timeStamp<currentTime){
+    public synchronized void clearDate() {
+        long currentTime = System.currentTimeMillis();
+        Set<String> keySet = map.keySet();
+        for (String key : keySet) {
+            CacheEntity cacheEntity = map.get(key);
+            if (cacheEntity == null || cacheEntity.validMillisecond + cacheEntity.timeStamp < currentTime) {
                 map.remove(key);
             }
         }

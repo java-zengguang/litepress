@@ -7,5 +7,5 @@ public class UserLogin {
     public String token;
     public String url;
     public String domain;
-    public String  rootPath;
+    public String rootPath;
 }

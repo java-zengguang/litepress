@@ -1,7 +1,6 @@
 package com.zg.direction.entity;
 
 import com.zg.bean.entity.MainModel;
-import net.sf.json.JSONObject;
 
 public class DTPResponse extends MainModel {
     public boolean success;

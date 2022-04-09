@@ -8,7 +8,7 @@ import java.io.IOException;
 public class Test {
 
     public static void main(String args[]) throws InterruptedException, IOException, KeeperException, IllegalAccessException {
-        ProviderAdapter providerAdapter=new ProviderAdapter();
+        ProviderAdapter providerAdapter = new ProviderAdapter();
         providerAdapter.init();
     }
 }

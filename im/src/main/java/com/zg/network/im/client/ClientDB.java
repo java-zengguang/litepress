@@ -15,11 +15,11 @@ public class ClientDB {
     public static Map<String, List> map = new HashMap();
 
 
-    public void insert(String key, MainModel model){
-        if(model!=null){
-            List list=new ArrayList();
+    public void insert(String key, MainModel model) {
+        if (model != null) {
+            List list = new ArrayList();
             list.add(model);
-            insert(key,list);
+            insert(key, list);
         }
     }
 
@@ -28,7 +28,7 @@ public class ClientDB {
         if (list != null && list.size() > 0) {
             if (map.get(key) == null) {
                 map.put(key, list);
-            }else {
+            } else {
                 map.get(key).addAll(list);
             }
         }
@@ -45,11 +45,11 @@ public class ClientDB {
         return list;
     }
 
-    public Object selectOne(String key){
+    public Object selectOne(String key) {
         List list = map.get(key);
-        if(list!=null && list.size()>0){
+        if (list != null && list.size() > 0) {
             return list.get(0);
-        }else{
+        } else {
             return null;
         }
     }

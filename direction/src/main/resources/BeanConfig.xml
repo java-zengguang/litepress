@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans>  
-    
-<!--  <bean id="optionDB" class="com.jdbc.dao.impl.OptionDB">
-       <property name="url" type="java.lang.String">jdbc:oracle:thin:@localhost:1521:orcl</property>
-      <property name="maxPoolSize" type="int">10</property>
-        <property name="Driver" type="java.lang.String">oracle.jdbc.OracleDriver</property>
-        <property name="username" type="java.lang.String">sys as sysdba</property>
-         <property name="password" type="java.lang.String">helloworld</property>
-  </bean>-->
+<beans>
+
+    <!--  <bean id="optionDB" class="com.jdbc.dao.impl.OptionDB">
+           <property name="url" type="java.lang.String">jdbc:oracle:thin:@localhost:1521:orcl</property>
+          <property name="maxPoolSize" type="int">10</property>
+            <property name="Driver" type="java.lang.String">oracle.jdbc.OracleDriver</property>
+            <property name="username" type="java.lang.String">sys as sysdba</property>
+             <property name="password" type="java.lang.String">helloworld</property>
+      </bean>-->
 
     <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
@@ -35,10 +35,6 @@
         <property name="DTPHost" type="java.lang.String">127.0.0.1</property>
         <property name="DTPPort" type="java.lang.String">10001</property>
     </bean>
-
-
-
- 
 
 
 </beans>

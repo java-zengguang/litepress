@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans>  
+<beans>
 
 
     <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
@@ -39,11 +39,11 @@
     </bean>
 
 
-<!--
+    <!--
 
 
-    <proxy package="com.zg.webdemo.service.table" handler="com.zg.handler.CommitInterfaceHandler" method="deleteTableDate"></proxy>
--->
+        <proxy package="com.zg.webdemo.service.table" handler="com.zg.handler.CommitInterfaceHandler" method="deleteTableDate"></proxy>
+    -->
 
 
 </beans>

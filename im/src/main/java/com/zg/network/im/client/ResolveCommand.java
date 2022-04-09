@@ -6,15 +6,13 @@ import com.zg.prestuctural.manager.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
 /**
  * Created by Administrator on 2019/2/27 0027.
  */
 public class ResolveCommand {
 
-    Logger logger= LoggerFactory.getLogger(ResolveCommand.class);
-   // private ClientDB clientDB = new ClientDB();
+    Logger logger = LoggerFactory.getLogger(ResolveCommand.class);
+    // private ClientDB clientDB = new ClientDB();
 
     public ZGMPBean resolveCommand(String command) {
         ZGMPBean request = new ZGMPBean("REQUEST");
@@ -30,17 +28,17 @@ public class ResolveCommand {
                 request.password = s[2];
             } else if ("logout".equals(s[0])) {
                 request.methodType = "LOGOUT";
-            }else if("file".equals(s[0])){
-                request.methodType="SEND";
-                request.operationType="FILESERVICEREQUEST";
+            } else if ("file".equals(s[0])) {
+                request.methodType = "SEND";
+                request.operationType = "FILESERVICEREQUEST";
                 request.targetUuid = s[1];
                 request.message = s[2];
             }
 
-        if(!checkRequest(request)){
-            return null;
-        }
-        }catch (Exception e){
+            if (!checkRequest(request)) {
+                return null;
+            }
+        } catch (Exception e) {
             logger.error("命令错误");
         }
         return request;
@@ -52,7 +50,7 @@ public class ResolveCommand {
 
         switch (methodType) {
             case "LOGIN": {
-               // System.out.println(" to login  ");
+                // System.out.println(" to login  ");
                 break;
             }
             case "LOGOUT": {
@@ -67,7 +65,7 @@ public class ResolveCommand {
                     System.out.println("还未登陆");
                     return false;
                 }
-               // System.out.println(" to " + request.message);
+                // System.out.println(" to " + request.message);
                 break;
             }
 
@@ -76,16 +74,16 @@ public class ResolveCommand {
                 break;
             }
         }
-        return  true;
+        return true;
     }
 
     public boolean isLogin(ZGMPBean request) {
-        UserBean userBean =(UserBean) CacheManager.get("user");
-        if (userBean!=null) {
+        UserBean userBean = (UserBean) CacheManager.get("user");
+        if (userBean != null) {
             request.uuid = userBean.uuid;
             request.token = userBean.token;
             return true;
-        }else{
+        } else {
             return false;
         }
     }

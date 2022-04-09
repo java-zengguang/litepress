@@ -25,42 +25,41 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
     }
 
     public Class[] getParamterTypes(List<String> paramterTypes) throws ClassNotFoundException {
-        Class[] result=null;
+        Class[] result = null;
 
 
-            result= new Class[paramterTypes.size()];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = Class.forName(paramterTypes.get(i));
-            }
+        result = new Class[paramterTypes.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = Class.forName(paramterTypes.get(i));
+        }
 
         return result;
     }
 
     private Object[] getParamters(List<String> paramterValues, Class[] paramterTypes) {
-        Object[] result=null;
+        Object[] result = null;
 
 
-            result = new Object[paramterTypes.length];
+        result = new Object[paramterTypes.length];
 
-            for (int i = 0; i < paramterTypes.length; i++) {
-                if (EntityUtils.isPrimitive(paramterTypes[i])) {
-                    result[i] = EntityUtils.translateType(paramterValues.get(i), paramterTypes[i]);
-                }
+        for (int i = 0; i < paramterTypes.length; i++) {
+            if (EntityUtils.isPrimitive(paramterTypes[i])) {
+                result[i] = EntityUtils.translateType(paramterValues.get(i), paramterTypes[i]);
             }
+        }
 
         return result;
 
     }
 
 
-
     private String serialize(Object object) throws IllegalAccessException {
-        String data= EntityUtils.serialize(object);
+        String data = EntityUtils.serialize(object);
         return data;
     }
 
-    private Object unSerialize(String str,Class classType) throws IllegalAccessException, InstantiationException {
-        Object object= EntityUtils.unSerialize(str,classType);
+    private Object unSerialize(String str, Class classType) throws IllegalAccessException, InstantiationException {
+        Object object = EntityUtils.unSerialize(str, classType);
         return object;
     }
 
@@ -71,43 +70,40 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
         System.out.println("get msg >" + msg);
 
         DTPRequest request = null;
-        DTPResponse response=new DTPResponse();
+        DTPResponse response = new DTPResponse();
         try {
             request = (DTPRequest) unSerialize(msg, DTPRequest.class);
 
             String className = request.className;
             String methodName = request.methodName;
-            String uuid=request.uuid;
-            String token=request.token;
+            String uuid = request.uuid;
+            String token = request.token;
 
-       //     BaseChannelGroups.put(uuid, token, ctx.channel());
+            //     BaseChannelGroups.put(uuid, token, ctx.channel());
 
             Class[] paramterTypes = getParamterTypes(request.methodParamterTypes);
             Class classes = Class.forName(className);
             Method method = classes.getDeclaredMethod(methodName, paramterTypes);
             Object paramters[] = getParamters(request.methodParamters, method.getParameterTypes());
             Object result = method.invoke(classes.newInstance(), paramters);
-            response.success=true;
-            response.resultData=serialize(result);
-            response.resultType=request.methodType;
+            response.success = true;
+            response.resultData = serialize(result);
+            response.resultType = request.methodType;
         } catch (Exception e) {
             e.printStackTrace();
-            response.success=false;
-            response.resultData= null;
-            response.resultType=request.methodType;
-            response.error=e.getMessage();
+            response.success = false;
+            response.resultData = null;
+            response.resultType = request.methodType;
+            response.error = e.getMessage();
         }
 
         //String responseJson=JsonUtils.objectToJson(response).toString();
-        String responseJson=serialize(response);
-       // Channel channel=BaseChannelGroups.getChannel("");
-       // channel.writeAndFlush(responseJson+"\r\n");
-        ctx.writeAndFlush(responseJson+ "\r\n");
+        String responseJson = serialize(response);
+        // Channel channel=BaseChannelGroups.getChannel("");
+        // channel.writeAndFlush(responseJson+"\r\n");
+        ctx.writeAndFlush(responseJson + "\r\n");
 
     }
-
-
-
 
 
 }

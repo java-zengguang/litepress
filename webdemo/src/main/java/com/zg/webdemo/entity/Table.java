@@ -5,7 +5,7 @@ import com.zg.bean.entity.MainModel;
 /**
  * Created by zkyd01 on 2018/9/1.
  */
-public class Table extends MainModel{
+public class Table extends MainModel {
     public String dateBaseName;
     public String tableName;
     public String tableType;

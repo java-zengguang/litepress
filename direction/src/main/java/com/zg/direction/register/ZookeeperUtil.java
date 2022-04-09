@@ -52,29 +52,28 @@ public class ZookeeperUtil implements Watcher {
     }
 
 
-
     public String findNode(String path) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
-        String data=new String(zk.getData(path,true,stat));
+        String data = new String(zk.getData(path, true, stat));
         return data;
     }
 
     public JSONObject findNodeJson(String path) throws InterruptedException, KeeperException {
-        JSONObject jsonObject= JSONObject.parseObject(findNode(path));
-        if(jsonObject!=null){
-        jsonObject.put("name",path);
+        JSONObject jsonObject = JSONObject.parseObject(findNode(path));
+        if (jsonObject != null) {
+            jsonObject.put("name", path);
         }
         return jsonObject;
     }
 
-    public List<Map<String,String>> findChildNodes(String path) throws InterruptedException, KeeperException {
+    public List<Map<String, String>> findChildNodes(String path) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
-        List<Map<String,String>> resultList=new ArrayList<>();
-        List<String> list= zk.getChildren(path,true,stat);
-        for(String key:list){
-            String data=new String(zk.getData("/"+key,true,stat));
-            Map map=new HashMap();
-            map.put(key,data);
+        List<Map<String, String>> resultList = new ArrayList<>();
+        List<String> list = zk.getChildren(path, true, stat);
+        for (String key : list) {
+            String data = new String(zk.getData("/" + key, true, stat));
+            Map map = new HashMap();
+            map.put(key, data);
             resultList.add(map);
         }
         return resultList;
@@ -82,11 +81,11 @@ public class ZookeeperUtil implements Watcher {
 
     public JSONArray findChildNodesJson(String path) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
-        JSONArray jsonArray=new JSONArray();
-        List<String> list= zk.getChildren(path,true,stat);
-        for(String key:list){
-            JSONObject jsonObject=findNodeJson("/"+key);
-            if(jsonObject!=null) {
+        JSONArray jsonArray = new JSONArray();
+        List<String> list = zk.getChildren(path, true, stat);
+        for (String key : list) {
+            JSONObject jsonObject = findNodeJson("/" + key);
+            if (jsonObject != null) {
                 jsonArray.add(jsonObject);
             }
         }
@@ -98,7 +97,7 @@ public class ZookeeperUtil implements Watcher {
 
         String connectString = "127.0.0.1:2181";
 
-        ZookeeperUtil zookeeperUtil=new ZookeeperUtil(connectString);
+        ZookeeperUtil zookeeperUtil = new ZookeeperUtil(connectString);
         //zookeeperUtil.createNode(path,"423");
         System.out.println(zookeeperUtil.findNode(path));
 

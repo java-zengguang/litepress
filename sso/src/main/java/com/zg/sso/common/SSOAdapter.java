@@ -3,7 +3,9 @@ package com.zg.sso.common;
 import com.zg.sso.entity.SSOOpthion;
 import com.zg.util.url.URLUtils;
 
-import javax.servlet.*;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,23 +14,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SSOAdapter {
-    private  SSOOpthion ssoOpthion ;
+    private SSOOpthion ssoOpthion;
 
-    private   LoginInte loginService;
+    private LoginInte loginService;
 
     private static SSOAdapter ssoAdapter;
 
-    private SSOAdapter(SSOOpthion ssoOpthion,LoginInte loginInte){
-       this.loginService=loginInte;
-       this.ssoOpthion=ssoOpthion;
+    private SSOAdapter(SSOOpthion ssoOpthion, LoginInte loginInte) {
+        this.loginService = loginInte;
+        this.ssoOpthion = ssoOpthion;
     }
 
-    public static SSOAdapter getInstanse(SSOOpthion ssoOpthion,LoginInte loginInte){
-      ssoAdapter=new SSOAdapter(ssoOpthion,loginInte);
-      return ssoAdapter;
+    public static SSOAdapter getInstanse(SSOOpthion ssoOpthion, LoginInte loginInte) {
+        ssoAdapter = new SSOAdapter(ssoOpthion, loginInte);
+        return ssoAdapter;
     }
-
-
 
 
     private boolean isLogin(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -41,10 +41,9 @@ public class SSOAdapter {
     }
 
 
-
     public boolean doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
 
-        String uri=((HttpServletRequest)request).getRequestURI();
+        String uri = ((HttpServletRequest) request).getRequestURI();
 
         boolean loginStatus = isLogin((HttpServletRequest) request, (HttpServletResponse) response);
         if (loginStatus) {
@@ -87,7 +86,7 @@ public class SSOAdapter {
     private String toRegistToken(HttpServletRequest request) throws IOException {
 
         String url = (request).getRequestURL().toString();
-        url= URLUtils.getURLEncoderString(url);
+        url = URLUtils.getURLEncoderString(url);
         System.out.println(url);
 
         String newToken = loginService.registToken(url, ssoOpthion.domain, ssoOpthion.rootPath);

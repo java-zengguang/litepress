@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans>  
+<beans>
 
 
     <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
@@ -12,13 +12,13 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-<!--    <bean id="optionMGDB" class="com.zg.bean.Model.OptionMGDB">
-        <property name="ip" type="java.lang.String">localhost</property>
-        <property name="port" type="java.lang.String">27017</property>
-        <property name="database" type="java.lang.String">admin</property>
-        <property name="username" type="java.lang.String">adminUser</property>
-        <property name="password" type="java.lang.String">adminPass</property>
-    </bean>-->
+    <!--    <bean id="optionMGDB" class="com.zg.bean.Model.OptionMGDB">
+            <property name="ip" type="java.lang.String">localhost</property>
+            <property name="port" type="java.lang.String">27017</property>
+            <property name="database" type="java.lang.String">admin</property>
+            <property name="username" type="java.lang.String">adminUser</property>
+            <property name="password" type="java.lang.String">adminPass</property>
+        </bean>-->
 
 
     <bean id="MVCOption" class="com.zg.mvc.entity.MVCOption">

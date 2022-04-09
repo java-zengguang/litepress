@@ -5,7 +5,10 @@ import jxl.write.WriteException;
 import org.apache.poi.hssf.record.formula.functions.T;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,18 +38,18 @@ public class Test {
 
 
     public static void main(String args[]) throws IOException, WriteException {
-        List<Map> list=new ArrayList<>();
-        File file= new File("D:\\test\\新建文件夹\\问题.xls");
+        List<Map> list = new ArrayList<>();
+        File file = new File("D:\\test\\新建文件夹\\问题.xls");
         InputStream inputStream = new FileInputStream(file);
         HSSFWorkbook hssfWorkbook = new HSSFWorkbook(inputStream);
-        list=POIUtils.readExcel(hssfWorkbook, "SQL Results");
-        Map<String,List<Map>> map=new HashMap<>();
+        list = POIUtils.readExcel(hssfWorkbook, "SQL Results");
+        Map<String, List<Map>> map = new HashMap<>();
 
-        List<List> resultList=splitList(list,1000);
-        for(int i=0;i<resultList.size();i++){
-            List<Map> x=resultList.get(i);
-            map.put("sheet"+i,x);
+        List<List> resultList = splitList(list, 1000);
+        for (int i = 0; i < resultList.size(); i++) {
+            List<Map> x = resultList.get(i);
+            map.put("sheet" + i, x);
         }
-        POIUtils.writeXLSX(map,new File("D:\\test\\新建文件夹\\问题.xlsx"));
+        POIUtils.writeXLSX(map, new File("D:\\test\\新建文件夹\\问题.xlsx"));
     }
 }

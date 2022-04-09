@@ -50,14 +50,10 @@ public class CacheLoginController extends BaseController {
         //登陆逻辑获取id
         String uuid = "1";
         //登陆逻辑获取id
-        MessageBean messageBean = (MessageBean) loginService.doLogin(request, uuid,response);
+        MessageBean messageBean = (MessageBean) loginService.doLogin(request, uuid, response);
         System.out.println(1);
-        return "json::"+JsonUtils.objectToJson(messageBean);
+        return "json::" + JsonUtils.objectToJson(messageBean);
     }
-
-
-
-
 
 
 }

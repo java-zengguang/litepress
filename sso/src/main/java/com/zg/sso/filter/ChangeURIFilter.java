@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
  * Created by Administrator on 2019/2/14 0014.
  */
 public class ChangeURIFilter implements Filter {
-    private MVCOption mvcOption= (MVCOption) Config.getConfig("MVCOption");
+    private MVCOption mvcOption = (MVCOption) Config.getConfig("MVCOption");
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -23,10 +23,10 @@ public class ChangeURIFilter implements Filter {
     }
 
 
-    private String changeURI(String requestPath){
-        if(mvcOption.projectRoot!=null && !"".equals(mvcOption.projectRoot)) {
+    private String changeURI(String requestPath) {
+        if (mvcOption.projectRoot != null && !"".equals(mvcOption.projectRoot)) {
             if (requestPath.endsWith(mvcOption.controllerSuffix) || requestPath.endsWith(mvcOption.upLoadSuffix)) {
-                    requestPath = requestPath.replaceFirst(mvcOption.projectRoot, "");
+                requestPath = requestPath.replaceFirst(mvcOption.projectRoot, "");
             }
         }
         return requestPath;

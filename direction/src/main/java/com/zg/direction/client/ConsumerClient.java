@@ -10,9 +10,9 @@ public class ConsumerClient extends BaseClient {
     }
 
     @Override
-    public String resovleProtocol(Object object)  {
-        String json =null;
-        json= EntityUtils.serialize(object);
+    public String resovleProtocol(Object object) {
+        String json = null;
+        json = EntityUtils.serialize(object);
         return json;
     }
 }

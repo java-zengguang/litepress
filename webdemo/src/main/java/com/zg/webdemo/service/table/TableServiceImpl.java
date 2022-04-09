@@ -23,24 +23,24 @@ public class TableServiceImpl implements TableService {
 
 
     public List searchTableName(Table table) {
-        List list=new ArrayList();
+        List list = new ArrayList();
         try {
-            list=tableMapper.searchTableName(table);
+            list = tableMapper.searchTableName(table);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
     }
 
-    public Integer deleteTableDate(Map map)  {
+    public Integer deleteTableDate(Map map) {
 
-        if(null!=map.get("tableName") && !("").equals(map.get("tableName")) && null!=map.get("id") && !("").equals(map.get("id"))  ){
-            String idStr=(String)map.get("id");
-            String[] ids=idStr.split(",");
+        if (null != map.get("tableName") && !("").equals(map.get("tableName")) && null != map.get("id") && !("").equals(map.get("id"))) {
+            String idStr = (String) map.get("id");
+            String[] ids = idStr.split(",");
             try {
-                for(String id:ids) {
-                    map.put("id",id);
-                    if(tableMapper.deleteTableDate(map)<0){
+                for (String id : ids) {
+                    map.put("id", id);
+                    if (tableMapper.deleteTableDate(map) < 0) {
                         return 0;
                     }
                 }
@@ -54,7 +54,7 @@ public class TableServiceImpl implements TableService {
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             System.out.println("参数错误");
             return 0;
         }
@@ -62,50 +62,47 @@ public class TableServiceImpl implements TableService {
     }
 
 
-
     public List<Object> getTableDate(Table table) {
-        HashMap map=new HashMap();
-        map.put("tableName",table.getTableName());
-        map.put("createBy",table.getCreateBy());
-        map.put("updateBy",table.getUpdateBy());
-        map.put("createDate",table.getCreatDate());
-        map.put("updateDate",table.getUpdateDate());
-        List list=new ArrayList();
+        HashMap map = new HashMap();
+        map.put("tableName", table.getTableName());
+        map.put("createBy", table.getCreateBy());
+        map.put("updateBy", table.getUpdateBy());
+        map.put("createDate", table.getCreatDate());
+        map.put("updateDate", table.getUpdateDate());
+        List list = new ArrayList();
         try {
-            list= MongoDBUtils.getDocumentList(table.getTableName(),new HashedMap());
-            if(list==null || list.size()==0) {
+            list = MongoDBUtils.getDocumentList(table.getTableName(), new HashedMap());
+            if (list == null || list.size() == 0) {
                 list = tableMapper.getTableData(map);
-                if(list.size()>0) {
-                    MongoDBUtils.deleteDocument(table.getTableName(),new HashedMap());
+                if (list.size() > 0) {
+                    MongoDBUtils.deleteDocument(table.getTableName(), new HashedMap());
                     MongoDBUtils.insertMapList(table.getTableName(), list);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("缓存取出"+list);
+        System.out.println("缓存取出" + list);
         return list;
     }
 
     public List<Object> getTableDataPage(Table table, PageEntity page) {
 
-        HashMap map=new HashMap();
-        map.put("tableName",table.getTableName());
-        map.put("createBy",table.getCreateBy());
-        map.put("updateBy",table.getUpdateBy());
-        map.put("createDate",table.getCreatDate());
-        map.put("updateDate",table.getUpdateDate());
-        List list=new ArrayList();
+        HashMap map = new HashMap();
+        map.put("tableName", table.getTableName());
+        map.put("createBy", table.getCreateBy());
+        map.put("updateBy", table.getUpdateBy());
+        map.put("createDate", table.getCreatDate());
+        map.put("updateDate", table.getUpdateDate());
+        List list = new ArrayList();
 
         try {
-            list=tableMapper.getTableDataPage(map,page);
+            list = tableMapper.getTableDataPage(map, page);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return list;
-
-
 
 
     }

@@ -62,7 +62,7 @@ public class MongoDBUtils {
 
     public static boolean hasCollection(String collectionName) {
         Set<String> collectionNames = getCollectionNames();
-        for ( String name : collectionNames) {
+        for (String name : collectionNames) {
             if (name.trim().equals(collectionName.trim())) {
                 return true;
             }
@@ -72,8 +72,8 @@ public class MongoDBUtils {
 
 
     private static MongoCollection<Document> getMongoCollection(String collectionName) {
-        if(!hasCollection(collectionName)){
-            System.out.println("未找到"+collectionName);
+        if (!hasCollection(collectionName)) {
+            System.out.println("未找到" + collectionName);
             return null;
         }
         MongoDatabase mongoDatabase = getConnection();
@@ -96,7 +96,7 @@ public class MongoDBUtils {
     public static List<Document> getDocumentList(String collectionName, Map filter) {
         List list = new ArrayList();
         MongoCollection collection = getMongoCollection(collectionName);
-        if (collection == null ) {
+        if (collection == null) {
 
         } else {
             Bson filte = new BasicDBObject(filter);
@@ -110,7 +110,7 @@ public class MongoDBUtils {
         collection.insertMany(list);
     }
 
-    private static void insertOneMap(String collectionName,Document document){
+    private static void insertOneMap(String collectionName, Document document) {
         MongoCollection collection = getMongoCollection(collectionName);
         if (collection == null) {
             collection = createCollection(collectionName);
@@ -119,8 +119,8 @@ public class MongoDBUtils {
 
     }
 
-    public static void insertOneMap(String collectionName,Map map) {
-        insertOneMap(collectionName,new Document(map));
+    public static void insertOneMap(String collectionName, Map map) {
+        insertOneMap(collectionName, new Document(map));
     }
 
     public static void insertMapList(String collectionName, List<Map> list) {

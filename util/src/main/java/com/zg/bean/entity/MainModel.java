@@ -2,7 +2,7 @@ package com.zg.bean.entity;
 
 import java.io.*;
 
-public class MainModel implements Cloneable,Serializable{
+public class MainModel implements Cloneable, Serializable {
 
 
     public Object clone() {

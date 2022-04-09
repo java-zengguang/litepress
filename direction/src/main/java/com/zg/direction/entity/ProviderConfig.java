@@ -6,7 +6,7 @@ public class ProviderConfig extends MainModel {
 
     public String packages;
 
-    public String  registerURL;
+    public String registerURL;
 
     public String DTPHost;
 

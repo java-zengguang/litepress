@@ -1,12 +1,17 @@
 package com.zg.util.nio;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.*;
+import java.nio.channels.FileChannel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
 
 public class TCPClient {
-
 
 
     public SocketChannel channel;
@@ -14,29 +19,26 @@ public class TCPClient {
     public void registChannel() throws IOException {
         Selector selector = Selector.open();
         channel.configureBlocking(false);
-        SelectionKey selectionKey= channel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);  //筛选出关注的集合
-        int interestSet=selectionKey.interestOps();
-            System.out.println("请求连接");
-            if((interestSet & SelectionKey.OP_READ )==SelectionKey.OP_READ ) {
-                getFile();
-            }
+        SelectionKey selectionKey = channel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);  //筛选出关注的集合
+        int interestSet = selectionKey.interestOps();
+        System.out.println("请求连接");
+        if ((interestSet & SelectionKey.OP_READ) == SelectionKey.OP_READ) {
+            getFile();
+        }
 
-            if((interestSet & SelectionKey.OP_WRITE)==SelectionKey.OP_WRITE){
-                sendFile();
-            }
+        if ((interestSet & SelectionKey.OP_WRITE) == SelectionKey.OP_WRITE) {
+            sendFile();
+        }
 
     }
 
 
-
-
-
     public void sendFile() throws IOException {
-        ByteBuffer byteBuffer =ByteBuffer.allocate(10*1024);
-        File file=new File("D:\\test\\client\\in.txt");
-        FileChannel localChannel=new FileInputStream(file).getChannel();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(10 * 1024);
+        File file = new File("D:\\test\\client\\in.txt");
+        FileChannel localChannel = new FileInputStream(file).getChannel();
         byteBuffer.clear();
-        while(localChannel.read(byteBuffer)!=-1) {
+        while (localChannel.read(byteBuffer) != -1) {
 
         }
         byteBuffer.flip();
@@ -46,10 +48,10 @@ public class TCPClient {
     }
 
     public void getFile() throws IOException {
-        ByteBuffer byteBuffer=ByteBuffer.allocate(10*1024);
-        File file=new File("D:\\test\\client\\out.txt");
+        ByteBuffer byteBuffer = ByteBuffer.allocate(10 * 1024);
+        File file = new File("D:\\test\\client\\out.txt");
         byteBuffer.clear();
-        while(channel.read(byteBuffer)!=-1) {
+        while (channel.read(byteBuffer) != -1) {
 
         }
         FileChannel localChannel = new FileOutputStream(file).getChannel();
@@ -60,11 +62,11 @@ public class TCPClient {
 
 
     public static void main(String args[]) throws IOException {
-       SocketChannel socketChannel=SocketChannel.open( );
-       socketChannel.connect(new InetSocketAddress("localhost", 9999));
-       TCPClient tcpClient=new TCPClient();
-       tcpClient.channel =socketChannel;
-       tcpClient.registChannel();
+        SocketChannel socketChannel = SocketChannel.open();
+        socketChannel.connect(new InetSocketAddress("localhost", 9999));
+        TCPClient tcpClient = new TCPClient();
+        tcpClient.channel = socketChannel;
+        tcpClient.registChannel();
     }
 
 

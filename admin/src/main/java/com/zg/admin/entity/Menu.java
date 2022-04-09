@@ -10,7 +10,7 @@ public class Menu extends MainModel {
     public int id;
     public int pid;
     public String text;
-    public String  status;
+    public String status;
     public int level;
     public Attributes attributes;
     public List children;

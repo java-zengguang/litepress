@@ -1,10 +1,9 @@
-
 <div class="easyui-layout" data-options="fit:true">
     <div data-options="region:'west',border:true,split:true," title="用户管理" style="width:150px; padding:5px;">
         <ul id="wu-user-tree" class="easyui-tree"></ul>
     </div>
     <div data-options="region:'center',border:false">
-    	<!-- Begin of toolbar -->
+        <!-- Begin of toolbar -->
         <div id="user-toolbar">
             <div class="wu-toolbar-button">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openAdd()" plain="true">添加</a>
@@ -25,7 +24,7 @@
             <div class="wu-toolbar-search">
                 <label>起始时间：</label><input class="easyui-datebox" style="width:100px">
                 <label>结束时间：</label><input class="easyui-datebox" style="width:100px">
-                <label>用户组：</label> 
+                <label>用户组：</label>
                 <select class="easyui-combobox" panelHeight="auto" style="width:100px">
                     <option value="0">选择用户组</option>
                     <option value="1">黄钻</option>
@@ -41,30 +40,34 @@
     </div>
 </div>
 <!-- Begin of easyui-dialog -->
-<div id="user-dialog" class="easyui-dialog" data-options="closed:true,iconCls:'icon-save'" style="width:400px; padding:10px;">
-	<form id="user-form" method="post">
+<div id="user-dialog" class="easyui-dialog" data-options="closed:true,iconCls:'icon-save'"
+     style="width:400px; padding:10px;">
+    <form id="user-form" method="post">
         <table>
-           <input type="hidden" name="user.id" value="0"  />
+            <input type="hidden" name="user.id" value="0"/>
             <tr>
                 <td width="60" align="right">昵 称:</td>
-                <td><input type="text" name="user.nickname" class="wu-text" /></td>
+                <td><input type="text" name="user.nickname" class="wu-text"/></td>
             </tr>
             <tr>
                 <td align="right">邮 箱:</td>
-                <td><input type="text" name="user.email" class="wu-text" /></td>
+                <td><input type="text" name="user.email" class="wu-text"/></td>
             </tr>
             <tr>
                 <td align="right">电 话:</td>
-                <td><input type="text" name="user.phone" class="wu-text" /></td>
+                <td><input type="text" name="user.phone" class="wu-text"/></td>
             </tr>
             <tr>
                 <td align="right">角 色:</td>
-                <td><input type="text" name="user.role_id" class="wu-text" list="roleList" onclick="getRoleList()" /></td>
-                <td><datalist id="roleList" >
-                    <option value="BMW">
-                    <option value="Ford">
-                    <option value="Volvo">
-                </datalist></td>
+                <td><input type="text" name="user.role_id" class="wu-text" list="roleList" onclick="getRoleList()"/>
+                </td>
+                <td>
+                    <datalist id="roleList">
+                        <option value="BMW">
+                        <option value="Ford">
+                        <option value="Volvo">
+                    </datalist>
+                </td>
             </tr>
 
 
@@ -78,125 +81,118 @@
 
 <!-- End of easyui-dialog -->
 <script type="text/javascript">
-	/**
-	* Name 载入菜单树
-	*/
-	$('#wu-user-tree').tree({
-		url:'/menu/getRootMenu.do?id=1&level=0&type=tree',
-		onClick:function(node){
-			alert(node.text);
-		}
-	});
+    /**
+     * Name 载入菜单树
+     */
+    $('#wu-user-tree').tree({
+        url: '/menu/getRootMenu.do?id=1&level=0&type=tree',
+        onClick: function (node) {
+            alert(node.text);
+        }
+    });
 
     /**
      * Name 获取roleID
      */
     function getRoleList() {
         $.ajax({
-            url:'/role/getRoleList.do',
-            data:'',
-            success:function(data){
-                var str="";
-                if(data.success){
+            url: '/role/getRoleList.do',
+            data: '',
+            success: function (data) {
+                var str = "";
+                if (data.success) {
                     $.each(data.object, function (i, role) {
                         str = str + "<option value='" + role.id + "'>" + role.name + "</option>";
                     });
                     $('#roleList').empty().append(str);
-                }
-                else{
-                 alert(data.message);
+                } else {
+                    alert(data.message);
                 }
             }
         });
     }
 
-	/**
-	* Name 添加记录
-	*/
-	function add(){
-		$('#user-form').form('submit', {
-			url:'/user/insertUser.do',
-            success:function(data){
+    /**
+     * Name 添加记录
+     */
+    function add() {
+        $('#user-form').form('submit', {
+            url: '/user/insertUser.do',
+            success: function (data) {
                 var data = eval('(' + data + ')'); // change the JSON string to javascript object
-				if(data.success){
-					$.messager.alert('信息提示','提交成功！','info');
-					$('#user-dialog').dialog('close');
-					reload();
-				}
-				else
-				{
-					$.messager.alert('信息提示','提交失败！','info');
-				}
-			}
-		});
-	}
-	
-	/**
-	* Name 修改记录
-	*/
-	function edit(){
+                if (data.success) {
+                    $.messager.alert('信息提示', '提交成功！', 'info');
+                    $('#user-dialog').dialog('close');
+                    reload();
+                } else {
+                    $.messager.alert('信息提示', '提交失败！', 'info');
+                }
+            }
+        });
+    }
 
-	  //  var id= $('#user-datagrid').datagrid('getSelections');
-		$('#user-form').form('submit', {
-			url:'/user/editUser.do',
-         /*   onSubmit: function(user){
-                user.id = id;
-            },*/
-			success:function(data){
-				if(data){
-					$.messager.alert('信息提示','提交成功！','info');
-					$('#user-dialog').dialog('close');
-					reload();
-				}
-				else
-				{
-					$.messager.alert('信息提示','提交失败！','info');
-				}
-			}
-		});
-	}
-	
-	/**
-	* Name 删除记录
-	*/
-	function remove(){
-		$.messager.confirm('信息提示','确定要删除该记录？', function(result){
-			if(result){
-				var items = $('#user-datagrid').datagrid('getSelections');
-				//var ids = [];
-                var ids="";
-				$(items).each(function(){
-					//ids.push(this.id);
-                    ids=ids+this.id+",";
-				});
-				//alert(ids);return;
-				$.ajax({
-					url:'/user/deleteUsers.do',
-					data:'ids='+ids,
-					success:function(data){
+    /**
+     * Name 修改记录
+     */
+    function edit() {
+
+        //  var id= $('#user-datagrid').datagrid('getSelections');
+        $('#user-form').form('submit', {
+            url: '/user/editUser.do',
+            /*   onSubmit: function(user){
+                   user.id = id;
+               },*/
+            success: function (data) {
+                if (data) {
+                    $.messager.alert('信息提示', '提交成功！', 'info');
+                    $('#user-dialog').dialog('close');
+                    reload();
+                } else {
+                    $.messager.alert('信息提示', '提交失败！', 'info');
+                }
+            }
+        });
+    }
+
+    /**
+     * Name 删除记录
+     */
+    function remove() {
+        $.messager.confirm('信息提示', '确定要删除该记录？', function (result) {
+            if (result) {
+                var items = $('#user-datagrid').datagrid('getSelections');
+                //var ids = [];
+                var ids = "";
+                $(items).each(function () {
+                    //ids.push(this.id);
+                    ids = ids + this.id + ",";
+                });
+                //alert(ids);return;
+                $.ajax({
+                    url: '/user/deleteUsers.do',
+                    data: 'ids=' + ids,
+                    success: function (data) {
                         //var data = eval('(' + data + ')'); // change the JSON string to javascript object
-                        if(data.success){
-                            $.messager.alert('信息提示','提交成功！','info');
+                        if (data.success) {
+                            $.messager.alert('信息提示', '提交成功！', 'info');
                             reload();
+                        } else {
+                            $.messager.alert('信息提示', '删除失败！', 'info');
                         }
-						else
-						{
-							$.messager.alert('信息提示','删除失败！','info');		
-						}
-					}	
-				});
-			}	
-		});
-	}
-	
-	/**
-	* Name 打开添加窗口
-	*/
-	function openAdd(){
-		$('#user-form').form('clear');
-		$('#user-dialog').dialog({
-			closed: false,
-			modal:true,
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Name 打开添加窗口
+     */
+    function openAdd() {
+        $('#user-form').form('clear');
+        $('#user-dialog').dialog({
+            closed: false,
+            modal: true,
             title: "添加信息",
             buttons: [{
                 text: '确定',
@@ -206,38 +202,43 @@
                 text: '取消',
                 iconCls: 'icon-cancel',
                 handler: function () {
-                    $('#wu-dialog').dialog('close');                    
+                    $('#wu-dialog').dialog('close');
                 }
             }]
         });
-	}
-	
-	/**
-	* Name 打开修改窗口
-	*/
-	function openEdit(){
-		$('#user-form').form('clear');
-		var item = $('#user-datagrid').datagrid('getSelected');
-		//alert(item.productid);return;
-		$.ajax({
-			url:'/user/getUserList.do',
-			data:'user.id='+item.id,
-			success:function(data){
-				if(!data.success){
-					$('#user-dialog').dialog('close');
-				}
-				else{
+    }
 
-				   // var jsonstr=JSON.stringify(data.object[0]);
-                    data=data.object[0];
-					//绑定值
-					$('#user-form').form('load',{'user.id':data.id,'user.nickname':data.nickname,'user.email':data.email,'user.phone':data.phone,'user.role_id':data.role_id});
-				}
-			}	
-		});
-		$('#user-dialog').dialog({
-			closed: false,
-			modal:true,
+    /**
+     * Name 打开修改窗口
+     */
+    function openEdit() {
+        $('#user-form').form('clear');
+        var item = $('#user-datagrid').datagrid('getSelected');
+        //alert(item.productid);return;
+        $.ajax({
+            url: '/user/getUserList.do',
+            data: 'user.id=' + item.id,
+            success: function (data) {
+                if (!data.success) {
+                    $('#user-dialog').dialog('close');
+                } else {
+
+                    // var jsonstr=JSON.stringify(data.object[0]);
+                    data = data.object[0];
+                    //绑定值
+                    $('#user-form').form('load', {
+                        'user.id': data.id,
+                        'user.nickname': data.nickname,
+                        'user.email': data.email,
+                        'user.phone': data.phone,
+                        'user.role_id': data.role_id
+                    });
+                }
+            }
+        });
+        $('#user-dialog').dialog({
+            closed: false,
+            modal: true,
             title: "修改信息",
             buttons: [{
                 text: '确定',
@@ -251,68 +252,68 @@
                 }
             }]
         });
-	}
+    }
 
 
     function reload() {
         $('#user-datagrid').datagrid('reload');
     }
-	
-	/**
-	* Name 分页过滤器
-	*/
-	function pagerFilter(data){
-	    data= data.object;
-	    //alert(data);
-		if (typeof data.length == 'number' && typeof data.splice == 'function'){// is array                
-			data = {                   
-				total: data.length,                   
-				rows: data               
-			}            
-		}
-		//alert(data);
-		var dg = $(this);         
-		var opts = dg.datagrid('options');          
-		var pager = dg.datagrid('getPager');          
-		pager.pagination({                
-			onSelectPage:function(pageNum, pageSize){                 
-				opts.pageNumber = pageNum;                   
-				opts.pageSize = pageSize;                
-				pager.pagination('refresh',{pageNumber:pageNum,pageSize:pageSize});                  
-				dg.datagrid('loadData',data);                
-			}          
-		});           
-		if (!data.originalRows){               
-			data.originalRows = (data.rows);       
-		}         
-		var start = (opts.pageNumber-1)*parseInt(opts.pageSize);          
-		var end = start + parseInt(opts.pageSize);        
-		data.rows = (data.originalRows.slice(start, end));         
-		return data;       
-	}
-	
-	/**
-	* Name 载入数据
-	*/
-	$('#user-datagrid').datagrid({
-		url:'/user/initUserManager.do',
-		loadFilter:pagerFilter,		
-		rownumbers:true,
-		singleSelect:false,
-		pageSize:20,           
-		pagination:true,
-		multiSort:true,
-		fitColumns:true,
-		fit:true,
-		columns:[[
-			{ checkbox:true},
-			{ field:'id',title:'ID',width:100,sortable:true},
-			{ field:'nickname',title:'昵称',width:180,sortable:true},
-			{ field:'phone',title:'手机',width:100},
-			{ field:'phone_status',title:'手机状态',width:100},
-			{ field:'email',title:'email',width:100},
-			{ field:'email_status',title:'email状态',width:100},
-			{ field:'status',title:'用户状态',width:100}
-		]]
-	});
+
+    /**
+     * Name 分页过滤器
+     */
+    function pagerFilter(data) {
+        data = data.object;
+        //alert(data);
+        if (typeof data.length == 'number' && typeof data.splice == 'function') {// is array
+            data = {
+                total: data.length,
+                rows: data
+            }
+        }
+        //alert(data);
+        var dg = $(this);
+        var opts = dg.datagrid('options');
+        var pager = dg.datagrid('getPager');
+        pager.pagination({
+            onSelectPage: function (pageNum, pageSize) {
+                opts.pageNumber = pageNum;
+                opts.pageSize = pageSize;
+                pager.pagination('refresh', {pageNumber: pageNum, pageSize: pageSize});
+                dg.datagrid('loadData', data);
+            }
+        });
+        if (!data.originalRows) {
+            data.originalRows = (data.rows);
+        }
+        var start = (opts.pageNumber - 1) * parseInt(opts.pageSize);
+        var end = start + parseInt(opts.pageSize);
+        data.rows = (data.originalRows.slice(start, end));
+        return data;
+    }
+
+    /**
+     * Name 载入数据
+     */
+    $('#user-datagrid').datagrid({
+        url: '/user/initUserManager.do',
+        loadFilter: pagerFilter,
+        rownumbers: true,
+        singleSelect: false,
+        pageSize: 20,
+        pagination: true,
+        multiSort: true,
+        fitColumns: true,
+        fit: true,
+        columns: [[
+            {checkbox: true},
+            {field: 'id', title: 'ID', width: 100, sortable: true},
+            {field: 'nickname', title: '昵称', width: 180, sortable: true},
+            {field: 'phone', title: '手机', width: 100},
+            {field: 'phone_status', title: '手机状态', width: 100},
+            {field: 'email', title: 'email', width: 100},
+            {field: 'email_status', title: 'email状态', width: 100},
+            {field: 'status', title: '用户状态', width: 100}
+        ]]
+    });
 </script>

@@ -8,7 +8,6 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
-
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -18,16 +17,19 @@ import java.util.jar.JarFile;
  * 扫描2包下的所有类
  * <p>Title: ClassUtil.java</p>
  * <p>Description: </p>
+ *
  * @author lichao1
- * @date 2018年12月3日
  * @version 1.0
+ * @date 2018年12月3日
  */
 public class ClassUtil {
 
     private static Set<Class<?>> classList;
+
     static {
         classList = getClasses("com.esri.rest");
     }
+
     /**
      * 从包package中获取所有的Class
      *
@@ -170,8 +172,8 @@ public class ClassUtil {
 
     public static void main(String[] args) {
         System.out.println(classList);
-        Object[] ts =   classList.toArray();
-        for(Object t:ts){
+        Object[] ts = classList.toArray();
+        for (Object t : ts) {
             Class<?> tt = (Class<?>) t;
             System.out.println(tt.getName());
         }

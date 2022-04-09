@@ -13,9 +13,9 @@ public class Test1Client {
 
         ResolveCommand resolveCommand = new ResolveCommand();
         ZGMPBean request = new ZGMPBean("REQUEST");
-        IMClient imClient = new IMClient(new IMClientHandler(),"10.1.82.106",10000);
+        IMClient imClient = new IMClient(new IMClientHandler(), "10.1.82.106", 10000);
         imClient.addRequest(request);
-        Thread thread=new Thread(imClient);
+        Thread thread = new Thread(imClient);
         thread.start();
         System.out.print("网络通信客户端");
         boolean go = true;
@@ -23,7 +23,7 @@ public class Test1Client {
         Scanner input = new Scanner(System.in);
         while (go) {
             try {
-               // System.out.print("-》");
+                // System.out.print("-》");
                 String command = input.nextLine();
                 if (command != null && !"".equals(command)) {
                     if ("end".equals(command)) {
@@ -35,7 +35,7 @@ public class Test1Client {
                         imClient.addRequest(request);
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println("命令错误");
                 continue;
             }

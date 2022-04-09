@@ -7,26 +7,27 @@
     <script type="text/javascript">
 
         function signOut() {
-            $.ajax({url:"/sso/sso/signOut.do",
-                type:"post", //GET
-                async:true,    //或false,是否异步
+            $.ajax({
+                url: "/sso/sso/signOut.do",
+                type: "post", //GET
+                async: true,    //或false,是否异步
                 data: {},
                 xhrFields: {
                     withCredentials: true
                 },
                 crossDomain: true,
-                timeout:5000,    //超时时间
-                dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
-                success:function(result){
-                    if(result!=null){
-                        if(!result.success){
+                timeout: 5000,    //超时时间
+                dataType: 'json',    //返回的数据格式：json/xml/html/script/jsonp/text
+                success: function (result) {
+                    if (result != null) {
+                        if (!result.success) {
                             alert(result.message);
-                        }else{
+                        } else {
                             alert(result.message);
-                            location.href=result.object;
+                            location.href = result.object;
                         }
 
-                    }else{
+                    } else {
                         alert("没有数据");
                     }
                 }
@@ -38,8 +39,8 @@
 <body>
 
 <form action="/webiodemo/IOController/upFile.file" method="post" enctype='multipart/form-data'>
-    <input type="file" name="fileName"  />
-    <input type="submit" value="提交" />
+    <input type="file" name="fileName"/>
+    <input type="submit" value="提交"/>
 </form>
 
 <form action="/sso/sso/signOut.do" method="post">

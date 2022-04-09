@@ -1,14 +1,14 @@
 package com.zg.bean.entity;
 
-public class OptionDB extends MainModel{
+public class OptionDB extends MainModel {
     public String dataSourceName;
     public String url = null;
     public int maxPoolSize = 5;
     public String driver = null;
     public String username = null;
     public String password = null;
-    public String DBType=null;
-    public String DBPType=null;
+    public String DBType = null;
+    public String DBPType = null;
 
     public OptionDB() {
     }

@@ -1,7 +1,5 @@
 package com.zg.direction;
 
-import com.mysql.cj.xdevapi.JsonArray;
-
 import java.util.List;
 
 public class TestEntity {
@@ -9,7 +7,8 @@ public class TestEntity {
     public String s;
     public List<String> list;
 
-    public TestEntity(){}
+    public TestEntity() {
+    }
 
     public TestEntity(int x) {
         this.x = x;

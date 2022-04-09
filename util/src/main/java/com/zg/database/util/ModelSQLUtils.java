@@ -14,7 +14,7 @@ import java.util.Map;
 public class ModelSQLUtils {
 
 
-    private static final Logger LOGGER= LoggerFactory.getLogger(ModelSQLUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelSQLUtils.class);
     private static List<String> member_list = new ArrayList();
     private static List<String> values_list = new ArrayList();
 
@@ -124,23 +124,22 @@ public class ModelSQLUtils {
         String sql = null;
 
 
+        String condition = " ";
+        for (String term : terms) {
+            condition = condition + " and " + term;
+        }
+        String tableName = EntityUtils.getTableNameFromModel(model.getClass());
+        fillSql(model);
+        List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
+        StringBuffer member_values = new StringBuffer();
 
-            String condition = " ";
-            for (String term : terms) {
-                condition = condition + " and " + term;
+        for (int i = 0; i < member_list.size(); i++) {
+            if (member_list.get(i) != null && values_list.get(i) != null && !"".equals(values_list.get(i)) && !notCommitFields.contains(member_list.get(i))) {
+                member_values.append(" " + member_list.get(i) + "=" + values_list.get(i) + ",");
             }
-            String tableName = EntityUtils.getTableNameFromModel(model.getClass());
-            fillSql(model);
-            List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
-            StringBuffer member_values = new StringBuffer();
-
-            for (int i = 0; i < member_list.size(); i++) {
-                if (member_list.get(i) != null && values_list.get(i) != null && !"".equals(values_list.get(i)) && !notCommitFields.contains(member_list.get(i))) {
-                    member_values.append(" " + member_list.get(i) + "=" + values_list.get(i) + ",");
-                }
-            }
-            member_values.setCharAt(member_values.length() - 1, ' ');
-            sql = "update " + tableName + " set " + member_values + "where 1=1 " + condition;
+        }
+        member_values.setCharAt(member_values.length() - 1, ' ');
+        sql = "update " + tableName + " set " + member_values + "where 1=1 " + condition;
 
 
         return sql;
@@ -249,34 +248,34 @@ public class ModelSQLUtils {
             sqlList.add(sql);
         }
 
-        LOGGER.info("SQLList   "+sqlList);
+        LOGGER.info("SQLList   " + sqlList);
 
         return sqlList;
 
 
     }
 
-private static boolean isTrue(String string,Object object){
+    private static boolean isTrue(String string, Object object) {
         return true;
-}
+    }
 
     private static synchronized String resovleSQL(String sql, String key, Object object) throws NoSuchFieldException, IllegalAccessException {
 
         if (sql.contains(key + "{")) {
-            String bracket = sql.substring(sql.indexOf(key + "{")+key.length()+1, sql.indexOf("}", sql.indexOf(key + "{")) );
+            String bracket = sql.substring(sql.indexOf(key + "{") + key.length() + 1, sql.indexOf("}", sql.indexOf(key + "{")));
             if ("$if".equals(key)) {
-                if(isTrue(bracket,object)){
-                    sql = sql.replace("$if{"+bracket+"}",bracket);
-                }else{
-                sql = sql.replace("$if{"+bracket+"}", "");
+                if (isTrue(bracket, object)) {
+                    sql = sql.replace("$if{" + bracket + "}", bracket);
+                } else {
+                    sql = sql.replace("$if{" + bracket + "}", "");
                 }
             } else if ("#".equals(key)) {
                 if (object instanceof Map) {
                     Map<String, String> map = (Map) object;
-                    sql = sql.replace("#{"+bracket+"}", map.get(bracket.trim()));
+                    sql = sql.replace("#{" + bracket + "}", map.get(bracket.trim()));
                 } else {
                     Field field = object.getClass().getField(bracket.trim());
-                    sql = sql.replace("#{"+bracket+"}", EntityUtils.getFieldObject(field, object));
+                    sql = sql.replace("#{" + bracket + "}", EntityUtils.getFieldObject(field, object));
                 }
             }
             return sql = resovleSQL(sql, key, object);   //递归执行

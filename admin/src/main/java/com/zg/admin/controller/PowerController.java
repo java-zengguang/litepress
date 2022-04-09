@@ -14,15 +14,15 @@ import java.util.List;
 @Controller("/power")
 public class PowerController extends BaseController {
 
-    private PowerService powerService=(PowerService) ProxyUtils.getProxyClass(new PowerService(),"");
+    private PowerService powerService = (PowerService) ProxyUtils.getProxyClass(new PowerService(), "");
 
 
     @ResultMapping("/getPowerList.do")
     public String getPowerList(Power power) throws IllegalAccessException {
 
-        List list=powerService.getPowerList(power);
-        json=new MessageBean("成功",true,list);
-        return "json::"+ JsonUtils.objectToJson(json);
+        List list = powerService.getPowerList(power);
+        json = new MessageBean("成功", true, list);
+        return "json::" + JsonUtils.objectToJson(json);
 
     }
 

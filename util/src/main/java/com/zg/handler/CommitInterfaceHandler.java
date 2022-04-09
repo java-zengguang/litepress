@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,16 +14,16 @@ import java.util.List;
  * Created by Administrator on 2018/12/24 0024.
  */
 public class CommitInterfaceHandler implements InvocationHandler {
-    private static final Logger LOGGER= LoggerFactory.getLogger(CommitInterfaceHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommitInterfaceHandler.class);
     private Object target;
     private List methodList = new ArrayList();
 
     public CommitInterfaceHandler(Object target, String method) {
         this.target = target;
         for (String m : method.split(",")) {
-            if("ALL".equals(m)) {
+            if ("ALL".equals(m)) {
 
-            }else{
+            } else {
                 methodList.add(m);
             }
         }

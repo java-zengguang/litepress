@@ -4,7 +4,6 @@ import com.zg.bean.entity.OptionDB;
 import com.zg.bean.factory.BeanFactory;
 import com.zg.database.pool.C3p0Impl;
 import com.zg.database.pool.DataBaseInte;
-import com.zg.database.pool.ZGDBPDataSource;
 import com.zg.database.pool.ZGDBPImpl;
 import org.apache.log4j.Logger;
 

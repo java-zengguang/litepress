@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans>  
+<beans>
 
-<!--
-    <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
-        <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
-        <property name="maxPoolSize" type="int">10</property>
-        <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
-        <property name="username" type="java.lang.String">root</property>
-        <property name="password" type="java.lang.String">root</property>
-        <property name="DBType" type="java.lang.String">MYSQL</property>
-        <property name="DBPType" type="java.lang.String">C3p0</property>
-    </bean>-->
+    <!--
+        <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
+            <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+            <property name="maxPoolSize" type="int">10</property>
+            <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+            <property name="username" type="java.lang.String">root</property>
+            <property name="password" type="java.lang.String">root</property>
+            <property name="DBType" type="java.lang.String">MYSQL</property>
+            <property name="DBPType" type="java.lang.String">C3p0</property>
+        </bean>-->
 
 
     <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
@@ -92,7 +92,6 @@
         <property name="DBType" type="java.lang.String">ORACLE</property>
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
-
 
 
     <bean id="int_nvpolicy" class="com.zg.bean.entity.OptionDB">
@@ -308,7 +307,6 @@
     </bean>
 
 
-
     <bean id="optionMGDB" class="com.zg.bean.entity.OptionMGDB">
         <property name="ip" type="java.lang.String">localhost</property>
         <property name="port" type="java.lang.String">27017</property>
@@ -333,7 +331,8 @@
         <property name="tableMapper" ref="tableMapper"></property>
     </bean>
 
-    <proxy package="com.zg.webdemo.service.table" handler="com.zg.handler.CommitInterfaceHandler" method="deleteTableDate"></proxy>
+    <proxy package="com.zg.webdemo.service.table" handler="com.zg.handler.CommitInterfaceHandler"
+           method="deleteTableDate"></proxy>
 
 
 </beans>

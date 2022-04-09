@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by zkyd01 on 2018/9/3.
  */
-public class PageEntity extends MainModel{
+public class PageEntity extends MainModel {
     private static final long serialVersionUID = 3428610204086857703L;
     public int totalResultSize = 0;
     public int totalPageSize = 0;
@@ -27,7 +27,7 @@ public class PageEntity extends MainModel{
         this.pageSize = _pageSize;
         this.totalPageSize = this.totalResultSize / this.pageSize;
         int mod = this.totalResultSize % this.pageSize;
-        if(mod > 0) {
+        if (mod > 0) {
             ++this.totalPageSize;
         }
 
@@ -40,15 +40,15 @@ public class PageEntity extends MainModel{
         int mod1 = _totalRows % _pageSize;
         this.totalResultSize = _totalRows;
         this.pageSize = _pageSize;
-        if(mod1 > 0) {
+        if (mod1 > 0) {
             ++totalPages1;
         }
 
-        if(currentPage > totalPages1) {
+        if (currentPage > totalPages1) {
             --currentPage;
         }
 
-        if(currentPage == 0) {
+        if (currentPage == 0) {
             this.setStart(1);
         } else {
             this.setStart(currentPage);
@@ -56,9 +56,9 @@ public class PageEntity extends MainModel{
 
         this.totalPageSize = this.totalResultSize / this.pageSize;
         int mod = this.totalResultSize % this.pageSize;
-        if(mod > 0) {
+        if (mod > 0) {
             ++this.totalPageSize;
-        } else if(currentPage == 0) {
+        } else if (currentPage == 0) {
             boolean var7 = true;
         }
 
@@ -85,19 +85,19 @@ public class PageEntity extends MainModel{
         byte beforeCount = 3;
         ArrayList returnList = new ArrayList();
         int maxNum_new;
-        if(this.getTotalPageSize() <= maxDispalyCount) {
-            for(maxNum_new = 1; maxNum_new <= this.getTotalPageSize(); ++maxNum_new) {
+        if (this.getTotalPageSize() <= maxDispalyCount) {
+            for (maxNum_new = 1; maxNum_new <= this.getTotalPageSize(); ++maxNum_new) {
                 returnList.add(Integer.valueOf(maxNum_new));
             }
 
             return returnList;
         } else {
-            maxNum_new = this.getCurrentPage() > beforeCount?maxDispalyCount:maxDispalyCount - this.currentPage;
+            maxNum_new = this.getCurrentPage() > beforeCount ? maxDispalyCount : maxDispalyCount - this.currentPage;
             int discnt = 1;
 
             int i;
-            for(i = beforeCount; i > 0; --i) {
-                if(this.currentPage > i) {
+            for (i = beforeCount; i > 0; --i) {
+                if (this.currentPage > i) {
                     returnList.add(Integer.valueOf(this.currentPage - i));
                     ++discnt;
                 }
@@ -105,7 +105,7 @@ public class PageEntity extends MainModel{
 
             returnList.add(Integer.valueOf(this.currentPage));
 
-            for(i = 1; i <= maxNum_new && this.currentPage + i <= this.getTotalPageSize() && discnt < maxDispalyCount; ++i) {
+            for (i = 1; i <= maxNum_new && this.currentPage + i <= this.getTotalPageSize() && discnt < maxDispalyCount; ++i) {
                 returnList.add(Integer.valueOf(this.currentPage + i));
                 ++discnt;
             }
@@ -165,7 +165,7 @@ public class PageEntity extends MainModel{
 
     public static PageEntity getPageEntity(int currentPage, int totalRows, int pageSize) {
         PageEntity pager = new PageEntity(totalRows, pageSize);
-        if(currentPage == 0) {
+        if (currentPage == 0) {
             pager.setStart(1);
         } else {
             pager.setStart(currentPage);

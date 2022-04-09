@@ -2,19 +2,17 @@ package com.zg.sso.common;
 
 import com.zg.cache.util.RomCacheInte;
 import com.zg.cache.util.RomCacheUtil;
-import com.zg.cache.util.SimpleRomCache;
 import com.zg.mvc.entity.MessageBean;
 import com.zg.sso.entity.UserLogin;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class WebCacheLogin extends BaseLogin{
+public class WebCacheLogin extends BaseLogin {
     private WebCacheLogin() {
     }
 
@@ -45,11 +43,11 @@ public class WebCacheLogin extends BaseLogin{
 
     @Override
     public Object doLogin(HttpServletRequest
-                                      request, String uuid, HttpServletResponse response) {
+                                  request, String uuid, HttpServletResponse response) {
         String token = getCookieValue("token", request);
         List<UserLogin> list = romCacheInte.findModel("token=" + token);
         if (token != null && list != null && list.size() > 0) {
-            UserLogin userLogin =list.get(0);
+            UserLogin userLogin = list.get(0);
             userLogin.uuid = uuid;
             romCacheInte.addModel(userLogin);
             List<Cookie> newCookieList = new ArrayList();
@@ -58,14 +56,14 @@ public class WebCacheLogin extends BaseLogin{
             Cookie tokenCookie = new Cookie("token", token);
             newCookieList.add(tokenCookie);
             setCookies(response, newCookieList, userLogin.domain, userLogin.rootPath, userLogin.url);
-            String url=new String(userLogin.url);
-            System.out.println("url="+url);
-            return  new MessageBean("操作成功", true,url);
+            String url = new String(userLogin.url);
+            System.out.println("url=" + url);
+            return new MessageBean("操作成功", true, url);
 
         } else {
-            clearCookie(response,"token");
-            clearCookie(response,"uuid");
-            return  new MessageBean("token丢失", false, null);
+            clearCookie(response, "token");
+            clearCookie(response, "uuid");
+            return new MessageBean("token丢失", false, null);
         }
     }
 
@@ -81,10 +79,6 @@ public class WebCacheLogin extends BaseLogin{
         romCacheInte.addModel(userLogin);
         return token;
     }
-
-
-
-
 
 
     public UserLogin logout(String token, String uuid) {

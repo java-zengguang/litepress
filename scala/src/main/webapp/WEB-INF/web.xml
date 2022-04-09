@@ -35,13 +35,13 @@
         <url-pattern>*.html</url-pattern>
     </servlet-mapping>
 
-   <!-- <servlet>
-        <servlet-name>AdapterServlet</servlet-name>
-        <servlet-class>com.zg.mvc.servlet.AdapterServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>AdapterServlet</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>-->
+    <!-- <servlet>
+         <servlet-name>AdapterServlet</servlet-name>
+         <servlet-class>com.zg.mvc.servlet.AdapterServlet</servlet-class>
+     </servlet>
+     <servlet-mapping>
+         <servlet-name>AdapterServlet</servlet-name>
+         <url-pattern>/</url-pattern>
+     </servlet-mapping>-->
 
 </web-app>

@@ -11,6 +11,7 @@ import com.zg.mvc.controller.BaseController;
 import com.zg.mvc.entity.MessageBean;
 import com.zg.util.redis.RedisUtils;
 import com.zg.util.reflect.JsonUtils;
+
 import java.util.List;
 
 @Controller("/menu")
@@ -22,9 +23,9 @@ public class MenuController extends BaseController {
     @ResultMapping("/getRootMenu.do")
     public String getRootMenu(Integer id, Integer level, String type) throws IllegalAccessException {
 
-        String jsonString= RedisUtils.get("menu");
+        String jsonString = RedisUtils.get("menu");
 
-        if(jsonString==null || "".equals(jsonString)) {
+        if (jsonString == null || "".equals(jsonString)) {
 
             List list = null;
             if ("tree".equals(type)) {
@@ -36,7 +37,7 @@ public class MenuController extends BaseController {
             }
 
             jsonString = JsonUtils.objectToJson(list).toString();
-            RedisUtils.append("menu",jsonString);
+            RedisUtils.append("menu", jsonString);
         }
         return "json::" + jsonString;
     }
@@ -63,15 +64,15 @@ public class MenuController extends BaseController {
 
 
     @ResultMapping("/updateMenu.do")
-    public String updateMenu(MenuInfo menuInfo,Integer id) throws IllegalAccessException {
-        if(menuService.updateMenu(menuInfo,id)){
-            json=new MessageBean("操作成功",true,null);
+    public String updateMenu(MenuInfo menuInfo, Integer id) throws IllegalAccessException {
+        if (menuService.updateMenu(menuInfo, id)) {
+            json = new MessageBean("操作成功", true, null);
 
-        }else{
-            json=new MessageBean("操作失败 ",false,null);
+        } else {
+            json = new MessageBean("操作失败 ", false, null);
 
         }
 
-        return "json::"+JsonUtils.objectToJson(json);
+        return "json::" + JsonUtils.objectToJson(json);
     }
 }

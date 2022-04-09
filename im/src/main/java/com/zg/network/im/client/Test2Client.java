@@ -1,6 +1,7 @@
 package com.zg.network.im.client;
 
 import com.zg.network.bean.ZGMPBean;
+
 import java.util.Scanner;
 
 /**
@@ -12,15 +13,15 @@ public class Test2Client {
 
         ResolveCommand resolveCommand = new ResolveCommand();
         ZGMPBean request = new ZGMPBean("REQUEST");
-        IMClient imClient = new IMClient(new IMClientHandler(),"10.1.82.63",10000);
+        IMClient imClient = new IMClient(new IMClientHandler(), "10.1.82.63", 10000);
         imClient.addRequest(request);
-        Thread thread=new Thread(imClient);
+        Thread thread = new Thread(imClient);
         thread.start();
         System.out.print("网络通信客户端");
         boolean go = true;
         Scanner input = new Scanner(System.in);
         while (go) {
-           // System.out.print("-》");
+            // System.out.print("-》");
             String command = input.nextLine();
             if (command != null && !"".equals(command)) {
                 if ("end".equals(command)) {

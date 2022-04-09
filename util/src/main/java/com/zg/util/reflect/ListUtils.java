@@ -17,7 +17,7 @@ public class ListUtils {
         return resultMap;
     }
 
-    		/*根据查询条件更新*/
+    /*根据查询条件更新*/
 
     private static String[] getValues(String valueS) {
 
@@ -48,7 +48,7 @@ public class ListUtils {
 
 
     /*删除数据*/
-    public static boolean deleteModel(Class classes , List modelList, String... terms) {
+    public static boolean deleteModel(Class classes, List modelList, String... terms) {
         List num_list;
         try {
             num_list = findModelIndex(classes, modelList, terms);
@@ -98,7 +98,7 @@ public class ListUtils {
         return true;
     }
 
-    public static List<Integer> findModelIndex( Class modelClass, List modelList, String... terms) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public static List<Integer> findModelIndex(Class modelClass, List modelList, String... terms) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         List num_list = new ArrayList();
         Map termMap = new HashMap();
         for (String term : terms) {

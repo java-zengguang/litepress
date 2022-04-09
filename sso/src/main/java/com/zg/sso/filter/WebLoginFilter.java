@@ -41,7 +41,7 @@ public class WebLoginFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-          String uri=((HttpServletRequest)request).getRequestURI();
+        String uri = ((HttpServletRequest) request).getRequestURI();
     /*  if(uri.contains("/sso/login.do") || uri.contains("/sso/toLogin.do") ){
 
             chain.doFilter(request, response);
@@ -59,7 +59,7 @@ public class WebLoginFilter implements Filter {
         }
     }
 
-/*       }*/
+    /*       }*/
     private Map<String, String> getCookies(HttpServletRequest request) throws IOException {
         Map<String, String> resultMap = new HashMap<>();
         Cookie readCookies[] = (request).getCookies();

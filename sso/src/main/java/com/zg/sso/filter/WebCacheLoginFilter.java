@@ -10,12 +10,12 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class WebCacheLoginFilter implements Filter{
-    LoginInte baseLogin=WebCacheLogin.getInstance();
+public class WebCacheLoginFilter implements Filter {
+    LoginInte baseLogin = WebCacheLogin.getInstance();
 
     private SSOOpthion ssoOpthion = (SSOOpthion) Config.getConfig("SSOOpthion");
 
-    private SSOAdapter ssoAdapter=SSOAdapter.getInstanse(ssoOpthion,baseLogin);
+    private SSOAdapter ssoAdapter = SSOAdapter.getInstanse(ssoOpthion, baseLogin);
 
 
     @Override
@@ -26,12 +26,12 @@ public class WebCacheLoginFilter implements Filter{
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
-        String uri=((HttpServletRequest)servletRequest).getRequestURI();
+        String uri = ((HttpServletRequest) servletRequest).getRequestURI();
 
-        if(uri.contains("/sso/login.do") || uri.contains("/sso/toLogin.do") || ssoAdapter.doFilter(servletRequest,servletResponse)){
-            filterChain.doFilter(servletRequest,servletResponse);
+        if (uri.contains("/sso/login.do") || uri.contains("/sso/toLogin.do") || ssoAdapter.doFilter(servletRequest, servletResponse)) {
+            filterChain.doFilter(servletRequest, servletResponse);
         }
-}
+    }
 
 
     @Override

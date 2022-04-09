@@ -3,7 +3,10 @@ package com.zg.util.ftp;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.SocketException;
 
 /**
@@ -23,7 +26,7 @@ public class FTPUtil {
                 System.out.println("未连接到FTP，用户名或密码错误。");
                 ftpClient.disconnect();
             } else {
-                System.out.println("FTP连接成功----"+ftpHost+":"+ftpPort);
+                System.out.println("FTP连接成功----" + ftpHost + ":" + ftpPort);
             }
         } catch (SocketException e) {
             e.printStackTrace();
@@ -32,8 +35,6 @@ public class FTPUtil {
         }
         return ftpClient;
     }
-
-
 
 
     public static void downloadFtpFile(String ftpHost, String ftpUserName,
@@ -66,7 +67,7 @@ public class FTPUtil {
 
     public static boolean uploadFile(String ftpHost, String ftpUserName,
                                      String ftpPassword, int ftpPort, String ftpPath,
-                                     String fileName,InputStream input) {
+                                     String fileName, InputStream input) {
         boolean success = false;
         FTPClient ftpClient = null;
         try {

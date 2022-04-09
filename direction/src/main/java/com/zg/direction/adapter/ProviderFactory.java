@@ -11,43 +11,43 @@ import java.util.Map;
 
 public class ProviderFactory {
 
-    private static ProviderFactory providerFactory=null;
+    private static ProviderFactory providerFactory = null;
 
-    private Logger logger= LoggerFactory.getLogger(ProviderFactory.class);
+    private Logger logger = LoggerFactory.getLogger(ProviderFactory.class);
 
     private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
-    private Map<String,Object> providerMap;
+    private Map<String, Object> providerMap;
 
 
-    private ProviderFactory(){
+    private ProviderFactory() {
     }
 
-    public static synchronized ProviderFactory getInstance(){
-        if (providerFactory==null){
-            providerFactory=new ProviderFactory();
+    public static synchronized ProviderFactory getInstance() {
+        if (providerFactory == null) {
+            providerFactory = new ProviderFactory();
         }
 
         return providerFactory;
 
     }
 
-    public void loadProvider(){
-        ProviderResovleAnnotation pra=ProviderResovleAnnotation.getInstance();
+    public void loadProvider() {
+        ProviderResovleAnnotation pra = ProviderResovleAnnotation.getInstance();
         try {
-            if(providerMap==null) {
+            if (providerMap == null) {
                 providerMap = pra.getProviders();
             }
         } catch (ClassNotFoundException e) {
-           logger.error("ProviderAdapter初始化错误",e);
+            logger.error("ProviderAdapter初始化错误", e);
         } catch (IllegalAccessException e) {
-            logger.error("ProviderAdapter初始化错误",e);
+            logger.error("ProviderAdapter初始化错误", e);
         } catch (InstantiationException e) {
-            logger.error("ProviderAdapter初始化错误",e);
+            logger.error("ProviderAdapter初始化错误", e);
         }
     }
 
 
-    public Map getProviderMap(){
+    public Map getProviderMap() {
         loadProvider();
         return providerMap;
     }

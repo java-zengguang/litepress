@@ -4,10 +4,10 @@ import com.zg.direction.adapter.ProviderFactory;
 
 public class ProviderUtil {
 
-    public static ProviderFactory providerFactory=ProviderFactory.getInstance();
+    public static ProviderFactory providerFactory = ProviderFactory.getInstance();
 
-    public static Object createProvider(String provider){
-       // providerFactory.getProvider(provider);
+    public static Object createProvider(String provider) {
+        // providerFactory.getProvider(provider);
         return null;
     }
 }

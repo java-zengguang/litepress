@@ -5,22 +5,23 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.UUID;
 
 public class CacheEntity {
-    public String uuid= UUID.randomUUID().toString();
-    public long timeStamp=System.currentTimeMillis();;
+    public String uuid = UUID.randomUUID().toString();
+    public long timeStamp = System.currentTimeMillis();
+    ;
     public long validMillisecond;
     public Class aClass;
     public Object jsonObject;
 
-    public CacheEntity(JSONObject jsonObject,Class aClass,long validMillisecond){
-        this.jsonObject=jsonObject;
-        this.aClass=aClass;
-        this.validMillisecond=validMillisecond;
+    public CacheEntity(JSONObject jsonObject, Class aClass, long validMillisecond) {
+        this.jsonObject = jsonObject;
+        this.aClass = aClass;
+        this.validMillisecond = validMillisecond;
     }
 
-    public CacheEntity(Object object,long validMillisecond){
-        jsonObject=JSONObject.toJSON(object);
-        this.aClass=object.getClass();
-        this.validMillisecond=validMillisecond;
+    public CacheEntity(Object object, long validMillisecond) {
+        jsonObject = JSONObject.toJSON(object);
+        this.aClass = object.getClass();
+        this.validMillisecond = validMillisecond;
     }
 
 

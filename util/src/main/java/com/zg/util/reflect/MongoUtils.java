@@ -14,29 +14,30 @@ import java.util.Set;
 public class MongoUtils {
 
 
-    public static Map bsonToMap(Document bson,Set<String> cluments){
-        Map map=new HashedMap();
-        for(String clument:cluments){
-            map.put(clument,bson.get(clument));
+    public static Map bsonToMap(Document bson, Set<String> cluments) {
+        Map map = new HashedMap();
+        for (String clument : cluments) {
+            map.put(clument, bson.get(clument));
         }
         return map;
     }
 
-    public static List<Map> bsonToMapList(List<Document> bsonList,Set<String> cluments){
-        List<Map> mapList=new ArrayList();
-        for(Document bson:bsonList){
-            Map map=bsonToMap(bson,cluments);
+    public static List<Map> bsonToMapList(List<Document> bsonList, Set<String> cluments) {
+        List<Map> mapList = new ArrayList();
+        for (Document bson : bsonList) {
+            Map map = bsonToMap(bson, cluments);
             mapList.add(map);
         }
         return mapList;
     }
-    public static List<Map> bsonToMapList(List<Document> bsonList){
-        for(Document bson:bsonList){
+
+    public static List<Map> bsonToMapList(List<Document> bsonList) {
+        for (Document bson : bsonList) {
             bson.remove("_id");
         }
-        List<Map> mapList=new ArrayList();
-        for(Document bson:bsonList){
-            Map map=bsonToMap(bson,bson.keySet());
+        List<Map> mapList = new ArrayList();
+        for (Document bson : bsonList) {
+            Map map = bsonToMap(bson, bson.keySet());
             mapList.add(map);
         }
         return mapList;

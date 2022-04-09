@@ -1,7 +1,6 @@
 package com.zg.webdemo.service.table;
 
 
-
 import com.zg.webdemo.entity.PageEntity;
 import com.zg.webdemo.entity.Table;
 
@@ -20,7 +19,7 @@ public interface TableService {
     Integer deleteTableDate(Map map);
 
 
-   List<Object> getTableDate(Table table);
+    List<Object> getTableDate(Table table);
 
     List<Object> getTableDataPage(Table table, PageEntity page);
 

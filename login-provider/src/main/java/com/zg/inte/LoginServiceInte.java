@@ -5,21 +5,23 @@ import java.util.Map;
 public interface LoginServiceInte {
 
 
-     String verification(String username, String passworld) ;
+    String verification(String username, String passworld);
 
-     Map<String,String> login(String password, String username, String token) ;
+    Map<String, String> login(String password, String username, String token);
 
-     String registToken(String url, String domain, String rootPath);
+    String registToken(String url, String domain, String rootPath);
 
-     Integer isLogin(String token, String uuid) ;
+    Integer isLogin(String token, String uuid);
 
-     Map<String,String> getTokenValue(String token)  ;
+    Map<String, String> getTokenValue(String token);
 
-     Map<String,String> getTokenValue(String token, String del_flag) ;
+    Map<String, String> getTokenValue(String token, String del_flag);
 
-     void invalidToken(String token);
-     Integer updateLoginValid(String uuid, String token) ;
-     Integer updateLoginInvalid(String uuid, String token);
+    void invalidToken(String token);
+
+    Integer updateLoginValid(String uuid, String token);
+
+    Integer updateLoginInvalid(String uuid, String token);
 
 
 }

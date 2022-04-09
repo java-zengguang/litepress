@@ -8,6 +8,8 @@ import javax.xml.ws.Response;
  */
 public interface MessgeReceivedListener {
     public void onMessageReceived(Response msg);
+
     public void onMessageDisconnect();
+
     public void onMessageConnect();
 }

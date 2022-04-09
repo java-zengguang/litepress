@@ -20,21 +20,21 @@ import java.util.Map;
 public class ZookeeperController extends BaseController {
 
     @ResultMapping("/getAllZone.do")
-    public String getAllZone()  {
-        String jsonS ="";
+    public String getAllZone() {
+        String jsonS = "";
         try {
             ZookeeperUtil zookeeperUtil = new ZookeeperUtil("127.0.0.1:2181");
             JSONArray jsonArray = zookeeperUtil.findChildNodesJson("/");
-            JSONObject jsonObject=new JSONObject();
-            jsonObject.put("success",true);
-            jsonObject.put("message","成功");
-            jsonObject.put("object",jsonArray);
-            jsonS=jsonObject.toJSONString();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("success", true);
+            jsonObject.put("message", "成功");
+            jsonObject.put("object", jsonArray);
+            jsonS = jsonObject.toJSONString();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return "json::"+jsonS;
+        return "json::" + jsonS;
     }
 
 
