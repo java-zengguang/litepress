@@ -19,15 +19,6 @@ public class AServletContainerInitializer implements ServletContainerInitializer
             ServletRegistration.Dynamic servletDynamic = servletContext.addServlet("AdapterServlet", new AdapterServlet());
             servletDynamic.addMapping("/");
         }
-        if (false) {
-
-            CorsFilter corsFilter = new CorsFilter();  //处理跨域的过滤器
-            corsFilter.init();
-            FilterRegistration.Dynamic filterDynamic = servletContext.addFilter("CorsFilter", corsFilter);
-          //  filterDynamic.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC, DispatcherType.INCLUDE, DispatcherType.FORWARD, DispatcherType.ERROR), false, "/*");
-            filterDynamic.addMappingForServletNames( EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC),false, "AdapterServlet" );
-        }
-
         if(true){
             System.out.println("加载Filter");
             FilterRegistration.Dynamic corsFilter = servletContext.addFilter("CorsFilter", new CorsFilter());

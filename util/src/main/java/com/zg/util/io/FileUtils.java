@@ -29,23 +29,25 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
             if (FileUtils.class.getResource("/")!=null){
                 path = FileUtils.class.getResource("/").toURI().getPath();
+                System.out.println("---"+path);
             }
-/*            else{
+            else{
                path= FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
                File file=new File(path);
                path=file.getParent();
                path = java.net.URLDecoder.decode(path, "UTF-8");
                path=path+"\\";
 
-            }*/
+                System.out.println("==="+path);
+            }
 
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
-        } /*catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }*/
-        System.out.println("----"+path);
+        }
+
 
 
         PATH = path;

@@ -46,7 +46,6 @@ public class DynamicClass {
             }
             sb.append("}");
         }
-        System.out.println(DataBaseUtil.class+"生成代碼"+sb);
 
         return sb.toString();
     }

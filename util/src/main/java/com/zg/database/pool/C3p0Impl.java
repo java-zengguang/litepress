@@ -40,13 +40,20 @@ public class C3p0Impl implements DataBaseInte {
         cpds.setJdbcUrl(optionDB.getUrl());
         cpds.setUser(optionDB.getUsername());
         cpds.setPassword(optionDB.getPassword());
-        cpds.setMinPoolSize(5);
-        cpds.setAcquireIncrement(5);
+
+        cpds.setInitialPoolSize(2);
+        cpds.setMinPoolSize(2);
+        cpds.setMaxPoolSize(15);
+        cpds.setAcquireIncrement(2);
         cpds.setAcquireRetryDelay(1000);
-        cpds.setMaxPoolSize(20);
-        cpds.setTestConnectionOnCheckout(true);
-        cpds.setIdleConnectionTestPeriod(1800);
         cpds.setMaxIdleTime(3600);
+        cpds.setTestConnectionOnCheckout(true);
+        cpds.setIdleConnectionTestPeriod(10);
+        cpds.setMaxStatements(0);
+        cpds.setMaxStatementsPerConnection(0);
+        cpds.setPreferredTestQuery(" select 1 ");
+        cpds.setIdleConnectionTestPeriod(1800);
+        cpds.setTestConnectionOnCheckout(false);
 
         return cpds;
     }

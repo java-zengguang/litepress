@@ -75,12 +75,21 @@ public class JDBCUtils {
     }
 
     //查询
-    public static List select(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
+    public static List select(String sql) throws SQLException, ClassNotFoundException, IOException, InstantiationException, ParseException, IllegalAccessException {
         List list = new ArrayList();
         Map tableInfoMap = tableInfo(sql);
         list = selectToMapList(sql);
-        Object model = DynamicClass.getDynamicClass(Arrays.asList("com.zg.bean.entity.MainModel","com.zg.bean.annotation.FieldTypeMode","com.zg.bean.annotation.Model"), getTableName(sql), tableInfoMap, null, "MainModel");
-        list = SerializeObjectUtils.setMember(list, model.getClass());
+        Class classes;
+        try {
+            classes = Class.forName("com.zg.bean.entity." + getTableName(sql));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            Object model = DynamicClass.getDynamicClass(Arrays.asList("com.zg.bean.entity.MainModel", "com.zg.bean.annotation.FieldTypeMode", "com.zg.bean.annotation.Model"), getTableName(sql), tableInfoMap, null, "MainModel");
+            classes = model.getClass();
+        }
+
+
+        list = SerializeObjectUtils.setMember(list, classes);
         return list;
     }
 
@@ -174,7 +183,7 @@ public class JDBCUtils {
         stmt = conn.createStatement();
         LOGGER.info("--------------start batch-----------");
         for (String sql : sqlList) {
-           // LOGGER.info(sql);
+            // LOGGER.info(sql);
             stmt.addBatch(sql);
         }
         i = stmt.executeBatch();
