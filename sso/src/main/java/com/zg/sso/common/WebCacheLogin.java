@@ -13,16 +13,15 @@ import java.util.List;
 import java.util.UUID;
 
 public class WebCacheLogin extends BaseLogin {
+    private static WebCacheLogin webCacheLogin = new WebCacheLogin();
+    private RomCacheInte romCacheInte = RomCacheUtil.getRomCache("LoginCache");
+
     private WebCacheLogin() {
     }
-
-    private static WebCacheLogin webCacheLogin = new WebCacheLogin();
 
     public static WebCacheLogin getInstance() {
         return webCacheLogin;
     }
-
-    private RomCacheInte romCacheInte = RomCacheUtil.getRomCache("LoginCache");
 
     @Override
     public boolean isLogin(String token, String uuid) {

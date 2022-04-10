@@ -10,7 +10,6 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.python.antlr.ast.Str;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -124,7 +123,7 @@ public class POIUtils {
                 Set<String> columnSet = map.keySet();
                 for (String column : columnSet) {
                     WritableCell cell;
-                    String content=String.valueOf(map.get(column));
+                    String content = String.valueOf(map.get(column));
                     cell = new Label(x, j, content);
                     sheet.addCell(cell);
                     x++;

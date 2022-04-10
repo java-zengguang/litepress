@@ -21,27 +21,25 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public abstract class BaseClient implements Runnable {
 
-    public int port;
-
-
-    public String host;
-
-    private BlockingQueue<Object> requests = new LinkedBlockingQueue<>();
-
     /**
      * String字符串解码器
      */
     private static final StringDecoder DECODER = new StringDecoder();
-
     /***
      * String字符串编码器
      */
     private static final StringEncoder ENCODER = new StringEncoder();
-
+    public int port;
+    public String host;
+    private BlockingQueue<Object> requests = new LinkedBlockingQueue<>();
     /**
      * 客户端业务处理Handler
      */
     private BaseClientHandler clientHandler;
+    /**
+     * 是否继续进行运行
+     */
+    private boolean run = true;
 
 
     public BaseClient(BaseClientHandler<String> clientHandler, String host, int port) {
@@ -49,7 +47,6 @@ public abstract class BaseClient implements Runnable {
         this.host = host;
         this.port = port;
     }
-
 
     /**
      * 添加发送请求Request
@@ -63,12 +60,6 @@ public abstract class BaseClient implements Runnable {
             e.printStackTrace();
         }
     }
-
-    /**
-     * 是否继续进行运行
-     */
-    private boolean run = true;
-
 
     private void execute() {
         //工作线程

@@ -26,6 +26,17 @@ public class Register implements Watcher {
                 new Register());
     }
 
+    public static void main(String[] args) throws Exception {
+
+        String connectString = "127.0.0.1:2181";
+
+        ProviderFactory providerFactory = ProviderFactory.getInstance();
+        Map map = providerFactory.getProviderMap();
+        Register register = new Register(connectString);
+        register.registProvider(map);
+
+
+    }
 
     public void registProvider(Map<String, Object> map) throws InterruptedException, KeeperException, IllegalAccessException {
         connectedSemaphore.await();
@@ -41,20 +52,6 @@ public class Register implements Watcher {
         Thread.sleep(Integer.MAX_VALUE);
 
     }
-
-
-    public static void main(String[] args) throws Exception {
-
-        String connectString = "127.0.0.1:2181";
-
-        ProviderFactory providerFactory = ProviderFactory.getInstance();
-        Map map = providerFactory.getProviderMap();
-        Register register = new Register(connectString);
-        register.registProvider(map);
-
-
-    }
-
 
     public void process(WatchedEvent event) {
         if (Event.KeeperState.SyncConnected == event.getState()) {

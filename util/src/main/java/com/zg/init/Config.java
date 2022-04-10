@@ -9,8 +9,8 @@ import java.util.Map;
  * Created by Administrator on 2018/12/14 0014.
  */
 public class Config {
-    public static Map configMap = new HashMap<>();
     public static final int ERROR_REPEAT = 3;
+    public static Map configMap = new HashMap<>();
     public static int count = ERROR_REPEAT;
 
     private static void createConfigMap(String array[]) {

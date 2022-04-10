@@ -13,17 +13,16 @@ public class ProviderService extends BaseService {
         super(baseServiceHandler, port);
     }
 
+    public static void main(String args[]) {
+        ProviderService providerService = new ProviderService(new ProviderServiceHandler(), providerConfig.DTPPort);
+        Thread thread = new Thread(providerService);
+        thread.start();
+    }
+
     @Override
     public void startHeartbeat() {
    /*  IMHeartbeatHandle IMHeartbeatHandle =new IMHeartbeatHandle(BaseChannelGroups.getChanelGroups());
             Thread t=new Thread(IMHeartbeatHandle);
             t.start();*/
-    }
-
-
-    public static void main(String args[]) {
-        ProviderService providerService = new ProviderService(new ProviderServiceHandler(), providerConfig.DTPPort);
-        Thread thread = new Thread(providerService);
-        thread.start();
     }
 }

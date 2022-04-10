@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarEntry;
 
 /**
  * Created by Administrator on 2018/11/27 0027.
@@ -24,8 +23,8 @@ public class DataBaseUtil {
                     " WHERE  table_name='" + tableName + "' AND table_schema=(SELECT DATABASE())";
             List list = null;
             try {
-                NewJDBCUtil jdbcUtil=new NewJDBCUtil("opthinDB");
-                list =  jdbcUtil.selectToMapList(tableInfoSQL);
+                NewJDBCUtil jdbcUtil = new NewJDBCUtil("opthinDB");
+                list = jdbcUtil.selectToMapList(tableInfoSQL);
                 jdbcUtil.release();
             } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -54,15 +53,15 @@ public class DataBaseUtil {
 
         String tableListSQL = "SELECT TABLE_NAME FROM information_schema.tables" +
                 " WHERE table_schema=(SELECT DATABASE())";
-        NewJDBCUtil jdbcUtil=new NewJDBCUtil("opthinDB");
-        List<Map> tableNameList =  jdbcUtil.selectToMapList(tableListSQL);
+        NewJDBCUtil jdbcUtil = new NewJDBCUtil("opthinDB");
+        List<Map> tableNameList = jdbcUtil.selectToMapList(tableListSQL);
 
 
         for (Map tableNameMap : tableNameList) {
             tableName = tableNameMap.get("TABLE_NAME").toString();
             String tableInfoSQL = "SELECT COLUMN_NAME,DATA_TYPE FROM " + "information_schema.columns" +
                     " WHERE  table_name='" + tableName + "' AND table_schema=(SELECT DATABASE())";
-            List list =  jdbcUtil.selectToMapList(tableInfoSQL);
+            List list = jdbcUtil.selectToMapList(tableInfoSQL);
             jdbcUtil.release();
             Map tableInfo = ListUtils.createMap(list, "COLUMN_NAME", "DATA_TYPE");
             tableInfoMap.put(tableName, tableInfo);

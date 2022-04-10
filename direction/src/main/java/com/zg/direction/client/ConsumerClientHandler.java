@@ -12,12 +12,17 @@ public class ConsumerClientHandler extends BaseClientHandler<String> {
 
     private Object result;
 
+    public static void main(String args[]) throws InstantiationException, IllegalAccessException {
+
+        ConsumerClientHandler consumerClientHandler = new ConsumerClientHandler();
+        String json = "{\"success\":true,\"error\":null,\"resultData\":{\"x\":1},\"resultType\":\"com.zg.direction.TestEntity\"}";
+        consumerClientHandler.unSerialize(json, DTPResponse.class);
+    }
 
     private Object unSerialize(String str, Class classType) throws IllegalAccessException, InstantiationException {
         Object object = EntityUtils.unSerialize(str, classType);
         return object;
     }
-
 
     private String serialize(Object object) throws IllegalAccessException {
         String data = EntityUtils.serialize(object);
@@ -56,13 +61,5 @@ public class ConsumerClientHandler extends BaseClientHandler<String> {
     @Override
     public void addMessgeReceivedListener(MessgeReceivedListener messgeReceivedListener) {
 
-    }
-
-
-    public static void main(String args[]) throws InstantiationException, IllegalAccessException {
-
-        ConsumerClientHandler consumerClientHandler = new ConsumerClientHandler();
-        String json = "{\"success\":true,\"error\":null,\"resultData\":{\"x\":1},\"resultType\":\"com.zg.direction.TestEntity\"}";
-        consumerClientHandler.unSerialize(json, DTPResponse.class);
     }
 }

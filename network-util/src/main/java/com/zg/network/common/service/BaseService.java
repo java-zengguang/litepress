@@ -21,9 +21,9 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BaseService implements Runnable {
 
-    private Logger logger = LoggerFactory.getLogger(BaseService.class);
     private final StringDecoder DECODER = new StringDecoder();
     private final StringEncoder ENCODER = new StringEncoder();
+    private Logger logger = LoggerFactory.getLogger(BaseService.class);
     private NioEventLoopGroup bossGroup = null;
     private NioEventLoopGroup workerGroup = null;
     private int port;

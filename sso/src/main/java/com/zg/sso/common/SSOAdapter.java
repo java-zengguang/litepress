@@ -14,11 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SSOAdapter {
-    private SSOOpthion ssoOpthion;
-
-    private LoginInte loginService;
-
     private static SSOAdapter ssoAdapter;
+    private SSOOpthion ssoOpthion;
+    private LoginInte loginService;
 
     private SSOAdapter(SSOOpthion ssoOpthion, LoginInte loginInte) {
         this.loginService = loginInte;

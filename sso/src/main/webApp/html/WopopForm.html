@@ -2,13 +2,13 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
 
     <title>Wopop</title>
     <link href="../Wopop_files/style_log.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" type="text/css" href="../Wopop_files/style.css">
-    <link rel="stylesheet" type="text/css" href="../Wopop_files/userpanel.css">
-    <link rel="stylesheet" type="text/css" href="../Wopop_files/jquery.ui.all.css">
+    <link href="../Wopop_files/style.css" rel="stylesheet" type="text/css">
+    <link href="../Wopop_files/userpanel.css" rel="stylesheet" type="text/css">
+    <link href="../Wopop_files/jquery.ui.all.css" rel="stylesheet" type="text/css">
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
 
     <script type="text/javascript">
@@ -41,35 +41,37 @@
 
 <body class="login" mycollectionplug="bind">
 <div class="login_m">
-    <div class="login_logo"><img src="../Wopop_files/logo.png" width="196" height="46"></div>
+    <div class="login_logo"><img height="46" src="../Wopop_files/logo.png" width="196"></div>
     <div class="login_boder">
 
         <div class="login_padding" id="login_model">
-            <form id="form1" method="post" action="../sso/login.do">
+            <form action="../sso/login.do" id="form1" method="post">
 
                 <h2>USERNAME</h2>
                 <label>
-                    <input type="text" id="username" name="username" class="txt_input txt_input2"
+                    <input class="txt_input txt_input2" id="username" name="username"
+                           onblur="if (value ==&#39;&#39;){value=&#39;Your name&#39;}"
                            onfocus="if (value ==&#39;Your name&#39;){value =&#39;&#39;}"
-                           onblur="if (value ==&#39;&#39;){value=&#39;Your name&#39;}" value="Your name">
+                           type="text" value="Your name">
                 </label>
                 <h2>PASSWORD</h2>
                 <label>
-                    <input type="password" name="password" id="userpwd" class="txt_input"
+                    <input class="txt_input" id="userpwd" name="password"
+                           onblur="if (value ==&#39;&#39;){value=&#39;******&#39;}"
                            onfocus="if (value ==&#39;******&#39;){value =&#39;&#39;}"
-                           onblur="if (value ==&#39;&#39;){value=&#39;******&#39;}" value="******">
+                           type="password" value="******">
                 </label>
 
 
-                <p class="forgot"><a id="iforget" href="javascript:void(0);">Forgot your password?</a></p>
+                <p class="forgot"><a href="javascript:void(0);" id="iforget">Forgot your password?</a></p>
                 <div class="rem_sub">
                     <div class="rem_sub_l">
-                        <input type="checkbox" name="checkbox" id="save_me">
+                        <input id="save_me" name="checkbox" type="checkbox">
                         <label for="checkbox">Remember me</label>
                     </div>
                     <label>
-                        <input type="submit" class="sub_button" name="button" id="button" value="SIGN-IN"
-                               style="opacity: 0.7;">
+                        <input class="sub_button" id="button" name="button" style="opacity: 0.7;" type="submit"
+                               value="SIGN-IN">
                     </label>
                 </div>
 
@@ -79,7 +81,7 @@
 
         <div class="copyrights">Collect from <a href="http://www.cssmoban.com/">用户登陆</a></div>
 
-        <div id="forget_model" class="login_padding" style="display:none">
+        <div class="login_padding" id="forget_model" style="display:none">
             <br>
 
             <h1>Forgot password</h1>
@@ -88,7 +90,7 @@
                 reset users’ password and send it to user’s registered email address.)
             </div>
             <label>
-                <input type="text" id="usrmail" class="txt_input txt_input2">
+                <input class="txt_input txt_input2" id="usrmail" type="text">
             </label>
 
 
@@ -97,11 +99,11 @@
                 </div>
                 <label>
 
-                    <input type="submit" class="sub_buttons" name="button" id="Retrievenow" value="Retrieve now"
-                           style="opacity: 0.7;"/>
+                    <input class="sub_buttons" id="Retrievenow" name="button" style="opacity: 0.7;" type="submit"
+                           value="Retrieve now"/>
                     　　　
-                    <input type="submit" class="sub_button" name="button" id="denglu" value="Return"
-                           style="opacity: 0.7;"/>　　
+                    <input class="sub_button" id="denglu" name="button" style="opacity: 0.7;" type="submit"
+                           value="Return"/>　　
 
                 </label>
             </div>
@@ -113,7 +115,7 @@
 </div><!--login_m end-->
 <br> <br>
 <p align="center"> More Templates <a href="http://www.cssmoban.com/" target="_blank" title="模板之家">模板之家</a> - Collect
-    from <a href="http://www.cssmoban.com/" title="网页模板" target="_blank">网页模板</a></p>
+    from <a href="http://www.cssmoban.com/" target="_blank" title="网页模板">网页模板</a></p>
 
 
 </body>

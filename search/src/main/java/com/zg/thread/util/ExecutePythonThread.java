@@ -13,6 +13,13 @@ public class ExecutePythonThread implements Runnable {
         this.arguments = arguments;
     }
 
+    public static void main(String[] args) throws Exception {
+        ExecutePythonThread executePython = new ExecutePythonThread("D:\\software\\Python\\Python37-32\\Python.exe", "D:\\test\\python\\temp.py", "1", "2");
+        Thread thread = new Thread(executePython);
+        thread.start();
+        //   "D:\\software\\Python\\Python37-32\\Python.exe","D:\\test\\python\\temp.py"
+    }
+
     //传入 py环境地址    py脚本地址    py脚本参数 ...
     public void java2python(String... arguments) throws Exception {
 
@@ -29,7 +36,6 @@ public class ExecutePythonThread implements Runnable {
 //        System.out.println(result);
     }
 
-
     @Override
     public void run() {
         try {
@@ -38,14 +44,6 @@ public class ExecutePythonThread implements Runnable {
             e.printStackTrace();
         }
 
-    }
-
-
-    public static void main(String[] args) throws Exception {
-        ExecutePythonThread executePython = new ExecutePythonThread("D:\\software\\Python\\Python37-32\\Python.exe", "D:\\test\\python\\temp.py", "1", "2");
-        Thread thread = new Thread(executePython);
-        thread.start();
-        //   "D:\\software\\Python\\Python37-32\\Python.exe","D:\\test\\python\\temp.py"
     }
 
 }

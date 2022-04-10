@@ -1,7 +1,5 @@
 package com.zg.util.io;
 
-import com.zg.bean.entity.InitEntity;
-import com.zg.init.Config;
 import com.zg.util.reflect.ClassUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -14,12 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * Created by Administrator on 2018/11/27 0027.
  */
 public class FileUtils extends org.apache.commons.io.FileUtils {
+
+    public static final String PATH;
 
     static {
         //获取项目的相对路径
@@ -27,18 +26,17 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
         try {
 
-            if (FileUtils.class.getResource("/")!=null){
+            if (FileUtils.class.getResource("/") != null) {
                 path = FileUtils.class.getResource("/").toURI().getPath();
-                System.out.println("---"+path);
-            }
-            else{
-               path= FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-               File file=new File(path);
-               path=file.getParent();
-               path = java.net.URLDecoder.decode(path, "UTF-8");
-               path=path+"\\";
+                System.out.println("---" + path);
+            } else {
+                path = FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+                File file = new File(path);
+                path = file.getParent();
+                path = java.net.URLDecoder.decode(path, "UTF-8");
+                path = path + "\\";
 
-                System.out.println("==="+path);
+                System.out.println("===" + path);
             }
 
 
@@ -49,11 +47,8 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         }
 
 
-
         PATH = path;
     }
-
-    public static final String PATH;
 
     //读取文件,并把文件信息放入到Properties 容器中
     public static Properties read(String fileName) {
@@ -82,23 +77,23 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
     public static Element getRootElement(String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
-       // System.out.println("配置文件路径："+FileUtils.PATH + fileName);
+        // System.out.println("配置文件路径："+FileUtils.PATH + fileName);
         Document doc = reader.read(new File(FileUtils.PATH + fileName));
         Element root = doc.getRootElement();
         return root;
     }
 
-    public static  Element getRootElement(String rootPath,String fileName) throws DocumentException {
+    public static Element getRootElement(String rootPath, String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
         // System.out.println("配置文件路径："+FileUtils.PATH + fileName);
-        Document doc = reader.read(new File(rootPath+fileName));
+        Document doc = reader.read(new File(rootPath + fileName));
         Element root = doc.getRootElement();
         return root;
     }
 
     public static List getClassFormPackage(String packageName, boolean isAnnotation, Class annotation) throws ClassNotFoundException {
 
-        List<Class> classList=getClassFormPackage(packageName);
+        List<Class> classList = getClassFormPackage(packageName);
         for (Class c : classList) {
             if (!isAnnotation || !c.isAnnotationPresent(annotation)) {
                 continue;
@@ -125,15 +120,14 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
             Class c = Class.forName(className);
             classList.add(c);
         }*/
-        Set classSet= ClassUtil.getClasses(packageName);
+        Set classSet = ClassUtil.getClasses(packageName);
         classList.addAll(classSet);
         return classList;
     }
 
 
-
-    public static void writeFileThread(OutputStream out,InputStream in){
-        Thread  thread=new Thread(){
+    public static void writeFileThread(OutputStream out, InputStream in) {
+        Thread thread = new Thread() {
             @Override
             public void run() {
                 super.run();

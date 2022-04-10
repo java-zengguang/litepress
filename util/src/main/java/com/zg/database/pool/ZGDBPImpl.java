@@ -10,8 +10,8 @@ import java.util.Map;
 
 public class ZGDBPImpl implements DataBaseInte {
 
-    private static Map<String, ZGDBPDataSource> dataSourceMap = new HashMap<>();
     private final static ZGDBPImpl zGDBP = new ZGDBPImpl();
+    private static Map<String, ZGDBPDataSource> dataSourceMap = new HashMap<>();
 
     private ZGDBPImpl() {
 

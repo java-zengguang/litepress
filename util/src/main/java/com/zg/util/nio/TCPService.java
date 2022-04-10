@@ -13,6 +13,15 @@ public class TCPService {
     public volatile AtomicBoolean isOpen = new AtomicBoolean(true);
     public ServerSocketChannel serviceChannel;
 
+    public static void main(String args[]) throws IOException {
+
+        TCPService tcpService = new TCPService();
+        ServerSocketChannel serviceChannel = ServerSocketChannel.open();
+        serviceChannel.bind(new InetSocketAddress(9999));
+        tcpService.serviceChannel = serviceChannel;
+        tcpService.registChannel();
+    }
+
     public void registChannel() throws IOException {
         Selector selector = Selector.open();
 
@@ -33,7 +42,6 @@ public class TCPService {
 
 
     }
-
 
     public void sendFile(SocketChannel channel) throws IOException {
 
@@ -57,16 +65,6 @@ public class TCPService {
         localChannel.write(byteBuffer);
         localChannel.close();
 
-    }
-
-
-    public static void main(String args[]) throws IOException {
-
-        TCPService tcpService = new TCPService();
-        ServerSocketChannel serviceChannel = ServerSocketChannel.open();
-        serviceChannel.bind(new InetSocketAddress(9999));
-        tcpService.serviceChannel = serviceChannel;
-        tcpService.registChannel();
     }
 
 }

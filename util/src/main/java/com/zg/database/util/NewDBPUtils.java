@@ -39,8 +39,6 @@ public class NewDBPUtils {
     }
 
 
-
-
     public static boolean commit(String dataSource) throws SQLException, ClassNotFoundException {
         Connection conn = getConnection(dataSource);
         try {
@@ -60,8 +58,8 @@ public class NewDBPUtils {
     public static void release(String dataSource) throws SQLException, ClassNotFoundException {
         Connection conn = getConnection(dataSource);
         conn.close();
-        Map<String,Connection> dataSourceMap=threadLocal.get();
-        if (dataSourceMap!=null){
+        Map<String, Connection> dataSourceMap = threadLocal.get();
+        if (dataSourceMap != null) {
             dataSourceMap.remove(dataSource);
         }
     }

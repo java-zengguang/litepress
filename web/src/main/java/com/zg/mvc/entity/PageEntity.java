@@ -63,6 +63,17 @@ public class PageEntity extends MainModel {
 
     }
 
+    public static PageEntity getPageEntity(int currentPage, int totalRows, int pageSize) {
+        PageEntity pager = new PageEntity(totalRows, pageSize);
+        if (currentPage == 0) {
+            pager.setStart(1);
+        } else {
+            pager.setStart(currentPage);
+        }
+
+        return pager;
+    }
+
     public boolean isFirst() {
         return this.getCurrentPage() <= 1;
     }
@@ -160,16 +171,5 @@ public class PageEntity extends MainModel {
 
     public int getStartRow() {
         return this.startRow;
-    }
-
-    public static PageEntity getPageEntity(int currentPage, int totalRows, int pageSize) {
-        PageEntity pager = new PageEntity(totalRows, pageSize);
-        if (currentPage == 0) {
-            pager.setStart(1);
-        } else {
-            pager.setStart(currentPage);
-        }
-
-        return pager;
     }
 }

@@ -16,6 +16,14 @@ public class TCPClient {
 
     public SocketChannel channel;
 
+    public static void main(String args[]) throws IOException {
+        SocketChannel socketChannel = SocketChannel.open();
+        socketChannel.connect(new InetSocketAddress("localhost", 9999));
+        TCPClient tcpClient = new TCPClient();
+        tcpClient.channel = socketChannel;
+        tcpClient.registChannel();
+    }
+
     public void registChannel() throws IOException {
         Selector selector = Selector.open();
         channel.configureBlocking(false);
@@ -31,7 +39,6 @@ public class TCPClient {
         }
 
     }
-
 
     public void sendFile() throws IOException {
         ByteBuffer byteBuffer = ByteBuffer.allocate(10 * 1024);
@@ -58,15 +65,6 @@ public class TCPClient {
         byteBuffer.flip();
         localChannel.write(byteBuffer);
         localChannel.close();
-    }
-
-
-    public static void main(String args[]) throws IOException {
-        SocketChannel socketChannel = SocketChannel.open();
-        socketChannel.connect(new InetSocketAddress("localhost", 9999));
-        TCPClient tcpClient = new TCPClient();
-        tcpClient.channel = socketChannel;
-        tcpClient.registChannel();
     }
 
 

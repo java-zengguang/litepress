@@ -7,9 +7,9 @@ import java.util.logging.Logger;
 
 public class ReceiveFile implements Runnable {
 
+    private static Logger logger = Logger.getLogger(ReceiveFile.class.getName());
     private int port;
     private File file;
-    private static Logger logger = Logger.getLogger(ReceiveFile.class.getName());
 
     public ReceiveFile(int port, File file) {
         this.port = port;

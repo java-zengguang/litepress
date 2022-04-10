@@ -11,17 +11,16 @@ public class PoolConnectionFactory {
     private static Logger logger = Logger.getLogger(ConnectionFactory.class);
     private static PoolConnectionFactory poolConnectionFactory;
 
-    public synchronized static PoolConnectionFactory getInstance(){
-        if(poolConnectionFactory==null){
-            poolConnectionFactory=new PoolConnectionFactory();
+    private PoolConnectionFactory() {
+
+    }
+
+    public synchronized static PoolConnectionFactory getInstance() {
+        if (poolConnectionFactory == null) {
+            poolConnectionFactory = new PoolConnectionFactory();
         }
         return poolConnectionFactory;
     }
-
-    private PoolConnectionFactory(){
-
-    }
-
 
     private DataBaseInte createDataBasePool(String dataSource) {
         DataBaseInte databasePool = null;

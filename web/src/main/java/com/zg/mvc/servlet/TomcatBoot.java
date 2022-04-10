@@ -19,6 +19,12 @@ public class TomcatBoot {
     private static String contextPath = "/";
     private String baseDir = FileUtils.PATH;
 
+    public static void main(String args[]) throws ServletException, LifecycleException, IOException {
+
+        TomcatBoot tomcatBoot = new TomcatBoot();
+        tomcatBoot.start();
+    }
+
     public void start() throws LifecycleException, ServletException {
         Tomcat tomcat = new Tomcat();
         tomcat.setBaseDir(baseDir);
@@ -41,13 +47,6 @@ public class TomcatBoot {
         //tomcat.getConnector();
         tomcat.start();
         tomcat.getServer().await();
-    }
-
-
-    public static void main(String args[]) throws ServletException, LifecycleException, IOException {
-
-        TomcatBoot tomcatBoot = new TomcatBoot();
-        tomcatBoot.start();
     }
 
 }

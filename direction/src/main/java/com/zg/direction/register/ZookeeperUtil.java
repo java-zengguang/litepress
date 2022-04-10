@@ -33,6 +33,16 @@ public class ZookeeperUtil implements Watcher {
                 new ZookeeperUtil());
     }
 
+    public static void main(String[] args) throws Exception {
+        String path = "/zk-book";
+
+        String connectString = "127.0.0.1:2181";
+
+        ZookeeperUtil zookeeperUtil = new ZookeeperUtil(connectString);
+        //zookeeperUtil.createNode(path,"423");
+        System.out.println(zookeeperUtil.findNode(path));
+
+    }
 
     public void createNode(String path, String value) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
@@ -50,7 +60,6 @@ public class ZookeeperUtil implements Watcher {
         connectedSemaphore.await();
         zk.delete(path, version);
     }
-
 
     public String findNode(String path) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
@@ -90,17 +99,6 @@ public class ZookeeperUtil implements Watcher {
             }
         }
         return jsonArray;
-    }
-
-    public static void main(String[] args) throws Exception {
-        String path = "/zk-book";
-
-        String connectString = "127.0.0.1:2181";
-
-        ZookeeperUtil zookeeperUtil = new ZookeeperUtil(connectString);
-        //zookeeperUtil.createNode(path,"423");
-        System.out.println(zookeeperUtil.findNode(path));
-
     }
 
     public void process(WatchedEvent event) {

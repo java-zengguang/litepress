@@ -27,7 +27,7 @@ public class DynamicClass {
                 }
             }
             sb.append("import java.util.*;\r\n");
-            sb.append("@Model(tableName = \""+calssName.toUpperCase()+"\")\n");
+            sb.append("@Model(tableName = \"" + calssName.toUpperCase() + "\")\n");
             sb.append("@FieldTypeMode(typeMode = \"entity\")\n");
             sb.append("public class ");
             sb.append(calssName);
@@ -92,7 +92,7 @@ public class DynamicClass {
         JavaFileObject jfo = new StringJavaFileObject(name, javaCode);
         List<String> options = new ArrayList<String>();
         String path = MainModel.class.getClassLoader().getResource("").getPath();
-        System.out.println(DataBaseUtil.class+"====calss生成路径" + path);
+        System.out.println(DataBaseUtil.class + "====calss生成路径" + path);
         options.addAll(Arrays.asList("-d", path));
         List<? extends JavaFileObject> jfos = Arrays.asList(jfo);
         CompilationTask task = compiler.getTask(null, stdManager, null, options, null, jfos);

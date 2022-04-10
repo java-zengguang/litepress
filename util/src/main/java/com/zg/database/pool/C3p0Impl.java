@@ -18,8 +18,8 @@ import java.util.Map;
 
 public class C3p0Impl implements DataBaseInte {
 
-    private static Map<String, DataSource> dataSourceMap = new HashMap<>();
     private final static C3p0Impl c3p0 = new C3p0Impl();
+    private static Map<String, DataSource> dataSourceMap = new HashMap<>();
 
     private C3p0Impl() {
 

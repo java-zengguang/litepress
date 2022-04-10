@@ -19,16 +19,16 @@ import java.util.Map;
 public class ZGDBPDataSource {
 
     private static ZGDBPDataSource zgdbp = null;
-    private String url = null;
     private static int MAX_CONN_SIZE = 10;
     private static Integer MAX_POOL_SIZE = 5;
-    private String Driver = null;
-    private String username = null;
-    private String password = null;
     //  public final ThreadLocal<Connection> tl = new ThreadLocal<Connection>();
     private static Connection conn[] = new Connection[MAX_POOL_SIZE];
     private static List connectPool = new ArrayList();
     private static int flag = 0;
+    private String url = null;
+    private String Driver = null;
+    private String username = null;
+    private String password = null;
 
 
     //构造方法

@@ -12,6 +12,8 @@ import java.util.Map;
 public class ProviderResovleAnnotation extends BaseResolveAnnotation {
 
     private static ProviderResovleAnnotation pra = null;
+    private Logger logger = LoggerFactory.getLogger(ProviderResovleAnnotation.class);
+    private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
 
     private ProviderResovleAnnotation() {
     }
@@ -24,10 +26,6 @@ public class ProviderResovleAnnotation extends BaseResolveAnnotation {
         }
         return pra;
     }
-
-    private Logger logger = LoggerFactory.getLogger(ProviderResovleAnnotation.class);
-
-    private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
 
     @Override
     public String getResultName(Object annotationObject) throws IllegalAccessException, InstantiationException {

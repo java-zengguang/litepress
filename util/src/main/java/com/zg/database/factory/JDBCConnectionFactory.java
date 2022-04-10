@@ -9,18 +9,18 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class JDBCConnectionFactory extends BaseConnectionFactory{
+public class JDBCConnectionFactory extends BaseConnectionFactory {
 
     private static Logger logger = Logger.getLogger(NewDBPUtils.class);
     private static JDBCConnectionFactory jdbcConnectionFactory;
 
-    private JDBCConnectionFactory(){
+    private JDBCConnectionFactory() {
 
     }
 
-    public synchronized static JDBCConnectionFactory getInstance(){
-        if(jdbcConnectionFactory==null){
-            jdbcConnectionFactory=new JDBCConnectionFactory();
+    public synchronized static JDBCConnectionFactory getInstance() {
+        if (jdbcConnectionFactory == null) {
+            jdbcConnectionFactory = new JDBCConnectionFactory();
         }
         return jdbcConnectionFactory;
     }

@@ -21,15 +21,15 @@ public class ZGMPBean implements Serializable, Cloneable {
     public String heartBeatID;
 
 
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
     public ZGMPBean() {
     }
 
     public ZGMPBean(String direction) {
         this.direction = direction;
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     public String getToken() {

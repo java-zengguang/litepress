@@ -9,19 +9,16 @@ import java.util.*;
 /**
  * Created by Administrator on 2019/2/12 0012.
  */
-public class LoginService implements LoginServiceInte{
+public class LoginService implements LoginServiceInte {
 
-    private LoginDao loginDao=new LoginDao();
-
-
+    private LoginDao loginDao = new LoginDao();
 
 
-
-    public String verification(String username,String passworld)  {
-        Map map=new HashedMap();
-        map.put("username",username);
-        map.put("password",passworld);
-        List<Map> list= null;
+    public String verification(String username, String passworld) {
+        Map map = new HashedMap();
+        map.put("username", username);
+        map.put("password", passworld);
+        List<Map> list = null;
         try {
             list = loginDao.login(map);
         } catch (NoSuchFieldException e) {
@@ -33,19 +30,19 @@ public class LoginService implements LoginServiceInte{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        if(list!=null && list.size()>0){
-            return (String)list.get(0).get("uuid");
-        }else {
+        if (list != null && list.size() > 0) {
+            return (String) list.get(0).get("uuid");
+        } else {
             return null;
         }
     }
 
 
-    public Map<String,String> login(String password,String username,String token )  {
+    public Map<String, String> login(String password, String username, String token) {
 
         Map<String, String> map = getTokenValue(token);
 
-        if(map!=null) {
+        if (map != null) {
             String uuid = verification(username, password);
 
 
@@ -61,23 +58,23 @@ public class LoginService implements LoginServiceInte{
             } else {
                 map.put("message", "用户名密码错误");
             }
-        }else{
-            map=new HashMap<>();
-            map.put("message","token失效");
+        } else {
+            map = new HashMap<>();
+            map.put("message", "token失效");
         }
-            return map;
+        return map;
     }
 
     public String registToken(String url, String domain, String rootPath) {
         UUID random = UUID.randomUUID();
         String token = "" + random.toString();
-        Map map=new HashMap<>();
-        map.put("token",token);
-        map.put("url",url);
-        map.put("domain",domain);
-        map.put("rootPath",rootPath);
+        Map map = new HashMap<>();
+        map.put("token", token);
+        map.put("url", url);
+        map.put("domain", domain);
+        map.put("rootPath", rootPath);
 
-        int x= 0;
+        int x = 0;
         try {
             x = loginDao.insertToken(map);
         } catch (SQLException e) {
@@ -89,67 +86,67 @@ public class LoginService implements LoginServiceInte{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        if(x>0){
+        if (x > 0) {
             return token;
-        }else{
+        } else {
             return null;
         }
     }
 
 
-    public boolean updateToken(String uuid,String token,String url){
-        System.out.println(uuid+token+url);
-        if(uuid==null){
-            uuid="";
+    public boolean updateToken(String uuid, String token, String url) {
+        System.out.println(uuid + token + url);
+        if (uuid == null) {
+            uuid = "";
         }
-        if(token==null){
-            token="";
+        if (token == null) {
+            token = "";
         }
-        if(url==null){
-            url="";
+        if (url == null) {
+            url = "";
         }
-        Map map=new HashMap<>();
-        map.put("token",token);
-        map.put("url",url);
-        map.put("uuid",uuid);
-        int x=loginDao.updateToken(map);
-        if(x>0) {
+        Map map = new HashMap<>();
+        map.put("token", token);
+        map.put("url", url);
+        map.put("uuid", uuid);
+        int x = loginDao.updateToken(map);
+        if (x > 0) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
 
-    public int isLogin(String token,String uuid) {
+    public int isLogin(String token, String uuid) {
         List<Map> list = new ArrayList<Map>();
-        if(uuid==null || token==null){
+        if (uuid == null || token == null) {
             return -1;
         }
         try {
-            list=loginDao.isLogin(uuid,token);
+            list = loginDao.isLogin(uuid, token);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
-        if(list!=null && list.size()>0){
-            Map<String,String> map=list.get(0);
+        if (list != null && list.size() > 0) {
+            Map<String, String> map = list.get(0);
             return Integer.valueOf(map.get("status"));
-        }else{
+        } else {
             return -1;
         }
 
     }
 
-    public Map<String,String> getTokenValue(String token)  {
-        return getTokenValue(token,"0");
+    public Map<String, String> getTokenValue(String token) {
+        return getTokenValue(token, "0");
     }
 
-    public Map<String,String> getTokenValue(String token,String del_flag)  {
-        Map map=new HashMap();
-        map.put("token",token);
-        map.put("del_flag",del_flag);
-        Map<String,String> resultMap=null;
-        List<Map> list= null;
+    public Map<String, String> getTokenValue(String token, String del_flag) {
+        Map map = new HashMap();
+        map.put("token", token);
+        map.put("del_flag", del_flag);
+        Map<String, String> resultMap = null;
+        List<Map> list = null;
         try {
             list = loginDao.selectToken(map);
         } catch (NoSuchFieldException e) {
@@ -161,27 +158,28 @@ public class LoginService implements LoginServiceInte{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        if(list!=null && list.size()>0){
-            resultMap=list.get(0);
+        if (list != null && list.size() > 0) {
+            resultMap = list.get(0);
         }
         return resultMap;
     }
 
-    public void invalidToken(String token){
-        loginDao.changeTokenStatus(token,"1");
+    public void invalidToken(String token) {
+        loginDao.changeTokenStatus(token, "1");
     }
 
-    public int updateLoginValid(String uuid,String token)  {
+    public int updateLoginValid(String uuid, String token) {
         try {
-            return loginDao.updateLoginStatus(uuid,token,"valid");
+            return loginDao.updateLoginStatus(uuid, token, "valid");
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return 0;
     }
-    public int updateLoginInvalid(String uuid,String token)  {
+
+    public int updateLoginInvalid(String uuid, String token) {
         try {
-            return loginDao.updateLoginStatus(uuid,token,"invalid");
+            return loginDao.updateLoginStatus(uuid, token, "invalid");
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
