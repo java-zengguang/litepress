@@ -12,16 +12,16 @@
         <module>util</module>
         <module>web</module>
         <module>direction</module>
-<!--        <module>incache</module>
-        <module>webdemo</module>
-        <module>scala</module>
-        <module>webiodemo</module>-->
-<!--        <module>sso</module>-->
+        <module>incache</module>
         <module>network-util</module>
-    <!--    <module>admin</module>-->
         <module>im</module>
+<!--        <module>webdemo</module>
+        <module>scala</module>
+        <module>webiodemo</module>
+        <module>sso</module>
+        <module>admin</module>
         <module>search</module>
-        <module>login-provider</module>
+        <module>login-provider</module>-->
     </modules>
 
     <repositories>
