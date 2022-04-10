@@ -9,17 +9,17 @@ import java.nio.channels.FileChannel;
  */
 public class NIOUtils {
 
-    private static int size=1024;
+    private static int size = 1024;
 
     //使用nio读取raf
     public static int newReadFile(File file) throws IOException {
-        RandomAccessFile raf=new RandomAccessFile(file,"rw");
-        FileChannel channel=raf.getChannel();
-        ByteBuffer buffer=ByteBuffer.allocate(10);
-        int readByte= 0;
-        while (readByte!=-1){
-            readByte=channel.read(buffer);
-            System.out.println("readByte=="+readByte);
+        RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        FileChannel channel = raf.getChannel();
+        ByteBuffer buffer = ByteBuffer.allocate(10);
+        int readByte = 0;
+        while (readByte != -1) {
+            readByte = channel.read(buffer);
+            System.out.println("readByte==" + readByte);
             buffer.flip();   //buffer模式反转，由写模式变为读模式
 
             //显示buffer的数据
@@ -36,20 +36,19 @@ public class NIOUtils {
 
 
     public static int newWriterFile(File file) throws IOException {
-        RandomAccessFile raf =new RandomAccessFile(file,"rw");
-        FileChannel channel=raf.getChannel();
-        ByteBuffer buffer= ByteBuffer.allocate(100);
-        int writerByte=0;
+        RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        FileChannel channel = raf.getChannel();
+        ByteBuffer buffer = ByteBuffer.allocate(100);
+        int writerByte = 0;
         buffer.put("1232300000000000".getBytes());
         buffer.flip();
-            writerByte=channel.write(buffer);
-            System.out.print(writerByte);
+        writerByte = channel.write(buffer);
+        System.out.print(writerByte);
 
-      channel.close();
+        channel.close();
         raf.close();
         return 0;
     }
-
 
 
     //用于处理存储临时上传文件
@@ -59,12 +58,12 @@ public class NIOUtils {
         FileOutputStream bos = null;
         try {
             IOUtils.createFile(file);
-            bos= new FileOutputStream(file);
-            FileChannel channel=bos.getChannel();
+            bos = new FileOutputStream(file);
+            FileChannel channel = bos.getChannel();
             int current = 0;
-            ByteBuffer buffer=ByteBuffer.allocate(size);
-            while ((current = inputStream.read(bytes,0,size)) != -1) {
-                buffer.put(bytes,0,current);
+            ByteBuffer buffer = ByteBuffer.allocate(size);
+            while ((current = inputStream.read(bytes, 0, size)) != -1) {
+                buffer.put(bytes, 0, current);
                 buffer.flip();
                 channel.write(buffer);
                 buffer.clear();
@@ -82,13 +81,12 @@ public class NIOUtils {
     //用于处理存储临时上传文件
     public static int createTemporaryFile(InputStream inputStream, String filePath, String fileName) {
         File file = new File(filePath, fileName);
-        return createTemporaryFile(inputStream,file);
+        return createTemporaryFile(inputStream, file);
     }
 
 
-
     public static void main(String args[]) throws IOException {
-        File file=new File("F:\\1.txt");
+        File file = new File("F:\\1.txt");
         //newReadFile(file);
         newWriterFile(file);
     }

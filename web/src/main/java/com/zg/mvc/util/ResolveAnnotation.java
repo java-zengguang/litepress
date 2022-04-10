@@ -16,19 +16,19 @@ public class ResolveAnnotation {
 
 
     public static Map<String, Class> resovleController(String packageName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-       return resovleController(packageName,"");
+        return resovleController(packageName, "");
     }
 
-    public static Map<String, Class> resovleController(String packageName,String rootURL) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        if(rootURL==null){
-            rootURL="";
+    public static Map<String, Class> resovleController(String packageName, String rootURL) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        if (rootURL == null) {
+            rootURL = "";
         }
         Map<String, Class> resultMap = new HashedMap();
         List<Class> classList = FileUtils.getClassFormPackage(packageName);
         for (Class classes : classList) {
             Controller controller = (Controller) classes.getAnnotation(Controller.class);
             if (controller != null) {
-                String parentURL =rootURL+ controller.value();
+                String parentURL = rootURL + controller.value();
                 resultMap.put(parentURL, classes);
             }
 

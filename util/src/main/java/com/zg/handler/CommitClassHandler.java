@@ -1,7 +1,7 @@
 package com.zg.handler;
 
 
-import com.zg.database.util.JDBCUtils;
+import com.zg.database.util.NewDBPUtils;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodProxy;
 import org.slf4j.Logger;
@@ -42,9 +42,9 @@ public class CommitClassHandler extends BaseClassHandler {
 
         try {
             result = methodProxy.invokeSuper(o, objects); //调用业务类（父类中）的方法
-            if ( methodList.contains(method.getName())) {
+            if (methodList.contains(method.getName())) {
                 LOGGER.info(method.getName() + " 事务被提交");
-                JDBCUtils.commit();
+                NewDBPUtils.commit("optionDB");
             }
         } catch (Throwable throwable) {
             throwable.printStackTrace();

@@ -15,7 +15,10 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,7 +32,7 @@ import java.util.Set;
  */
 public class ControllerAdapter {
 
-    private static final Logger LOGGER=LoggerFactory.getLogger(ControllerAdapter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ControllerAdapter.class);
     private static Set<String> keySet = null;
     private static Map<String, Method> methodMap = new HashedMap();
     private static Map<String, Class> classMap = null;
@@ -84,9 +87,9 @@ public class ControllerAdapter {
                     response.sendRedirect(stirngArray[1]);
                     break;
                 }
-                case "privateURL":{
+                case "privateURL": {
                     request.getRequestDispatcher(stirngArray[1]).forward(request, response);
-                   // response.sendRedirect(stirngArray[1]);
+                    // response.sendRedirect(stirngArray[1]);
                     break;
                 }
                 case "json": {
@@ -102,37 +105,37 @@ public class ControllerAdapter {
                     LOGGER.info(ControllerAdapter.classMap + " 跳转失败");
                 }
             }
-        }else if(viewObject instanceof ViewObject){
+        } else if (viewObject instanceof ViewObject) {
 
             switch (((ViewObject) viewObject).operation) {
                 case "forward": {
-                    String url= (String) ((ViewObject) viewObject).url;
+                    String url = (String) ((ViewObject) viewObject).url;
                     request.getRequestDispatcher(url).forward(request, response);
                     break;
                 }
                 case "redirect": {
-                    String url= (String) ((ViewObject) viewObject).url;
+                    String url = (String) ((ViewObject) viewObject).url;
                     response.sendRedirect(url);
                     break;
                 }
                 case "staticURL": {
-                    String url= (String) ((ViewObject) viewObject).url;
+                    String url = (String) ((ViewObject) viewObject).url;
                     response.sendRedirect(url);
                     break;
                 }
                 case "privateURL": {
-                    String url= (String) ((ViewObject) viewObject).url;
+                    String url = (String) ((ViewObject) viewObject).url;
                     request.getRequestDispatcher(url).forward(request, response);
                     // response.sendRedirect(stirngArray[1]);
                     break;
                 }
                 case "json": {
-                    String data= (String) ((ViewObject) viewObject).data;
-                    String json= null;
+                    String data = (String) ((ViewObject) viewObject).data;
+                    String json = null;
                     try {
                         json = JsonUtils.objectToJson(data).toString();
                     } catch (IllegalAccessException e) {
-                        LOGGER.error("json转化错误",e);
+                        LOGGER.error("json转化错误", e);
                     }
                     response.setHeader("content-type", "application/json");
                     response.setCharacterEncoding("UTF-8");
@@ -146,14 +149,14 @@ public class ControllerAdapter {
                     LOGGER.info(ControllerAdapter.classMap + " 跳转失败");
                 }
             }
-        } else if(viewObject instanceof File){
-            File file=(File) viewObject;
+        } else if (viewObject instanceof File) {
+            File file = (File) viewObject;
             response.setContentType("application/force-download");
             response.setHeader("Content-Disposition",
-                    "attachment;filename="+file.getName());
-            OutputStream out=response.getOutputStream();
-            int size= IOUtils.inputFile(out,file);
-            LOGGER.info(ControllerAdapter.classMap+"文件下载完成");
+                    "attachment;filename=" + file.getName());
+            OutputStream out = response.getOutputStream();
+            int size = IOUtils.inputFile(out, file);
+            LOGGER.info(ControllerAdapter.classMap + "文件下载完成");
         }
     }
 
@@ -178,7 +181,7 @@ public class ControllerAdapter {
             } else {
                 if (EntityUtils.isPrimitive(paramentType)) {
 
-                    parameterValues[i] = EntityUtils.translateType(request.getParameter(parameters[i].getName()),paramentType);
+                    parameterValues[i] = EntityUtils.translateType(request.getParameter(parameters[i].getName()), paramentType);
                 } else if (EntityUtils.isMap(paramentType)) {
                     Map valueMap = new HashedMap();
                     Enumeration paNames = request.getParameterNames();
@@ -208,8 +211,8 @@ public class ControllerAdapter {
     private static Object[] getInputStream(HttpServletRequest request, HttpServletResponse response, Method method, String inputFilePath) throws IOException, InterruptedException {
         Object[] objects = new Object[1];
 
-        ResovleUploadThread fileUpLoad =new ResovleUploadThread();
-        objects[0]=fileUpLoad.execate(request,inputFilePath);
+        ResovleUploadThread fileUpLoad = new ResovleUploadThread();
+        objects[0] = fileUpLoad.execate(request, inputFilePath);
 
         return objects;
     }
@@ -217,11 +220,11 @@ public class ControllerAdapter {
 
     public static void resovleRequest(HttpServletRequest request, HttpServletResponse response) {
 
-        LOGGER.info("请求的url "+request.getRequestURL());
+        LOGGER.info("请求的url " + request.getRequestURL());
         String requestURI = request.getRequestURI();
         Object viewObject = null;
-        if (requestURI.endsWith(mvcOption.controllerSuffix) || requestURI.endsWith(mvcOption.upLoadSuffix )) {
-            if(mvcOption.projectRoot!=null && !"".equals(mvcOption.projectRoot) && requestURI.contains(mvcOption.projectRoot)) {
+        if (requestURI.endsWith(mvcOption.controllerSuffix) || requestURI.endsWith(mvcOption.upLoadSuffix)) {
+            if (mvcOption.projectRoot != null && !"".equals(mvcOption.projectRoot) && requestURI.contains(mvcOption.projectRoot)) {
                 requestURI = requestURI.replaceFirst(mvcOption.projectRoot, "");
             }
             String parentURI = "/" + requestURI.split("/")[1];
@@ -230,9 +233,9 @@ public class ControllerAdapter {
             try {
                 if (requestURI.endsWith(mvcOption.controllerSuffix)) {
                     Object[] paramArray = extractParam(request, response, method);
-                    if(paramArray==null){
+                    if (paramArray == null) {
                         viewObject = method.invoke(classes.newInstance());
-                    }else {
+                    } else {
                         viewObject = method.invoke(classes.newInstance(), paramArray);
                     }
 
@@ -261,7 +264,7 @@ public class ControllerAdapter {
                 e.printStackTrace();
             }
 
-        }else{
+        } else {
             System.out.println("走defaultServlet");
         }
 

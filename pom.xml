@@ -13,14 +13,14 @@
         <module>web</module>
         <module>direction</module>
         <module>incache</module>
-<!--        <module>webdemo</module>-->
-   <!--     <module>scala</module>-->
-<!--        <module>webiodemo</module>-->
+        <module>webdemo</module>
+        <module>scala</module>
+        <module>webiodemo</module>
         <module>sso</module>
         <module>network-util</module>
-<!--        <module>admin</module>-->
+        <module>admin</module>
         <module>im</module>
-<!--        <module>search</module>-->
+        <module>search</module>
         <module>login-provider</module>
     </modules>
 

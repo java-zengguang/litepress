@@ -12,7 +12,7 @@ public interface UserServiceInte {
     List<User> getUserList(User user);
     void insertUser(User user);
 
-    void deleteUsers(String ids) throws SQLException;
+    void deleteUsers(String ids) throws SQLException, ClassNotFoundException;
 
     void editUser(User user);
 }

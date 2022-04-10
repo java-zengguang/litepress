@@ -30,6 +30,8 @@ public class LoginService implements LoginServiceInte{
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         if(list!=null && list.size()>0){
             return (String)list.get(0).get("uuid");
@@ -84,6 +86,8 @@ public class LoginService implements LoginServiceInte{
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         if(x>0){
             return token;
@@ -123,7 +127,7 @@ public class LoginService implements LoginServiceInte{
         }
         try {
             list=loginDao.isLogin(uuid,token);
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -154,6 +158,8 @@ public class LoginService implements LoginServiceInte{
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         if(list!=null && list.size()>0){
             resultMap=list.get(0);
@@ -168,7 +174,7 @@ public class LoginService implements LoginServiceInte{
     public int updateLoginValid(String uuid,String token)  {
         try {
             return loginDao.updateLoginStatus(uuid,token,"valid");
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return 0;
@@ -176,7 +182,7 @@ public class LoginService implements LoginServiceInte{
     public int updateLoginInvalid(String uuid,String token)  {
         try {
             return loginDao.updateLoginStatus(uuid,token,"invalid");
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 

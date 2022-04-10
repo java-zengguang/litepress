@@ -8,7 +8,7 @@ import java.io.*;
 public class IOUtils {
 
 
-    private static int size = 64*1024;
+    private static int size = 64 * 1024;
 
 
     public static int createFile(File file) throws IOException {
@@ -26,10 +26,10 @@ public class IOUtils {
     //用于文件下载
     public static int inputFile(OutputStream outputStream, File file) {
         byte[] bytes = new byte[size];
-        BufferedInputStream  inputStream= null;
+        BufferedInputStream inputStream = null;
         try {
             createFile(file);
-            inputStream= new BufferedInputStream(new FileInputStream(file));
+            inputStream = new BufferedInputStream(new FileInputStream(file));
             int current = 0;
             while ((current = inputStream.read(bytes, 0, size)) != -1) {
                 outputStream.write(bytes, 0, current);
@@ -50,7 +50,7 @@ public class IOUtils {
         BufferedOutputStream bos = null;
         try {
             createFile(file);
-            bos= new BufferedOutputStream(new FileOutputStream(file));
+            bos = new BufferedOutputStream(new FileOutputStream(file));
             int current = 0;
             while ((current = inputStream.read(bytes, 0, size)) != -1) {
                 bos.write(bytes, 0, current);
@@ -68,7 +68,7 @@ public class IOUtils {
     //用于处理存储临时上传文件
     public static int createTemporaryFile(InputStream inputStream, String filePath, String fileName) {
         File file = new File(filePath, fileName);
-        return createTemporaryFile(inputStream,file);
+        return createTemporaryFile(inputStream, file);
     }
 
 

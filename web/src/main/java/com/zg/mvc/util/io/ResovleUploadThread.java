@@ -5,8 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
-import java.util.Date;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
 
 /**
  * Created by Administrator on 2019/1/9 0009.
@@ -80,24 +82,23 @@ public class ResovleUploadThread {
     }
 
 
-
-    public SimpleFileEntity execate(HttpServletRequest request,String inputFilePath) throws IOException, InterruptedException {
+    public SimpleFileEntity execate(HttpServletRequest request, String inputFilePath) throws IOException, InterruptedException {
         InputStream inputStream = request.getInputStream();
         String contentType = request.getContentType();
         String targetS = contentType.substring(contentType.lastIndexOf("boundary=") + 9, contentType.length());
-        String inputFileName=targetS;
+        String inputFileName = targetS;
         //生成临时文件
-        if(IOUtils.createTemporaryFile(inputStream, inputFilePath,inputFileName)==-1){
+        if (IOUtils.createTemporaryFile(inputStream, inputFilePath, inputFileName) == -1) {
             LOGGER.info("文件上传失败");
         }
-        File inputFile=new File(inputFilePath,inputFileName);
+        File inputFile = new File(inputFilePath, inputFileName);
         raf = new RandomAccessFile(inputFile, "r");
         long startPoint = getStartPointFile(0, raf.length(), targetS);
         long writerEnd = getEndPointFile(targetS);
         raf.seek(startPoint);
         String formHead = raf.readLine();   //获取表单头信息
-        SimpleFileEntity fileEntity= analysisFormHead(formHead);//分析表头信息
-        fileEntity.fileParentPath=inputFilePath;
+        SimpleFileEntity fileEntity = analysisFormHead(formHead);//分析表头信息
+        fileEntity.fileParentPath = inputFilePath;
         raf.readLine();
         raf.readLine();
         long writerStart = raf.getFilePointer();   //得到需要写入的信息
@@ -110,7 +111,7 @@ public class ResovleUploadThread {
         LOGGER.info("OUTPUT线程结束");
         raf.close();
         inputFile.delete();
-        fileEntity.filePath=targetFile.getAbsolutePath();
+        fileEntity.filePath = targetFile.getAbsolutePath();
         return fileEntity;
     }
 }

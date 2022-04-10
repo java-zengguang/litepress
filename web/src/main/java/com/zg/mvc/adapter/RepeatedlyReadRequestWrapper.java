@@ -33,7 +33,7 @@ public class RepeatedlyReadRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public ServletInputStream getInputStream() throws IOException {
         final ByteArrayInputStream bais = new ByteArrayInputStream(body);
-        ServletInputStream inputStream=new ServletInputStream() {
+        ServletInputStream inputStream = new ServletInputStream() {
 
             @Override
             public boolean isFinished() {
@@ -61,13 +61,14 @@ public class RepeatedlyReadRequestWrapper extends HttpServletRequestWrapper {
 
     /**
      * 通过BufferedReader和字符编码集转换成byte数组
+     *
      * @param br
      * @param encoding
      * @return
      * @throws IOException
      */
-    private byte[] readBytes(BufferedReader br,String encoding) throws IOException{
-        String str = null,retStr="";
+    private byte[] readBytes(BufferedReader br, String encoding) throws IOException {
+        String str = null, retStr = "";
         while ((str = br.readLine()) != null) {
             retStr += str;
         }

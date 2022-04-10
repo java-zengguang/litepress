@@ -1,7 +1,7 @@
 package com.zg.io.dao;
 
 
-import com.zg.database.util.JDBCUtils;
+import com.zg.database.util.BaseDao;
 import com.zg.database.util.ModelSQLUtils;
 import com.zg.io.entity.FileEntity;
 
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by zkyd01 on 2018/9/1.
  */
-public class FileMapper {
+public class FileMapper  extends BaseDao {
     public List searchFile(FileEntity fileEntity) throws Exception {
         String sql=null;
 
@@ -25,15 +25,15 @@ public class FileMapper {
 
        sql= ModelSQLUtils.dynamicSQL(sql,fileEntity);
        System.out.println(sql);
-        List list=JDBCUtils.selectToMapList(sql);
+        List list= selectToMapList(sql);
         return list;
     }
 
     public Integer insertFileData(FileEntity fileEntity) throws SQLException {
 
         try {
-            return JDBCUtils.insertTable(fileEntity);
-        } catch (IllegalAccessException e) {
+            return  insertTable(fileEntity);
+        } catch (IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
             return -1;
         }
@@ -42,13 +42,13 @@ public class FileMapper {
 
 
 
-    public List<Object> getTableData(HashMap map) throws NoSuchFieldException, IllegalAccessException, SQLException {
+    public List<Object> getTableData(HashMap map) throws NoSuchFieldException, IllegalAccessException, SQLException, ClassNotFoundException {
         String sql=null;
 
         sql="select *from #{tableName} where 1=1";
 
         sql=ModelSQLUtils.dynamicSQL(sql,map);
-        List list=JDBCUtils.selectToMapList(sql);
+        List list= selectToMapList(sql);
         return list;
     }
 }

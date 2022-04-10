@@ -9,5 +9,5 @@ public interface RoleServiceInte {
     List getRoleList(Role roel);
     boolean insertRole(Role role);
     boolean editRole(Role role);
-    boolean deleteRoles(String ids) throws SQLException;
+    boolean deleteRoles(String ids) throws SQLException, ClassNotFoundException;
 }

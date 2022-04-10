@@ -1,6 +1,6 @@
 package com.zg.handler;
 
-import com.zg.database.util.JDBCUtils;
+import com.zg.database.util.NewDBPUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class CommitInterfaceHandler implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) {
+    public Object invoke(Object proxy, Method method, Object[] args) throws SQLException, ClassNotFoundException {
         Object result = null;
         try {
             result = method.invoke(target, args);
@@ -42,7 +42,7 @@ public class CommitInterfaceHandler implements InvocationHandler {
         }
         if (methodList.contains(method.getName())) {
             LOGGER.info(method.getName() + " 事务被提交");
-            JDBCUtils.commit();
+            NewDBPUtils.commit("optionDB");
         }
         return result;
 

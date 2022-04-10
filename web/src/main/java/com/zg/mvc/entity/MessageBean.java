@@ -5,7 +5,7 @@ import com.zg.bean.entity.MainModel;
 /**
  * Created by Administrator on 2019/2/12 0012.
  */
-public class MessageBean extends MainModel{
+public class MessageBean extends MainModel {
     public String message;
     public boolean success;
     public Object object;

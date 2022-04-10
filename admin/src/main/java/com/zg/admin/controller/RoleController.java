@@ -68,7 +68,7 @@ public class RoleController extends BaseController{
 
 
     @ResultMapping("/deleteRoles.do")
-    public String deleteRoles(String ids) throws IllegalAccessException, SQLException {
+    public String deleteRoles(String ids) throws IllegalAccessException, SQLException, ClassNotFoundException {
         if(roleService.deleteRoles(ids)) {
 
             json = new MessageBean("操作成功", true, null);

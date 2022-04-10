@@ -48,6 +48,8 @@ public class MenuService extends CommitClassHandler {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
 
         return false;
@@ -63,6 +65,8 @@ public class MenuService extends CommitClassHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return false;

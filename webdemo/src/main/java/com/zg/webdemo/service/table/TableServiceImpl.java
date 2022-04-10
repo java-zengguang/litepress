@@ -47,6 +47,12 @@ public class TableServiceImpl implements TableService {
             } catch (SQLException e) {
                 e.printStackTrace();
 
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
             }
         }else{
             System.out.println("参数错误");

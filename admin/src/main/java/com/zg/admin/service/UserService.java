@@ -31,12 +31,14 @@ public class UserService implements UserServiceInte{
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
 
     }
 
     @Override
-    public void deleteUsers(String ids) throws SQLException {
+    public void deleteUsers(String ids) throws SQLException, ClassNotFoundException {
         System.out.println("ids"+ids);
         String idArray[]=ids.split(",");
         System.out.println(idArray);
@@ -54,6 +56,8 @@ public class UserService implements UserServiceInte{
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

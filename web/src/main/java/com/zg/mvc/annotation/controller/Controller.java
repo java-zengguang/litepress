@@ -1,6 +1,5 @@
 package com.zg.mvc.annotation.controller;
 
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 

@@ -1,6 +1,5 @@
 package com.zg.webdemo.controller;
 
-import com.zg.database.util.JDBCUtils;
 import com.zg.mvc.annotation.controller.Controller;
 import com.zg.mvc.annotation.controller.ResultMapping;
 import com.zg.util.reflect.JsonMap;
@@ -8,6 +7,7 @@ import com.zg.util.reflect.JsonUtils;
 import org.apache.commons.collections.map.HashedMap;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,10 +20,10 @@ public class SQLController{
 
     @ResultMapping("/querySQL.do")
     public String querySQL(String sql) throws Exception {
-        List list=JDBCUtils.selectToMapList(sql);
+
         //return "forward::/firstController/hello.do";
         // return "staticURL::/WEB-INF/html/hello.html";
-        JsonMap json=new JsonMap(true,"操作成功",list);
+        JsonMap json=new JsonMap(true,"操作成功",new ArrayList<>());
         return "json::" + JsonUtils.objectToJson(json);
     }
 
@@ -32,11 +32,10 @@ public class SQLController{
     public String updateSQL(String sql) throws IllegalAccessException {
         Map json=new HashedMap();
         try {
-            int count=JDBCUtils.operation(sql);
-            JDBCUtils.commit();
+
             json.put("success",true);
-            json.put("message","操作成功，共有"+count+"行受影响");
-        } catch (SQLException e) {
+            json.put("message","操作成功，共有"+1+"行受影响");
+        } catch (Exception e) {
             e.printStackTrace();
             json.put("success",false);
             json.put("message","操作失败");

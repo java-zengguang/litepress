@@ -1,7 +1,6 @@
 package com.zg.util.io;
 
-import com.mysql.cj.api.result.Row;
-import com.zg.database.util.JDBCUtils;
+
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -141,16 +140,7 @@ public class POIUtils {
         return true;
     }
 
-    public static void main(String args[]) throws SQLException, IOException {
-        String sql = "select *from user_login ";
-        List list = JDBCUtils.selectToMapList(sql);
-        // File file = new File("f:\\q.xls");
-        // FileOutputStream out = new FileOutputStream(file);
-        HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
-        addSheet(hssfWorkbook, "test", list, 5, 5);
-        List list1 = readExcel(hssfWorkbook, "test");
-        System.out.println("list1=" + list1);
-        // hssfWorkbook.write(out);
+    public static void main(String args[]) throws SQLException, IOException, ClassNotFoundException {
 
 
     }

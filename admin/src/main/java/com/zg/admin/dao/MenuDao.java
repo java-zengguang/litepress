@@ -2,18 +2,19 @@ package com.zg.admin.dao;
 
 import com.zg.admin.entity.Menu;
 import com.zg.admin.entity.MenuInfo;
-import com.zg.database.util.JDBCUtils;
+import com.zg.database.util.BaseDao;
+
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuDao {
+public class MenuDao extends BaseDao {
 
     public List getMenuByPid(int pid, int level, Class modelClass) throws Exception {
 
         String sql="select *from cn_menu where 1=1 and pid="+pid+"  and level="+level;
-        List list=JDBCUtils.select(sql,modelClass);
+        List list= select(sql,modelClass);
         return list;
 
     }
@@ -21,7 +22,7 @@ public class MenuDao {
 
     public List getMenuById(int id, Class modelClass) throws Exception {
         String sql="select *from cn_menu where 1=1 and id="+id;
-        List list=JDBCUtils.select(sql,modelClass);
+        List list= select(sql,modelClass);
         return list;
 
     }
@@ -29,7 +30,7 @@ public class MenuDao {
 
     public List getMenuById(int id,int level, Class modelClass) throws Exception {
         String sql="select *from cn_menu where 1=1 and id="+id+"  and level="+level;
-        List list=JDBCUtils.select(sql,modelClass);
+        List list= select(sql,modelClass);
         return list;
 
     }
@@ -78,17 +79,17 @@ public class MenuDao {
     }
 
 
-    public int insertMenu(MenuInfo menuInfo) throws SQLException, IllegalAccessException {
+    public int insertMenu(MenuInfo menuInfo) throws SQLException, IllegalAccessException, ClassNotFoundException {
 
-       return JDBCUtils.insertTable(menuInfo);
+       return  insertTable(menuInfo);
 
     }
 
 
-    public int updateMenu(MenuInfo menuInfo,Integer id) throws SQLException, IllegalAccessException {
+    public int updateMenu(MenuInfo menuInfo,Integer id) throws SQLException, IllegalAccessException, ClassNotFoundException {
 
 
-       return JDBCUtils.updateModel(menuInfo,"id="+id);
+       return  updateModel(menuInfo,"id="+id);
     }
 
 

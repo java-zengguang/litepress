@@ -1,7 +1,6 @@
 package com.zg.database.util;
 
 import com.zg.bean.entity.MainModel;
-import com.zg.database.pool.DataBaseInte;
 import com.zg.util.reflect.DynamicClass;
 import com.zg.util.reflect.EntityUtils;
 import org.slf4j.Logger;
@@ -20,28 +19,15 @@ import java.util.*;
  * Created by Administrator on 2018/11/27 0027.
  */
 public class BaseDao {
-    private  final Logger LOGGER = LoggerFactory.getLogger(BaseDao.class);
-    private  DataBaseInte dataBasePool ;
-    private  ThreadLocal<Connection> threadLocal = new ThreadLocal();
+    private final Logger LOGGER = LoggerFactory.getLogger(BaseDao.class);
+    public String dataSource = "optionDB";
 
-    public BaseDao() {
-        dataBasePool= DBPUtils.getInstance();
+
+    public Connection getConnection() throws SQLException, ClassNotFoundException {
+        return NewDBPUtils.getConnection(dataSource);
     }
 
-    public BaseDao(String dataSource) {
-        dataBasePool= DBPUtils.getInstance(dataSource);
-    }
-
-    public  Connection getConnection() {
-        Connection conn = threadLocal.get();
-        if (conn == null) {
-            conn = dataBasePool.getConnection();
-            threadLocal.set(conn);
-        }
-        return conn;
-    }
-
-    public  int insertTable(Object model) throws SQLException, IllegalAccessException {
+    public int insertTable(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException {
         List list = new ArrayList();
         list.add(model);
         int results[] = insertTables(list, model.getClass());
@@ -52,13 +38,13 @@ public class BaseDao {
         return result;
     }
 
-    public  int[] insertTables(List modelLIst, Class modelClass) throws SQLException, IllegalAccessException {
+    public int[] insertTables(List modelLIst, Class modelClass) throws SQLException, IllegalAccessException, ClassNotFoundException {
         String tableName = EntityUtils.getTableNameFromModel(modelClass);
         return insertTables(modelLIst, modelClass, tableName);
     }
 
     //插入model_list ，未提交，未初始化连接
-    public  int[] insertTables(List modelList, Class modelClass, String tableName) throws SQLException, IllegalAccessException {
+    public int[] insertTables(List modelList, Class modelClass, String tableName) throws SQLException, IllegalAccessException, ClassNotFoundException {
         int[] result = null;
         String memS = "";
         String valS = "";
@@ -69,7 +55,7 @@ public class BaseDao {
         for (Object model : modelList) {
 
             String sql = ModelSQLUtils.insert(model, tableName);
-           // LOGGER.info(sql);
+            // LOGGER.info(sql);
             stmt.addBatch(sql);
 
         }
@@ -82,18 +68,18 @@ public class BaseDao {
     }
 
     //查询
-    public  List select(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
+    public List select(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
         List list = new ArrayList();
         Map tableInfoMap = tableInfo(sql);
         list = selectToMapList(sql);
-        Object model = DynamicClass.getDynamicClass(Arrays.asList("com.zg.bean.entity.MainModel","com.zg.bean.annotation.FieldTypeMode","com.zg.bean.annotation.Model"), getTableName(sql), tableInfoMap, null, "MainModel");
+        Object model = DynamicClass.getDynamicClass(Arrays.asList("com.zg.bean.entity.MainModel", "com.zg.bean.annotation.FieldTypeMode", "com.zg.bean.annotation.Model"), getTableName(sql), tableInfoMap, null, "MainModel");
         list = SerializeObjectUtils.setMember(list, model.getClass());
         return list;
     }
 
 
     //查询
-    public  List select(String sql, Class modelClass) throws Exception {
+    public List select(String sql, Class modelClass) throws Exception {
         List list = selectToMapList(sql);
         // Map<String, String> tableInfoMap = tableInfo(sql);
         List model_list = SerializeObjectUtils.setMember(list, modelClass);
@@ -101,19 +87,19 @@ public class BaseDao {
 
     }
 
-    public  String getTableName(String sql) {
+    public String getTableName(String sql) {
         String stringArray[] = sql.split(" ");
         for (int i = 0; i < stringArray.length; i++) {
             if ("from".equals(stringArray[i].toLowerCase().trim()) || "*from".equals(stringArray[i].toLowerCase().trim())) {
                 return stringArray[i + 1];
             }
         }
-        LOGGER.info("JDBCUtils.getTableName   未找到tableName");
+        LOGGER.info(" getTableName   未找到tableName");
         return null;
     }
 
     //获取表格信息
-    public  Map<String, String> tableInfo(String sql) throws SQLException {
+    public Map<String, String> tableInfo(String sql) throws SQLException, ClassNotFoundException {
         Map map = new HashMap();
         Connection conn = getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -132,7 +118,7 @@ public class BaseDao {
     }
 
     //查询出列明，数据对应的list集合
-    public  List<Map> selectToMapList(String sql) throws SQLException {
+    public List<Map> selectToMapList(String sql) throws SQLException, ClassNotFoundException {
 
         // 记录error级别的信息
         LOGGER.info(sql);
@@ -161,7 +147,7 @@ public class BaseDao {
     }
 
     //执行增删改
-    public  Integer operation(String sql) throws SQLException {
+    public Integer operation(String sql) throws SQLException, ClassNotFoundException {
         LOGGER.info(sql);
         Connection conn = getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -172,7 +158,7 @@ public class BaseDao {
 
 
     //执行批操作
-    public  int[] batchSql(List<String> sqlList) throws SQLException {
+    public int[] batchSql(List<String> sqlList) throws SQLException, ClassNotFoundException {
         int i[] = null;
         Statement stmt;
         Connection conn;
@@ -193,7 +179,7 @@ public class BaseDao {
     }
 
 
-    public  List<String> batchSqlFile(File file) throws IOException {
+    public List<String> batchSqlFile(File file) throws IOException {
         // 装载list
         List<String> list = new ArrayList<String>();
         if (file != null && file.exists()) {
@@ -219,11 +205,11 @@ public class BaseDao {
     }
 
 
-    public  List execute(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
+    public List execute(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
         LOGGER.info(sql);
         List<MainModel> list = new ArrayList<MainModel>();
         if (sql == null) {
-            LOGGER.info("JDBCUtils.execute  sql is null");
+            LOGGER.info(" execute  sql is null");
         } else if (sql.startsWith("select")) {
             list = select(sql);
 
@@ -235,7 +221,7 @@ public class BaseDao {
     }
 
 
-    public  boolean commit() {
+    public boolean commit() throws SQLException, ClassNotFoundException {
         Connection conn = getConnection();
         try {
             if (!conn.getAutoCommit()) {
@@ -252,13 +238,13 @@ public class BaseDao {
     }
 
 
-    public  void release() throws SQLException {
+    public void release() throws SQLException, ClassNotFoundException {
         Connection conn = getConnection();
         conn.close();
-        threadLocal.remove();
+        NewDBPUtils.release(dataSource);
     }
 
-    public  int updateModel(Object object, String... terms) throws SQLException, IllegalAccessException {
+    public int updateModel(Object object, String... terms) throws SQLException, IllegalAccessException, ClassNotFoundException {
         int result = 0;
         if (terms != null && terms.length > 0) {
             String sql = ModelSQLUtils.update(object, terms);
@@ -268,30 +254,18 @@ public class BaseDao {
     }
 
 
-    public  String getOneValue(String sql) {
+    public String getOneValue(String sql) throws SQLException, ClassNotFoundException {
         String result = "";
         ResultSet rs = null;
         PreparedStatement pstmt = null;
-        try {
 
-            Connection conn = getConnection();
-            pstmt = conn.prepareStatement(sql);
 
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                result = rs.getString(1);
-            }
+        Connection conn = getConnection();
+        pstmt = conn.prepareStatement(sql);
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                pstmt.close();
-                rs.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
+        rs = pstmt.executeQuery();
+        while (rs.next()) {
+            result = rs.getString(1);
         }
 
 
@@ -299,14 +273,25 @@ public class BaseDao {
     }
 
 
-    /*    public  void rollBack(){
-        Connection conn=getConnection();
-        try {
-            conn.rollback();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }*/
 
+    public  Integer insertMap2Data(String tableName,Map<String,String> para) throws Exception{
+        String sql="insert into " +tableName;
+        String column="";
+        String values="";
+        Set<String > columnSet=para.keySet();
+        for(String c:columnSet){
+            column=c+" ,"+column;
+            values=para.get(c)+" ,"+"'"+values+"'";
+        }
+        if(column.endsWith(",")){
+            column=column.substring(0,column.length()-1);
+        }
+        if(values.endsWith(",")){
+            values=values.substring(0,values.length()-1);
+        }
+        sql=sql+" ("+column+")"+" values ("+values+")";
+        return operation(sql);
+
+    }
 
 }

@@ -35,6 +35,8 @@ public class RoleService implements RoleServiceInte{
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
 
         if(result>0){
@@ -57,6 +59,8 @@ public class RoleService implements RoleServiceInte{
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         if(result>0){
             return true;
@@ -67,7 +71,7 @@ public class RoleService implements RoleServiceInte{
     }
 
     @Override
-    public boolean deleteRoles(String ids) throws SQLException {
+    public boolean deleteRoles(String ids) throws SQLException, ClassNotFoundException {
         System.out.println("ids"+ids);
         String idArray[]=ids.split(",");
         roleDao.deleteRoles(idArray);
