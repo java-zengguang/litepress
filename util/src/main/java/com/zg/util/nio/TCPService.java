@@ -1,5 +1,8 @@
 package com.zg.util.nio;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,6 +12,7 @@ import java.nio.channels.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TCPService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TCPService.class.getName());
 
     public volatile AtomicBoolean isOpen = new AtomicBoolean(true);
     public ServerSocketChannel serviceChannel;
@@ -29,7 +33,7 @@ public class TCPService {
             SocketChannel channel = serviceChannel.accept();
             channel.configureBlocking(false);
             SelectionKey selectionKey = channel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);  //筛选出关注的集合
-            System.out.println(channel.getLocalAddress() + ":连接成功");
+            LOGGER.info(channel.getLocalAddress() + ":连接成功");
             int interestSet = selectionKey.interestOps();
             if ((interestSet & SelectionKey.OP_READ) == SelectionKey.OP_READ) {
                 getFile(channel);

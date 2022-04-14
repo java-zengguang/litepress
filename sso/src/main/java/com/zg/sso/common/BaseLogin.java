@@ -2,6 +2,7 @@ package com.zg.sso.common;
 
 import com.zg.init.Config;
 import com.zg.sso.entity.SSOOpthion;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

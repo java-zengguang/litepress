@@ -1,5 +1,9 @@
 package com.zg.mvc.util.io;
 
+import com.zg.util.ftp.FTPUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -9,6 +13,7 @@ import java.io.RandomAccessFile;
  * 多线程写入文件
  */
 public class OutputFileThread implements Runnable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FTPUtil.class.getName());
 
     public File inputFile;
     public File targetFile;
@@ -68,7 +73,7 @@ public class OutputFileThread implements Runnable {
             return;
         }
 
-        System.out.println("第" + count + "个子线程启动  start" + start + "   end" + end);
+        LOGGER.info("第" + count + "个子线程启动  start" + start + "   end" + end);
         try {
             outputFile(start, end);
         } catch (IOException e) {
@@ -76,6 +81,6 @@ public class OutputFileThread implements Runnable {
         }
 
         getCompareCount();
-        System.out.println("第" + count + "个子线程结束  start" + start + "   end" + end);
+        LOGGER.info("第" + count + "个子线程结束  start" + start + "   end" + end);
     }
 }

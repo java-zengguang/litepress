@@ -41,7 +41,7 @@ public class ListUtils {
             }
             modelList.set(index, model);
         } else {
-            //System.out.println(message.get("error_print_1"));
+            //LOGGER.info(message.get("error_print_1"));
         }
         return true;
     }
@@ -64,7 +64,7 @@ public class ListUtils {
             while (it.hasPrevious()) {
                 i = (int) it.previous();
                 modelList.remove(i);
-                //	System.out.println(message.get("delete_print_1")+i);
+                //	LOGGER.info(message.get("delete_print_1")+i);
             }
         }
         return true;

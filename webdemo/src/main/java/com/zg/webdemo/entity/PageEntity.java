@@ -2,7 +2,6 @@ package com.zg.webdemo.entity;
 
 import com.zg.bean.entity.MainModel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +61,17 @@ public class PageEntity extends MainModel {
             boolean var7 = true;
         }
 
+    }
+
+    public static PageEntity getPageEntity(int currentPage, int totalRows, int pageSize) {
+        PageEntity pager = new PageEntity(totalRows, pageSize);
+        if (currentPage == 0) {
+            pager.setStart(1);
+        } else {
+            pager.setStart(currentPage);
+        }
+
+        return pager;
     }
 
     public boolean isFirst() {
@@ -161,16 +171,5 @@ public class PageEntity extends MainModel {
 
     public int getStartRow() {
         return this.startRow;
-    }
-
-    public static PageEntity getPageEntity(int currentPage, int totalRows, int pageSize) {
-        PageEntity pager = new PageEntity(totalRows, pageSize);
-        if (currentPage == 0) {
-            pager.setStart(1);
-        } else {
-            pager.setStart(currentPage);
-        }
-
-        return pager;
     }
 }

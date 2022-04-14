@@ -2,6 +2,9 @@ package com.zg.util.reflect;
 
 import com.zg.bean.entity.MainModel;
 import com.zg.database.util.DataBaseUtil;
+import com.zg.util.ftp.FTPUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaCompiler.CompilationTask;
@@ -12,6 +15,7 @@ import java.util.*;
 
 
 public class DynamicClass {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FTPUtil.class.getName());
 
 
     private static String produceEntityJavaCode(List<String> referenceList, String calssName, Map<String, String> natureMap, List<String> interfaceList, String parentClass) throws Exception {
@@ -49,26 +53,7 @@ public class DynamicClass {
 
         return sb.toString();
     }
-/*    private static String produceEntityJavaCode(Map<String,Object> map,String tableName) throws Exception {
-        Map<String,String> natureMap=new HashMap<>();
-        Set<String> keySet=map.keySet();
-        for(String key:keySet){
-            natureMap.put(key,map.get(key).getClass().getTypeName());
-        }
-        return produceEntityJavaCode(Arrays.asList("com.zg.bean.entity.MainModel","com.zg.bean.annotation.FieldTypeMode","com.zg.bean.annotation.Model"),tableName,natureMap, null, "MainModel");
-    }
 
-    public static Object getDynamicClass(Map<String,Object> map,String tableName){
-        String javaCode;
-        try {
-            javaCode = produceEntityJavaCode(map,tableName);
-            return getDynamicClass(tableName, javaCode);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
-    }*/
 
     public static Object getDynamicClass(List<String> referenceList, String className, Map<String, String> natureMap, List<String> interfaceList, String parentClass) {
         String javaCode;
@@ -92,7 +77,7 @@ public class DynamicClass {
         JavaFileObject jfo = new StringJavaFileObject(name, javaCode);
         List<String> options = new ArrayList<String>();
         String path = MainModel.class.getClassLoader().getResource("").getPath();
-        System.out.println(DataBaseUtil.class + "====calss生成路径" + path);
+        LOGGER.info(DataBaseUtil.class + "====calss生成路径" + path);
         options.addAll(Arrays.asList("-d", path));
         List<? extends JavaFileObject> jfos = Arrays.asList(jfo);
         CompilationTask task = compiler.getTask(null, stdManager, null, options, null, jfos);

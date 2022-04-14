@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.zg.database</groupId>
@@ -15,13 +15,13 @@
         <module>incache</module>
         <module>network-util</module>
         <module>im</module>
-<!--        <module>webdemo</module>
-        <module>scala</module>
-        <module>webiodemo</module>
         <module>sso</module>
-        <module>admin</module>
-        <module>search</module>
-        <module>login-provider</module>-->
+        <module>login-provider</module>
+
+<!--        <module>webdemo</module>
+        <module>webiodemo</module>
+        <module>scala</module>
+        <module>admin</module>-->
     </modules>
 
     <repositories>
@@ -40,12 +40,11 @@
 
     <distributionManagement>
         <repository>
-        <id>alimaven</id>
-        <name>Maven Aliyun Mirror</name>
-        <url>http://maven.aliyun.com/nexus/content/repositories/central/</url>
+            <id>alimaven</id>
+            <name>Maven Aliyun Mirror</name>
+            <url>http://maven.aliyun.com/nexus/content/repositories/central/</url>
         </repository>
     </distributionManagement>
-
 
 
     <properties>
@@ -67,7 +66,6 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
-
 
 
         </plugins>

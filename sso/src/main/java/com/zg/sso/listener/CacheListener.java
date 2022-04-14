@@ -21,7 +21,7 @@ public class CacheListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent arg0) {
         try {
             // 需要实现的功能
-            System.out.println("随项目启动方式一----------------》");
+            LOGGER.info("随项目启动方式一----------------》");
             RomCacheUtil.coverPut("LoginCache", new SimpleRomCache(UserLogin.class));
         } catch (Exception e) {
             LOGGER.error("GreyClientInitListener error", e);

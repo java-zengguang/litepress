@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by Administrator on 2018/12/5 0005.
  */
 @Controller("/firstController")
-public class FirstController {
+public class FirstController extends BaseController {
 
 
     @ResultMapping("/toHello.do")
@@ -30,7 +30,7 @@ public class FirstController {
         list.add(new Test(2, "3", new Date()));
         Map map = new HashedMap();
 
-        System.out.println("开始转发");
+        LOGGER.info("开始转发");
         //return "forward::/firstController/hello.do";
         // return "staticURL::/WEB-INF/html/hello.html";
         return "json::" + JsonUtils.objectToJson(map);
@@ -45,7 +45,7 @@ public class FirstController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("hello");
+        LOGGER.info("hello");
         out.println("hello");
     }
 }

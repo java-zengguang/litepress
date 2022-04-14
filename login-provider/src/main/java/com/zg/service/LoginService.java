@@ -4,6 +4,8 @@ package com.zg.service;
 import com.zg.dao.LoginDao;
 import com.zg.inte.LoginServiceInte;
 import org.apache.commons.collections.map.HashedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -13,8 +15,8 @@ import java.util.*;
  */
 public class LoginService implements LoginServiceInte {
 
+    public final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
     private LoginDao loginDao = new LoginDao();
-
 
     public String verification(String username, String passworld) {
         Map map = new HashedMap();
@@ -97,7 +99,7 @@ public class LoginService implements LoginServiceInte {
 
 
     public boolean updateToken(String uuid, String token, String url) {
-        System.out.println(uuid + token + url);
+        LOGGER.info(uuid + token + url);
         if (uuid == null) {
             uuid = "";
         }

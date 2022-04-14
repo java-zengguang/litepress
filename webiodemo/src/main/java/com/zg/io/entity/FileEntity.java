@@ -2,7 +2,6 @@ package com.zg.io.entity;
 
 import com.zg.bean.entity.MainModel;
 
-import java.io.Serializable;
 import java.util.Date;
 
 public class FileEntity extends MainModel {
@@ -19,6 +18,9 @@ public class FileEntity extends MainModel {
     private String describes;
     private String nodeId;
     private String scriptName;
+
+    public FileEntity() {
+    }
 
     public Integer getFileId() {
         return fileId;
@@ -114,8 +116,5 @@ public class FileEntity extends MainModel {
 
     public void setScriptName(String scriptName) {
         this.scriptName = scriptName;
-    }
-
-    public FileEntity() {
     }
 }

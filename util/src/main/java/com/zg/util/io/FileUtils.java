@@ -5,6 +5,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -17,8 +19,8 @@ import java.util.Set;
  * Created by Administrator on 2018/11/27 0027.
  */
 public class FileUtils extends org.apache.commons.io.FileUtils {
-
     public static final String PATH;
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class.getName());
 
     static {
         //获取项目的相对路径
@@ -28,7 +30,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
             if (FileUtils.class.getResource("/") != null) {
                 path = FileUtils.class.getResource("/").toURI().getPath();
-                System.out.println("---" + path);
+                LOGGER.info("---" + path);
             } else {
                 path = FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
                 File file = new File(path);
@@ -36,7 +38,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
                 path = java.net.URLDecoder.decode(path, "UTF-8");
                 path = path + "\\";
 
-                System.out.println("===" + path);
+                LOGGER.info("===" + path);
             }
 
 
@@ -77,7 +79,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
     public static Element getRootElement(String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
-        // System.out.println("配置文件路径："+FileUtils.PATH + fileName);
+        // LOGGER.info("配置文件路径："+FileUtils.PATH + fileName);
         Document doc = reader.read(new File(FileUtils.PATH + fileName));
         Element root = doc.getRootElement();
         return root;
@@ -85,7 +87,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
     public static Element getRootElement(String rootPath, String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
-        // System.out.println("配置文件路径："+FileUtils.PATH + fileName);
+        // LOGGER.info("配置文件路径："+FileUtils.PATH + fileName);
         Document doc = reader.read(new File(rootPath + fileName));
         Element root = doc.getRootElement();
         return root;
@@ -107,7 +109,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
     public static List getClassFormPackage(String packageName) throws ClassNotFoundException {
         List classList = new ArrayList();
 /*        String packagePath = PATH + packageName.replace(".", File.separator);
-        System.out.println(packagePath);
+        LOGGER.info(packagePath);
         File packageFile = new File(packagePath);
         File files[] = packageFile.listFiles();
         for (File file : files) {

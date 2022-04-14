@@ -6,6 +6,7 @@ import com.zg.database.util.ModelSQLUtils;
 import com.zg.webdemo.entity.PageEntity;
 import com.zg.webdemo.entity.Table;
 import com.zg.webdemo.util.TableUtil;
+import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -16,6 +17,8 @@ import java.util.Map;
  * Created by zkyd01 on 2018/9/1.
  */
 public class TableMapper extends BaseDao {
+    private final Logger LOGGER = Logger.getLogger(this.getClass().getName());
+
     public List searchTableName(Table table) throws Exception {
         String sql = null;
 
@@ -25,7 +28,7 @@ public class TableMapper extends BaseDao {
                 "$if{ and table_name LIKE  concat(#{tableName},'%') }  ";
 
         sql = ModelSQLUtils.dynamicSQL(sql, table);
-        System.out.println(sql);
+        LOGGER.info(sql);
         List list = selectToMapList(sql);
         return list;
     }

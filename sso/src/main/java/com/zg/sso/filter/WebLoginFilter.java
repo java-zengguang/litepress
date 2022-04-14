@@ -4,6 +4,7 @@ package com.zg.sso.filter;
 import com.zg.init.Config;
 import com.zg.sso.entity.SSOOpthion;
 import com.zg.sso.service.LoginService;
+import org.apache.log4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
@@ -17,6 +18,7 @@ import java.util.Map;
  * Created by Administrator on 2019/2/13 0013.
  */
 public class WebLoginFilter implements Filter {
+    private final Logger LOGGER = Logger.getLogger(this.getClass().getName());
 
     LoginService loginService = new LoginService();
 
@@ -49,10 +51,10 @@ public class WebLoginFilter implements Filter {
 
         int loginStatus = isLogin((HttpServletRequest) request, (HttpServletResponse) response);
         if (loginStatus > 0) {
-            System.out.println("通过验证");
+            LOGGER.info("通过验证");
             chain.doFilter(request, response);
         } else {
-            System.out.println("未通过验证");
+            LOGGER.info("未通过验证");
             Map<String, String> cookieMap = getCookies((HttpServletRequest) request);
             String token = cookieMap.get("token");
             toLogin((HttpServletResponse) response, token);

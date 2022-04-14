@@ -7,11 +7,14 @@ import com.zg.network.common.service.BaseServiceHandler;
 import com.zg.util.reflect.EntityUtils;
 import com.zg.util.reflect.JsonUtils;
 import io.netty.channel.ChannelHandlerContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
 public class ProviderServiceHandler extends BaseServiceHandler<String> {
+    public final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
 
 
     private Object[] getParamters(List<ParamterEntity> paramterEntityList) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -67,7 +70,7 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws IllegalAccessException {
 
-        System.out.println("get msg >" + msg);
+        LOGGER.info("get msg >" + msg);
 
         DTPRequest request = null;
         DTPResponse response = new DTPResponse();

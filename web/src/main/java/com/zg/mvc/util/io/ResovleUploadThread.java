@@ -50,7 +50,6 @@ public class ResovleUploadThread {
             new Thread(ot).start();
         }
         while (ot.compareCount < 5) {
-            System.out.println(ot.compareCount);
             this.wait(10);
         }
 
@@ -72,7 +71,7 @@ public class ResovleUploadThread {
                 raf.read(b, 0, endPoint - startPoint);   //读取
                 line = new String(b);
                 if (line.contains(targetS)) {
-                    System.out.println(line);
+                    LOGGER.info(line);
                     return startPoint - 3;
                 }
                 endPoint = startPoint;

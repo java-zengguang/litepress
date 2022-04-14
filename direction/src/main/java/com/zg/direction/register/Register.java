@@ -4,6 +4,8 @@ import com.zg.direction.adapter.ProviderFactory;
 import com.zg.util.reflect.JsonUtils;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -16,7 +18,7 @@ public class Register implements Watcher {
     private static CountDownLatch connectedSemaphore = new CountDownLatch(1);
     private static ZooKeeper zk = null;
     private static Stat stat = new Stat();
-
+    public final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
 
     public Register() {
     }
@@ -46,8 +48,8 @@ public class Register implements Watcher {
             String path = key;
             String value = JsonUtils.objectToJson(map.get(key)).toString();
             zk.create(path, value.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
-            System.out.println("success create znode: " + path);
-            System.out.println("success create data: " + value);
+            LOGGER.info("success create znode: " + path);
+            LOGGER.info("success create data: " + value);
         }
         Thread.sleep(Integer.MAX_VALUE);
 
@@ -59,8 +61,8 @@ public class Register implements Watcher {
                 connectedSemaphore.countDown();
             } else if (event.getType() == Event.EventType.NodeDataChanged) {
                 try {
-                    System.out.println("the data of znode " + event.getPath() + " is : " + new String(zk.getData(event.getPath(), true, stat)));
-                    System.out.println("czxID: " + stat.getCzxid() + ", mzxID: " + stat.getMzxid() + ", version: " + stat.getVersion());
+                    LOGGER.info("the data of znode " + event.getPath() + " is : " + new String(zk.getData(event.getPath(), true, stat)));
+                    LOGGER.info("czxID: " + stat.getCzxid() + ", mzxID: " + stat.getMzxid() + ", version: " + stat.getVersion());
                 } catch (Exception e) {
                 }
             }

@@ -6,6 +6,7 @@ import com.zg.network.common.heartbeat.BaseHeartbeatHandle;
 import com.zg.network.im.login.LoginManager;
 import com.zg.util.reflect.EntityUtils;
 import io.netty.channel.Channel;
+import org.apache.log4j.Logger;
 
 import java.util.Date;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class IMHeartbeatHandle extends BaseHeartbeatHandle {
 
     //  public final long HBTIME=30*60*1000;   //心跳时间
+    private final Logger LOGGER = Logger.getLogger(this.getClass().getName());
 
 
     public IMHeartbeatHandle(Map<String, ChannelBean> channelMap, long HBTIME) {
@@ -32,7 +34,7 @@ public class IMHeartbeatHandle extends BaseHeartbeatHandle {
             ChannelBean channelBean = entry.getValue();
             int status = channelBean.status;
             if (status < 0) {    //判断是否失效
-                System.out.println(channelBean.uuid + " 的channel失效");
+                LOGGER.info(channelBean.uuid + " 的channel失效");
 
                 LoginManager.logout(channelBean.uuid, channelBean.token);  //退出登陆
 
@@ -46,7 +48,7 @@ public class IMHeartbeatHandle extends BaseHeartbeatHandle {
                     String json = null;
                     ZGMPBean response = new ZGMPBean("RESPONSE");
                     response.uuid = channelBean.uuid;
-                    System.out.println("向" + channelBean.uuid + "发送心跳");
+                    LOGGER.info("向" + channelBean.uuid + "发送心跳");
                     response.message = "心跳";
                     response.methodType = "HEARTBEAT";
                     response.heartBeatID = channelBean.heartBeatID;

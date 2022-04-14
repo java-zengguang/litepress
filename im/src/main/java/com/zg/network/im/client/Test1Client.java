@@ -36,7 +36,7 @@ public class Test1Client {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("命令错误");
+                e.printStackTrace();
                 continue;
             }
 

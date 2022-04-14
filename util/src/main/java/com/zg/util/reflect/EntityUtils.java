@@ -6,6 +6,8 @@ import com.zg.bean.annotation.NotCommitField;
 import com.zg.bean.entity.OptionDB;
 import com.zg.database.util.DataBaseUtil;
 import com.zg.init.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -19,6 +21,8 @@ import java.util.*;
 
 
 public class EntityUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntityUtils.class.getName());
+
     public static String dateFormat = "yyyy-MM-dd HH:mm:ss";
     public static SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
     private static OptionDB optionDB = (OptionDB) Config.getConfig("optionDB");
@@ -731,7 +735,7 @@ public class EntityUtils {
             setFieldOrcale(field, object, value);
             return;
         } else {
-            System.out.println(EntityUtils.class + "====数据源未初始化");
+            LOGGER.info(EntityUtils.class + "====数据源未初始化");
             return;
         }
     }
@@ -754,7 +758,7 @@ public class EntityUtils {
             } else if ("ORACLE".equals(optionDB.DBType)) {
                 return getFieldOrcale(field, object);
             } else {
-                System.out.println(EntityUtils.class + "====数据源未初始化");
+                LOGGER.info(EntityUtils.class + "====数据源未初始化");
                 return null;
             }
         } else {

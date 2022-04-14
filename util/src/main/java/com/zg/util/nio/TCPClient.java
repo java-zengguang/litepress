@@ -1,5 +1,8 @@
 package com.zg.util.nio;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,6 +15,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
 public class TCPClient {
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
 
 
     public SocketChannel channel;
@@ -29,7 +33,7 @@ public class TCPClient {
         channel.configureBlocking(false);
         SelectionKey selectionKey = channel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);  //筛选出关注的集合
         int interestSet = selectionKey.interestOps();
-        System.out.println("请求连接");
+        LOGGER.info("请求连接");
         if ((interestSet & SelectionKey.OP_READ) == SelectionKey.OP_READ) {
             getFile();
         }

@@ -11,6 +11,8 @@ import com.zg.util.reflect.MongoUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -18,6 +20,7 @@ import java.util.*;
  * Created by Administrator on 2018/12/12 0012.
  */
 public class MongoDBUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBUtils.class.getName());
     private static ThreadLocal<MongoDatabase> threadLocal = new ThreadLocal();
     private static OptionMGDB optionMGDB = (OptionMGDB) Config.getConfig("optionMGDB");
 
@@ -37,7 +40,7 @@ public class MongoDBUtils {
                 //通过连接认证获取MongoDB连接
                 MongoClient mongoClient = new MongoClient(addrs, credentials);
                 mongoDatabase = mongoClient.getDatabase(optionMGDB.database);
-                System.out.println("Connect to database successfully");
+                LOGGER.info("Connect to database successfully");
             } catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
                 return null;
@@ -56,7 +59,7 @@ public class MongoDBUtils {
         while (it.hasNext()) {
             resultSet.add((String) it.next());
         }
-        System.out.println(resultSet);
+
         return resultSet;
     }
 
@@ -73,7 +76,7 @@ public class MongoDBUtils {
 
     private static MongoCollection<Document> getMongoCollection(String collectionName) {
         if (!hasCollection(collectionName)) {
-            System.out.println("未找到" + collectionName);
+            LOGGER.info("未找到" + collectionName);
             return null;
         }
         MongoDatabase mongoDatabase = getConnection();
@@ -167,7 +170,5 @@ public class MongoDBUtils {
 
     public static void main(String args[]) {
         Map map = new HashedMap();
-//        map.put("id","5");
-        System.out.println(getDocumentList("tableData", map));
     }
 }

@@ -4,6 +4,7 @@ import com.zg.cache.util.RomCacheInte;
 import com.zg.cache.util.RomCacheUtil;
 import com.zg.mvc.entity.MessageBean;
 import com.zg.sso.entity.UserLogin;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import java.util.UUID;
 public class WebCacheLogin extends BaseLogin {
     private static WebCacheLogin webCacheLogin = new WebCacheLogin();
     private RomCacheInte romCacheInte = RomCacheUtil.getRomCache("LoginCache");
+    private final Logger LOGGER = Logger.getLogger(this.getClass().getName());
 
     private WebCacheLogin() {
     }
@@ -56,7 +58,7 @@ public class WebCacheLogin extends BaseLogin {
             newCookieList.add(tokenCookie);
             setCookies(response, newCookieList, userLogin.domain, userLogin.rootPath, userLogin.url);
             String url = new String(userLogin.url);
-            System.out.println("url=" + url);
+            LOGGER.info("url=" + url);
             return new MessageBean("操作成功", true, url);
 
         } else {

@@ -265,7 +265,7 @@ public class ControllerAdapter {
             }
 
         } else {
-            System.out.println("走defaultServlet");
+            LOGGER.info("走defaultServlet");
         }
 
     }

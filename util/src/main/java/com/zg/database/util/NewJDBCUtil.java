@@ -14,7 +14,7 @@ import java.util.*;
 
 
 public class NewJDBCUtil {
-    private final Logger LOGGER = LoggerFactory.getLogger(NewJDBCUtil.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
     private String dataSource;
 
 
@@ -47,16 +47,16 @@ public class NewJDBCUtil {
         Field[] modelFields = modelClass.getFields();
         Connection conn = NewDBPUtils.getConnection(dataSource);
         Statement stmt = conn.createStatement();
-        LOGGER.info("-----------------start batch-----------");
+        LOGGER.debug("-----------------start batch-----------");
         for (Object model : modelList) {
 
             String sql = ModelSQLUtils.insert(model, tableName);
-            LOGGER.info(sql);
+            LOGGER.debug(sql);
 
             stmt.addBatch(sql);
 
         }
-        LOGGER.info("------------------end batch-------------");
+        LOGGER.debug("------------------end batch-------------");
         result = stmt.executeBatch();
         stmt.close();
         return result;
@@ -91,7 +91,7 @@ public class NewJDBCUtil {
                 return stringArray[i + 1];
             }
         }
-        LOGGER.info(" getTableName   未找到tableName");
+        LOGGER.debug(" getTableName   未找到tableName");
         return null;
     }
 
@@ -118,7 +118,7 @@ public class NewJDBCUtil {
     public List<Map> selectToMapList(String sql) throws SQLException, ClassNotFoundException {
 
         // 记录error级别的信息
-        LOGGER.info(sql);
+        LOGGER.debug(sql);
         List list = new ArrayList();
         Connection conn = NewDBPUtils.getConnection(dataSource);
         PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -152,7 +152,7 @@ public class NewJDBCUtil {
 
     //执行增删改
     public Integer operation(String sql) throws SQLException, ClassNotFoundException {
-        LOGGER.info(sql);
+        LOGGER.debug(sql);
         Connection conn = NewDBPUtils.getConnection(dataSource);
         PreparedStatement pstmt = conn.prepareStatement(sql);
         int x = pstmt.executeUpdate();
@@ -195,23 +195,23 @@ public class NewJDBCUtil {
         Connection conn = NewDBPUtils.getConnection(dataSource);
 
         stmt = conn.createStatement();
-        LOGGER.info("--------------start batch-----------");
+        LOGGER.debug("--------------start batch-----------");
         for (String sql : sqlList) {
-            LOGGER.info(sql);
+            LOGGER.debug(sql);
             stmt.addBatch(sql);
         }
         i = stmt.executeBatch();
-        LOGGER.info("--------------end batch-----------");
+        LOGGER.debug("--------------end batch-----------");
         stmt.close();
 
         return i;
     }
 
     public List execute(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
-        LOGGER.info(sql);
+        LOGGER.debug(sql);
         List<MainModel> list = new ArrayList<MainModel>();
         if (sql == null) {
-            LOGGER.info(" execute  sql is null");
+            LOGGER.debug(" execute  sql is null");
         } else if (sql.startsWith("select")) {
             list = select(sql);
 

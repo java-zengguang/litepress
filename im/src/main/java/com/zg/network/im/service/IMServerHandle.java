@@ -8,6 +8,7 @@ import com.zg.network.im.login.LoginManager;
 import com.zg.util.reflect.EntityUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.log4j.Logger;
 
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Map;
  * Created by Administrator on 2019/2/22 0022.
  */
 public class IMServerHandle extends BaseServiceHandler<String> {
+    private final Logger LOGGER = Logger.getLogger(this.getClass().getName());
     /***
      * 消息操作的业务类
      */
@@ -28,7 +30,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) {
-        // System.out.println(" get msg >> " + msg);
+        // LOGGER.info(" get msg >> " + msg);
         ZGMPBean request = (ZGMPBean) EntityUtils.unSerialize(msg, ZGMPBean.class);//把JSON数据进行反序列化
         ZGMPBean response = new ZGMPBean("RESPONSE");
         response.sendTime = System.currentTimeMillis();
@@ -43,7 +45,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
         }
 
         String methodType = request.methodType;
-        // System.out.println("the req method >> " + methodType);
+        // LOGGER.info("the req method >> " + methodType);
         response.methodType = methodType;
         if (methodType != null) {
             switch (methodType) {
@@ -68,7 +70,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                 }
 
                 case ("SEND"): {
-                    System.out.println(request);
+                    LOGGER.info(request);
                     String uuid = request.targetUuid;
                     if (uuid != null && "all".equals(uuid)) {
                         List<Channel> channelList = IMChannelGroups.getAllChannel();
@@ -124,34 +126,34 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                 }
 
                 case ("HEARTBEAT"): {
-                    //  System.out.println(request.message);
+                    //  LOGGER.info(request.message);
                     String uuid = request.uuid;
                     ChannelBean channelBean = IMChannelGroups.get(uuid);
                     if (channelBean != null && channelBean.heartBeatID.equals(request.heartBeatID)) {
                         long expectTime = channelBean.time + TIMEOUT;
                         long actualTime = new Date().getTime();
-                   /* System.out.println("应到时间" + expectTime);
-                    System.out.println("实到时间" + actualTime);*/
+                   /* LOGGER.info("应到时间" + expectTime);
+                    LOGGER.info("实到时间" + actualTime);*/
                         if (expectTime > actualTime) {
                             channelBean.count = 3;
                         } else {
-                            System.out.println(channelBean.uuid + "The " + channelBean.count + "th disconnection");
+                            LOGGER.info(channelBean.uuid + "The " + channelBean.count + "th disconnection");
                         }
                     } else {
-                        System.out.println("Heartbeat packet timeout");
+                        LOGGER.info("Heartbeat packet timeout");
                     }
                     break;
                 }
 
 
                 case "FILESERVICEREQUEST": {
-                    System.out.println("请求打开文件服务");
+                    LOGGER.info("请求打开文件服务");
 
                     break;
                 }
 
                 case "FILESERVICEREADY": {
-                    System.out.println("文件服务已打开");
+                    LOGGER.info("文件服务已打开");
 
                     break;
                 }

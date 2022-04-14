@@ -5,6 +5,7 @@ import com.zg.cache.util.RomCacheUtil;
 import com.zg.mvc.entity.MessageBean;
 import com.zg.sso.common.WebCacheLogin;
 import com.zg.sso.entity.UserLogin;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ public class SSOUtils {
 
     public static WebCacheLogin webCacheLogin = WebCacheLogin.getInstance();
     private static RomCacheInte romCache = RomCacheUtil.getRomCache("LoginCache");
+    private static final Logger LOGGER = Logger.getLogger(SSOUtils.class.getName());
 
 
     public static MessageBean signOut(HttpServletRequest request, HttpServletResponse response) {
@@ -43,7 +45,7 @@ public class SSOUtils {
         String token = getCookieValue("token", request);
         List<UserLogin> list = romCache.findModel("token=" + token);
         if (token == null || list == null || list.size() <= 0) {
-            System.out.println("token丢失");
+
         } else {
             webCacheLogin.doLogin(request, uuid, response);
             UserLogin userLogin = list.get(0);

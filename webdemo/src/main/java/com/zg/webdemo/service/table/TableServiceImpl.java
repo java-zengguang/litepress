@@ -6,6 +6,7 @@ import com.zg.webdemo.dao.TableMapper;
 import com.zg.webdemo.entity.PageEntity;
 import com.zg.webdemo.entity.Table;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.Map;
  * Created by zengguang on 2018/8/31.
  */
 public class TableServiceImpl implements TableService {
+    private final Logger LOGGER = Logger.getLogger(this.getClass().getName());
 
 
     public TableMapper tableMapper;
@@ -55,7 +57,7 @@ public class TableServiceImpl implements TableService {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("参数错误");
+            LOGGER.info("参数错误");
             return 0;
         }
         return 1;
@@ -82,7 +84,7 @@ public class TableServiceImpl implements TableService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("缓存取出" + list);
+        LOGGER.info("缓存取出" + list);
         return list;
     }
 

@@ -49,7 +49,7 @@ public class RedisUtils {
     }
 
     public static String get(String key) {
-        System.out.println("获取树");
+
         Jedis jedis = null;
         jedis = getConnection();
         return jedis.get(key);

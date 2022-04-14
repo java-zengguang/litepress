@@ -1,6 +1,8 @@
 package com.zg.database.util;
 
 import com.zg.util.reflect.ListUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -11,6 +13,8 @@ import java.util.Map;
  * Created by Administrator on 2018/11/27 0027.
  */
 public class DataBaseUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataBaseUtil.class.getName());
+
     private static Map<String, Map> tableInfoMap = new HashMap<>();
 
 
@@ -67,7 +71,7 @@ public class DataBaseUtil {
             tableInfoMap.put(tableName, tableInfo);
         }
 
-        System.out.println(DataBaseUtil.class + "====tableInfoMap:" + tableInfoMap);
+        LOGGER.info(DataBaseUtil.class + "====tableInfoMap:" + tableInfoMap);
     }
 
 

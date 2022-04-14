@@ -4,6 +4,7 @@ package com.zg.webdemo.controller;
 import com.zg.bean.factory.BeanFactory;
 import com.zg.mvc.annotation.controller.Controller;
 import com.zg.mvc.annotation.controller.ResultMapping;
+import com.zg.mvc.controller.BaseController;
 import com.zg.util.reflect.JsonUtils;
 import com.zg.webdemo.entity.PageEntity;
 import com.zg.webdemo.entity.Table;
@@ -18,7 +19,7 @@ import java.util.Map;
  */
 
 @Controller("/table")
-public class TableController {
+public class TableController extends BaseController {
 
     public Map json = new HashedMap();
     public TableService tableService = (TableService) BeanFactory.createBean("tableService");
@@ -69,15 +70,15 @@ public class TableController {
 
     @ResultMapping("/toTableList.do")
     public String toTableList() throws Exception {
-        System.out.println("转发");
+        LOGGER.info("转发");
         return "staticURL::/views/tableData.html";
     }
 
 
     @ResultMapping("/deleteTableDate.do")
     public String deleteTableDate(Map map) throws IllegalAccessException {
-        System.out.println("===tableName===" + map.get("tableName"));
-        System.out.println("===id===" + map.get("id"));
+        LOGGER.info("===tableName===" + map.get("tableName"));
+        LOGGER.info("===id===" + map.get("id"));
         json.clear();
         if (tableService.deleteTableDate(map) > 0) {
             json.put("success", true);

@@ -34,12 +34,13 @@
             });
         }
 
+
     </script>
 </head>
 <body>
 
-<form action="/webiodemo/IOController/upFile.file" method="post" enctype='multipart/form-data'>
-    <input type="file" name="fileName"/>
+<form action="/webiodemo/IOController/upFile.file" enctype='multipart/form-data' method="post">
+    <input name="fileName" type="file"/>
     <input type="submit" value="提交"/>
 </form>
 

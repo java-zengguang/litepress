@@ -2,6 +2,8 @@ package com.zg.util.ftp;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.net.SocketException;
  * Created by Administrator on 2019/1/7 0007.
  */
 public class FTPUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FTPUtil.class.getName());
 
 
     public static FTPClient getFTPClient(String ftpHost, String ftpUserName,
@@ -23,10 +26,10 @@ public class FTPUtil {
             ftpClient.connect(ftpHost, ftpPort);// 连接FTP服务器
             ftpClient.login(ftpUserName, ftpPassword);// 登陆FTP服务器
             if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
-                System.out.println("未连接到FTP，用户名或密码错误。");
+                LOGGER.info("未连接到FTP，用户名或密码错误。");
                 ftpClient.disconnect();
             } else {
-                System.out.println("FTP连接成功----" + ftpHost + ":" + ftpPort);
+                LOGGER.info("FTP连接成功----" + ftpHost + ":" + ftpPort);
             }
         } catch (SocketException e) {
             e.printStackTrace();

@@ -31,10 +31,10 @@ public class ConsumerClientHandler extends BaseClientHandler<String> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-        System.out.println("msg >>" + msg);
+        LOGGER.info("msg >>" + msg);
         DTPResponse response = (DTPResponse) unSerialize(msg, DTPResponse.class);
         if (response.success) {
-            System.out.println("操作成功");
+            LOGGER.info("操作成功");
             if (!"".equals(response.resultType) && !"NULL".equals(response.resultType)) {
                 Class classType = Class.forName(response.resultType);
                 result = unSerialize(response.resultData.toString(), classType);

@@ -50,27 +50,27 @@ public class ResolveCommand {
 
         switch (methodType) {
             case "LOGIN": {
-                // System.out.println(" to login  ");
+                // LOGGER.info(" to login  ");
                 break;
             }
             case "LOGOUT": {
                 if (!isLogin(request)) {
-                    System.out.println("还未登陆");
+                    logger.info("还未登陆");
                     return false;
                 }
                 break;
             }
             case "SEND": {
                 if (!isLogin(request)) {
-                    System.out.println("还未登陆");
+                    logger.info("还未登陆");
                     return false;
                 }
-                // System.out.println(" to " + request.message);
+                // LOGGER.info(" to " + request.message);
                 break;
             }
 
             default: {
-                System.out.println(" 未识别得操作类型 " + methodType);
+                logger.info(" 未识别得操作类型 " + methodType);
                 break;
             }
         }

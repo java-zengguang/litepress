@@ -189,7 +189,7 @@ public class BaseDao {
             String lineStr = "";
             while ((line = br.readLine()) != null) {
                 lineStr = lineStr + line;
-                System.out.println(lineStr);
+                LOGGER.info(lineStr);
                 // 判断截取点
                 if (lineStr.endsWith(";")) {
                     lineStr = lineStr.replace(";", "");
@@ -199,7 +199,7 @@ public class BaseDao {
             }
 
         } else {
-            System.out.println("Sql文件没找到！");
+            LOGGER.info("Sql文件没找到！");
         }
         return list;
     }

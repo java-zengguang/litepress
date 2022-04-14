@@ -19,16 +19,13 @@ public class NIOUtils {
         int readByte = 0;
         while (readByte != -1) {
             readByte = channel.read(buffer);
-            System.out.println("readByte==" + readByte);
             buffer.flip();   //buffer模式反转，由写模式变为读模式
-
             //显示buffer的数据
             while (buffer.hasRemaining()) {  //判断是否到头
                 System.out.print((char) buffer.get());
             }
             buffer.clear();  //清空整个缓存
             //buffer.compact(); //只清除已读取的数据
-            System.out.println();
         }
         raf.close();
         return 0;

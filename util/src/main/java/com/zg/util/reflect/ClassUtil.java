@@ -1,5 +1,8 @@
 package com.zg.util.reflect;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -23,6 +26,7 @@ import java.util.jar.JarFile;
  * @date 2018年12月3日
  */
 public class ClassUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassUtil.class.getName());
 
     private static Set<Class<?>> classList;
 
@@ -171,11 +175,5 @@ public class ClassUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(classList);
-        Object[] ts = classList.toArray();
-        for (Object t : ts) {
-            Class<?> tt = (Class<?>) t;
-            System.out.println(tt.getName());
-        }
     }
 }

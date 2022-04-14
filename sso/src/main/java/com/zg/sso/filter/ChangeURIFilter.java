@@ -4,6 +4,7 @@ import com.zg.init.Config;
 import com.zg.mvc.entity.MVCOption;
 import org.apache.catalina.connector.RequestFacade;
 import org.apache.coyote.Request;
+import org.apache.log4j.Logger;
 import org.apache.tomcat.util.buf.MessageBytes;
 
 import javax.servlet.*;
@@ -16,6 +17,7 @@ import java.lang.reflect.Field;
  */
 public class ChangeURIFilter implements Filter {
     private MVCOption mvcOption = (MVCOption) Config.getConfig("MVCOption");
+    private final Logger LOGGER = Logger.getLogger(this.getClass().getName());
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -36,7 +38,7 @@ public class ChangeURIFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         synchronized (this) {
             try {
-                System.out.println("原本=" + ((HttpServletRequest) servletRequest).getRequestURI());
+                LOGGER.info("原本=" + ((HttpServletRequest) servletRequest).getRequestURI());
                 RequestFacade facade = (RequestFacade) servletRequest;
                 Class clzz = RequestFacade.class;
                 Field field = clzz.getDeclaredField("request");
@@ -57,11 +59,11 @@ public class ChangeURIFilter implements Filter {
                 uriMB.setString(path);
                 filterChain.doFilter(facade, servletResponse);
                 //用来打印请求路径
-                System.out.println("changeUrl=" + ((RequestFacade) servletRequest).getRequestURL());
+                LOGGER.info("changeUrl=" + ((RequestFacade) servletRequest).getRequestURL());
 
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("URL错误");
+                LOGGER.info("URL错误");
             }
         }
     }
