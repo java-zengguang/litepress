@@ -15,7 +15,7 @@ import java.util.*;
 
 
 public class DynamicClass {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FTPUtil.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(FTPUtil.class.getName());
 
 
     private static String produceEntityJavaCode(List<String> referenceList, String calssName, Map<String, String> natureMap, List<String> interfaceList, String parentClass) throws Exception {
@@ -77,7 +77,7 @@ public class DynamicClass {
         JavaFileObject jfo = new StringJavaFileObject(name, javaCode);
         List<String> options = new ArrayList<String>();
         String path = MainModel.class.getClassLoader().getResource("").getPath();
-        LOGGER.info(DataBaseUtil.class + "====calss生成路径" + path);
+        logger.info(DataBaseUtil.class + "====calss生成路径" + path);
         options.addAll(Arrays.asList("-d", path));
         List<? extends JavaFileObject> jfos = Arrays.asList(jfo);
         CompilationTask task = compiler.getTask(null, stdManager, null, options, null, jfos);

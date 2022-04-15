@@ -13,7 +13,7 @@ import java.util.Map;
  * Created by Administrator on 2018/11/27 0027.
  */
 public class DataBaseUtil {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataBaseUtil.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(DataBaseUtil.class.getName());
 
     private static Map<String, Map> tableInfoMap = new HashMap<>();
 
@@ -71,7 +71,7 @@ public class DataBaseUtil {
             tableInfoMap.put(tableName, tableInfo);
         }
 
-        LOGGER.info(DataBaseUtil.class + "====tableInfoMap:" + tableInfoMap);
+        logger.info(DataBaseUtil.class + "====tableInfoMap:" + tableInfoMap);
     }
 
 

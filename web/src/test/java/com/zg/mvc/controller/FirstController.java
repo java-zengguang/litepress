@@ -30,7 +30,7 @@ public class FirstController extends BaseController {
         list.add(new Test(2, "3", new Date()));
         Map map = new HashedMap();
 
-        LOGGER.info("开始转发");
+        logger.info("开始转发");
         //return "forward::/firstController/hello.do";
         // return "staticURL::/WEB-INF/html/hello.html";
         return "json::" + JsonUtils.objectToJson(map);
@@ -45,7 +45,7 @@ public class FirstController extends BaseController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        LOGGER.info("hello");
+        logger.info("hello");
         out.println("hello");
     }
 }

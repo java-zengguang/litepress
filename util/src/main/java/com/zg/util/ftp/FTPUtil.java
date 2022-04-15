@@ -15,7 +15,7 @@ import java.net.SocketException;
  * Created by Administrator on 2019/1/7 0007.
  */
 public class FTPUtil {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FTPUtil.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(FTPUtil.class.getName());
 
 
     public static FTPClient getFTPClient(String ftpHost, String ftpUserName,
@@ -26,10 +26,10 @@ public class FTPUtil {
             ftpClient.connect(ftpHost, ftpPort);// 连接FTP服务器
             ftpClient.login(ftpUserName, ftpPassword);// 登陆FTP服务器
             if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
-                LOGGER.info("未连接到FTP，用户名或密码错误。");
+                logger.info("未连接到FTP，用户名或密码错误。");
                 ftpClient.disconnect();
             } else {
-                LOGGER.info("FTP连接成功----" + ftpHost + ":" + ftpPort);
+                logger.info("FTP连接成功----" + ftpHost + ":" + ftpPort);
             }
         } catch (SocketException e) {
             e.printStackTrace();

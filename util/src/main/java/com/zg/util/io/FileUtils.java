@@ -20,7 +20,7 @@ import java.util.Set;
  */
 public class FileUtils extends org.apache.commons.io.FileUtils {
     public static final String PATH;
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(FileUtils.class.getName());
 
     static {
         //获取项目的相对路径
@@ -30,7 +30,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
             if (FileUtils.class.getResource("/") != null) {
                 path = FileUtils.class.getResource("/").toURI().getPath();
-                LOGGER.info("---" + path);
+                logger.info("---" + path);
             } else {
                 path = FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
                 File file = new File(path);
@@ -38,7 +38,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
                 path = java.net.URLDecoder.decode(path, "UTF-8");
                 path = path + "\\";
 
-                LOGGER.info("===" + path);
+                logger.info("===" + path);
             }
 
 
@@ -79,7 +79,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
     public static Element getRootElement(String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
-        // LOGGER.info("配置文件路径："+FileUtils.PATH + fileName);
+        // logger.info("配置文件路径："+FileUtils.PATH + fileName);
         Document doc = reader.read(new File(FileUtils.PATH + fileName));
         Element root = doc.getRootElement();
         return root;
@@ -87,7 +87,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
     public static Element getRootElement(String rootPath, String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
-        // LOGGER.info("配置文件路径："+FileUtils.PATH + fileName);
+        // logger.info("配置文件路径："+FileUtils.PATH + fileName);
         Document doc = reader.read(new File(rootPath + fileName));
         Element root = doc.getRootElement();
         return root;
@@ -109,7 +109,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
     public static List getClassFormPackage(String packageName) throws ClassNotFoundException {
         List classList = new ArrayList();
 /*        String packagePath = PATH + packageName.replace(".", File.separator);
-        LOGGER.info(packagePath);
+        logger.info(packagePath);
         File packageFile = new File(packagePath);
         File files[] = packageFile.listFiles();
         for (File file : files) {

@@ -19,7 +19,7 @@ public class SSOUtils {
 
     public static WebCacheLogin webCacheLogin = WebCacheLogin.getInstance();
     private static RomCacheInte romCache = RomCacheUtil.getRomCache("LoginCache");
-    private static final Logger LOGGER = Logger.getLogger(SSOUtils.class.getName());
+    private static final Logger logger = Logger.getLogger(SSOUtils.class.getName());
 
 
     public static MessageBean signOut(HttpServletRequest request, HttpServletResponse response) {

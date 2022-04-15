@@ -12,7 +12,7 @@ import java.nio.channels.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TCPService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TCPService.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(TCPService.class.getName());
 
     public volatile AtomicBoolean isOpen = new AtomicBoolean(true);
     public ServerSocketChannel serviceChannel;
@@ -33,7 +33,7 @@ public class TCPService {
             SocketChannel channel = serviceChannel.accept();
             channel.configureBlocking(false);
             SelectionKey selectionKey = channel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);  //筛选出关注的集合
-            LOGGER.info(channel.getLocalAddress() + ":连接成功");
+            logger.info(channel.getLocalAddress() + ":连接成功");
             int interestSet = selectionKey.interestOps();
             if ((interestSet & SelectionKey.OP_READ) == SelectionKey.OP_READ) {
                 getFile(channel);

@@ -9,18 +9,18 @@ import java.util.EnumSet;
 import java.util.Set;
 
 public class AServletContainerInitializer implements ServletContainerInitializer {
-    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     @Override
     public void onStartup(Set<Class<?>> set, ServletContext servletContext) throws ServletException {
 
         if (true) {
-            LOGGER.info("加载servlet");
+            logger.info("加载servlet");
             ServletRegistration.Dynamic servletDynamic = servletContext.addServlet("AdapterServlet", new AdapterServlet());
             servletDynamic.addMapping("/");
         }
         if (true) {
-            LOGGER.info("加载Filter");
+            logger.info("加载Filter");
             FilterRegistration.Dynamic corsFilter = servletContext.addFilter("CorsFilter", new CorsFilter());
             corsFilter.setInitParameter("cors.allowed.origins", "*");
             corsFilter.addMappingForServletNames(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC), false, "AdapterServlet");

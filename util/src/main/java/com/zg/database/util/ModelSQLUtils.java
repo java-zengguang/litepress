@@ -14,7 +14,7 @@ import java.util.Map;
 public class ModelSQLUtils {
 
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ModelSQLUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(ModelSQLUtils.class);
     private static List<String> member_list = new ArrayList();
     private static List<String> values_list = new ArrayList();
 
@@ -115,7 +115,7 @@ public class ModelSQLUtils {
         }
         condition = condition.delete(condition.length() - 4, condition.length());
         String sql = delete(o.getClass().getSimpleName(), condition.toString());
-        LOGGER.info(sql);
+        logger.info(sql);
         return sql;
     }
 
@@ -248,7 +248,7 @@ public class ModelSQLUtils {
             sqlList.add(sql);
         }
 
-        LOGGER.info("SQLList   " + sqlList);
+        logger.info("SQLList   " + sqlList);
 
         return sqlList;
 

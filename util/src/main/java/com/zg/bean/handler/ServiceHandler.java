@@ -10,7 +10,7 @@ import java.util.List;
 
 
 public class ServiceHandler implements InvocationHandler {
-    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     private Object target;
     private List methodList = new ArrayList();
@@ -31,11 +31,11 @@ public class ServiceHandler implements InvocationHandler {
         if (methodList.contains(currentMethod.getName())) {
             //执行代理
             Method proxyMothod = target.getClass().getMethod("submit"); //获取代理方法
-            LOGGER.info(ServiceHandler.class + "====" + currentMethod.getName() + "被" + proxyMothod.getName() + "代理");
+            logger.info(ServiceHandler.class + "====" + currentMethod.getName() + "被" + proxyMothod.getName() + "代理");
             proxyMothod.invoke(target);  //执行代理
         } else {
 
-            LOGGER.info(ServiceHandler.class + "====" + currentMethod.getName() + "没有被代理");
+            logger.info(ServiceHandler.class + "====" + currentMethod.getName() + "没有被代理");
 
         }
         return result;

@@ -20,7 +20,7 @@ import java.util.*;
  * Created by Administrator on 2018/12/12 0012.
  */
 public class MongoDBUtils {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBUtils.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(MongoDBUtils.class.getName());
     private static ThreadLocal<MongoDatabase> threadLocal = new ThreadLocal();
     private static OptionMGDB optionMGDB = (OptionMGDB) Config.getConfig("optionMGDB");
 
@@ -40,7 +40,7 @@ public class MongoDBUtils {
                 //通过连接认证获取MongoDB连接
                 MongoClient mongoClient = new MongoClient(addrs, credentials);
                 mongoDatabase = mongoClient.getDatabase(optionMGDB.database);
-                LOGGER.info("Connect to database successfully");
+                logger.info("Connect to database successfully");
             } catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
                 return null;
@@ -76,7 +76,7 @@ public class MongoDBUtils {
 
     private static MongoCollection<Document> getMongoCollection(String collectionName) {
         if (!hasCollection(collectionName)) {
-            LOGGER.info("未找到" + collectionName);
+            logger.info("未找到" + collectionName);
             return null;
         }
         MongoDatabase mongoDatabase = getConnection();

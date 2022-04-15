@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class LoginService implements LoginServiceInte {
 
-    public final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
+    public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     private LoginDao loginDao = new LoginDao();
 
     public String verification(String username, String passworld) {
@@ -99,7 +99,7 @@ public class LoginService implements LoginServiceInte {
 
 
     public boolean updateToken(String uuid, String token, String url) {
-        LOGGER.info(uuid + token + url);
+        logger.info(uuid + token + url);
         if (uuid == null) {
             uuid = "";
         }

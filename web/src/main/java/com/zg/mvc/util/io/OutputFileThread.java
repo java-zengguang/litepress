@@ -13,7 +13,7 @@ import java.io.RandomAccessFile;
  * 多线程写入文件
  */
 public class OutputFileThread implements Runnable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FTPUtil.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(FTPUtil.class.getName());
 
     public File inputFile;
     public File targetFile;
@@ -73,7 +73,7 @@ public class OutputFileThread implements Runnable {
             return;
         }
 
-        LOGGER.info("第" + count + "个子线程启动  start" + start + "   end" + end);
+        logger.info("第" + count + "个子线程启动  start" + start + "   end" + end);
         try {
             outputFile(start, end);
         } catch (IOException e) {
@@ -81,6 +81,6 @@ public class OutputFileThread implements Runnable {
         }
 
         getCompareCount();
-        LOGGER.info("第" + count + "个子线程结束  start" + start + "   end" + end);
+        logger.info("第" + count + "个子线程结束  start" + start + "   end" + end);
     }
 }

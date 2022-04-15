@@ -10,7 +10,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 public class CacheListener implements ServletContextListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CacheListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(CacheListener.class);
 
     public CacheListener() {
     }
@@ -21,10 +21,10 @@ public class CacheListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent arg0) {
         try {
             // 需要实现的功能
-            LOGGER.info("随项目启动方式一----------------》");
+            logger.info("随项目启动方式一----------------》");
             RomCacheUtil.coverPut("LoginCache", new SimpleRomCache(UserLogin.class));
         } catch (Exception e) {
-            LOGGER.error("GreyClientInitListener error", e);
+            logger.error("GreyClientInitListener error", e);
         }
     }
 }

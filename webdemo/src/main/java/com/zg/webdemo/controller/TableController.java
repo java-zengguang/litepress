@@ -70,15 +70,15 @@ public class TableController extends BaseController {
 
     @ResultMapping("/toTableList.do")
     public String toTableList() throws Exception {
-        LOGGER.info("转发");
+        logger.info("转发");
         return "staticURL::/views/tableData.html";
     }
 
 
     @ResultMapping("/deleteTableDate.do")
     public String deleteTableDate(Map map) throws IllegalAccessException {
-        LOGGER.info("===tableName===" + map.get("tableName"));
-        LOGGER.info("===id===" + map.get("id"));
+        logger.info("===tableName===" + map.get("tableName"));
+        logger.info("===id===" + map.get("id"));
         json.clear();
         if (tableService.deleteTableDate(map) > 0) {
             json.put("success", true);

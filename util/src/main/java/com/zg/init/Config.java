@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class Config {
     public static final int ERROR_REPEAT = 3;
-    private static final Logger LOGGER = LoggerFactory.getLogger(Config.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Config.class.getName());
     public static Map configMap = new HashMap<>();
     public static int count = ERROR_REPEAT;
 
@@ -30,7 +30,7 @@ public class Config {
         if (count > 0) {
             if (object == null) {
                 count--;
-                LOGGER.info("初始化" + beanName);
+                logger.info("初始化" + beanName);
                 String array[] = {beanName};
                 createConfigMap(array);
                 object = getConfig(beanName);

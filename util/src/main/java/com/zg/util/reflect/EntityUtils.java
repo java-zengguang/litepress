@@ -21,7 +21,7 @@ import java.util.*;
 
 
 public class EntityUtils {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EntityUtils.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(EntityUtils.class.getName());
 
     public static String dateFormat = "yyyy-MM-dd HH:mm:ss";
     public static SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
@@ -735,7 +735,7 @@ public class EntityUtils {
             setFieldOrcale(field, object, value);
             return;
         } else {
-            LOGGER.info(EntityUtils.class + "====数据源未初始化");
+            logger.info(EntityUtils.class + "====数据源未初始化");
             return;
         }
     }
@@ -758,7 +758,7 @@ public class EntityUtils {
             } else if ("ORACLE".equals(optionDB.DBType)) {
                 return getFieldOrcale(field, object);
             } else {
-                LOGGER.info(EntityUtils.class + "====数据源未初始化");
+                logger.info(EntityUtils.class + "====数据源未初始化");
                 return null;
             }
         } else {

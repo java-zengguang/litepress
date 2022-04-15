@@ -26,7 +26,7 @@ import java.util.jar.JarFile;
  * @date 2018年12月3日
  */
 public class ClassUtil {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClassUtil.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(ClassUtil.class.getName());
 
     private static Set<Class<?>> classList;
 

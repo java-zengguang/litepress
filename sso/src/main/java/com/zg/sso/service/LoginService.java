@@ -11,7 +11,7 @@ import java.util.*;
  * Created by Administrator on 2019/2/12 0012.
  */
 public class LoginService implements LoginServiceInte {
-    private final Logger LOGGER = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     private LoginDao loginDao = new LoginDao();
 
@@ -97,7 +97,7 @@ public class LoginService implements LoginServiceInte {
 
 
     public boolean updateToken(String uuid, String token, String url) {
-        LOGGER.info(uuid + token + url);
+        logger.info(uuid + token + url);
         if (uuid == null) {
             uuid = "";
         }

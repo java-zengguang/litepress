@@ -18,7 +18,7 @@ import java.util.UUID;
 public class IMHeartbeatHandle extends BaseHeartbeatHandle {
 
     //  public final long HBTIME=30*60*1000;   //心跳时间
-    private final Logger LOGGER = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 
     public IMHeartbeatHandle(Map<String, ChannelBean> channelMap, long HBTIME) {
@@ -34,7 +34,7 @@ public class IMHeartbeatHandle extends BaseHeartbeatHandle {
             ChannelBean channelBean = entry.getValue();
             int status = channelBean.status;
             if (status < 0) {    //判断是否失效
-                LOGGER.info(channelBean.uuid + " 的channel失效");
+                logger.info(channelBean.uuid + " 的channel失效");
 
                 LoginManager.logout(channelBean.uuid, channelBean.token);  //退出登陆
 
@@ -48,7 +48,7 @@ public class IMHeartbeatHandle extends BaseHeartbeatHandle {
                     String json = null;
                     ZGMPBean response = new ZGMPBean("RESPONSE");
                     response.uuid = channelBean.uuid;
-                    LOGGER.info("向" + channelBean.uuid + "发送心跳");
+                    logger.info("向" + channelBean.uuid + "发送心跳");
                     response.message = "心跳";
                     response.methodType = "HEARTBEAT";
                     response.heartBeatID = channelBean.heartBeatID;

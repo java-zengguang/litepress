@@ -1,10 +1,13 @@
 package com.zg.sso.filter;
 
 
+import com.zg.database.util.PassWordUtil;
 import com.zg.init.Config;
 import com.zg.sso.entity.SSOOpthion;
 import com.zg.sso.service.LoginService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
@@ -18,7 +21,7 @@ import java.util.Map;
  * Created by Administrator on 2019/2/13 0013.
  */
 public class WebLoginFilter implements Filter {
-    private final Logger LOGGER = Logger.getLogger(this.getClass().getName());
+    private static final Logger logger = LoggerFactory.getLogger(WebLoginFilter.class);
 
     LoginService loginService = new LoginService();
 
@@ -51,10 +54,10 @@ public class WebLoginFilter implements Filter {
 
         int loginStatus = isLogin((HttpServletRequest) request, (HttpServletResponse) response);
         if (loginStatus > 0) {
-            LOGGER.info("通过验证");
+            logger.info("通过验证");
             chain.doFilter(request, response);
         } else {
-            LOGGER.info("未通过验证");
+            logger.info("未通过验证");
             Map<String, String> cookieMap = getCookies((HttpServletRequest) request);
             String token = cookieMap.get("token");
             toLogin((HttpServletResponse) response, token);

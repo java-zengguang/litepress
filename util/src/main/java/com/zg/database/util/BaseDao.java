@@ -19,7 +19,7 @@ import java.util.*;
  * Created by Administrator on 2018/11/27 0027.
  */
 public class BaseDao {
-    private final Logger LOGGER = LoggerFactory.getLogger(BaseDao.class);
+    public  final Logger logger = LoggerFactory.getLogger(this.getClass());
     public String dataSource = "optionDB";
 
 
@@ -51,15 +51,15 @@ public class BaseDao {
         Field[] modelFields = modelClass.getFields();
         Connection conn = getConnection();
         Statement stmt = conn.createStatement();
-        LOGGER.info("-----------------start batch-----------");
+        logger.debug("-----------------start batch-----------");
         for (Object model : modelList) {
 
             String sql = ModelSQLUtils.insert(model, tableName);
-            // LOGGER.info(sql);
+            // logger.debug(sql);
             stmt.addBatch(sql);
 
         }
-        LOGGER.info("------------------end batch-------------");
+        logger.debug("------------------end batch-------------");
         result = stmt.executeBatch();
         stmt.close();
         return result;
@@ -94,7 +94,7 @@ public class BaseDao {
                 return stringArray[i + 1];
             }
         }
-        LOGGER.info(" getTableName   未找到tableName");
+        logger.debug(" getTableName   未找到tableName");
         return null;
     }
 
@@ -121,7 +121,7 @@ public class BaseDao {
     public List<Map> selectToMapList(String sql) throws SQLException, ClassNotFoundException {
 
         // 记录error级别的信息
-        LOGGER.info(sql);
+        logger.debug(sql);
         List list = new ArrayList();
         Connection conn = getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -148,7 +148,7 @@ public class BaseDao {
 
     //执行增删改
     public Integer operation(String sql) throws SQLException, ClassNotFoundException {
-        LOGGER.info(sql);
+        logger.debug(sql);
         Connection conn = getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql);
         int x = pstmt.executeUpdate();
@@ -165,13 +165,13 @@ public class BaseDao {
 
         conn = getConnection();
         stmt = conn.createStatement();
-        LOGGER.info("--------------start batch-----------");
+        logger.debug("--------------start batch-----------");
         for (String sql : sqlList) {
-            LOGGER.info(sql);
+            logger.debug(sql);
             stmt.addBatch(sql);
         }
         i = stmt.executeBatch();
-        LOGGER.info("--------------end batch-----------");
+        logger.debug("--------------end batch-----------");
         stmt.close();
 
 
@@ -189,7 +189,7 @@ public class BaseDao {
             String lineStr = "";
             while ((line = br.readLine()) != null) {
                 lineStr = lineStr + line;
-                LOGGER.info(lineStr);
+                logger.debug(lineStr);
                 // 判断截取点
                 if (lineStr.endsWith(";")) {
                     lineStr = lineStr.replace(";", "");
@@ -199,17 +199,17 @@ public class BaseDao {
             }
 
         } else {
-            LOGGER.info("Sql文件没找到！");
+            logger.debug("Sql文件没找到！");
         }
         return list;
     }
 
 
     public List execute(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
-        LOGGER.info(sql);
+        logger.debug(sql);
         List<MainModel> list = new ArrayList<MainModel>();
         if (sql == null) {
-            LOGGER.info(" execute  sql is null");
+            logger.debug(" execute  sql is null");
         } else if (sql.startsWith("select")) {
             list = select(sql);
 

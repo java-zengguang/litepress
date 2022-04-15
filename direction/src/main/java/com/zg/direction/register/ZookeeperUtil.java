@@ -22,7 +22,7 @@ import java.util.concurrent.CountDownLatch;
 public class ZookeeperUtil implements Watcher {
 
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(ZookeeperUtil.class.getName());
+    public static final Logger logger = LoggerFactory.getLogger(ZookeeperUtil.class.getName());
     private static CountDownLatch connectedSemaphore = new CountDownLatch(1);
     private static ZooKeeper zk = null;
     private static Stat stat = new Stat();
@@ -43,14 +43,14 @@ public class ZookeeperUtil implements Watcher {
 
         ZookeeperUtil zookeeperUtil = new ZookeeperUtil(connectString);
         //zookeeperUtil.createNode(path,"423");
-        LOGGER.info(zookeeperUtil.findNode(path));
+        logger.info(zookeeperUtil.findNode(path));
 
     }
 
     public void createNode(String path, String value) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
         zk.create(path, value.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
-        LOGGER.info("success create znode: " + path);
+        logger.info("success create znode: " + path);
 
     }
 
@@ -110,8 +110,8 @@ public class ZookeeperUtil implements Watcher {
                 connectedSemaphore.countDown();
             } else if (event.getType() == EventType.NodeDataChanged) {
                 try {
-                    LOGGER.info("the data of znode " + event.getPath() + " is : " + new String(zk.getData(event.getPath(), true, stat)));
-                    LOGGER.info("czxID: " + stat.getCzxid() + ", mzxID: " + stat.getMzxid() + ", version: " + stat.getVersion());
+                    logger.info("the data of znode " + event.getPath() + " is : " + new String(zk.getData(event.getPath(), true, stat)));
+                    logger.info("czxID: " + stat.getCzxid() + ", mzxID: " + stat.getMzxid() + ", version: " + stat.getVersion());
                 } catch (Exception e) {
                 }
             }

@@ -15,7 +15,7 @@ import java.io.RandomAccessFile;
  */
 public class ResovleUploadThread {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResovleUploadThread.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResovleUploadThread.class);
     public RandomAccessFile raf;   //文件指针
 
     public long getStartPointFile(long start, long end, String targetS) throws IOException {
@@ -71,7 +71,7 @@ public class ResovleUploadThread {
                 raf.read(b, 0, endPoint - startPoint);   //读取
                 line = new String(b);
                 if (line.contains(targetS)) {
-                    LOGGER.info(line);
+                    logger.info(line);
                     return startPoint - 3;
                 }
                 endPoint = startPoint;
@@ -88,7 +88,7 @@ public class ResovleUploadThread {
         String inputFileName = targetS;
         //生成临时文件
         if (IOUtils.createTemporaryFile(inputStream, inputFilePath, inputFileName) == -1) {
-            LOGGER.info("文件上传失败");
+            logger.info("文件上传失败");
         }
         File inputFile = new File(inputFilePath, inputFileName);
         raf = new RandomAccessFile(inputFile, "r");
@@ -105,9 +105,9 @@ public class ResovleUploadThread {
 
         File targetFile = new File(fileEntity.fileParentPath, fileEntity.fileName);
         IOUtils.createFile(targetFile);
-        LOGGER.info("OUTPUT线程开始");
+        logger.info("OUTPUT线程开始");
         outputThread(writerStart, writerEnd, inputFile, targetFile);
-        LOGGER.info("OUTPUT线程结束");
+        logger.info("OUTPUT线程结束");
         raf.close();
         inputFile.delete();
         fileEntity.filePath = targetFile.getAbsolutePath();

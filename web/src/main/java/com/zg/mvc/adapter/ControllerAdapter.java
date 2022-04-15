@@ -32,7 +32,7 @@ import java.util.Set;
  */
 public class ControllerAdapter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ControllerAdapter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ControllerAdapter.class);
     private static Set<String> keySet = null;
     private static Map<String, Method> methodMap = new HashedMap();
     private static Map<String, Class> classMap = null;
@@ -59,10 +59,10 @@ public class ControllerAdapter {
         } catch (InstantiationException e) {
             e.printStackTrace();
         }
-        LOGGER.info("MVC初始化中");
-        LOGGER.info("methodMap " + methodMap);
-        LOGGER.info("classMap " + classMap);
-        LOGGER.info("MVC初始化完成");
+        logger.info("MVC初始化中");
+        logger.info("methodMap " + methodMap);
+        logger.info("classMap " + classMap);
+        logger.info("MVC初始化完成");
         return true;
     }
 
@@ -102,7 +102,7 @@ public class ControllerAdapter {
                     break;
                 }
                 default: {
-                    LOGGER.info(ControllerAdapter.classMap + " 跳转失败");
+                    logger.info(ControllerAdapter.classMap + " 跳转失败");
                 }
             }
         } else if (viewObject instanceof ViewObject) {
@@ -135,7 +135,7 @@ public class ControllerAdapter {
                     try {
                         json = JsonUtils.objectToJson(data).toString();
                     } catch (IllegalAccessException e) {
-                        LOGGER.error("json转化错误", e);
+                        logger.error("json转化错误", e);
                     }
                     response.setHeader("content-type", "application/json");
                     response.setCharacterEncoding("UTF-8");
@@ -146,7 +146,7 @@ public class ControllerAdapter {
                     break;
                 }
                 default: {
-                    LOGGER.info(ControllerAdapter.classMap + " 跳转失败");
+                    logger.info(ControllerAdapter.classMap + " 跳转失败");
                 }
             }
         } else if (viewObject instanceof File) {
@@ -156,7 +156,7 @@ public class ControllerAdapter {
                     "attachment;filename=" + file.getName());
             OutputStream out = response.getOutputStream();
             int size = IOUtils.inputFile(out, file);
-            LOGGER.info(ControllerAdapter.classMap + "文件下载完成");
+            logger.info(ControllerAdapter.classMap + "文件下载完成");
         }
     }
 
@@ -220,7 +220,7 @@ public class ControllerAdapter {
 
     public static void resovleRequest(HttpServletRequest request, HttpServletResponse response) {
 
-        LOGGER.info("请求的url " + request.getRequestURL());
+        logger.info("请求的url " + request.getRequestURL());
         String requestURI = request.getRequestURI();
         Object viewObject = null;
         if (requestURI.endsWith(mvcOption.controllerSuffix) || requestURI.endsWith(mvcOption.upLoadSuffix)) {
@@ -265,7 +265,7 @@ public class ControllerAdapter {
             }
 
         } else {
-            LOGGER.info("走defaultServlet");
+            logger.info("走defaultServlet");
         }
 
     }

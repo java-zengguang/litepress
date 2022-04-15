@@ -42,7 +42,7 @@ public abstract class BaseRomCache implements RomCacheInte {
             }
             modelList.set(index, model);
         } else {
-            //LOGGER.info(message.get("error_print_1"));
+            //logger.info(message.get("error_print_1"));
         }
         return true;
     }
@@ -70,7 +70,7 @@ public abstract class BaseRomCache implements RomCacheInte {
             while (it.hasPrevious()) {
                 i = (int) it.previous();
                 modelList.remove(i);
-                //	LOGGER.info(message.get("delete_print_1")+i);
+                //	logger.info(message.get("delete_print_1")+i);
             }
         }
         return true;

@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 public class ProviderServiceHandler extends BaseServiceHandler<String> {
-    public final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
+    public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
 
     private Object[] getParamters(List<ParamterEntity> paramterEntityList) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -70,7 +70,7 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws IllegalAccessException {
 
-        LOGGER.info("get msg >" + msg);
+        logger.info("get msg >" + msg);
 
         DTPRequest request = null;
         DTPResponse response = new DTPResponse();

@@ -15,7 +15,7 @@ import java.util.List;
  * Created by Administrator on 2018/12/24 0024.
  */
 public class CommitInterfaceHandler implements InvocationHandler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommitInterfaceHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommitInterfaceHandler.class);
     private Object target;
     private List methodList = new ArrayList();
 
@@ -41,7 +41,7 @@ public class CommitInterfaceHandler implements InvocationHandler {
             e.printStackTrace();
         }
         if (methodList.contains(method.getName())) {
-            LOGGER.info(method.getName() + " 事务被提交");
+            logger.info(method.getName() + " 事务被提交");
             NewDBPUtils.commit("optionDB");
         }
         return result;

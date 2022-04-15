@@ -18,7 +18,7 @@ import java.util.Map;
  * Created by zengguang on 2018/8/31.
  */
 public class TableServiceImpl implements TableService {
-    private final Logger LOGGER = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 
     public TableMapper tableMapper;
@@ -57,7 +57,7 @@ public class TableServiceImpl implements TableService {
                 e.printStackTrace();
             }
         } else {
-            LOGGER.info("参数错误");
+            logger.info("参数错误");
             return 0;
         }
         return 1;
@@ -84,7 +84,7 @@ public class TableServiceImpl implements TableService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LOGGER.info("缓存取出" + list);
+        logger.info("缓存取出" + list);
         return list;
     }
 

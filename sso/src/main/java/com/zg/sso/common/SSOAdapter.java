@@ -2,7 +2,8 @@ package com.zg.sso.common;
 
 import com.zg.sso.entity.SSOOpthion;
 import com.zg.util.url.URLUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -18,7 +19,7 @@ public class SSOAdapter {
     private static SSOAdapter ssoAdapter;
     private SSOOpthion ssoOpthion;
     private LoginInte loginService;
-    private final Logger LOGGER = Logger.getLogger(this.getClass().getName());
+    private static final Logger logger = LoggerFactory.getLogger(WebCacheLogin.class);
 
     private SSOAdapter(SSOOpthion ssoOpthion, LoginInte loginInte) {
         this.loginService = loginInte;
@@ -47,10 +48,10 @@ public class SSOAdapter {
 
         boolean loginStatus = isLogin((HttpServletRequest) request, (HttpServletResponse) response);
         if (loginStatus) {
-            LOGGER.info("通过验证");
+            logger.info("通过验证");
             return true;
         } else {
-            LOGGER.info("未通过验证");
+            logger.info("未通过验证");
             Map<String, String> cookieMap = getCookies((HttpServletRequest) request);
             String token = cookieMap.get("token");
             toLogin((HttpServletResponse) response, token);
@@ -87,7 +88,7 @@ public class SSOAdapter {
 
         String url = (request).getRequestURL().toString();
         url = URLUtils.getURLEncoderString(url);
-        LOGGER.info(url);
+        logger.info(url);
 
         String newToken = loginService.registToken(url, ssoOpthion.domain, ssoOpthion.rootPath);
         return newToken;

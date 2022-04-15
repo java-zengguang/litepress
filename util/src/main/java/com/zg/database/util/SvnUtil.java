@@ -1,7 +1,9 @@
 package com.zg.database.util;
 
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
@@ -17,7 +19,7 @@ import java.io.File;
 
 public class SvnUtil {
 
-    private static Logger logger = Logger.getLogger(SvnUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(SvnUtil.class);
 
     /**
      * 通过不同的协议初始化版本库
@@ -57,7 +59,7 @@ public class SvnUtil {
 
         } catch (SVNException e) {
 
-            logger.error(e.getErrorMessage(), e);
+            e.printStackTrace();
 
             return null;
 
@@ -105,7 +107,7 @@ public class SvnUtil {
 
         } catch (SVNException e) {
 
-            logger.error(e.getErrorMessage(), e);
+            logger.error(String.valueOf(e.getErrorMessage()), e);
 
         }
 
@@ -146,7 +148,7 @@ public class SvnUtil {
 
         } catch (SVNException e) {
 
-            logger.error(e.getErrorMessage(), e);
+            logger.error(String.valueOf(e.getErrorMessage()), e);
 
         }
 
@@ -173,7 +175,7 @@ public class SvnUtil {
 
         } catch (SVNException e) {
 
-            logger.error(e.getErrorMessage(), e);
+            logger.error(String.valueOf(e.getErrorMessage()), e);
 
         }
 
@@ -205,7 +207,7 @@ public class SvnUtil {
 
         } catch (SVNException e) {
 
-            logger.error(e.getErrorMessage(), e);
+            logger.error(String.valueOf(e.getErrorMessage()), e);
 
         }
 
@@ -238,7 +240,7 @@ public class SvnUtil {
 
         } catch (SVNException e) {
 
-            logger.error(e.getErrorMessage(), e);
+            logger.error(String.valueOf(e.getErrorMessage()), e);
 
         }
 
@@ -284,7 +286,7 @@ public class SvnUtil {
 
         } catch (SVNException e) {
 
-            logger.error(e.getErrorMessage(), e);
+            logger.error(String.valueOf(e.getErrorMessage()), e);
 
         }
 
@@ -330,7 +332,7 @@ public class SvnUtil {
 
         } catch (SVNException e) {
 
-            logger.error(e.getErrorMessage(), e);
+            logger.error(String.valueOf(e.getErrorMessage()), e);
 
         }
 
@@ -365,7 +367,7 @@ public class SvnUtil {
 
         } catch (SVNException e) {
 
-            logger.error(e.getErrorMessage(), e);
+            logger.error(String.valueOf(e.getErrorMessage()), e);
 
         }
 

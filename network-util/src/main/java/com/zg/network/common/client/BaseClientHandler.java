@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BaseClientHandler<T> extends SimpleChannelInboundHandler<T> {
 
-    public final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
+    public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     @Override
     protected abstract void channelRead0(ChannelHandlerContext ctx, T msg) throws Exception;

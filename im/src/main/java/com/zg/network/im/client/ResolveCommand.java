@@ -50,7 +50,7 @@ public class ResolveCommand {
 
         switch (methodType) {
             case "LOGIN": {
-                // LOGGER.info(" to login  ");
+                // logger.info(" to login  ");
                 break;
             }
             case "LOGOUT": {
@@ -65,7 +65,7 @@ public class ResolveCommand {
                     logger.info("还未登陆");
                     return false;
                 }
-                // LOGGER.info(" to " + request.message);
+                // logger.info(" to " + request.message);
                 break;
             }
 

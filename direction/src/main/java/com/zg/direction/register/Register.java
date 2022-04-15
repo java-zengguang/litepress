@@ -18,7 +18,7 @@ public class Register implements Watcher {
     private static CountDownLatch connectedSemaphore = new CountDownLatch(1);
     private static ZooKeeper zk = null;
     private static Stat stat = new Stat();
-    public final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
+    public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     public Register() {
     }
@@ -48,8 +48,8 @@ public class Register implements Watcher {
             String path = key;
             String value = JsonUtils.objectToJson(map.get(key)).toString();
             zk.create(path, value.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
-            LOGGER.info("success create znode: " + path);
-            LOGGER.info("success create data: " + value);
+            logger.info("success create znode: " + path);
+            logger.info("success create data: " + value);
         }
         Thread.sleep(Integer.MAX_VALUE);
 
@@ -61,8 +61,8 @@ public class Register implements Watcher {
                 connectedSemaphore.countDown();
             } else if (event.getType() == Event.EventType.NodeDataChanged) {
                 try {
-                    LOGGER.info("the data of znode " + event.getPath() + " is : " + new String(zk.getData(event.getPath(), true, stat)));
-                    LOGGER.info("czxID: " + stat.getCzxid() + ", mzxID: " + stat.getMzxid() + ", version: " + stat.getVersion());
+                    logger.info("the data of znode " + event.getPath() + " is : " + new String(zk.getData(event.getPath(), true, stat)));
+                    logger.info("czxID: " + stat.getCzxid() + ", mzxID: " + stat.getMzxid() + ", version: " + stat.getVersion());
                 } catch (Exception e) {
                 }
             }
