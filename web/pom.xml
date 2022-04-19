@@ -60,11 +60,25 @@
             <artifactId>tomcat-embed-core</artifactId>
             <version>9.0.39</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
             <version>9.0.39</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <version>9.4.14.v20181114</version>
+            <artifactId>jetty-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <version>9.4.14.v20181114</version>
+            <artifactId>jetty-servlet</artifactId>
+        </dependency>
+
+
         <!--jstl标签依赖的jar包end -->
     </dependencies>
 

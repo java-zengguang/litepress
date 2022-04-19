@@ -9,7 +9,9 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.servlets.DefaultServlet;
 import org.apache.catalina.startup.Tomcat;
 
+import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 import java.io.IOException;
 
 public class TomcatBoot {
@@ -34,7 +36,6 @@ public class TomcatBoot {
         tomcat.setConnector(connector);
         tomcat.addWebapp(contextPath, baseDir);
         tomcat.enableNaming();
-
         if (true) {
             //创建上下文
             Context context = tomcat.addContext("/static", "../static");
@@ -42,6 +43,7 @@ public class TomcatBoot {
             servlet.setLoadOnStartup(1);//容器启动初始化Sevlet
             servlet.addMapping("/");
         }
+
 
         //手动创建
         //tomcat.getConnector();

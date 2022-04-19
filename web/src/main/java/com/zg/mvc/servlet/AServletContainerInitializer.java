@@ -5,9 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
+import javax.servlet.annotation.HandlesTypes;
 import java.util.EnumSet;
 import java.util.Set;
 
+@HandlesTypes(AServletContainerInitializer.class)
 public class AServletContainerInitializer implements ServletContainerInitializer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
@@ -18,7 +20,9 @@ public class AServletContainerInitializer implements ServletContainerInitializer
             logger.info("加载servlet");
             ServletRegistration.Dynamic servletDynamic = servletContext.addServlet("AdapterServlet", new AdapterServlet());
             servletDynamic.addMapping("/");
+
         }
+
         if (true) {
             logger.info("加载Filter");
             FilterRegistration.Dynamic corsFilter = servletContext.addFilter("CorsFilter", new CorsFilter());
