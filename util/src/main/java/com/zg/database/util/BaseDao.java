@@ -72,8 +72,10 @@ public class BaseDao {
         List list = new ArrayList();
         Map tableInfoMap = tableInfo(sql);
         list = selectToMapList(sql);
-        Object model = DynamicClass.getDynamicClass(Arrays.asList("com.zg.bean.entity.MainModel", "com.zg.bean.annotation.FieldTypeMode", "com.zg.bean.annotation.Model"), getTableName(sql), tableInfoMap, null, "MainModel");
-        list = SerializeObjectUtils.setMember(list, model.getClass());
+        if(list!=null && list.size()>0) {
+            Class model = DynamicClass.getDynamicClass(Arrays.asList("com.zg.bean.entity.MainModel", "com.zg.bean.annotation.FieldTypeMode", "com.zg.bean.annotation.Model"), getTableName(sql), tableInfoMap, null, "MainModel");
+            list = SerializeObjectUtils.setMember(list, model);
+        }
         return list;
     }
 

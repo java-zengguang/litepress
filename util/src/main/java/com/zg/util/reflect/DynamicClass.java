@@ -3,6 +3,7 @@ package com.zg.util.reflect;
 import com.zg.bean.entity.MainModel;
 import com.zg.database.util.DataBaseUtil;
 import com.zg.util.ftp.FTPUtil;
+import com.zg.util.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,11 +12,16 @@ import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.*;
+import java.util.regex.Matcher;
 
 
 public class DynamicClass {
-    private static final Logger logger = LoggerFactory.getLogger(FTPUtil.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(DynamicClass.class.getName());
 
 
     private static String produceEntityJavaCode(List<String> referenceList, String calssName, Map<String, String> natureMap, List<String> interfaceList, String parentClass) throws Exception {
@@ -55,7 +61,7 @@ public class DynamicClass {
     }
 
 
-    public static Object getDynamicClass(List<String> referenceList, String className, Map<String, String> natureMap, List<String> interfaceList, String parentClass) {
+    public static Class getDynamicClass(List<String> referenceList, String className, Map<String, String> natureMap, List<String> interfaceList, String parentClass) {
         String javaCode;
         try {
             javaCode = produceEntityJavaCode(referenceList, className, natureMap, interfaceList, parentClass);
@@ -69,27 +75,49 @@ public class DynamicClass {
     }
 
 
-    private static Object getDynamicClass(String name, String javaCode) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private static Class getDynamicClass(String name, String javaCode) throws ClassNotFoundException, InstantiationException, IllegalAccessException, FileNotFoundException, MalformedURLException {
         Object o = null;
         Map<String, byte[]> results;
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         JavaFileManager stdManager = compiler.getStandardFileManager(null, null, null);
         JavaFileObject jfo = new StringJavaFileObject(name, javaCode);
         List<String> options = new ArrayList<String>();
-        String path = MainModel.class.getClassLoader().getResource("").getPath();
-        logger.info(DataBaseUtil.class + "====calss生成路径" + path);
+        String path = FileUtils.PATH;
+        logger.info(DynamicClass.class + "====calss生成路径" + path);
         options.addAll(Arrays.asList("-d", path));
         List<? extends JavaFileObject> jfos = Arrays.asList(jfo);
+
+
         CompilationTask task = compiler.getTask(null, stdManager, null, options, null, jfos);
         if (task.call()) {
-            o = Class.forName("com.zg.bean.entity." + name).newInstance();
-            return o;
+            String classAllName="com.zg.bean.entity." + name;
+            DynameicClassLoader dynameicClassLoader=new DynameicClassLoader(path);
+            Class classes= dynameicClassLoader.loadClass(classAllName);
+            return classes;
         } else {
             return null;
         }
-
-
     }
+       /* URI uri;
+        if (true) {
+            InputStream inputStream = new ByteArrayInputStream(javaCode.getBytes());
+
+            if (!path.contains("classes")) {
+                uri = URI.create("jar:" + (new File(path)).toURI());
+            } else {
+                uri = (new File(path)).toURI();
+            }
+
+            OutputStream outputStream = new FileOutputStream(new File(uri));
+            if (compiler.run(inputStream, outputStream, null,"-d") > 0) {
+                o = Class.forName("com.zg.bean.entity." + name).newInstance();
+                return o;
+            }
+
+        }
+
+        return o;
+    }*/
 
 }
 

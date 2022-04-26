@@ -48,12 +48,8 @@ public class C3p0Impl implements DataBaseInte {
         cpds.setAcquireRetryDelay(1000);
         cpds.setMaxIdleTime(3600);
         cpds.setTestConnectionOnCheckout(true);
-        cpds.setIdleConnectionTestPeriod(10);
-        cpds.setMaxStatements(0);
-        cpds.setMaxStatementsPerConnection(0);
-        cpds.setPreferredTestQuery(" select 1 ");
         cpds.setIdleConnectionTestPeriod(1800);
-        cpds.setTestConnectionOnCheckout(false);
+        cpds.setPreferredTestQuery(" select 1 from dual");
 
         return cpds;
     }

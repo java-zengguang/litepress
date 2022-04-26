@@ -7,7 +7,10 @@ import com.zg.database.pool.ZGDBPImpl;
 import com.zg.init.Config;
 import org.apache.log4j.Logger;
 
-public class PoolConnectionFactory {
+import java.sql.Connection;
+import java.sql.SQLException;
+
+public class PoolConnectionFactory extends BaseConnectionFactory {
     private static Logger logger = Logger.getLogger(ConnectionFactory.class);
     private static PoolConnectionFactory poolConnectionFactory;
 
@@ -38,4 +41,10 @@ public class PoolConnectionFactory {
         return databasePool;
     }
 
+    @Override
+    public Connection createConnection(String dataSourceName) throws ClassNotFoundException, SQLException {
+        DataBaseInte dataBaseInte = createDataBasePool(dataSourceName);
+        return dataBaseInte.getConnection(dataSourceName);
+
+    }
 }

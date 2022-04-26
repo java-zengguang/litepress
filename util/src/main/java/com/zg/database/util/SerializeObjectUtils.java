@@ -72,13 +72,13 @@ public class SerializeObjectUtils implements Runnable {
 
                 }
             }
-            //序列化，实现深度克隆
+        /*    //序列化，实现深度克隆
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(bos);
             out.writeObject(model);
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
-            Object model_copy = (Object) in.readObject();
-            model_list.add(model_copy);
+            Object model_copy = (Object) in.readObject();*/
+            model_list.add(model);
         }
         return model_list;
     }

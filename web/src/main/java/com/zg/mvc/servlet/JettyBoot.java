@@ -1,8 +1,10 @@
 package com.zg.mvc.servlet;
 
 import com.zg.mvc.adapter.ControllerAdapter;
+import com.zg.util.io.FileUtils;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.HandlerWrapper;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -12,6 +14,7 @@ import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.Objects;
 
 public class JettyBoot {
@@ -23,22 +26,40 @@ public class JettyBoot {
         Server server = new Server(8080);
         try {
 
-
             //默认servlet
-            ServletContextHandler contextHandler = new ServletContextHandler();
-            contextHandler.setContextPath("/");
-            contextHandler.setBaseResource(Resource.newResource(Objects.requireNonNull(this.getClass().getClassLoader().getResource("static")).getPath()));
-            DefaultServlet defaultServlet = new DefaultServlet();
-            ServletHolder defaultServletHolder = new ServletHolder("default", defaultServlet);
+/*
+            if (true) {
+                ServletContextHandler contextHandler = new ServletContextHandler();
+                contextHandler.setContextPath("/static");
+                contextHandler.setBaseResource(Resource.newResource(FileUtils.PATH+"static"));
+                DefaultServlet defaultServlet = new DefaultServlet();
+                ServletHolder defaultServletHolder = new ServletHolder("default", defaultServlet);
+                defaultServletHolder.setInitParameter("dirAllowed", "true");
+                // Use request pathInfo, don't calculate from contextPath
+                defaultServletHolder.setInitParameter("pathInfoOnly", "true");
+                contextHandler.addServlet(defaultServletHolder, "/static/*");
+                server.setHandler(contextHandler);
 
-            defaultServletHolder.setInitParameter("dirAllowed","true");
-            // Use request pathInfo, don't calculate from contextPath
-            defaultServletHolder.setInitParameter("pathInfoOnly","true");
-            contextHandler.addServlet(defaultServletHolder,"/static/*");
-            contextHandler.addServlet(AdapterServlet.class,"/");
+            }
+*/
 
-            server.setHandler(contextHandler);
+            if (true) {
+                ServletHandler servletHandler = new ServletHandler();
+                servletHandler.addServletWithMapping(AdapterServlet.class, "/");
+                server.insertHandler(servletHandler);
+            }
 
+            if(true){
+                ResourceHandler resourceHandler=new ResourceHandler();
+                resourceHandler.setBaseResource( Resource.newResource(FileUtils.PATH+"static"));
+                resourceHandler.setPathInfoOnly(true);
+                resourceHandler.setDirAllowed(true);
+                server.insertHandler(resourceHandler);
+            }
+
+
+            ServerConnector connector=server.getBean(ServerConnector.class);
+            connector.setIdleTimeout(24*60*60*1000);
             //启动服务器
             server.start();
             //阻塞Jetty server的线程池，直到线程池停止
@@ -51,7 +72,7 @@ public class JettyBoot {
 
     public static void main(String[] args) {
 
-        JettyBoot jettyBoot=new JettyBoot();
+        JettyBoot jettyBoot = new JettyBoot();
         jettyBoot.doMain();
     }
 }
