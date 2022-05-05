@@ -156,6 +156,10 @@ public class EntityUtils {
                 s = "String";
                 break;
 
+            case "CHAR":
+                s = "String";
+                break;
+
             case "NUMBER":
                 s = "java.math.BigDecimal";
                 break;
@@ -716,9 +720,12 @@ public class EntityUtils {
                 break;
             }
 
-
             case "tinyint": {
                 field.set(object, (Integer) object);
+                break;
+            }
+            case "char": {
+                field.set(object, (String) value);
                 break;
             }
 
