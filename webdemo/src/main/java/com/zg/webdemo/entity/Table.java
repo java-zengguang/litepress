@@ -1,6 +1,6 @@
 package com.zg.webdemo.entity;
 
-import com.zg.bean.entity.MainModel;
+import com.zg.common.bean.entity.MainModel;
 
 /**
  * Created by zkyd01 on 2018/9/1.

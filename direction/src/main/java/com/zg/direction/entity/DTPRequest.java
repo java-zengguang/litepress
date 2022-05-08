@@ -1,6 +1,6 @@
 package com.zg.direction.entity;
 
-import com.zg.bean.entity.MainModel;
+import com.zg.common.bean.entity.MainModel;
 
 import java.util.List;
 

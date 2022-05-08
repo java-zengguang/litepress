@@ -1,9 +1,9 @@
 package com.zg.mvc.controller;
 
-import com.zg.bean.entity.Test;
+import com.zg.common.bean.entity.Test;
 import com.zg.mvc.annotation.controller.Controller;
 import com.zg.mvc.annotation.controller.ResultMapping;
-import com.zg.util.reflect.JsonUtils;
+import com.zg.common.util.reflect.JsonUtils;
 import org.apache.commons.collections.map.HashedMap;
 
 import javax.servlet.http.HttpServletRequest;

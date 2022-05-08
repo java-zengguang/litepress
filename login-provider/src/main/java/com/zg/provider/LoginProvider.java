@@ -1,8 +1,8 @@
 package com.zg.provider;
 
 import com.zg.direction.annotation.Provider;
-import com.zg.handler.CommitInterfaceHandler;
-import com.zg.handler.ProxyUtils;
+import com.zg.common.handler.CommitInterfaceHandler;
+import com.zg.common.proxy.ProxyUtils;
 import com.zg.inte.LoginServiceInte;
 import com.zg.service.LoginService;
 

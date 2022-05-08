@@ -10,8 +10,8 @@ import com.zg.network.common.fileservcie.ReceiveFile;
 import com.zg.network.common.fileservcie.SendFile;
 import com.zg.network.im.utils.AudioUtils;
 import com.zg.prestuctural.manager.CacheManager;
-import com.zg.util.reflect.EntityUtils;
-import com.zg.util.url.GetServerRealPathUnit;
+import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.url.GetServerRealPathUnit;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.io.File;

@@ -1,7 +1,7 @@
 package com.zg.direction.register;
 
 import com.zg.direction.adapter.ProviderFactory;
-import com.zg.util.reflect.JsonUtils;
+import com.zg.common.util.reflect.JsonUtils;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;

@@ -1,6 +1,6 @@
 package com.zg.cache.util;
 
-import com.zg.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.EntityUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;

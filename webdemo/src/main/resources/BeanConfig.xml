@@ -2,7 +2,7 @@
 <beans>
 
     <!--
-        <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
+        <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
             <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
             <property name="maxPoolSize" type="int">10</property>
             <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
@@ -13,7 +13,7 @@
         </bean>-->
 
 
-    <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
+    <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
@@ -23,7 +23,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="testDB" class="com.zg.bean.entity.OptionDB">
+    <bean id="testDB" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
@@ -33,7 +33,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="dev_nvpolicy" class="com.zg.bean.entity.OptionDB">
+    <bean id="dev_nvpolicy" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvpoldev</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -43,7 +43,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="dev_nvproposal" class="com.zg.bean.entity.OptionDB">
+    <bean id="dev_nvproposal" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvprodev</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -53,7 +53,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="dev_nvendorsement" class="com.zg.bean.entity.OptionDB">
+    <bean id="dev_nvendorsement" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvprodev</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -63,7 +63,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="dev_nvportal" class="com.zg.bean.entity.OptionDB">
+    <bean id="dev_nvportal" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvprodev</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -73,7 +73,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="dev_nvfactory" class="com.zg.bean.entity.OptionDB">
+    <bean id="dev_nvfactory" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvpoldev</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -83,7 +83,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="dev_nvsun" class="com.zg.bean.entity.OptionDB">
+    <bean id="dev_nvsun" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvsundev</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -94,7 +94,7 @@
     </bean>
 
 
-    <bean id="int_nvpolicy" class="com.zg.bean.entity.OptionDB">
+    <bean id="int_nvpolicy" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvpolint</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -104,7 +104,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="int_nvproposal" class="com.zg.bean.entity.OptionDB">
+    <bean id="int_nvproposal" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvproint</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -114,7 +114,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="int_nvendorsement" class="com.zg.bean.entity.OptionDB">
+    <bean id="int_nvendorsement" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvproint</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -124,7 +124,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="int_nvportal" class="com.zg.bean.entity.OptionDB">
+    <bean id="int_nvportal" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvproint</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -134,7 +134,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="int_nvfactory" class="com.zg.bean.entity.OptionDB">
+    <bean id="int_nvfactory" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvpolint</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -144,7 +144,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="int_nvsun" class="com.zg.bean.entity.OptionDB">
+    <bean id="int_nvsun" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvsunint</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -154,7 +154,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="uat_nvpolicy" class="com.zg.bean.entity.OptionDB">
+    <bean id="uat_nvpolicy" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvpoluat</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -164,7 +164,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="uat_nvproposal" class="com.zg.bean.entity.OptionDB">
+    <bean id="uat_nvproposal" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvprouat</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -174,7 +174,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="uat_nvendorsement" class="com.zg.bean.entity.OptionDB">
+    <bean id="uat_nvendorsement" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvprouat</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -184,7 +184,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="uat_nvportal" class="com.zg.bean.entity.OptionDB">
+    <bean id="uat_nvportal" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvprouat</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -194,7 +194,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="uat_nvfactory" class="com.zg.bean.entity.OptionDB">
+    <bean id="uat_nvfactory" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvpoluat</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -204,7 +204,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="uat_nvsun" class="com.zg.bean.entity.OptionDB">
+    <bean id="uat_nvsun" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvsunuat</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -214,7 +214,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="stage_nvpolicy" class="com.zg.bean.entity.OptionDB">
+    <bean id="stage_nvpolicy" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvpolstage</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -224,7 +224,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="stage_nvproposal" class="com.zg.bean.entity.OptionDB">
+    <bean id="stage_nvproposal" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprostage</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -234,7 +234,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="stage_nvendorsement" class="com.zg.bean.entity.OptionDB">
+    <bean id="stage_nvendorsement" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprostage</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -244,7 +244,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="stage_nvportal" class="com.zg.bean.entity.OptionDB">
+    <bean id="stage_nvportal" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprostage</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -254,7 +254,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="stage_nvfactory" class="com.zg.bean.entity.OptionDB">
+    <bean id="stage_nvfactory" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvpolstage</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -264,7 +264,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="stage_nvsun" class="com.zg.bean.entity.OptionDB">
+    <bean id="stage_nvsun" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvsunstage</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -275,7 +275,7 @@
     </bean>
 
 
-    <bean id="old_dev_nvpolicy" class="com.zg.bean.entity.OptionDB">
+    <bean id="old_dev_nvpolicy" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.29:1521/stagedb</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -285,7 +285,7 @@
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
 
-    <bean id="old_dev_nvproposal" class="com.zg.bean.entity.OptionDB">
+    <bean id="old_dev_nvproposal" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.29:1521/pcoreuat</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -296,7 +296,7 @@
     </bean>
 
 
-    <bean id="test" class="com.zg.bean.entity.OptionDB">
+    <bean id="test" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:h2:mem:test;MODE=Oracle;DB_CLOSE_DELAY=-1</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">org.h2.Driver</property>
@@ -307,7 +307,7 @@
     </bean>
 
 
-    <bean id="optionMGDB" class="com.zg.bean.entity.OptionMGDB">
+    <bean id="optionMGDB" class="com.zg.common.bean.entity.OptionMGDB">
         <property name="ip" type="java.lang.String">localhost</property>
         <property name="port" type="java.lang.String">27017</property>
         <property name="database" type="java.lang.String">admin</property>
@@ -331,7 +331,7 @@
         <property name="tableMapper" ref="tableMapper"></property>
     </bean>
 
-    <proxy package="com.zg.webdemo.service.table" handler="com.zg.handler.CommitInterfaceHandler"
+    <proxy package="com.zg.webdemo.service.table" handler="com.zg.common.handler.CommitInterfaceHandler"
            method="deleteTableDate"></proxy>
 
 

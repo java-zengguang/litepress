@@ -1,7 +1,7 @@
 package com.zg.sso.common;
 
 import com.zg.sso.entity.SSOOpthion;
-import com.zg.util.url.URLUtils;
+import com.zg.common.util.url.URLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -2,8 +2,8 @@ package com.zg.webdemo.controller;
 
 import com.zg.mvc.annotation.controller.Controller;
 import com.zg.mvc.annotation.controller.ResultMapping;
-import com.zg.util.reflect.JsonMap;
-import com.zg.util.reflect.JsonUtils;
+import com.zg.common.util.reflect.JsonMap;
+import com.zg.common.util.reflect.JsonUtils;
 import org.apache.commons.collections.map.HashedMap;
 
 import java.util.ArrayList;

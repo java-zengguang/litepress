@@ -1,7 +1,7 @@
 package com.zg.webdemo.service.table;
 
 
-import com.zg.database.util.MongoDBUtils;
+import com.zg.common.dao.util.MongoDBUtils;
 import com.zg.webdemo.dao.TableMapper;
 import com.zg.webdemo.entity.PageEntity;
 import com.zg.webdemo.entity.Table;

@@ -1,8 +1,7 @@
 package com.zg.sso.filter;
 
 
-import com.zg.database.util.PassWordUtil;
-import com.zg.init.Config;
+import com.zg.common.init.Config;
 import com.zg.sso.entity.SSOOpthion;
 import com.zg.sso.service.LoginService;
 import org.slf4j.Logger;

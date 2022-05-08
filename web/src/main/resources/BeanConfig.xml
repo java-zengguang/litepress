@@ -9,7 +9,7 @@
              <property name="password" type="java.lang.String">helloworld</property>
       </bean>-->
 
-    <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
+    <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>

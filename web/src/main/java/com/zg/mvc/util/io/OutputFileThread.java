@@ -1,6 +1,6 @@
 package com.zg.mvc.util.io;
 
-import com.zg.util.ftp.FTPUtil;
+import com.zg.common.util.io.FTPUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

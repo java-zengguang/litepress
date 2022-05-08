@@ -1,13 +1,13 @@
 package com.zg.mvc.adapter;
 
-import com.zg.init.Config;
+import com.zg.common.init.Config;
 import com.zg.mvc.entity.MVCOption;
 import com.zg.mvc.entity.ViewObject;
 import com.zg.mvc.util.ResolveAnnotation;
 import com.zg.mvc.util.io.IOUtils;
 import com.zg.mvc.util.io.ResovleUploadThread;
-import com.zg.util.reflect.EntityUtils;
-import com.zg.util.reflect.JsonUtils;
+import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.JsonUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

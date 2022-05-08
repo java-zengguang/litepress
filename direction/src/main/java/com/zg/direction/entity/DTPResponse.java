@@ -1,6 +1,6 @@
 package com.zg.direction.entity;
 
-import com.zg.bean.entity.MainModel;
+import com.zg.common.bean.entity.MainModel;
 
 public class DTPResponse extends MainModel {
     public boolean success;

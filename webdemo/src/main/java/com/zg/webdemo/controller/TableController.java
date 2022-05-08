@@ -1,11 +1,11 @@
 package com.zg.webdemo.controller;
 
 
-import com.zg.bean.factory.BeanFactory;
+import com.zg.common.bean.factory.BeanFactory;
 import com.zg.mvc.annotation.controller.Controller;
 import com.zg.mvc.annotation.controller.ResultMapping;
 import com.zg.mvc.controller.BaseController;
-import com.zg.util.reflect.JsonUtils;
+import com.zg.common.util.reflect.JsonUtils;
 import com.zg.webdemo.entity.PageEntity;
 import com.zg.webdemo.entity.Table;
 import com.zg.webdemo.service.table.TableService;

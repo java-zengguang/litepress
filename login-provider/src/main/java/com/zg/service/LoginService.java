@@ -1,7 +1,7 @@
 package com.zg.service;
 
 
-import com.zg.dao.LoginDao;
+import com.zg.common.dao.LoginEntityDao;
 import com.zg.inte.LoginServiceInte;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
@@ -16,7 +16,7 @@ import java.util.*;
 public class LoginService implements LoginServiceInte {
 
     public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-    private LoginDao loginDao = new LoginDao();
+    private LoginEntityDao loginDao = new LoginEntityDao();
 
     public String verification(String username, String passworld) {
         Map map = new HashedMap();

@@ -1,7 +1,7 @@
 package com.zg.mvc.servlet;
 
 
-import com.zg.util.io.FileUtils;
+import com.zg.common.util.CommonUtil;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Wrapper;
@@ -9,9 +9,7 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.servlets.DefaultServlet;
 import org.apache.catalina.startup.Tomcat;
 
-import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
 import java.io.IOException;
 
 public class TomcatBoot {
@@ -19,7 +17,7 @@ public class TomcatBoot {
 
     private static int port = 8080;
     private static String contextPath = "/";
-    private String baseDir = FileUtils.PATH;
+    private String baseDir = CommonUtil.PATH;
 
     public static void main(String args[]) throws ServletException, LifecycleException, IOException {
 

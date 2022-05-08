@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>util</module>
+        <module>common</module>
         <module>web</module>
         <module>direction</module>
         <module>incache</module>

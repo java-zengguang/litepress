@@ -2,8 +2,8 @@ package com.zg.direction.annotation;
 
 import com.zg.direction.entity.ProviderConfig;
 import com.zg.direction.entity.ProviderEntity;
-import com.zg.init.Config;
-import com.zg.util.annotation.BaseResolveAnnotation;
+import com.zg.common.init.Config;
+import com.zg.common.annotation.BaseResolveAnnotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

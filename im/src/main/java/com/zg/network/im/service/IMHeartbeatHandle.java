@@ -4,7 +4,7 @@ import com.zg.network.bean.ChannelBean;
 import com.zg.network.bean.ZGMPBean;
 import com.zg.network.common.heartbeat.BaseHeartbeatHandle;
 import com.zg.network.im.login.LoginManager;
-import com.zg.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.EntityUtils;
 import io.netty.channel.Channel;
 import org.apache.log4j.Logger;
 

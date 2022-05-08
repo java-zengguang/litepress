@@ -2,8 +2,8 @@ package com.zg.mvc.controller;
 
 import com.zg.mvc.annotation.controller.Controller;
 import com.zg.mvc.annotation.controller.ResultMapping;
-import com.zg.util.reflect.JsonMap;
-import com.zg.util.reflect.JsonUtils;
+import com.zg.common.util.reflect.JsonMap;
+import com.zg.common.util.reflect.JsonUtils;
 
 @Controller("/test")
 public class TestController extends BaseController{

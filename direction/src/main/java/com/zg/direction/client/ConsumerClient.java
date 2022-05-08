@@ -2,7 +2,7 @@ package com.zg.direction.client;
 
 import com.zg.network.common.client.BaseClient;
 import com.zg.network.common.client.BaseClientHandler;
-import com.zg.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.EntityUtils;
 
 public class ConsumerClient extends BaseClient {
     public ConsumerClient(BaseClientHandler<String> clientHandler, String host, int port) {

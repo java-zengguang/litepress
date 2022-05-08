@@ -6,7 +6,7 @@ import com.zg.mvc.controller.BaseController;
 import com.zg.mvc.entity.MessageBean;
 import com.zg.sso.service.LoginService;
 import com.zg.sso.utils.SSOUtils;
-import com.zg.util.reflect.JsonUtils;
+import com.zg.common.util.reflect.JsonUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

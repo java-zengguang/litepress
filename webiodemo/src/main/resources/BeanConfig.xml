@@ -2,7 +2,7 @@
 <beans>
 
 
-    <bean id="optionDB" class="com.zg.bean.entity.OptionDB">
+    <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/applysql?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
@@ -32,7 +32,7 @@
         <property name="projectRoot" type="java.lang.String">/webiodemo</property>
     </bean>
 
-    <bean id="FTPConfig" class="com.zg.bean.entity.FTPConfig">
+    <bean id="FTPConfig" class="com.zg.common.bean.entity.FTPConfig">
         <property name="ftpHost" type="java.lang.String">192.168.71.221</property>
         <property name="ftpPort" type="java.lang.String">21</property>
         <property name="ftpUserName" type="java.lang.String">guangge</property>
@@ -41,7 +41,7 @@
     </bean>
 
 
-    <bean id="optionMGDB" class="com.zg.bean.entity.OptionMGDB">
+    <bean id="optionMGDB" class="com.zg.common.bean.entity.OptionMGDB">
         <property name="ip" type="java.lang.String">localhost</property>
         <property name="port" type="java.lang.String">27017</property>
         <property name="database" type="java.lang.String">admin</property>
@@ -65,7 +65,7 @@
         <property name="tableMapper" ref="tableMapper"></property>
     </bean>
 
-    <proxy package="com.zg.webdemo.service.table" handler="com.zg.handler.CommitInterfaceHandler"
+    <proxy package="com.zg.webdemo.service.table" handler="com.zg.common.handler.CommitInterfaceHandler"
            method="deleteTableDate"></proxy>
 
 

@@ -6,8 +6,8 @@ import com.zg.direction.entity.DTPRequest;
 import com.zg.direction.entity.ProviderConfig;
 import com.zg.direction.entity.ProviderEntity;
 import com.zg.direction.register.ZookeeperUtil;
-import com.zg.init.Config;
-import com.zg.util.reflect.JsonUtils;
+import com.zg.common.init.Config;
+import com.zg.common.util.reflect.JsonUtils;
 import org.apache.zookeeper.KeeperException;
 
 import java.io.IOException;

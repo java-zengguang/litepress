@@ -1,12 +1,12 @@
 package com.zg.io.controller;
 
-import com.zg.handler.ProxyUtils;
+import com.zg.common.handler.ProxyUtils;
 import com.zg.io.entity.FileEntity;
 import com.zg.io.service.FileService;
 import com.zg.io.service.FileServiceImpl;
 import com.zg.mvc.annotation.controller.Controller;
 import com.zg.mvc.annotation.controller.ResultMapping;
-import com.zg.util.reflect.JsonUtils;
+import com.zg.common.util.reflect.JsonUtils;
 
 import java.io.File;
 import java.io.IOException;

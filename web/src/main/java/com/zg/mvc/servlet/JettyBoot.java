@@ -1,21 +1,14 @@
 package com.zg.mvc.servlet;
 
 import com.zg.mvc.adapter.ControllerAdapter;
-import com.zg.util.io.FileUtils;
+import com.zg.common.util.CommonUtil;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.HandlerWrapper;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.util.Objects;
 
 public class JettyBoot {
     private static final Logger logger = LoggerFactory.getLogger(ControllerAdapter.class);
@@ -51,7 +44,7 @@ public class JettyBoot {
 
             if(true){
                 ResourceHandler resourceHandler=new ResourceHandler();
-                resourceHandler.setBaseResource( Resource.newResource(FileUtils.PATH+"static"));
+                resourceHandler.setBaseResource( Resource.newResource(CommonUtil.PATH+"static"));
                 resourceHandler.setPathInfoOnly(true);
                 resourceHandler.setDirAllowed(true);
                 server.insertHandler(resourceHandler);

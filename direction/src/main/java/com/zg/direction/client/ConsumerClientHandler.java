@@ -3,7 +3,7 @@ package com.zg.direction.client;
 import com.zg.direction.entity.DTPResponse;
 import com.zg.network.common.MessgeReceivedListener;
 import com.zg.network.common.client.BaseClientHandler;
-import com.zg.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.EntityUtils;
 import io.netty.channel.ChannelHandlerContext;
 
 public class ConsumerClientHandler extends BaseClientHandler<String> {

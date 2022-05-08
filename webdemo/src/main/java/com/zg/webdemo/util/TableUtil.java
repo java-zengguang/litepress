@@ -1,7 +1,7 @@
 package com.zg.webdemo.util;
 
 
-import com.zg.database.util.NewJDBCUtil;
+import com.zg.common.dao.util.NewJDBCUtil;
 import com.zg.webdemo.entity.PageEntity;
 
 import java.util.List;

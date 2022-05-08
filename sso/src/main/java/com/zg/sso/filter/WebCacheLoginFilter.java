@@ -1,6 +1,6 @@
 package com.zg.sso.filter;
 
-import com.zg.init.Config;
+import com.zg.common.init.Config;
 import com.zg.sso.common.LoginInte;
 import com.zg.sso.common.SSOAdapter;
 import com.zg.sso.common.WebCacheLogin;

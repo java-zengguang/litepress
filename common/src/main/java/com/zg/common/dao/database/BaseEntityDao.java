@@ -1,0 +1,125 @@
+package com.zg.common.dao.database;
+
+import com.zg.common.bean.entity.MainModel;
+import com.zg.common.bean.entity.MetadataEntity;
+import com.zg.common.dao.assemble.SimpleAssemble;
+import com.zg.common.dao.mongodb.ModelSQLUtils;
+import com.zg.common.util.reflect.DynamicClass;
+import com.zg.common.util.reflect.EntityUtils;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * Created by Administrator on 2018/11/27 0027.
+ */
+public class BaseEntityDao extends BaseJDBCDao {
+
+
+    public int insertTable(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+        List list = new ArrayList();
+        list.add(model);
+        int results[] = insertTables(list, model.getClass());
+        int result = 0;
+        if (results != null && results.length > 0) {
+            result = results[0];
+        }
+        return result;
+    }
+
+    public int[] insertTables(List modelLIst, Class modelClass) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+        String tableName = EntityUtils.getTableNameFromModel(modelClass);
+        return insertTables(modelLIst, modelClass, tableName);
+    }
+
+
+    //查询
+    public List select(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
+        List<List<MetadataEntity>> templeList = select2TempleList(sql);
+        SimpleAssemble simpleAssemble=new SimpleAssemble();
+        List modelList=new ArrayList();
+        Class modelClass = null;
+        if(templeList!=null&&templeList.size()>0) {
+            modelClass=DynamicClass.getDynamicModel(templeList.get(0));
+            for (List<MetadataEntity> columnList : templeList) {
+                Object obj = modelClass.newInstance();
+                for (MetadataEntity metadataEntity : columnList) {
+                    obj = simpleAssemble.assembling(metadataEntity, obj);
+                }
+                modelList.add(obj);
+            }
+        }
+        return modelList;
+    }
+
+
+
+    //查询
+    public List select(String sql, Class modelClass) throws Exception {
+        List<List<MetadataEntity>> templeList = select2TempleList(sql);
+        SimpleAssemble simpleAssemble = new SimpleAssemble();
+        List modelList = new ArrayList();
+        for (List<MetadataEntity> columnList : templeList) {
+            Object obj = modelClass.newInstance();
+            for (MetadataEntity metadataEntity : columnList) {
+                obj = simpleAssemble.assembling(metadataEntity, obj);
+            }
+            modelList.add(obj);
+        }
+        return modelList;
+
+    }
+
+
+    public List execute(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
+        logger.debug(sql);
+        List<MainModel> list = new ArrayList<MainModel>();
+        if (sql == null) {
+            logger.debug(" execute  sql is null");
+        } else if (sql.startsWith("select")) {
+            list = select(sql);
+
+        } else if (operation(sql) > 0) {
+
+
+        }
+        return list;
+    }
+
+
+    public int updateModel(Object object, String... terms) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+        int result = 0;
+        if (terms != null && terms.length > 0) {
+            String sql = ModelSQLUtils.update(object, terms);
+            result = operation(sql);
+        }
+        return result;
+    }
+
+
+    public Integer insertMap2Data(String tableName, Map<String, String> para) throws Exception {
+        String sql = "insert into " + tableName;
+        String column = "";
+        String values = "";
+        Set<String> columnSet = para.keySet();
+        for (String c : columnSet) {
+            column = c + " ," + column;
+            values = para.get(c) + " ," + "'" + values + "'";
+        }
+        if (column.endsWith(",")) {
+            column = column.substring(0, column.length() - 1);
+        }
+        if (values.endsWith(",")) {
+            values = values.substring(0, values.length() - 1);
+        }
+        sql = sql + " (" + column + ")" + " values (" + values + ")";
+        return operation(sql);
+
+    }
+
+}

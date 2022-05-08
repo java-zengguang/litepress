@@ -1,6 +1,6 @@
 package com.zg.mvc.util;
 
-import com.zg.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.EntityUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;

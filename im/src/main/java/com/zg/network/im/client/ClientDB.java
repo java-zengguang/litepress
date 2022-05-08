@@ -1,7 +1,7 @@
 package com.zg.network.im.client;
 
-import com.zg.bean.entity.MainModel;
-import com.zg.util.reflect.ListUtils;
+import com.zg.common.bean.entity.MainModel;
+import com.zg.common.util.reflect.ListUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

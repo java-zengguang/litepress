@@ -1,7 +1,7 @@
 package com.zg.io.service;
 
 
-import com.zg.handler.CommitClassHandler;
+import com.zg.common.handler.CommitClassHandler;
 import com.zg.io.dao.FileMapper;
 import com.zg.io.entity.FileEntity;
 

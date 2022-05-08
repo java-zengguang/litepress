@@ -1,8 +1,8 @@
 package com.zg.io.dao;
 
 
-import com.zg.database.util.BaseDao;
-import com.zg.database.util.ModelSQLUtils;
+import com.zg.common.dao.util.BaseDao;
+import com.zg.common.dao.util.ModelSQLUtils;
 import com.zg.io.entity.FileEntity;
 
 import java.sql.SQLException;

@@ -3,7 +3,7 @@ package com.zg.direction.adapter;
 
 import com.zg.direction.annotation.ProviderResovleAnnotation;
 import com.zg.direction.entity.ProviderConfig;
-import com.zg.init.Config;
+import com.zg.common.init.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -2,7 +2,7 @@ package com.zg.mvc.util;
 
 import com.zg.mvc.annotation.controller.Controller;
 import com.zg.mvc.annotation.controller.ResultMapping;
-import com.zg.util.io.FileUtils;
+import com.zg.common.util.CommonUtil;
 import org.apache.commons.collections.map.HashedMap;
 
 import java.lang.reflect.Method;
@@ -24,7 +24,7 @@ public class ResolveAnnotation {
             rootURL = "";
         }
         Map<String, Class> resultMap = new HashedMap();
-        List<Class> classList = FileUtils.getClassFormPackage(packageName);
+        List<Class> classList = CommonUtil.getClassFormPackage(packageName);
         for (Class classes : classList) {
             Controller controller = (Controller) classes.getAnnotation(Controller.class);
             if (controller != null) {

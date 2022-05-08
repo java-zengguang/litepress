@@ -23,7 +23,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>com.zg.Test</mainClass>
+                  <mainClass>com.zg.common.Test</mainClass>
                 </transformer>
               </transformers>
             </configuration>

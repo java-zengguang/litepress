@@ -4,7 +4,7 @@ import com.zg.direction.entity.ProviderConfig;
 import com.zg.direction.register.Register;
 import com.zg.direction.server.ProviderService;
 import com.zg.direction.server.ProviderServiceHandler;
-import com.zg.init.Config;
+import com.zg.common.init.Config;
 import org.apache.zookeeper.KeeperException;
 
 import java.io.IOException;

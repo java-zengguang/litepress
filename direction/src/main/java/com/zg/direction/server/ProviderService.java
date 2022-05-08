@@ -1,6 +1,6 @@
 package com.zg.direction.server;
 
-import com.zg.bean.factory.BeanFactory;
+import com.zg.common.bean.factory.BeanFactory;
 import com.zg.direction.entity.ProviderConfig;
 import com.zg.network.common.service.BaseService;
 import com.zg.network.common.service.BaseServiceHandler;

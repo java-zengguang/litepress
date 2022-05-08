@@ -1,8 +1,8 @@
 package com.zg.webdemo.dao;
 
 
-import com.zg.database.util.BaseDao;
-import com.zg.database.util.ModelSQLUtils;
+import com.zg.common.dao.util.BaseDao;
+import com.zg.common.dao.util.ModelSQLUtils;
 import com.zg.webdemo.entity.PageEntity;
 import com.zg.webdemo.entity.Table;
 import com.zg.webdemo.util.TableUtil;
