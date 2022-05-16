@@ -1,6 +1,5 @@
 package com.zg.common.password;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -138,12 +137,16 @@ public class EncryptUtil {
             KeyGenerator kg = KeyGenerator.getInstance(algorithm);
             if (keysize == 0) {
                 byte[] keyBytes = charset == null ? key.getBytes() : key.getBytes(charset);
-                kg.init(new SecureRandom(keyBytes));
+                SecureRandom secureRandom= SecureRandom.getInstance("SHA1PRNG");
+                secureRandom.setSeed(keyBytes);
+                kg.init(secureRandom);
             } else if (key == null) {
                 kg.init(keysize);
             } else {
                 byte[] keyBytes = charset == null ? key.getBytes() : key.getBytes(charset);
-                kg.init(keysize, new SecureRandom(keyBytes));
+                SecureRandom secureRandom= SecureRandom.getInstance("SHA1PRNG");
+                secureRandom.setSeed(keyBytes);
+                kg.init(keysize, secureRandom);
             }
             SecretKey sk = kg.generateKey();
             SecretKeySpec sks = new SecretKeySpec(sk.getEncoded(), algorithm);

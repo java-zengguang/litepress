@@ -1,8 +1,7 @@
 package com.zg.network.im.utils;
 
 import org.springframework.core.io.ClassPathResource;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
+
 
 import java.io.File;
 import java.io.InputStream;
@@ -16,8 +15,8 @@ public class AudioUtils {
             //  InputStream is=AudioUtils.class.getResourceAsStream("/resources/audio/11210.wav");
             ClassPathResource cpr = new ClassPathResource("audio" + File.separator + "11210.wav");
             InputStream in = cpr.getInputStream();
-            AudioStream audioStream = new AudioStream(in);
-            AudioPlayer.player.start(audioStream);
+ /*           AudioStream audioStream = new AudioStream(in);
+            AudioPlayer.player.start(audioStream);*/
         } catch (Exception e) {
             e.printStackTrace();
         }
