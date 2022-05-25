@@ -24,9 +24,11 @@ public class SimpleEntityDaoTemplate extends BaseEntityDaoTemplate {
                 add(Arrays.asList("VARCHAR2", "String", "'", "'"));
                 add( Arrays.asList("NVARCHAR2","String", "'", "'"));
                 add( Arrays.asList("CHAR","String", "'", "'"));
+                add( Arrays.asList("TEXT","String", "'", "'"));
                 add( Arrays.asList("NUMBER","BigDecimal", "", ""));
                 add( Arrays.asList("DATE","Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
-                add( Arrays.asList("DATETIME","Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));}
+                add( Arrays.asList("DATETIME","Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
+                add( Arrays.asList("TIMESTAMP","Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));}
 
 
         };
@@ -65,22 +67,24 @@ public class SimpleEntityDaoTemplate extends BaseEntityDaoTemplate {
         metadataEntity.tableName = metadataEntity.entityName;
         metadataEntity.columnLabel = metadataEntity.fieldName;
         List<String> configList = fieldConfigMap.get(metadataEntity.fieldType);
-        metadataEntity.columnType = configList.get(0);
+       // metadataEntity.columnType = configList.get(0);
         if (metadataEntity.objectValue != null) {
 
             if ("String".equals(metadataEntity.fieldType)) {
                 String value = (String) metadataEntity.objectValue;
                 if (value.contains("'")) {
                     value = value.replace("'", "''");
-                    metadataEntity.objectValue=value;
+                    metadataEntity.objectValue = value;
                 }
             }
 
-            if ("Date".equals(metadataEntity.fieldType)) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                metadataEntity.columnValue = configList.get(2) + dateFormat.format(metadataEntity.objectValue) + configList.get(3);
-            } else {
-                metadataEntity.columnValue = configList.get(2) + String.valueOf(metadataEntity.objectValue) + configList.get(3);
+            if (configList!=null&&configList.size()>0) {
+                if ("Date".equals(metadataEntity.fieldType)) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    metadataEntity.columnValue = configList.get(2) + dateFormat.format(metadataEntity.objectValue) + configList.get(3);
+                } else {
+                    metadataEntity.columnValue = configList.get(2) + String.valueOf(metadataEntity.objectValue) + configList.get(3);
+                }
             }
         }
 

@@ -1,29 +1,30 @@
 package com.zg.mvc.adapter;
 
 import com.zg.common.init.Config;
+import com.zg.common.util.reflect.JsonUtils;
+import com.zg.mvc.analysis.JsonRequestAnalysis;
+import com.zg.mvc.analysis.RequestAnalysis;
+import com.zg.mvc.analysis.SimpleRequestAnalysis;
+import com.zg.mvc.annotation.controller.ParamEntity;
+import com.zg.mvc.annotation.controller.RequestBody;
 import com.zg.mvc.entity.MVCOption;
 import com.zg.mvc.entity.ViewObject;
 import com.zg.mvc.util.ResolveAnnotation;
 import com.zg.mvc.util.io.IOUtils;
 import com.zg.mvc.util.io.ResovleUploadThread;
-import com.zg.common.util.reflect.EntityUtils;
-import com.zg.common.util.reflect.JsonUtils;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.lang.reflect.Field;
+import java.io.*;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Enumeration;
 import java.util.Map;
 import java.util.Set;
 
@@ -160,52 +161,6 @@ public class ControllerAdapter {
         }
     }
 
-    //注入参数
-    private static Object[] extractParam(HttpServletRequest request, HttpServletResponse response, Method method) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-/*
-        Map<String,String[]> map=request.getParameterMap();
-*/
-        int parameterCount = method.getParameterCount();
-        Parameter parameters[] = method.getParameters();
-        Object parameterValues[] = new Object[parameterCount];
-        for (int i = 0; i < parameterCount; i++) {
-            String paramentName = parameters[i].getName();
-            Class paramentType = Class.forName(parameters[i].getType().getName());
-            if (HttpServletRequest.class.isAssignableFrom(paramentType) || HttpServletResponse.class.isAssignableFrom(paramentType)) {
-                if (HttpServletRequest.class.isAssignableFrom(paramentType)) {
-                    parameterValues[i] = request;
-                }
-                if (HttpServletResponse.class.isAssignableFrom(paramentType)) {
-                    parameterValues[i] = response;
-                }
-            } else {
-                if (EntityUtils.isPrimitive(paramentType)) {
-
-                    parameterValues[i] = EntityUtils.translateType(request.getParameter(parameters[i].getName()), paramentType);
-                } else if (EntityUtils.isMap(paramentType)) {
-                    Map valueMap = new HashedMap();
-                    Enumeration paNames = request.getParameterNames();
-                    while (paNames.hasMoreElements()) {
-                        String paramName = (String) paNames.nextElement();
-                        String value = request.getParameter(paramName);
-                        valueMap.put(paramName, value);
-                    }
-                    parameterValues[i] = valueMap;
-                } else {
-                    Object object = paramentType.newInstance();
-                    Field fields[] = object.getClass().getFields();
-                    for (Field field : fields) {
-                        String value = request.getParameter(paramentName + "." + field.getName());
-                        EntityUtils.setField(field, object, value);
-                    }
-                    parameterValues[i] = object;
-                }
-            }
-        }
-
-        return parameterValues;
-    }
-
 
     //用于处理文件上传
     private static Object[] getInputStream(HttpServletRequest request, HttpServletResponse response, Method method, String inputFilePath) throws IOException, InterruptedException {
@@ -217,6 +172,53 @@ public class ControllerAdapter {
         return objects;
     }
 
+    public static Object[] getParamter(HttpServletRequest request, HttpServletResponse response, Method method) throws IllegalAccessException, InstantiationException, ClassNotFoundException, IOException {
+
+        int parameterCount = method.getParameterCount();
+        Parameter parameters[] = method.getParameters();
+        Annotation annotationArrays[][] = method.getParameterAnnotations();
+        Object parameterValues[] = new Object[parameterCount];
+        for (int i = 0; i < parameterCount; i++) {
+            Class paramentType = Class.forName(parameters[i].getType().getName());
+            if (HttpServletRequest.class.isAssignableFrom(paramentType)) {
+                parameterValues[i] = request;
+            }else if (HttpServletResponse.class.isAssignableFrom(paramentType)) {
+                parameterValues[i] = response;
+            }else{
+                ParamEntity paramEntity=new ParamEntity();
+                paramEntity.annotations=annotationArrays[i];
+                paramEntity.paramName=parameters[i].getName();
+                paramEntity.paramType=paramentType;
+
+                Annotation[] annotations = paramEntity.annotations;
+                RequestAnalysis requestAnalysis=null;
+                if (annotations != null && annotations.length > 0) {
+                    for (Annotation annotation : annotations) {
+                        if( annotation instanceof RequestBody){
+                            String value="";
+                            BufferedReader reader = null;
+                            StringBuilder sb = new StringBuilder();
+                            reader = new BufferedReader(new InputStreamReader(request.getInputStream(), "utf-8"));
+                            String line = null;
+                            while ((line = reader.readLine()) != null) {
+                                sb.append(line);
+                            }
+                            paramEntity.paramObject=value;
+                            requestAnalysis=new JsonRequestAnalysis();
+                        }
+                    }
+                }
+                //兜底的
+                if(requestAnalysis==null){
+                    paramEntity.paramObject=request.getParameter(paramEntity.paramName);
+                    requestAnalysis=new SimpleRequestAnalysis();
+                }
+                parameterValues[i]= requestAnalysis.extractParam(paramEntity);
+            }
+
+        }
+        return parameterValues;
+    }
 
     public static void resovleRequest(HttpServletRequest request, HttpServletResponse response) {
 
@@ -232,7 +234,7 @@ public class ControllerAdapter {
             Method method = methodMap.get(requestURI);
             try {
                 if (requestURI.endsWith(mvcOption.controllerSuffix)) {
-                    Object[] paramArray = extractParam(request, response, method);
+                    Object[] paramArray =getParamter(request, response, method);
                     if (paramArray == null) {
                         viewObject = method.invoke(classes.newInstance());
                     } else {

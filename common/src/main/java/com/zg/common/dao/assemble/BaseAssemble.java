@@ -3,6 +3,7 @@ package com.zg.common.dao.assemble;
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.dao.template.SimpleEntityDaoTemplate;
 import com.zg.common.util.reflect.EntityUtils;
+import org.quartz.utils.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ public abstract class BaseAssemble implements Assemble {
             metadataEntity.fieldName=field.getName();
             metadataEntity.fieldType=field.getType().getSimpleName();
             metadataEntity.objectValue=field.get(obj);
-            metadataEntity.tableName=tableName;
+            metadataEntity.entityName=tableName;
             metadataEntity=simpleEntityDaoTemplate.translateDatabase(metadataEntity);
             metadataEntityList.add(metadataEntity);
         }
