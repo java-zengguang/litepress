@@ -1,7 +1,7 @@
 package com.zg.network.common;
 
 
-import javax.xml.ws.Response;
+import redis.clients.jedis.Response;
 
 /**
  * Created by Administrator on 2019/2/22 0022.

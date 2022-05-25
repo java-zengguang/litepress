@@ -31,6 +31,10 @@ public class CommonUtil {
 
             if (CommonUtil.class.getResource("/") != null) {
                 path = CommonUtil.class.getResource("/").toURI().getPath();
+                File file=new File(path);
+                path=file.getPath();
+                path = java.net.URLDecoder.decode(path, "UTF-8");
+                path = path + "\\";
                 logger.info("---" + path);
             } else {
                 path = CommonUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
