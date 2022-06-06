@@ -33,8 +33,17 @@
         <property name="registerURL" type="java.lang.String">127.0.0.1:2181</property>
         <property name="packages" type="java.lang.String">com.zg.direction</property>
         <property name="DTPHost" type="java.lang.String">127.0.0.1</property>
-        <property name="DTPPort" type="java.lang.String">10001</property>
+        <property name="DTPPort" type="java.lang.String">10002</property>
     </bean>
 
+
+
+    <bean id="zooKeeperConfig" class="com.zg.direction.entity.ZooKeeperConfig">
+        <property name="tickTime" type="java.lang.String">2000</property>
+        <property name="dataDir" type="java.lang.String">/tmp/zookeeper/data</property>
+        <property name="clientPort" type="java.lang.String">2181</property>
+        <property name="initLimit" type="java.lang.String">10</property>
+        <property name="syncLimit" type="java.lang.String">5</property>
+    </bean>
 
 </beans>

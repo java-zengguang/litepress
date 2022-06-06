@@ -41,7 +41,21 @@ public class LoginService implements LoginServiceInte {
         }
     }
 
+    @Override
+    public Map<String, String> login(String password, String username, String token) {
+        Map map = new HashMap();
+        map.put("token", token);
+        map.put("uuid", username);
+        return map;
+    }
 
+    @Override
+    public String registToken(String url, String domain, String rootPath) {
+        UUID random = UUID.randomUUID();
+        return random.toString();
+    }
+
+/*
     public Map<String, String> login(String password, String username, String token) {
 
         Map<String, String> map = getTokenValue(token);
@@ -96,6 +110,7 @@ public class LoginService implements LoginServiceInte {
             return null;
         }
     }
+*/
 
 
     public boolean updateToken(String uuid, String token, String url) {

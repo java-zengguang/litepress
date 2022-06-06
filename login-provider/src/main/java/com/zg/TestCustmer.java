@@ -11,7 +11,7 @@ public class TestCustmer {
         Class[] classes = new Class[1];
         classes[0] = LoginServiceInte.class;
         LoginServiceInte loginServiceInte = (LoginServiceInte) Proxy.newProxyInstance(LoginServiceInte.class.getClassLoader(), classes, new ConsumerHandler("/login"));
-        loginServiceInte.registToken("121212", "12121", "12345nimeide");
+        System.out.println("------"+loginServiceInte.registToken("121212", "12121", "12345nimeide"));
         System.exit(-1);
     }
 }

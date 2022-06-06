@@ -13,7 +13,7 @@ public class Test2Client {
 
         ResolveCommand resolveCommand = new ResolveCommand();
         ZGMPBean request = new ZGMPBean("REQUEST");
-        IMClient imClient = new IMClient(new IMClientHandler(), "10.1.82.63", 10000);
+        IMClient imClient = new IMClient(new IMClientHandler(), "10.65.211.110", 10000);
         imClient.addRequest(request);
         Thread thread = new Thread(imClient);
         thread.start();

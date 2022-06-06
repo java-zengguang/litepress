@@ -1,31 +1,22 @@
 package com.zg.direction.register;
 
-import com.zg.direction.adapter.ProviderFactory;
 import com.zg.common.util.reflect.JsonUtils;
-import org.apache.zookeeper.*;
-import org.apache.zookeeper.data.Stat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.zg.direction.adapter.ProviderFactory;
+import org.apache.zookeeper.KeeperException;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 
-public class Register implements Watcher {
+public class Register {
 
-
-    private static CountDownLatch connectedSemaphore = new CountDownLatch(1);
-    private static ZooKeeper zk = null;
-    private static Stat stat = new Stat();
-    public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private ZookeeperUtil zookeeperUtil;
 
     public Register() {
     }
 
     public Register(String connectString) throws IOException {
-        zk = new ZooKeeper(connectString, 5000,
-                new Register());
+        zookeeperUtil = new ZookeeperUtil(connectString);
     }
 
     public static void main(String[] args) throws Exception {
@@ -40,32 +31,20 @@ public class Register implements Watcher {
 
     }
 
+
     public void registProvider(Map<String, Object> map) throws InterruptedException, KeeperException, IllegalAccessException {
-        connectedSemaphore.await();
 
         Set<String> keySet = map.keySet();
         for (String key : keySet) {
             String path = key;
             String value = JsonUtils.objectToJson(map.get(key)).toString();
-            zk.create(path, value.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
-            logger.info("success create znode: " + path);
-            logger.info("success create data: " + value);
+            zookeeperUtil.createNode(path, value);
         }
         Thread.sleep(Integer.MAX_VALUE);
-
     }
 
-    public void process(WatchedEvent event) {
-        if (Event.KeeperState.SyncConnected == event.getState()) {
-            if (Event.EventType.None == event.getType() && null == event.getPath()) {
-                connectedSemaphore.countDown();
-            } else if (event.getType() == Event.EventType.NodeDataChanged) {
-                try {
-                    logger.info("the data of znode " + event.getPath() + " is : " + new String(zk.getData(event.getPath(), true, stat)));
-                    logger.info("czxID: " + stat.getCzxid() + ", mzxID: " + stat.getMzxid() + ", version: " + stat.getVersion());
-                } catch (Exception e) {
-                }
-            }
-        }
+
+    public String findNode(String providerName) throws KeeperException, InterruptedException {
+        return zookeeperUtil.findNode(providerName);
     }
 }

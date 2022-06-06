@@ -58,7 +58,7 @@ public abstract class BaseService implements Runnable {
                     ChannelPipeline pipe = socketChannel.pipeline();
 
                     // Add the text line codec combination first,
-                    pipe.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
+                    pipe.addLast(new DelimiterBasedFrameDecoder(1000*1000*1024, Delimiters.lineDelimiter()));
                     // the encoder and decoder are static as these are sharable
                     //字符串编码器
                     pipe.addLast(DECODER);

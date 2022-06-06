@@ -1,16 +1,20 @@
 package com.zg.direction.server;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.JsonUtils;
 import com.zg.direction.entity.DTPRequest;
 import com.zg.direction.entity.DTPResponse;
 import com.zg.direction.entity.ParamterEntity;
 import com.zg.network.common.service.BaseServiceHandler;
-import com.zg.common.util.reflect.EntityUtils;
-import com.zg.common.util.reflect.JsonUtils;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 
 public class ProviderServiceHandler extends BaseServiceHandler<String> {
@@ -29,39 +33,42 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
 
     public Class[] getParamterTypes(List<String> paramterTypes) throws ClassNotFoundException {
         Class[] result = null;
-
-
         result = new Class[paramterTypes.size()];
         for (int i = 0; i < result.length; i++) {
-            result[i] = Class.forName(paramterTypes.get(i));
+            String paramterType = paramterTypes.get(i); //取泛型类型
+            result[i] = Class.forName(paramterType);
         }
 
         return result;
     }
 
-    private Object[] getParamters(List<String> paramterValues, Class[] paramterTypes) {
+    public Object analysisObject(Type type, Object value) throws ClassNotFoundException {
+        Object result = null;
+        result = value;
+        if (value instanceof JSONObject) {
+            result = ((JSONObject) value).toJavaObject(type);
+        } else if (value instanceof JSONArray) {
+            result=((JSONArray) value).toJavaObject(type);
+        }
+        return result;
+    }
+
+    private Object[] getParamters(List<Object> paramterValues, List<Type> paramterTypes) throws ClassNotFoundException {
         Object[] result = null;
-
-
-        result = new Object[paramterTypes.length];
-
-        for (int i = 0; i < paramterTypes.length; i++) {
-            if (EntityUtils.isPrimitive(paramterTypes[i])) {
-                result[i] = EntityUtils.translateType(paramterValues.get(i), paramterTypes[i]);
-            }
+        result = new Object[paramterTypes.size()];
+        for (int i = 0; i < paramterTypes.size(); i++) {
+            result[i] = analysisObject(paramterTypes.get(i), paramterValues.get(i));
         }
-
         return result;
-
     }
 
 
-    private String serialize(Object object) throws IllegalAccessException {
+    private String serialize(Object object) {
         String data = EntityUtils.serialize(object);
         return data;
     }
 
-    private Object unSerialize(String str, Class classType) throws IllegalAccessException, InstantiationException {
+    private Object unSerialize(String str, Class classType) {
         Object object = EntityUtils.unSerialize(str, classType);
         return object;
     }
@@ -82,28 +89,27 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             String uuid = request.uuid;
             String token = request.token;
 
-            //     BaseChannelGroups.put(uuid, token, ctx.channel());
 
             Class[] paramterTypes = getParamterTypes(request.methodParamterTypes);
             Class classes = Class.forName(className);
             Method method = classes.getDeclaredMethod(methodName, paramterTypes);
-            Object paramters[] = getParamters(request.methodParamters, method.getParameterTypes());
+            Type[] paramerTypes = method.getGenericParameterTypes();
+            Object paramters[] = getParamters(request.methodParamters, Arrays.asList(paramerTypes));
             Object result = method.invoke(classes.newInstance(), paramters);
             response.success = true;
-            response.resultData = serialize(result);
-            response.resultType = request.methodType;
+            response.resultData = result;
+            response.resultType = request.resultType;
+            response.resultDataType = request.resultDataType;
         } catch (Exception e) {
             e.printStackTrace();
             response.success = false;
             response.resultData = null;
-            response.resultType = request.methodType;
+            response.resultType = request.resultType;
+            response.resultDataType = request.resultDataType;
             response.error = e.getMessage();
         }
 
-        //String responseJson=JsonUtils.objectToJson(response).toString();
         String responseJson = serialize(response);
-        // Channel channel=BaseChannelGroups.getChannel("");
-        // channel.writeAndFlush(responseJson+"\r\n");
         ctx.writeAndFlush(responseJson + "\r\n");
 
     }

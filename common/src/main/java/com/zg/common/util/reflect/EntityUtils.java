@@ -436,21 +436,14 @@ public class EntityUtils {
 
     public static String serialize(Object object) {
 
-        if (object instanceof String) {
-            return (String) object;
-        } else {
-            return JsonUtils.objectToJsonString(object);
-        }
+
+        return JsonUtils.objectToJsonString(object);
 
     }
 
     public static Object unSerialize(String str, Class classType) {
         Object value = null;
-        if (isPrimitive(classType)) {
-            value = translateType(str, classType);
-        } else {
-            value = JsonUtils.jsonToObject(str, classType);
-        }
+        value = JsonUtils.jsonToObject(str, classType);
         return value;
     }
 

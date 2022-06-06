@@ -1,10 +1,14 @@
 package com.zg.direction.client;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.zg.common.util.reflect.EntityUtils;
 import com.zg.direction.entity.DTPResponse;
 import com.zg.network.common.MessgeReceivedListener;
 import com.zg.network.common.client.BaseClientHandler;
-import com.zg.common.util.reflect.EntityUtils;
 import io.netty.channel.ChannelHandlerContext;
+
+import java.lang.reflect.Type;
 
 public class ConsumerClientHandler extends BaseClientHandler<String> {
 
@@ -19,15 +23,17 @@ public class ConsumerClientHandler extends BaseClientHandler<String> {
         consumerClientHandler.unSerialize(json, DTPResponse.class);
     }
 
-    private Object unSerialize(String str, Class classType) throws IllegalAccessException, InstantiationException {
+    private Object unSerialize(String str, Class classType) {
         Object object = EntityUtils.unSerialize(str, classType);
         return object;
     }
 
-    private String serialize(Object object) throws IllegalAccessException {
+    private String serialize(Object object) {
         String data = EntityUtils.serialize(object);
         return data;
     }
+
+
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
@@ -36,8 +42,7 @@ public class ConsumerClientHandler extends BaseClientHandler<String> {
         if (response.success) {
             logger.info("操作成功");
             if (!"".equals(response.resultType) && !"NULL".equals(response.resultType)) {
-                Class classType = Class.forName(response.resultType);
-                result = unSerialize(response.resultData.toString(), classType);
+                result =  response.resultData;
                 received = true;
             }
         }

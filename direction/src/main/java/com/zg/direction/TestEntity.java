@@ -1,8 +1,12 @@
 package com.zg.direction;
 
+
+
+import com.zg.common.bean.entity.MainModel;
+
 import java.util.List;
 
-public class TestEntity {
+public class TestEntity extends MainModel {
     public int x;
     public String s;
     public List<String> list;
