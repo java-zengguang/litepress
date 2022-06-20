@@ -5,10 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
+import java.io.*;
 
 /**
  * Created by Administrator on 2019/1/9 0009.
@@ -44,14 +41,27 @@ public class ResovleUploadThread {
     }
 
 
-    public synchronized void outputThread(long writerStart, long writerEnd, File inputFile, File targetFile) throws InterruptedException {
-        OutputFileThread ot = new OutputFileThread(inputFile, targetFile, writerStart, writerEnd - writerStart);
+    public synchronized void outputThread(long writerStart, long writerEnd, File inputFile, File targetFile) throws InterruptedException, IOException {
+/*        OutputFileThread ot = new OutputFileThread(inputFile, targetFile, writerStart, writerEnd - writerStart);
         for (int i = 0; i < 5; i++) {
             new Thread(ot).start();
         }
         while (ot.compareCount < 5) {
             this.wait(10);
+        }*/
+
+        int length = (int) (writerEnd - writerStart + 1);
+        byte[] bytes = new byte[length];
+        RandomAccessFile rf=new RandomAccessFile(inputFile,"r");
+        rf.seek(writerStart);
+        rf.read(bytes, 0, length);
+        rf.close();
+        if(!targetFile.exists()){
+            targetFile.createNewFile();
         }
+        OutputStream outputStream=new FileOutputStream(targetFile);
+        outputStream.write(bytes);
+        outputStream.close();
 
     }
 

@@ -143,43 +143,4 @@ public abstract class BaseClient implements Runnable {
     }
 
 
-
-
-   /* public static void main(String args[]) {
-        BaseClient client = new BaseClient(new IMClientHandler(),"127.0.0.1",10000) {
-            @Override
-            public String resovleProtocol(Object object) {
-                String json = JSON.toJSONString(object);
-                return json;
-            }
-        };
-
-        ResolveCommand resolveCommand = new ResolveCommand();
-        ZGMPBean request = new ZGMPBean("REQUEST");
-        client.addRequest(request);
-        Thread thread = new Thread(client);
-
-        thread.start();
-        System.out.print("网络通信客户端");
-        boolean go = true;
-
-        Scanner input = new Scanner(System.in);
-        while (go) {
-            System.out.print("-》");
-            String command = input.nextLine();
-            if (command != null && !"".equals(command)) {
-                if ("end".equals(command)) {
-                    go = false;
-                    System.exit(0);
-                }
-                request = resolveCommand.resolveCommand(command);
-                if (request != null) {
-                    client.addRequest(request);
-                }
-            }
-
-        }
-
-    }*/
-
 }

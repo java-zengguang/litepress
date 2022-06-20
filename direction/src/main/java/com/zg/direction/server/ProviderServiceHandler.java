@@ -8,6 +8,7 @@ import com.zg.direction.entity.DTPRequest;
 import com.zg.direction.entity.DTPResponse;
 import com.zg.direction.entity.ParamterEntity;
 import com.zg.network.common.service.BaseServiceHandler;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
-
+@ChannelHandler.Sharable
 public class ProviderServiceHandler extends BaseServiceHandler<String> {
     public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
@@ -108,7 +109,7 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             response.resultDataType = request.resultDataType;
             response.error = e.getMessage();
         }
-
+        response.id=request.id;
         String responseJson = serialize(response);
         ctx.writeAndFlush(responseJson + "\r\n");
 

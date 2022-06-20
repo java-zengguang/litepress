@@ -7,6 +7,7 @@ import com.zg.common.init.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.UnknownHostException;
 import java.util.Map;
 
 public class ProviderFactory {
@@ -43,6 +44,8 @@ public class ProviderFactory {
             logger.error("ProviderAdapter初始化错误", e);
         } catch (InstantiationException e) {
             logger.error("ProviderAdapter初始化错误", e);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
         }
     }
 

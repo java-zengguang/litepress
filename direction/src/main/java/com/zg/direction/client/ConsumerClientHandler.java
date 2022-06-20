@@ -1,20 +1,19 @@
 package com.zg.direction.client;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.zg.common.util.reflect.EntityUtils;
 import com.zg.direction.entity.DTPResponse;
 import com.zg.network.common.MessgeReceivedListener;
 import com.zg.network.common.client.BaseClientHandler;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ConsumerClientHandler extends BaseClientHandler<String> {
+@ChannelHandler.Sharable
+public class ConsumerClientHandler<T> extends BaseClientHandler<String> {
 
-    private boolean received = false;
-
-    private Object result;
+    private Map<String, Object> resultMap = new HashMap();
 
     public static void main(String args[]) throws InstantiationException, IllegalAccessException {
 
@@ -34,28 +33,20 @@ public class ConsumerClientHandler extends BaseClientHandler<String> {
     }
 
 
-
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         logger.info("msg >>" + msg);
         DTPResponse response = (DTPResponse) unSerialize(msg, DTPResponse.class);
-        if (response.success) {
-            logger.info("操作成功");
-            if (!"".equals(response.resultType) && !"NULL".equals(response.resultType)) {
-                result =  response.resultData;
-                received = true;
-            }
+        if (response != null) {
+            resultMap.put(response.id, response);
         }
+
+
     }
 
-    public synchronized Object getResult() throws InterruptedException {
-        if (received) {
-            received = false;
-            return result;
-        } else {
-            Thread.sleep(1000);
-            return getResult();
-        }
+    public  Object getResult(String id)   {
+        DTPResponse response = (DTPResponse) resultMap.get(id);
+        return response;
     }
 
     @Override

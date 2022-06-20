@@ -29,7 +29,6 @@ public class DataBaseUtil {
             try {
                 NewJDBCUtil jdbcUtil = new NewJDBCUtil("opthinDB");
                 list = jdbcUtil.selectToMapList(tableInfoSQL);
-                jdbcUtil.release();
             } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -66,7 +65,6 @@ public class DataBaseUtil {
             String tableInfoSQL = "SELECT COLUMN_NAME,DATA_TYPE FROM " + "information_schema.columns" +
                     " WHERE  table_name='" + tableName + "' AND table_schema=(SELECT DATABASE())";
             List list = jdbcUtil.selectToMapList(tableInfoSQL);
-            jdbcUtil.release();
             Map tableInfo = ListUtils.createMap(list, "COLUMN_NAME", "DATA_TYPE");
             tableInfoMap.put(tableName, tableInfo);
         }

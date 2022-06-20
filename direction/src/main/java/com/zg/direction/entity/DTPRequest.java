@@ -5,6 +5,7 @@ import com.zg.common.bean.entity.MainModel;
 import java.util.List;
 
 public class DTPRequest extends MainModel {
+    public String id;
 
     public String uuid;
 

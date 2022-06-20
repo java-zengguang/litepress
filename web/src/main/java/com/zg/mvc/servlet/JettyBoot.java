@@ -1,17 +1,18 @@
 package com.zg.mvc.servlet;
 
-import com.zg.mvc.adapter.ControllerAdapter;
 import com.zg.common.util.CommonUtil;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JettyBoot {
-    private static final Logger logger = LoggerFactory.getLogger(ControllerAdapter.class);
+    private static final Logger logger = LoggerFactory.getLogger(JettyBoot.class);
 
 
     public void doMain() {

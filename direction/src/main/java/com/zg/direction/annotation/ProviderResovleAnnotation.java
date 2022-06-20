@@ -7,6 +7,8 @@ import com.zg.common.annotation.BaseResolveAnnotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 public class ProviderResovleAnnotation extends BaseResolveAnnotation {
@@ -35,16 +37,17 @@ public class ProviderResovleAnnotation extends BaseResolveAnnotation {
     }
 
     @Override
-    public Object getResultValue(Class classes) {
+    public Object getResultValue(Class classes) throws UnknownHostException {
         ProviderEntity provider = new ProviderEntity();
         provider.className = classes.getName();
-        provider.host = providerConfig.DTPHost;
+        String ipAddresss= InetAddress.getLocalHost().getHostAddress();
+        provider.host = ipAddresss;
         provider.port = providerConfig.DTPPort;
         // provider.interfaceName=classes.getInterfaces()[0].getName();
         return provider;
     }
 
-    public Map<String, Object> getProviders() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public Map<String, Object> getProviders() throws ClassNotFoundException, IllegalAccessException, InstantiationException, UnknownHostException {
 
         Map<String, Object> providerMap = getAnnotationClass(providerConfig.packages, Provider.class);
         return providerMap;

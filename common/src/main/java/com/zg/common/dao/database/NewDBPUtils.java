@@ -44,7 +44,7 @@ public class NewDBPUtils {
         try {
             if (!conn.getAutoCommit()) {
                 conn.commit();
-                release(dataSource);
+
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block

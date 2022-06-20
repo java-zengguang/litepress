@@ -26,7 +26,7 @@ public class SimpleEntityDaoTemplate extends BaseEntityDaoTemplate {
                 add( Arrays.asList("CHAR","String", "'", "'"));
                 add( Arrays.asList("TEXT","String", "'", "'"));
                 add( Arrays.asList("NUMBER","BigDecimal", "", ""));
-                add( Arrays.asList("DATE","Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
+                add( Arrays.asList("DATE","Date", "to_date('", "','yyyy-MM-dd)"));
                 add( Arrays.asList("DATETIME","Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
                 add( Arrays.asList("TIMESTAMP","Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));}
 
@@ -53,7 +53,7 @@ public class SimpleEntityDaoTemplate extends BaseEntityDaoTemplate {
         metadataEntity.fieldType = configList.get(1);
         if (metadataEntity.objectValue != null) {
             if ("Date".equals(metadataEntity.fieldType)) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 metadataEntity.columnValue = configList.get(2) + dateFormat.format(metadataEntity.objectValue) + configList.get(3);
             } else {
                 metadataEntity.columnValue = configList.get(2) + String.valueOf(metadataEntity.objectValue) + configList.get(3);
@@ -80,7 +80,7 @@ public class SimpleEntityDaoTemplate extends BaseEntityDaoTemplate {
 
             if (configList!=null&&configList.size()>0) {
                 if ("Date".equals(metadataEntity.fieldType)) {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     metadataEntity.columnValue = configList.get(2) + dateFormat.format(metadataEntity.objectValue) + configList.get(3);
                 } else {
                     metadataEntity.columnValue = configList.get(2) + String.valueOf(metadataEntity.objectValue) + configList.get(3);

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.InetAddress;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
@@ -42,7 +43,9 @@ public class ZookeeperBoot implements Runnable{
             for (Field field : fields) {
                 properties.setProperty(field.getName(), (String) field.get(zooKeeperConfig));
             }
-            properties.setProperty("clientPortAddress", "127.0.0.1");
+           // properties.setProperty("clientPortAddress", "127.0.0.1");
+            String ipAddresss= InetAddress.getLocalHost().getHostAddress();
+            properties.setProperty("clientPortAddress", ipAddresss);
             QuorumPeerConfig quorumConfig = new QuorumPeerConfig();
             quorumConfig.parseProperties(properties);
             ServerConfig config = new ServerConfig();

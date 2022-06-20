@@ -3,6 +3,7 @@ package com.zg.common.annotation;
 import com.zg.common.util.CommonUtil;
 import org.apache.commons.collections.map.HashedMap;
 
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 
@@ -12,11 +13,11 @@ import java.util.Map;
 public abstract class BaseResolveAnnotation {
 
 
-    public Map<String, Object> resovleAnnoation(String packageName, Class annotationClass) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public Map<String, Object> resovleAnnoation(String packageName, Class annotationClass) throws ClassNotFoundException, IllegalAccessException, InstantiationException, UnknownHostException {
         return getAnnotationClass(packageName, annotationClass);
     }
 
-    public Map<String, Object> getAnnotationClass(String packageName, Class annotationClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public Map<String, Object> getAnnotationClass(String packageName, Class annotationClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnknownHostException {
 
         Map<String, Object> resultMap = new HashedMap();
         List<Class> classList = CommonUtil.getClassFormPackage(packageName);
@@ -32,7 +33,7 @@ public abstract class BaseResolveAnnotation {
 
     public abstract String getResultName(Object annotationObject) throws IllegalAccessException, InstantiationException;
 
-    public abstract Object getResultValue(Class classes);
+    public abstract Object getResultValue(Class classes) throws UnknownHostException;
 
 
 }

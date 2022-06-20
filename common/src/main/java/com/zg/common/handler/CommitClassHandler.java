@@ -19,14 +19,20 @@ public class CommitClassHandler extends BaseClassHandler {
 
     private Object target;
     private List methodList = new ArrayList();
+    private boolean commitAll = false;
 
     public CommitClassHandler() {
     }
 
     public Object getInstance(Object target, String method) {
         this.target = target;
+
         for (String m : method.split(",")) {
-            methodList.add(m);
+            if ("ALL".equals(m)) {
+                commitAll = true;
+            } else {
+                methodList.add(m);
+            }
         }
         Enhancer enhancer = new Enhancer(); //创建加强器，用来创建动态代理类
         enhancer.setSuperclass(this.target.getClass());  //为加强器指定要代理的业务类（即：为下面生成的代理类指定父类）
@@ -42,14 +48,18 @@ public class CommitClassHandler extends BaseClassHandler {
 
         try {
             result = methodProxy.invokeSuper(o, objects); //调用业务类（父类中）的方法
-            if (methodList.contains(method.getName())) {
+            if (commitAll || methodList.contains(method.getName())) {
                 logger.info(method.getName() + " 事务被提交");
                 NewDBPUtils.commit("optionDB");
             }
+
         } catch (Throwable throwable) {
             throwable.printStackTrace();
             throw new Exception("事务提交失败！");
+        } finally {
+            NewDBPUtils.release("optionDB");
         }
+
         return result;
     }
 

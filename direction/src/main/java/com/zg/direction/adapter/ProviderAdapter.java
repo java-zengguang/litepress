@@ -28,7 +28,8 @@ public class ProviderAdapter {
         ZookeeperBoot zookeeperBoot = new ZookeeperBoot(this);
         Thread thread1=new Thread(zookeeperBoot);
         thread1.start();
-        System.out.println("等待zookeeper启动");*/
+        System.out.println("等待zookeeper启动");
+        this.wait(10000);*/
 
         //开启服务
         System.out.println("开始启动服务");

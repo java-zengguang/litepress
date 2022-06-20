@@ -5,8 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.zg.common.init.Config;
 import com.zg.common.util.reflect.JsonUtils;
 import com.zg.direction.client.ConsumerClient;
-import com.zg.direction.client.ConsumerClientHandler;
 import com.zg.direction.entity.DTPRequest;
+import com.zg.direction.entity.DTPResponse;
 import com.zg.direction.entity.ProviderConfig;
 import com.zg.direction.entity.ProviderEntity;
 import com.zg.direction.register.Register;
@@ -18,51 +18,44 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ConsumerHandler implements InvocationHandler {
 
-
+    private static Map<String, ConsumerClient> clientMap = new ConcurrentHashMap<>();
     private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
 
     private String providerName;
 
-    private String host;
-
-    private int port;
-
     private String className;
+    private ConsumerClient consumerClient;
 
     public ConsumerHandler(String providerName) {
         this.providerName = providerName;
         try {
-            getClassName();
+
+            consumerClient=clientMap.get(providerName);
+            if (consumerClient==null) {
+                consumerClient=new ConsumerClient(providerName);
+                clientMap.put(providerName,consumerClient);
+                consumerClient.doStart();
+            }
+
+            className=consumerClient.getClassName();
+
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (KeeperException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (QuorumPeerConfig.ConfigException e) {
-            e.printStackTrace();
         }
     }
 
-    private void getClassName() throws IOException, KeeperException, InterruptedException, InstantiationException, IllegalAccessException, QuorumPeerConfig.ConfigException {
-        Register register = new Register(providerConfig.registerURL);
-        String json = register.findNode(providerName);
-        ProviderEntity providerEntity = (ProviderEntity) JsonUtils.jsonToObject(json, ProviderEntity.class);
-        this.host = providerEntity.host;
-        this.port = providerEntity.port;
-        this.className = providerEntity.className;
-    }
+
+
 
 
     Map<String, String> analysisType(Type type) {
@@ -92,20 +85,20 @@ public class ConsumerHandler implements InvocationHandler {
         if (value instanceof JSONObject) {
             result = ((JSONObject) value).toJavaObject(type);
         } else if (value instanceof JSONArray) {
-            result=((JSONArray) value).toJavaObject(type);
+            result = ((JSONArray) value).toJavaObject(type);
         }
         return result;
     }
-
 
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
         DTPRequest request = new DTPRequest();
+        request.id = "" + (new Date()).getTime();
         request.className = className;
         request.methodName = method.getName();
-        Map<String,String> returnDataMap= analysisType(method.getGenericReturnType());
+        Map<String, String> returnDataMap = analysisType(method.getGenericReturnType());
         request.resultType = returnDataMap.get("Type");
         request.resultDataType = returnDataMap.get("DataType");
 
@@ -117,7 +110,7 @@ public class ConsumerHandler implements InvocationHandler {
         for (int i = 0; i < paramerTypes.length; i++) {
             Object arg = args[i];
             methodParamters.add(arg);
-            Map<String,String> methodParamDataMap= analysisType(paramerTypes[i]);
+            Map<String, String> methodParamDataMap = analysisType(paramerTypes[i]);
             methodParamterTypes.add(methodParamDataMap.get("Type"));
             methodParamterDataTypes.add(methodParamDataMap.get("DataType"));
         }
@@ -125,13 +118,30 @@ public class ConsumerHandler implements InvocationHandler {
         request.methodParamterTypes = methodParamterTypes;
         request.methodParamters = methodParamters;
         request.methodParamterDataTypes = methodParamterDataTypes;
-        ConsumerClientHandler consumerClientHandler = new ConsumerClientHandler();
-        ConsumerClient consumerClient = new ConsumerClient(consumerClientHandler, host, port);
         consumerClient.addRequest(request);
-        Thread thread = new Thread(consumerClient);
-        thread.start();
-        Object result = consumerClientHandler.getResult();
-        result= analysisObject(method.getGenericReturnType(),result);
+
+        DTPResponse response = null;
+        int maxWait = 10000;
+        int oneWait = 50;
+        int currentWait = 0;
+        Object result = null;
+        do {
+            Thread.sleep(oneWait);
+            response = (DTPResponse) consumerClient.getResult(request.id);
+            currentWait = currentWait + oneWait;
+            if (currentWait > maxWait) {
+                throw new Exception("请求超时");
+            }
+        } while (response == null);
+        if (!response.success) {
+            throw new Exception(response.error);
+        }
+        if (!"".equals(response.resultType) && !"NULL".equals(response.resultType)) {
+            result = response.resultData;
+        }
+        if (result != null) {
+            result = analysisObject(method.getGenericReturnType(), result);
+        }
         return result;
     }
 }

@@ -54,7 +54,6 @@
             <version>5.1.2</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
@@ -76,6 +75,11 @@
             <groupId>org.eclipse.jetty</groupId>
             <version>9.4.14.v20181114</version>
             <artifactId>jetty-servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <version>9.4.14.v20181114</version>
+            <artifactId>jetty-servlets</artifactId>
         </dependency>
 
 
