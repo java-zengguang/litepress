@@ -2,16 +2,10 @@ package com.zg.direction.proxy;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.zg.common.init.Config;
-import com.zg.common.util.reflect.JsonUtils;
 import com.zg.direction.client.ConsumerClient;
 import com.zg.direction.entity.DTPRequest;
 import com.zg.direction.entity.DTPResponse;
-import com.zg.direction.entity.ProviderConfig;
-import com.zg.direction.entity.ProviderEntity;
-import com.zg.direction.register.Register;
 import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
@@ -19,31 +13,20 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 public class ConsumerHandler implements InvocationHandler {
 
-    private static Map<String, ConsumerClient> clientMap = new ConcurrentHashMap<>();
-    private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
-
-    private String providerName;
-
+    private String synFlag = "0";  //0-同步 1-异步
     private String className;
     private ConsumerClient consumerClient;
 
-    public ConsumerHandler(String providerName) {
-        this.providerName = providerName;
+    public ConsumerHandler(String providerName, String synFlag) {
+        this.synFlag = synFlag;
+
         try {
-
-            consumerClient=clientMap.get(providerName);
-            if (consumerClient==null) {
-                consumerClient=new ConsumerClient(providerName);
-                clientMap.put(providerName,consumerClient);
-                consumerClient.doStart();
-            }
-
-            className=consumerClient.getClassName();
-
+            consumerClient = ConsumerClient.getInstance(providerName);
+            className = consumerClient.getClassName();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,8 +37,22 @@ public class ConsumerHandler implements InvocationHandler {
         }
     }
 
+    public ConsumerHandler(String providerName) {
+
+        try {
+
+            consumerClient = ConsumerClient.getInstance(providerName);
+            className = consumerClient.getClassName();
 
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (KeeperException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     Map<String, String> analysisType(Type type) {
@@ -121,26 +118,29 @@ public class ConsumerHandler implements InvocationHandler {
         consumerClient.addRequest(request);
 
         DTPResponse response = null;
-        int maxWait = 10000;
-        int oneWait = 50;
-        int currentWait = 0;
         Object result = null;
-        do {
-            Thread.sleep(oneWait);
-            response = (DTPResponse) consumerClient.getResult(request.id);
-            currentWait = currentWait + oneWait;
-            if (currentWait > maxWait) {
-                throw new Exception("请求超时");
+        if ("0".equals(synFlag)) {//同步处理
+            int maxWait = 10 * 60 * 1000;
+            int oneWait = 50;
+            int currentWait = 0;
+            do {
+                Thread.sleep(oneWait);
+                response = (DTPResponse) consumerClient.getResult(request.id);
+                currentWait = currentWait + oneWait;
+                if (currentWait > maxWait) {
+                    throw new Exception("请求超时");
+                }
+            } while (response == null);
+            if (!response.success) {
+                throw new Exception(response.error);
             }
-        } while (response == null);
-        if (!response.success) {
-            throw new Exception(response.error);
-        }
-        if (!"".equals(response.resultType) && !"NULL".equals(response.resultType)) {
-            result = response.resultData;
-        }
-        if (result != null) {
-            result = analysisObject(method.getGenericReturnType(), result);
+            if (!"".equals(response.resultType) && !"NULL".equals(response.resultType)) {
+                result = response.resultData;
+            }
+
+            if (result != null) {
+                result = analysisObject(method.getGenericReturnType(), result);
+            }
         }
         return result;
     }

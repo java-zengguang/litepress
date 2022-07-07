@@ -32,19 +32,8 @@
             <version>3.2.10</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/c3p0/c3p0 -->
-        <dependency>
-            <groupId>c3p0</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.1.2</version>
-        </dependency>
 
-        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>6.0.6</version>
-        </dependency>
+
 
 
         <!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
@@ -63,18 +52,6 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver</artifactId>
-            <version>3.4.1</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>bson</artifactId>
-            <version>3.4.1</version>
-        </dependency>
 
         <dependency>
             <groupId>commons-net</groupId>
@@ -89,11 +66,7 @@
             <version>3.6</version>
         </dependency>
 
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>2.9.0</version>
-        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
@@ -101,18 +74,9 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.58</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>5.2.1.RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
 
-                <dependency>
-                    <groupId>com.oracle</groupId>
-                    <artifactId>ojdbc7</artifactId>
-                    <version>12.1.0.2</version>
-                </dependency>
+
+
 
         <!-- https://mvnrepository.com/artifact/net.sourceforge.jexcelapi/jxl -->
         <dependency>
@@ -121,26 +85,6 @@
             <version>2.6.12</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.python</groupId>
-            <artifactId>jython</artifactId>
-            <version>2.7.0</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.0.206</version>
-            <scope>runtime</scope>
-        </dependency>
-
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/commons-logging/commons-logging &ndash;&gt;
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.2</version>
-        </dependency>-->
 
 
         <!-- https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit -->
@@ -150,17 +94,6 @@
             <version>1.8.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>2.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz-jobs</artifactId>
-            <version>2.2.1</version>
-        </dependency>
-
 
         <dependency>
             <groupId>commons-io</groupId>
@@ -168,16 +101,23 @@
             <version>2.4</version>
         </dependency>
 
-
-<!--
-        &lt;!&ndash;这个依赖直接包含了 logback-core 以及 slf4j-api的依赖&ndash;&gt;
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+            <scope>compile</scope>
         </dependency>
 
--->
+
+        <!--
+                &lt;!&ndash;这个依赖直接包含了 logback-core 以及 slf4j-api的依赖&ndash;&gt;
+                <dependency>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                    <version>1.2.3</version>
+                </dependency>
+
+        -->
 
     </dependencies>
 

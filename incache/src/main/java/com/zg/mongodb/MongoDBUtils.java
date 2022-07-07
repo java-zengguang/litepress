@@ -1,4 +1,4 @@
-package com.zg.common.dao.mongodb;
+package com.zg.mongodb;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;

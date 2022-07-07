@@ -1,69 +1,55 @@
 package com.zg.direction.client;
 
 import com.zg.common.init.Config;
-import com.zg.common.util.reflect.EntityUtils;
 import com.zg.common.util.reflect.JsonUtils;
 import com.zg.direction.entity.ProviderConfig;
 import com.zg.direction.entity.ProviderEntity;
 import com.zg.direction.register.Register;
-import com.zg.network.common.client.BaseClient;
 import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ConsumerClient {
 
 
-    public ConsumerClientHandler clientHandler;
+    private static ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
 
-    public BaseClient consumerClient;
-    private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
+    private ProviderEntity providerEntity;
+    private SimpleClient simpleClient;
 
-    private String providerName;
+    private static Map<String, ConsumerClient> clientMap = new ConcurrentHashMap<>();
 
-    private String host;
 
-    private int port;
+    public static ConsumerClient getInstance(String providerName) throws InterruptedException, IOException, KeeperException {
+        ConsumerClient consumerClient = clientMap.get(providerName);
+        if (consumerClient == null) {
+            consumerClient = new ConsumerClient(providerName);
+            clientMap.put(providerName, consumerClient);
+        }
+        return consumerClient;
+    }
 
-    private String className;
-
-    public ConsumerClient( String providerName) throws InterruptedException, IOException, KeeperException {
+    private ConsumerClient(String providerName) throws IOException, KeeperException, InterruptedException {
         Register register = new Register(providerConfig.registerURL);
         String json = register.findNode(providerName);
-        ProviderEntity providerEntity = (ProviderEntity) JsonUtils.jsonToObject(json, ProviderEntity.class);
-        this.host = providerEntity.host;
-        this.port = providerEntity.port;
-        this.className = providerEntity.className;
-        clientHandler = new ConsumerClientHandler();
-        consumerClient = new BaseClient(clientHandler,host,port) {
-            @Override
-            public String resovleProtocol(Object object) throws IllegalAccessException {
-                String json = null;
-                json = EntityUtils.serialize(object);
-                return json;
-            }
-        };
-
+        providerEntity = (ProviderEntity) JsonUtils.jsonToObject(json, ProviderEntity.class);
+        simpleClient = SimpleClient.getInstance(providerEntity.host, providerEntity.port);
 
     }
 
 
-    public String getClassName(){
-        return this.className;
+    public String getClassName() {
+        return this.providerEntity.getClassName();
     }
 
-    public void addRequest(Object request){
-        consumerClient.addRequest(request);
-    }
-
-    public void doStart(){
-       Thread thread=new Thread(consumerClient) ;
-       thread.start();
+    public void addRequest(Object request) {
+        simpleClient.addRequest(request);
     }
 
 
     public Object getResult(String id) {
-      return   clientHandler.getResult(id);
+        return simpleClient.getResult(id);
     }
 }

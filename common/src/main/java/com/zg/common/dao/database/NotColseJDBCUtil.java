@@ -5,26 +5,27 @@ import com.zg.common.dao.assemble.SimpleAssemble;
 import com.zg.common.util.reflect.ModelSQLUtils;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.SimpleEntityDaoTemplate;
-import com.zg.common.util.reflect.SerializeObjectUtils;
 import com.zg.common.util.reflect.DynamicClass;
 import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.SerializeObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
-public class NewJDBCUtil  {
+public class NotColseJDBCUtil {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     private String dataSource;
 
 
-    public NewJDBCUtil(String dataSource) {
+    public NotColseJDBCUtil(String dataSource) {
         this.dataSource = dataSource;
     }
-
-
 
 
 
@@ -154,16 +155,16 @@ public class NewJDBCUtil  {
     }
 
 
+
     //查询出列明，数据对应的list集合
-    private List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException {
+    private List<List<MetadataEntity>> select2TempleList(String sql,String tableName) throws SQLException, ClassNotFoundException {
         logger.debug(sql);
-        String tableName="";
-        tableName=getTableName(sql);
         List list = new ArrayList();
         Connection conn = NewDBPUtils.getConnection(dataSource);
         PreparedStatement pstmt = conn.prepareStatement(sql);
         ResultSet rs = pstmt.executeQuery();
         ResultSetMetaData rsmd = rs.getMetaData();
+        EntityDaoTemplate entityDaoTemplate=new SimpleEntityDaoTemplate();
         int columncount = 0;
         while (rs.next()) {
             List<MetadataEntity> columnList=new ArrayList<>();
@@ -177,7 +178,7 @@ public class NewJDBCUtil  {
                 metadataEntity.columnLabel=columnLabel;
                 metadataEntity.columnType=columnType;
                 metadataEntity.objectValue =columnValue;
-                EntityDaoTemplate entityDaoTemplate=new SimpleEntityDaoTemplate();
+             //   System.out.println(columnLabel+" "+columnType);
                 metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
                 columnList.add(metadataEntity);
             }
@@ -210,6 +211,34 @@ public class NewJDBCUtil  {
 
 
 
+    //查询H2专用
+    public List selectNotColse(String sql,String tableName) throws SQLException, ClassNotFoundException {
+        List<List<MetadataEntity>> templeList = null;
+        List modelList=new ArrayList();
+        try {
+
+            templeList = select2TempleList(sql,tableName);
+            SimpleAssemble simpleAssemble=new SimpleAssemble();
+
+            Class modelClass = null;
+            if(templeList!=null&&templeList.size()>0) {
+                modelClass=DynamicClass.getDynamicModel(templeList.get(0));
+                for (List<MetadataEntity> columnList : templeList) {
+                    Object obj = modelClass.newInstance();
+                    for (MetadataEntity metadataEntity : columnList) {
+                        obj = simpleAssemble.assembling(metadataEntity, obj);
+                    }
+                    modelList.add(obj);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return modelList;
+    }
 
 
     //查询
@@ -217,7 +246,7 @@ public class NewJDBCUtil  {
         List<List<MetadataEntity>> templeList = null;
         List modelList=new ArrayList();
         try {
-            templeList = select2TempleList(sql);
+            templeList = select2TempleList(sql,getTableName(sql));
             SimpleAssemble simpleAssemble=new SimpleAssemble();
 
             Class modelClass = null;

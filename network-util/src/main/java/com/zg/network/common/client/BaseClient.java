@@ -42,7 +42,16 @@ public abstract class BaseClient implements Runnable {
     private boolean run = true;
 
 
+    public BaseClient(){
+
+    }
+
     public BaseClient(BaseClientHandler<String> clientHandler, String host, int port) {
+
+        initParam(clientHandler,host,port);
+    }
+
+    public void initParam(BaseClientHandler<String> clientHandler, String host, int port){
         this.clientHandler = clientHandler;
         this.host = host;
         this.port = port;

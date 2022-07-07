@@ -1,9 +1,8 @@
-package com.zg.common.dao.mongodb;
+package com.zg.common.util.reflect;
 
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.dao.assemble.Assemble;
 import com.zg.common.dao.assemble.SimpleAssemble;
-import com.zg.common.util.reflect.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,16 +34,18 @@ public class ModelSQLUtils {
         Assemble assemble = new SimpleAssemble();
         List<MetadataEntity> list = assemble.analysis(model);
         for (MetadataEntity entity : list) {
-            memberList.add(entity.fieldName);
-            valuesList.add(entity.columnValue);
+            if("0".equals(entity.isCommit)) {
+                memberList.add(entity.fieldName);
+                valuesList.add(entity.columnValue);
+            }
         }
 
-        List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
+     //   List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
         String sql = null;
         StringBuffer member = new StringBuffer();
         StringBuffer values = new StringBuffer();
         for (int i = 0; i < memberList.size(); i++) {
-            if (memberList.get(i) != null && valuesList.get(i) != null && !"".equals(valuesList.get(i)) && !notCommitFields.contains(memberList.get(i))) {
+            if (memberList.get(i) != null && valuesList.get(i) != null && !"".equals(valuesList.get(i)) ) {
 
                 member.append(memberList.get(i) + ",");
                 values.append(valuesList.get(i) + ",");
@@ -59,7 +60,36 @@ public class ModelSQLUtils {
     }
 
 
+    public static String replace (Object model, String tableName) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
+        List<String> memberList = new ArrayList();
+        List<String> valuesList = new ArrayList();
+        Assemble assemble = new SimpleAssemble();
+        List<MetadataEntity> list = assemble.analysis(model);
+        for (MetadataEntity entity : list) {
+            if("0".equals(entity.isCommit)) {
+                memberList.add(entity.fieldName);
+                valuesList.add(entity.columnValue);
+            }
+        }
 
+        //   List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
+        String sql = null;
+        StringBuffer member = new StringBuffer();
+        StringBuffer values = new StringBuffer();
+        for (int i = 0; i < memberList.size(); i++) {
+            if (memberList.get(i) != null && valuesList.get(i) != null && !"".equals(valuesList.get(i)) ) {
+
+                member.append(memberList.get(i) + ",");
+                values.append(valuesList.get(i) + ",");
+
+            }
+
+        }
+        member.deleteCharAt(member.length() - 1);
+        values.deleteCharAt(values.length() - 1);
+        sql = "replace  into " + tableName + " (" + member + ") values (" + values + ")";
+        return sql;
+    }
 
 
     public static String delete(Object o) throws Exception {
@@ -68,14 +98,75 @@ public class ModelSQLUtils {
         List<MetadataEntity> list = assemble.analysis(o);
         String tableName="";
         for (MetadataEntity entity : list) {
-            tableName=entity.tableName;
-            condition.append(entity.columnLabel + "=" + entity.columnValue + " and ");
+            if("0".equals(entity.isCommit)) {
+                tableName = entity.tableName;
+                condition.append(entity.columnLabel + "=" + entity.columnValue + " and ");
+            }
         }
         condition = condition.delete(condition.length() - 4, condition.length());
         String sql = "delete from " + tableName + " where " + condition;
-        logger.info(sql);
+
         return sql;
     }
+
+    public static String deleteByPK(Object o,List<String> pkList) throws Exception {
+        StringBuffer condition = new StringBuffer();
+        Assemble assemble = new SimpleAssemble();
+        List<MetadataEntity> list = assemble.analysis(o);
+        String tableName="";
+        for (MetadataEntity entity : list) {
+            tableName = entity.tableName;
+            if("0".equals(entity.isCommit)) {
+                if(pkList.contains(entity.columnLabel)) {
+                    condition.append(entity.columnLabel + "=" + entity.columnValue + " and ");
+                }
+            }
+        }
+        condition = condition.delete(condition.length() - 4, condition.length());
+        String sql = "delete from " + tableName + " where " + condition;
+        return sql;
+    }
+
+
+    public static String updateByPK(Object model, List<String> pkList) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
+        String sql ;
+        String condition = " ";
+
+        String tableName = EntityUtils.getTableNameFromModel(model.getClass());
+        List<String> memberList = new ArrayList();
+        List<String> valuesList = new ArrayList();
+        Assemble assemble = new SimpleAssemble();
+        List<MetadataEntity> list = assemble.analysis(model);
+        for (MetadataEntity entity : list) {
+
+            if ("0".equals(entity.isCommit)) {
+                if(!pkList.contains(entity.fieldName)) {
+                    memberList.add(entity.fieldName);
+                    valuesList.add(entity.columnValue);
+                }else{
+                    condition = condition + " and " + entity.fieldName+"="+entity.columnValue;
+                }
+            }
+        }
+        //  List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
+        StringBuffer memberValues = new StringBuffer();
+        for (int i = 0; i < memberList.size(); i++) {
+            if (memberList.get(i) != null  && !"".equals(valuesList.get(i)) ) {
+                if( valuesList.get(i) != null) {
+                    memberValues.append(" " + memberList.get(i) + "=" + valuesList.get(i) + ",");
+                }else{
+                    memberValues.append(" " + memberList.get(i) + " = null ,");
+                }
+            }
+        }
+        memberValues.setCharAt(memberValues.length() - 1, ' ');
+        sql = "update " + tableName + " set " + memberValues + "where 1=1 " + condition;
+
+        return sql;
+    }
+
+
+
 
 
     public static String update(Object model, String... terms) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
@@ -90,13 +181,15 @@ public class ModelSQLUtils {
         Assemble assemble = new SimpleAssemble();
         List<MetadataEntity> list = assemble.analysis(model);
         for (MetadataEntity entity : list) {
-            memberList.add(entity.fieldName);
-            valuesList.add(entity.columnValue);
+            if("0".equals(entity.isCommit)) {
+                memberList.add(entity.fieldName);
+                valuesList.add(entity.columnValue);
+            }
         }
-        List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
+      //  List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
         StringBuffer memberValues = new StringBuffer();
         for (int i = 0; i < memberList.size(); i++) {
-            if (memberList.get(i) != null && valuesList.get(i) != null && !"".equals(valuesList.get(i)) && !notCommitFields.contains(memberList.get(i))) {
+            if (memberList.get(i) != null && valuesList.get(i) != null && !"".equals(valuesList.get(i)) ) {
                 memberValues.append(" " + memberList.get(i) + "=" + valuesList.get(i) + ",");
             }
         }

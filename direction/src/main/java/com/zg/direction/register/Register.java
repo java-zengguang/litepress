@@ -38,13 +38,14 @@ public class Register {
         for (String key : keySet) {
             String path = key;
             String value = JsonUtils.objectToJson(map.get(key)).toString();
-            zookeeperUtil.createNode(path, value);
+          //  zookeeperUtil.createNode(path, value);
+            zookeeperUtil.createChildNode(path,value);
         }
         Thread.sleep(Integer.MAX_VALUE);
     }
 
 
     public String findNode(String providerName) throws KeeperException, InterruptedException {
-        return zookeeperUtil.findNode(providerName);
+        return zookeeperUtil.findNodeOne(providerName);
     }
 }

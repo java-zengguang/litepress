@@ -1,7 +1,6 @@
 package com.zg.common.dao.factory;
 
 import com.zg.common.bean.entity.OptionDB;
-import com.zg.common.dao.pool.C3p0Impl;
 import com.zg.common.dao.pool.DataBaseInte;
 import com.zg.common.dao.pool.ZGDBPImpl;
 import com.zg.common.init.Config;
@@ -29,9 +28,7 @@ public class PoolConnectionFactory extends BaseConnectionFactory {
         DataBaseInte databasePool = null;
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
 
-        if ("C3p0".equals(optionDB.getDBPType())) {
-            databasePool = C3p0Impl.getInstance();
-        } else if ("ZGDBP".equals(optionDB.getDBPType())) {
+        if ("ZGDBP".equals(optionDB.getDBPType())) {
             databasePool = ZGDBPImpl.getInstance();
         } else if (optionDB.getDBPType() == null || "".equals(optionDB.getDBPType())) {
             logger.info("未使用链接池");

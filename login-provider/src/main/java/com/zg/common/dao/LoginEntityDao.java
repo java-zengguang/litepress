@@ -1,7 +1,7 @@
 package com.zg.common.dao;
 
 import com.zg.common.dao.database.BaseEntityDao;
-import com.zg.common.dao.mongodb.ModelSQLUtils;
+import com.zg.common.util.reflect.ModelSQLUtils;
 
 import java.sql.SQLException;
 import java.util.HashMap;

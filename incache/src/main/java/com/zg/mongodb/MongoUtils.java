@@ -1,4 +1,4 @@
-package com.zg.common.dao.mongodb;
+package com.zg.mongodb;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.bson.Document;

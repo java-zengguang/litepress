@@ -251,28 +251,28 @@ public class EntityUtils {
                 Field field = o1.getClass().getField(term);
                 Class type = field.getType();
 
-
-                if (type == int.class) {
-                    fruit = field.getInt(o1) - field.getInt(o2);
-                    if (fruit != 0) {
-                        return fruit;
+                if (field.get(o1) != null && field.get(o2) != null) {
+                    if (type == int.class) {
+                        fruit = field.getInt(o1) - field.getInt(o2);
                     }
+                    if (type == String.class) {
+                        fruit = ((String) field.get(o1)).compareTo((String) field.get(o2));
+                    }
+
+                    if (type == BigDecimal.class) {
+                        BigDecimal fieldValue1 = (BigDecimal) field.get(o1);
+                        BigDecimal fieldValue2 = (BigDecimal) field.get(o2);
+                        fruit = fieldValue1.compareTo(fieldValue2);
+                    }
+
+                } else if (field.get(o1) == null && field.get(o2) == null) {
+                    fruit = 0;
+                } else {
+                    fruit = -1;
                 }
-                if (type == String.class) {
-                    String s1 = (String) field.get(o1);
-                    String s2 = (String) field.get(o2);
-                    fruit = s1.length() - s2.length();
-                    if (fruit != 0) {
-                        return fruit;
-                    }
-
-                    fruit = ((String) field.get(o1)).compareTo((String) field.get(o2));
-                    if (fruit != 0) {
-                        return fruit;
-                    }
-
-                }
-
+            }
+            if (fruit != 0) {
+                return fruit;
             }
 
         }
@@ -280,61 +280,50 @@ public class EntityUtils {
     }
 
 
-    public static int toCompare(Object o1, Object o2) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public static int toCompare(Object o1, Object o2, List<Field> fieldList) throws SecurityException, IllegalArgumentException, IllegalAccessException {
 
         if (!o1.getClass().equals(o2.getClass())) {
             return -1;
         }
-        int fruit = 0;
-        for (Field field : o1.getClass().getFields()) {
-            Class type = field.getType();
-
-            if (!type.isPrimitive() && type != String.class) {
-                fruit = toCompare(field.get(o1), field.get(o2));
-                if (fruit != 0) {
-                    return fruit;
+        int flag = 0;
+        for (Field field : fieldList) {
+            if (fieldList.contains(field)) {
+                if (flag != 0) { //如果不为0打破循环
+                    break;
+                }
+                Object value1 = field.get(o1);
+                Object value2 = field.get(o2);
+                if (value1 == value2) {
+                    continue;
+                }
+                if (value1 == null || value2 == null) {  //一个为空，一个不为空，返回不一致
+                    flag = 1;
+                    continue;
                 }
 
-            } else {
-
-                if (type == int.class) {
-
-                    fruit = field.getInt(o1) - field.getInt(o2);
-                    if (fruit != 0) {
-                        return fruit;
-                    }
-                }
-                if (type == String.class) {
-                    String s1 = (String) field.get(o1);
-                    String s2 = (String) field.get(o2);
-                    if (s1 == null) {
-                        if (s2 == null) {
-                            return 0;
-                        } else {
-                            return 1;
-                        }
-                    }
-                    if (s2 == null) {
-                        if (s1 == null) {
-                            return 0;
-                        } else {
-                            return -1;
-                        }
-                    }
-
-                    fruit = s1.length() - s2.length();
-                    if (fruit != 0) {
-                        return fruit;
-                    }
-                    fruit = ((String) field.get(o1)).compareTo((String) field.get(o2));
-                    if (fruit != 0) {
-                        return fruit;
-                    }
-
+                if (value1 instanceof Comparable && value2 instanceof Comparable) {
+                    flag = ((Comparable) value1).compareTo(value2);
                 }
             }
+
         }
-        return fruit;
+        return flag;
+    }
+
+    public static int toCompareObject(Object o1, Object o2) throws SecurityException, IllegalArgumentException, IllegalAccessException {
+
+        Field[] fields=o1.getClass().getFields();
+        return toCompare(o1,o2,Arrays.asList(fields));
+    }
+
+    public static int toCompareObject(Object o1, Object o2,List<String> fieldNameList) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
+        Class classes=o1.getClass();
+        List<Field> list=new ArrayList<>();
+        for(String fieldName:fieldNameList){
+            Field field=classes.getField(fieldName);
+            list.add(field);
+        }
+        return toCompare(o1,o2,list);
     }
 
 
@@ -385,6 +374,20 @@ public class EntityUtils {
                     }
 
                 }
+
+                if (type == BigDecimal.class) {
+                    BigDecimal fieldValue1 = (BigDecimal) field.get(o1);
+                    BigDecimal fieldValue2 = (BigDecimal) termMap.get(term);
+                    if (fieldValue1 == fieldValue2) {
+                        return 0;
+                    }
+                    if (fieldValue1 == null || fieldValue2 == null) {
+                        return -1;
+                    }
+                    return fieldValue1.compareTo(fieldValue2);
+                }
+
+
             }
         }
         return fruit;
@@ -396,6 +399,14 @@ public class EntityUtils {
     public static boolean contains(Object object, Collection objectC) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         for (Object o : objectC) {
             if (toCompare(object, o) == 0)
+                return true;
+        }
+        return false;
+    }
+
+    public static boolean contains(Object object, Collection objectC, String... terms) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+        for (Object o : objectC) {
+            if (toCompare(object, o, terms) == 0)
                 return true;
         }
         return false;

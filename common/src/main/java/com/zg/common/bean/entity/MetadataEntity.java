@@ -10,4 +10,5 @@ public class MetadataEntity extends MainModel {
     public Object objectValue;
     public Object fieldValue;
     public String columnValue;
+    public String isCommit;  //0-提交  1-不提交
 }

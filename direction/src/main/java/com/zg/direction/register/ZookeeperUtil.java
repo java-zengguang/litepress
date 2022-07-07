@@ -11,11 +11,9 @@ import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 
@@ -49,10 +47,30 @@ public class ZookeeperUtil implements Watcher {
 
     public void createNode(String path, String value) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
-        zk.create(path, value.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+        if("parent".equals(value)) {
+            zk.create(path, value.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+        }else {
+            zk.create(path, value.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+
+        }
         logger.info("success create znode: " + path);
 
     }
+
+
+
+    public void createChildNode(String path, String value) throws InterruptedException, KeeperException {
+        connectedSemaphore.await();
+        Stat stat = zk.exists(path,false);
+        if(stat==null){
+            createNode(path,"parent");//创建父节点
+        }
+        String childPath=path+"/"+(new Date()).getTime();
+        createNode(childPath,value);//创建子节点
+        logger.info("success create znode: " + path);
+    }
+
+
 
     public void updateNode(String path, String value, int version) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
@@ -70,6 +88,15 @@ public class ZookeeperUtil implements Watcher {
         return data;
     }
 
+    public String findNodeOne(String path) throws InterruptedException, KeeperException {
+        List<String> nodeList=  findChildNodeList(path);
+        if(nodeList!=null&&nodeList.size()>0){
+            return nodeList.get(nodeList.size()-1);
+        }
+        return null;
+    }
+
+
     public JSONObject findNodeJson(String path) throws InterruptedException, KeeperException {
         JSONObject jsonObject = JSONObject.parseObject(findNode(path));
         if (jsonObject != null) {
@@ -78,12 +105,24 @@ public class ZookeeperUtil implements Watcher {
         return jsonObject;
     }
 
+
+    public List<String> findChildNodeList(String path) throws InterruptedException, KeeperException {
+        connectedSemaphore.await();
+        List<String> resultList = new ArrayList<>();
+        List<String> list = zk.getChildren(path, true, stat);
+        for (String key : list) {
+            String data = new String(zk.getData(path+"/" + key, true, stat));
+            resultList.add(data);
+        }
+        return resultList;
+    }
+
     public List<Map<String, String>> findChildNodes(String path) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
         List<Map<String, String>> resultList = new ArrayList<>();
         List<String> list = zk.getChildren(path, true, stat);
         for (String key : list) {
-            String data = new String(zk.getData("/" + key, true, stat));
+            String data = new String(zk.getData(path+"/" + key, true, stat));
             Map map = new HashMap();
             map.put(key, data);
             resultList.add(map);

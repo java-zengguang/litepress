@@ -2,7 +2,7 @@ package com.zg.common.dao.database;
 
 
 import com.zg.common.bean.entity.MetadataEntity;
-import com.zg.common.dao.mongodb.ModelSQLUtils;
+import com.zg.common.util.reflect.ModelSQLUtils;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.SimpleEntityDaoTemplate;
 import org.slf4j.Logger;

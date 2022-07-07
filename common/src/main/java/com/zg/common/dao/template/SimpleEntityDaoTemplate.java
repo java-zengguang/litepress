@@ -2,6 +2,7 @@ package com.zg.common.dao.template;
 
 import com.zg.common.bean.entity.MetadataEntity;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -20,12 +21,15 @@ public class SimpleEntityDaoTemplate extends BaseEntityDaoTemplate {
             {
                 add( Arrays.asList("INTEGER","Integer", "", ""));
                 add(Arrays.asList("INT", "Integer", "", ""));
+                add(Arrays.asList("DECFLOAT", "Double", "", ""));
                 add( Arrays.asList("VARCHAR","String", "'", "'"));
                 add(Arrays.asList("VARCHAR2", "String", "'", "'"));
                 add( Arrays.asList("NVARCHAR2","String", "'", "'"));
+                add( Arrays.asList("CHARACTER VARYING","String", "'", "'"));
                 add( Arrays.asList("CHAR","String", "'", "'"));
                 add( Arrays.asList("TEXT","String", "'", "'"));
                 add( Arrays.asList("NUMBER","BigDecimal", "", ""));
+                add( Arrays.asList("NUMERIC","BigDecimal", "", ""));
                 add( Arrays.asList("DATE","Date", "to_date('", "','yyyy-MM-dd)"));
                 add( Arrays.asList("DATETIME","Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
                 add( Arrays.asList("TIMESTAMP","Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));}
@@ -52,6 +56,9 @@ public class SimpleEntityDaoTemplate extends BaseEntityDaoTemplate {
         List<String> configList = columnConfigMap.get(metadataEntity.columnType);
         metadataEntity.fieldType = configList.get(1);
         if (metadataEntity.objectValue != null) {
+            if("BigDecimal".equals(metadataEntity.fieldType)){ //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下
+                metadataEntity.fieldValue= BigDecimal.valueOf(Double.parseDouble(""+metadataEntity.objectValue));
+            }
             if ("Date".equals(metadataEntity.fieldType)) {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 metadataEntity.columnValue = configList.get(2) + dateFormat.format(metadataEntity.objectValue) + configList.get(3);

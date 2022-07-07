@@ -3,7 +3,7 @@ package com.zg.common.dao.database;
 import com.zg.common.bean.entity.MainModel;
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.dao.assemble.SimpleAssemble;
-import com.zg.common.dao.mongodb.ModelSQLUtils;
+import com.zg.common.util.reflect.ModelSQLUtils;
 import com.zg.common.util.reflect.DynamicClass;
 import com.zg.common.util.reflect.EntityUtils;
 
