@@ -167,6 +167,49 @@ public class ModelSQLUtils {
 
 
 
+    public static String updateByPK(Object model) throws Exception {
+        String sql ;
+        String condition = " ";
+
+        String tableName = EntityUtils.getTableNameFromModel(model.getClass());
+        List<String> memberList = new ArrayList();
+        List<String> valuesList = new ArrayList();
+        Assemble assemble = new SimpleAssemble();
+        List<MetadataEntity> list = assemble.analysis(model);
+        List<String> pkList= EntityUtils.getPKFields(model.getClass());
+
+        if(pkList==null&&pkList.size()==0){
+            throw new Exception("没有找到主键");
+        }
+
+        for (MetadataEntity entity : list) {
+
+            if ("0".equals(entity.isCommit)) {
+                if(!pkList.contains(entity.fieldName)) {
+                    memberList.add(entity.fieldName);
+                    valuesList.add(entity.columnValue);
+                }else{
+                    condition = condition + " and " + entity.fieldName+"="+entity.columnValue;
+                }
+            }
+        }
+        //  List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
+        StringBuffer memberValues = new StringBuffer();
+        for (int i = 0; i < memberList.size(); i++) {
+            if (memberList.get(i) != null  && !"".equals(valuesList.get(i)) ) {
+                if( valuesList.get(i) != null) {
+                    memberValues.append(" " + memberList.get(i) + "=" + valuesList.get(i) + ",");
+                }else{
+                    memberValues.append(" " + memberList.get(i) + " = null ,");
+                }
+            }
+        }
+        memberValues.setCharAt(memberValues.length() - 1, ' ');
+        sql = "update " + tableName + " set " + memberValues + "where 1=1 " + condition;
+
+        return sql;
+    }
+
 
 
     public static String update(Object model, String... terms) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {

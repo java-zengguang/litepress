@@ -2,20 +2,23 @@ package com.zg.common.dao.database;
 
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.dao.assemble.SimpleAssemble;
-import com.zg.common.util.reflect.ModelSQLUtils;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.SimpleEntityDaoTemplate;
-import com.zg.common.util.reflect.SerializeObjectUtils;
 import com.zg.common.util.reflect.DynamicClass;
 import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.ModelSQLUtils;
+import com.zg.common.util.reflect.SerializeObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
-public class NewJDBCUtil  {
+public class NewJDBCUtil {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     private String dataSource;
 
@@ -23,9 +26,6 @@ public class NewJDBCUtil  {
     public NewJDBCUtil(String dataSource) {
         this.dataSource = dataSource;
     }
-
-
-
 
 
     private String getTableName(String sql) {
@@ -38,6 +38,7 @@ public class NewJDBCUtil  {
         logger.debug(" getTableName   未找到tableName");
         return null;
     }
+
     //插入model_list ，未提交，未初始化连接
     private int[] insertTables(List modelList, Class modelClass, String tableName) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         int[] result = null;
@@ -116,12 +117,9 @@ public class NewJDBCUtil  {
     }
 
 
-
-
     private void release() throws SQLException, ClassNotFoundException {
         NewDBPUtils.release(dataSource);
     }
-
 
 
     private boolean commit() throws SQLException, ClassNotFoundException {
@@ -157,8 +155,8 @@ public class NewJDBCUtil  {
     //查询出列明，数据对应的list集合
     private List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException {
         logger.debug(sql);
-        String tableName="";
-        tableName=getTableName(sql);
+        String tableName = "";
+        tableName = getTableName(sql);
         List list = new ArrayList();
         Connection conn = NewDBPUtils.getConnection(dataSource);
         PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -166,18 +164,18 @@ public class NewJDBCUtil  {
         ResultSetMetaData rsmd = rs.getMetaData();
         int columncount = 0;
         while (rs.next()) {
-            List<MetadataEntity> columnList=new ArrayList<>();
+            List<MetadataEntity> columnList = new ArrayList<>();
             columncount = rsmd.getColumnCount();
             for (int i = 1; i < columncount + 1; i++) {
                 String columnLabel = rsmd.getColumnLabel(i);
-                String columnType=rsmd.getColumnTypeName(i);
+                String columnType = rsmd.getColumnTypeName(i);
                 Object columnValue = rs.getObject(i);
-                MetadataEntity metadataEntity =new MetadataEntity();
-                metadataEntity.tableName=tableName;
-                metadataEntity.columnLabel=columnLabel;
-                metadataEntity.columnType=columnType;
-                metadataEntity.objectValue =columnValue;
-                EntityDaoTemplate entityDaoTemplate=new SimpleEntityDaoTemplate();
+                MetadataEntity metadataEntity = new MetadataEntity();
+                metadataEntity.tableName = tableName;
+                metadataEntity.columnLabel = columnLabel;
+                metadataEntity.columnType = columnType;
+                metadataEntity.objectValue = columnValue;
+                EntityDaoTemplate entityDaoTemplate = new SimpleEntityDaoTemplate();
                 metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
                 columnList.add(metadataEntity);
             }
@@ -191,9 +189,10 @@ public class NewJDBCUtil  {
 
     public int[] insertTables(List modelLIst, Class modelClass) throws SQLException, ClassNotFoundException {
         String tableName = EntityUtils.getTableNameFromModel(modelClass);
-        int[] result= new int[0];
+        int[] result = new int[0];
         try {
             result = insertTables(modelLIst, modelClass, tableName);
+            commit();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -202,27 +201,24 @@ public class NewJDBCUtil  {
             e.printStackTrace();
         } catch (InstantiationException e) {
             e.printStackTrace();
-        }finally {
-            commitAndClose();
+        } finally {
+            release();
         }
         return result;
     }
 
 
-
-
-
     //查询
     public List select(String sql) throws SQLException, ClassNotFoundException {
         List<List<MetadataEntity>> templeList = null;
-        List modelList=new ArrayList();
+        List modelList = new ArrayList();
         try {
             templeList = select2TempleList(sql);
-            SimpleAssemble simpleAssemble=new SimpleAssemble();
+            SimpleAssemble simpleAssemble = new SimpleAssemble();
 
             Class modelClass = null;
-            if(templeList!=null&&templeList.size()>0) {
-                modelClass=DynamicClass.getDynamicModel(templeList.get(0));
+            if (templeList != null && templeList.size() > 0) {
+                modelClass = DynamicClass.getDynamicModel(templeList.get(0));
                 for (List<MetadataEntity> columnList : templeList) {
                     Object obj = modelClass.newInstance();
                     for (MetadataEntity metadataEntity : columnList) {
@@ -235,7 +231,7 @@ public class NewJDBCUtil  {
             e.printStackTrace();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             release();
         }
 
@@ -279,53 +275,32 @@ public class NewJDBCUtil  {
             }
             pstmt.close();
             rs.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             release();
         }
         return list;
     }
 
-    //执行批操作 H2专用
-    public int[] batchSqlNoCommit(List<String> sqlList, Boolean model) throws SQLException, ClassNotFoundException {
-      int[] result;
-        if (!model) {
-            result= batchSql(sqlList);
-        } else {
-            result= batchOneSql(sqlList);
-        }
-        return result;
-    }
-
-    //执行批操作 H2专用 只提交，不关闭链接
-    public int[] batchSqlNoColse(List<String> sqlList, Boolean model) throws SQLException, ClassNotFoundException {
-        int[] result;
-        if (!model) {
-            result= batchSql(sqlList);
-        } else {
-            result= batchOneSql(sqlList);
-        }
-        commit();
-        return result;
-    }
-
-    //H2专用
-    public void commitAndClose() throws SQLException, ClassNotFoundException {
-        commit();
-        release();
-    }
-
-    //H2专用
-    public void closeH2() throws SQLException, ClassNotFoundException {
-        release();
-    }
-
-
     //执行批操作
     public int[] batchSql(List<String> sqlList, Boolean model) throws SQLException, ClassNotFoundException {
-        int[] result=  batchSqlNoCommit( sqlList, model);
-        commitAndClose();
+
+        int[] result = new int[0];
+        try {
+            if (!model) {
+                result = batchSql(sqlList);
+            } else {
+                result = batchOneSql(sqlList);
+            }
+            commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            release();
+        }
         return result;
     }
 
@@ -335,11 +310,12 @@ public class NewJDBCUtil  {
             if (terms != null && terms.length > 0) {
                 String sql = ModelSQLUtils.update(object, terms);
                 result = operation(sql);
+                commit();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            commitAndClose();
+        } finally {
+            release();
         }
 
         return result;
@@ -351,25 +327,24 @@ public class NewJDBCUtil  {
         try {
 
 
-        Connection conn = NewDBPUtils.getConnection(dataSource);
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        ResultSet rs;
-        rs = pstmt.executeQuery();
-        while (rs.next()) {
-            String value = rs.getString(1); // 此方法比较高效
-            list.add(value);
-        }
-        rs.close();
-        pstmt.close();
-        }catch (Exception e){
-           e.printStackTrace();
-        }finally {
+            Connection conn = NewDBPUtils.getConnection(dataSource);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String value = rs.getString(1); // 此方法比较高效
+                list.add(value);
+            }
+            rs.close();
+            pstmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             release();
         }
 
         return list;
     }
-
 
 
 }

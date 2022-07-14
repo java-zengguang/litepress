@@ -13,11 +13,18 @@ import org.slf4j.LoggerFactory;
 
 public class JettyBoot {
     private static final Logger logger = LoggerFactory.getLogger(JettyBoot.class);
+    private int port=8080;
 
+    public JettyBoot() {
+    }
+
+    public JettyBoot(int port) {
+        this.port = port;
+    }
 
     public void doMain() {
         //创建服务器
-        Server server = new Server(8080);
+        Server server = new Server(port);
         try {
 
             //默认servlet

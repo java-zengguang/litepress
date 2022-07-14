@@ -203,6 +203,7 @@ public class ControllerAdapter {
                             while ((line = reader.readLine()) != null) {
                                 sb.append(line);
                             }
+                            value=sb.toString();
                             paramEntity.paramObject=value;
                             requestAnalysis=new JsonRequestAnalysis();
                         }

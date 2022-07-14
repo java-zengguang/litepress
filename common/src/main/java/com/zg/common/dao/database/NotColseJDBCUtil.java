@@ -72,26 +72,6 @@ public class NotColseJDBCUtil {
         return result;
     }
 
-/*
-    //获取表格信息
-    public Map<String, String> tableInfo(String sql) throws SQLException, ClassNotFoundException {
-        Map map = new HashMap();
-        Connection conn = NewDBPUtils.getConnection(dataSource);
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        ResultSet rs;
-        rs = pstmt.executeQuery();
-        ResultSetMetaData rsmd = rs.getMetaData();
-        int columncount = 0;
-        columncount = rsmd.getColumnCount();
-        for (int i = 1; i < columncount + 1; i++) {
-            map.put(rsmd.getColumnLabel(i), EntityUtils.dataTranslateJava(rsmd.getColumnTypeName(i)));
-        }
-        rs.close();
-        pstmt.close();
-        //dataBasePool.release(conn);
-        return map;
-    }
-*/
 
     //执行增删改
     private Integer operation(String sql) throws SQLException, ClassNotFoundException {
@@ -190,11 +170,12 @@ public class NotColseJDBCUtil {
         return list;
     }
 
-    public int[] insertTables(List modelLIst, Class modelClass) throws SQLException, ClassNotFoundException {
+    private int[] insertTables(List modelLIst, Class modelClass) throws SQLException, ClassNotFoundException {
         String tableName = EntityUtils.getTableNameFromModel(modelClass);
         int[] result= new int[0];
         try {
             result = insertTables(modelLIst, modelClass, tableName);
+            commit();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -204,7 +185,7 @@ public class NotColseJDBCUtil {
         } catch (InstantiationException e) {
             e.printStackTrace();
         }finally {
-            commitAndClose();
+            release();
         }
         return result;
     }
@@ -242,10 +223,10 @@ public class NotColseJDBCUtil {
 
 
     //查询
-    public List select(String sql) throws SQLException, ClassNotFoundException {
+    public List selectNotColse(String sql) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
         List<List<MetadataEntity>> templeList = null;
         List modelList=new ArrayList();
-        try {
+
             templeList = select2TempleList(sql,getTableName(sql));
             SimpleAssemble simpleAssemble=new SimpleAssemble();
 
@@ -260,20 +241,14 @@ public class NotColseJDBCUtil {
                     modelList.add(obj);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }finally {
-            release();
-        }
+
 
         return modelList;
     }
 
 
     //查询
-    public List select(String sql, Class modelClass) throws Exception {
+    public List selectNoClose(String sql, Class modelClass) throws Exception {
         List list = selectToMapList(sql);
         // Map<String, String> tableInfoMap = tableInfo(sql);
         List model_list = SerializeObjectUtils.setMember(list, modelClass);
@@ -283,7 +258,7 @@ public class NotColseJDBCUtil {
 
 
     //查询出列明，数据对应的list集合
-    public List<Map> selectToMapList(String sql) throws SQLException, ClassNotFoundException {
+    private List<Map> selectToMapList(String sql) throws SQLException, ClassNotFoundException {
 
         // 记录error级别的信息
         logger.debug(sql);
@@ -310,8 +285,6 @@ public class NotColseJDBCUtil {
             rs.close();
         }catch (Exception e){
             e.printStackTrace();
-        }finally {
-            release();
         }
         return list;
     }
@@ -350,54 +323,6 @@ public class NotColseJDBCUtil {
         release();
     }
 
-
-    //执行批操作
-    public int[] batchSql(List<String> sqlList, Boolean model) throws SQLException, ClassNotFoundException {
-        int[] result=  batchSqlNoCommit( sqlList, model);
-        commitAndClose();
-        return result;
-    }
-
-    public int updateModel(Object object, String... terms) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
-        int result = 0;
-        try {
-            if (terms != null && terms.length > 0) {
-                String sql = ModelSQLUtils.update(object, terms);
-                result = operation(sql);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            commitAndClose();
-        }
-
-        return result;
-    }
-
-
-    public List<String> selectOneColList(String sql) throws SQLException, ClassNotFoundException {
-        List list = new ArrayList();
-        try {
-
-
-        Connection conn = NewDBPUtils.getConnection(dataSource);
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        ResultSet rs;
-        rs = pstmt.executeQuery();
-        while (rs.next()) {
-            String value = rs.getString(1); // 此方法比较高效
-            list.add(value);
-        }
-        rs.close();
-        pstmt.close();
-        }catch (Exception e){
-           e.printStackTrace();
-        }finally {
-            release();
-        }
-
-        return list;
-    }
 
 
 

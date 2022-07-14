@@ -3,6 +3,7 @@ package com.zg.common.util.reflect;
 import com.zg.common.annotation.FieldTypeMode;
 import com.zg.common.annotation.Model;
 import com.zg.common.annotation.NotCommitField;
+import com.zg.common.annotation.PrimaryKey;
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.database.DataBaseUtil;
 import com.zg.common.init.Config;
@@ -435,6 +436,24 @@ public class EntityUtils {
 
         for (Field field : fields) {
             NotCommitField notCommitField = field.getAnnotation(NotCommitField.class);
+            if (notCommitField != null) {
+                list.add(field.getName());
+            }
+        }
+
+        return list;
+
+    }
+
+
+    public static List<String> getPKFields(Class modelClass) {
+
+        List<String> list = new ArrayList();
+
+        Field[] fields = modelClass.getFields();
+
+        for (Field field : fields) {
+            PrimaryKey notCommitField = field.getAnnotation(PrimaryKey.class);
             if (notCommitField != null) {
                 list.add(field.getName());
             }
