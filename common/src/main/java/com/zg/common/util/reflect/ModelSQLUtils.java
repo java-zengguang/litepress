@@ -177,6 +177,7 @@ public class ModelSQLUtils {
         Assemble assemble = new SimpleAssemble();
         List<MetadataEntity> list = assemble.analysis(model);
         List<String> pkList= EntityUtils.getPKFields(model.getClass());
+        List<String> increaseList=EntityUtils.getIncreaseFields(model.getClass());
 
         if(pkList==null&&pkList.size()==0){
             throw new Exception("没有找到主键");
@@ -184,7 +185,7 @@ public class ModelSQLUtils {
 
         for (MetadataEntity entity : list) {
 
-            if ("0".equals(entity.isCommit)) {
+            if ("0".equals(entity.isCommit) || increaseList.contains(entity.fieldName)) {
                 if(!pkList.contains(entity.fieldName)) {
                     memberList.add(entity.fieldName);
                     valuesList.add(entity.columnValue);
