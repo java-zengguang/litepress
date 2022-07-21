@@ -187,20 +187,14 @@ public class NewJDBCUtil {
         return list;
     }
 
-    public int[] insertTables(List modelLIst, Class modelClass) throws SQLException, ClassNotFoundException {
+    public int[] insertTables(List modelLIst, Class modelClass) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         String tableName = EntityUtils.getTableNameFromModel(modelClass);
         int[] result = new int[0];
         try {
             result = insertTables(modelLIst, modelClass, tableName);
             commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw e;
         } finally {
             release();
         }
@@ -209,7 +203,7 @@ public class NewJDBCUtil {
 
 
     //查询
-    public List select(String sql) throws SQLException, ClassNotFoundException {
+    public List select(String sql) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
         List<List<MetadataEntity>> templeList = null;
         List modelList = new ArrayList();
         try {
@@ -227,10 +221,8 @@ public class NewJDBCUtil {
                     modelList.add(obj);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+          throw e;
         } finally {
             release();
         }
@@ -277,6 +269,7 @@ public class NewJDBCUtil {
             rs.close();
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         } finally {
             release();
         }
@@ -295,9 +288,7 @@ public class NewJDBCUtil {
             }
             commit();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+          throw e;
         } finally {
             release();
         }
@@ -313,7 +304,7 @@ public class NewJDBCUtil {
                 commit();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             release();
         }
@@ -338,7 +329,7 @@ public class NewJDBCUtil {
             rs.close();
             pstmt.close();
         } catch (Exception e) {
-            e.printStackTrace();
+          throw e;
         } finally {
             release();
         }

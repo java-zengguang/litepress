@@ -5,6 +5,8 @@ import com.zg.common.util.CommonUtil;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.resource.Resource;
@@ -47,6 +49,21 @@ public class JettyBoot {
             if (true) {
                 ServletHandler servletHandler = new ServletHandler();
                 servletHandler.addServletWithMapping(AdapterServlet.class, "/");
+                //过滤
+                if(true) {
+                    CrossOriginFilter crossOriginFilter = new CrossOriginFilter();
+                    FilterHolder filterHolder = new FilterHolder();
+                    filterHolder.setFilter(crossOriginFilter);
+                    filterHolder.setClassName(CrossOriginFilter.class.getName());
+                    filterHolder.setName("cross-origin");
+                    filterHolder.setInitParameter("allowedOrigins", "*");
+                    filterHolder.setInitParameter("allowedMethods", "GET,POST,HEAD");
+                    filterHolder.setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin");
+                    FilterMapping filterMapping=new FilterMapping();
+                    filterMapping.setFilterName("cross-origin");
+                    filterMapping.setPathSpec("/*");
+                    servletHandler.addFilter(filterHolder, filterMapping );
+                }
                 server.insertHandler(servletHandler);
             }
 
@@ -57,6 +74,7 @@ public class JettyBoot {
                 resourceHandler.setDirAllowed(true);
                 server.insertHandler(resourceHandler);
             }
+
 
 
             ServerConnector connector=server.getBean(ServerConnector.class);
