@@ -6,7 +6,9 @@ import com.zg.network.common.heartbeat.BaseHeartbeatHandle;
 import com.zg.network.im.login.LoginManager;
 import com.zg.common.util.reflect.EntityUtils;
 import io.netty.channel.Channel;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.Date;
 import java.util.Map;
@@ -18,7 +20,7 @@ import java.util.UUID;
 public class IMHeartbeatHandle extends BaseHeartbeatHandle {
 
     //  public final long HBTIME=30*60*1000;   //心跳时间
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
+    public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
 
     public IMHeartbeatHandle(Map<String, ChannelBean> channelMap, long HBTIME) {

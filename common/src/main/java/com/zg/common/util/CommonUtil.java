@@ -27,12 +27,26 @@ public class CommonUtil {
         //获取项目的相对路径
         String path = "";
 
-        try {
 
-            if (CommonUtil.class.getResource("/") != null) {
-                path = CommonUtil.class.getResource("/").toURI().getPath();
-                File file=new File(path);
-                path=file.getPath();
+        System.out.println(System.getProperty("projectRootPath"));
+        if (System.getProperty("projectRootPath") != null) {
+            path = System.getProperty("projectRootPath");
+        } else {
+            getThisPath();
+        }
+
+
+        PATH = path;
+    }
+
+
+    public static String getThisPath() {
+        String path = "";
+        try {
+            if (CommonUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath() != null) {
+                path = CommonUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+                File file = new File(path);
+                path = file.getPath();
                 path = java.net.URLDecoder.decode(path, "UTF-8");
                 path = path + "\\";
                 logger.info("---" + path);
@@ -45,16 +59,11 @@ public class CommonUtil {
 
                 logger.info("===" + path);
             }
-
-
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-
-        PATH = path;
+        return path;
     }
 
     //读取文件,并把文件信息放入到Properties 容器中
@@ -117,6 +126,7 @@ public class CommonUtil {
         classList.addAll(classSet);
         return classList;
     }
+
     /**
      * 从包package中获取所有的Class
      *

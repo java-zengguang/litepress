@@ -3,7 +3,8 @@ package com.zg.common.dao.factory;
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.database.NewDBPUtils;
 import com.zg.common.init.Config;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,7 +12,9 @@ import java.sql.SQLException;
 
 public class JDBCConnectionFactory extends BaseConnectionFactory {
 
-    private static Logger logger = Logger.getLogger(NewDBPUtils.class);
+    public  final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
     private static JDBCConnectionFactory jdbcConnectionFactory;
 
     private JDBCConnectionFactory() {

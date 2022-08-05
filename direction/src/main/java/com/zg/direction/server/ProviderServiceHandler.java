@@ -49,7 +49,7 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
         if (value instanceof JSONObject) {
             result = ((JSONObject) value).toJavaObject(type);
         } else if (value instanceof JSONArray) {
-            result=((JSONArray) value).toJavaObject(type);
+            result=((JSONArray) value).toJavaObject(type.getClass());
         }
         return result;
     }

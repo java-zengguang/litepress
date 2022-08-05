@@ -2,7 +2,7 @@ package com.zg.network.im.client;
 
 import com.zg.network.bean.UserBean;
 import com.zg.network.bean.ZGMPBean;
-import com.zg.prestuctural.manager.CacheManager;
+import com.zg.incache.prestuctural.manager.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

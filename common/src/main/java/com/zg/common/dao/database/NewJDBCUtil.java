@@ -157,6 +157,9 @@ public class NewJDBCUtil {
         logger.debug(sql);
         String tableName = "";
         tableName = getTableName(sql);
+        if(tableName.contains(".")){
+            tableName=tableName.substring(tableName.indexOf("."),tableName.length());
+        }
         List list = new ArrayList();
         Connection conn = NewDBPUtils.getConnection(dataSource);
         PreparedStatement pstmt = conn.prepareStatement(sql);

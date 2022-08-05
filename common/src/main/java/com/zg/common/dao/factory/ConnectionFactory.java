@@ -2,7 +2,7 @@ package com.zg.common.dao.factory;
 
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.init.Config;
-import org.apache.log4j.Logger;
+
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,7 +10,6 @@ import java.sql.SQLException;
 public class ConnectionFactory extends BaseConnectionFactory {
 
     public static ConnectionFactory connectionFactory;
-    private static Logger logger = Logger.getLogger(ConnectionFactory.class);
 
 
     private ConnectionFactory() {

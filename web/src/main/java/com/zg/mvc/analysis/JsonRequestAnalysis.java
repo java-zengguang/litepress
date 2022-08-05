@@ -1,6 +1,5 @@
 package com.zg.mvc.analysis;
 
-import com.zg.common.util.reflect.EntityUtils;
 import com.zg.common.util.reflect.JsonUtils;
 import com.zg.mvc.annotation.controller.ParamEntity;
 import com.zg.mvc.annotation.controller.RequestBody;

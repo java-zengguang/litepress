@@ -7,9 +7,9 @@ import com.zg.mvc.entity.MessageBean;
 import com.zg.sso.service.LoginService;
 import com.zg.sso.utils.SSOUtils;
 import com.zg.common.util.reflect.JsonUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 

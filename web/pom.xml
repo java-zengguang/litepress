@@ -8,6 +8,7 @@
     <artifactId>web</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
     <parent>
         <groupId>com.zg.database</groupId>
         <artifactId>parent</artifactId>
@@ -19,54 +20,27 @@
 
         <dependency>
             <groupId>com.zg.database</groupId>
-            <artifactId>util</artifactId>
+            <artifactId>common</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <type>jar</type>
         </dependency>
-
-<!--        &lt;!&ndash; servlet依赖的jar包start &ndash;&gt;
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-
-
-        &lt;!&ndash; servlet依赖的jar包start &ndash;&gt;
-        &lt;!&ndash; jsp依赖jar包start &ndash;&gt;
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>javax.servlet.jsp-api</artifactId>
-            <version>2.3.1</version>
-        </dependency>
-        &lt;!&ndash; jsp依赖jar包end &ndash;&gt;
-        &lt;!&ndash;jstl标签依赖的jar包start &ndash;&gt;
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>-->
-
-        <!--    分頁助手-->
-
-
 
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <version>9.4.14.v20181114</version>
+            <version>11.0.11</version>
             <artifactId>jetty-server</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <version>9.4.14.v20181114</version>
+            <version>11.0.11</version>
             <artifactId>jetty-servlet</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <version>9.4.14.v20181114</version>
+            <version>11.0.11</version>
             <artifactId>jetty-servlets</artifactId>
         </dependency>
+
 
 
         <!--jstl标签依赖的jar包end -->

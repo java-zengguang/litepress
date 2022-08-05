@@ -8,16 +8,15 @@ import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
+
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.util.Properties;
-import java.util.concurrent.CountDownLatch;
+
 
 public class ZookeeperBoot implements Runnable{
-    private static final Logger LOG =
-            LoggerFactory.getLogger(ZooKeeperServerMain.class);
+    private static final Logger logger = LoggerFactory.getLogger(ZookeeperBoot.class.getName());
+
 
     private static final String USAGE =
             "Usage: ZooKeeperServerMain configfile | port datadir [ticktime] [maxcnxns]";

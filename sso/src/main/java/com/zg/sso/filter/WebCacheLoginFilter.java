@@ -5,9 +5,10 @@ import com.zg.sso.common.LoginInte;
 import com.zg.sso.common.SSOAdapter;
 import com.zg.sso.common.WebCacheLogin;
 import com.zg.sso.entity.SSOOpthion;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 
 public class WebCacheLoginFilter implements Filter {

@@ -1,5 +1,6 @@
 package com.zg.direction.proxy;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zg.direction.client.ConsumerClient;
@@ -82,7 +83,7 @@ public class ConsumerHandler implements InvocationHandler {
         if (value instanceof JSONObject) {
             result = ((JSONObject) value).toJavaObject(type);
         } else if (value instanceof JSONArray) {
-            result = ((JSONArray) value).toJavaObject(type);
+            result = ((JSONArray) value).toJavaList(type.getClass());
         }
         return result;
     }

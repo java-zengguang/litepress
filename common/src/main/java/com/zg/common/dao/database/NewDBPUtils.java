@@ -1,7 +1,8 @@
 package com.zg.common.dao.database;
 
 import com.zg.common.dao.factory.ConnectionFactory;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -13,7 +14,7 @@ import java.util.Map;
  */
 public class NewDBPUtils {
 
-    private static Logger logger = Logger.getLogger(NewDBPUtils.class);
+    public  final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static ThreadLocal<Map<String, Connection>> threadLocal = new ThreadLocal();
 
 

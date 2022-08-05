@@ -1,7 +1,7 @@
 package com.zg.sso.listener;
 
-import com.zg.cache.util.RomCacheUtil;
-import com.zg.cache.util.SimpleRomCache;
+import com.zg.incache.util.RomCacheUtil;
+import com.zg.incache.util.SimpleRomCache;
 import com.zg.sso.entity.UserLogin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -4,13 +4,17 @@ import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.pool.DataBaseInte;
 import com.zg.common.dao.pool.ZGDBPImpl;
 import com.zg.common.init.Config;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class PoolConnectionFactory extends BaseConnectionFactory {
-    private static Logger logger = Logger.getLogger(ConnectionFactory.class);
+
+    public  final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private static PoolConnectionFactory poolConnectionFactory;
 
     private PoolConnectionFactory() {

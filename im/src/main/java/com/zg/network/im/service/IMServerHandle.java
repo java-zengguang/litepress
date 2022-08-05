@@ -8,7 +8,8 @@ import com.zg.network.im.login.LoginManager;
 import com.zg.common.util.reflect.EntityUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
@@ -18,7 +19,9 @@ import java.util.Map;
  * Created by Administrator on 2019/2/22 0022.
  */
 public class IMServerHandle extends BaseServiceHandler<String> {
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
+
+    public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
     /***
      * 消息操作的业务类
      */
@@ -70,7 +73,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                 }
 
                 case ("SEND"): {
-                    logger.info(request);
+                    logger.info(request.toString());
                     String uuid = request.targetUuid;
                     if (uuid != null && "all".equals(uuid)) {
                         List<Channel> channelList = IMChannelGroups.getAllChannel();
