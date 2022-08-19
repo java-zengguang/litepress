@@ -1,16 +1,20 @@
 package com.zg.common.dao.database;
 
+import com.esotericsoftware.kryo.serializers.ClosureSerializer;
+import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.dao.assemble.SimpleAssemble;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.SimpleEntityDaoTemplate;
-import com.zg.common.util.reflect.DynamicClass;
-import com.zg.common.util.reflect.EntityUtils;
-import com.zg.common.util.reflect.ModelSQLUtils;
-import com.zg.common.util.reflect.SerializeObjectUtils;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Output;
+import com.zg.common.util.reflect.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
+import java.lang.invoke.SerializedLambda;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -157,8 +161,8 @@ public class NewJDBCUtil {
         logger.debug(sql);
         String tableName = "";
         tableName = getTableName(sql);
-        if(tableName.contains(".")){
-            tableName=tableName.substring(tableName.indexOf("."),tableName.length());
+        if (tableName.contains(".")) {
+            tableName = tableName.substring(tableName.indexOf("."), tableName.length());
         }
         List list = new ArrayList();
         Connection conn = NewDBPUtils.getConnection(dataSource);
@@ -215,7 +219,9 @@ public class NewJDBCUtil {
 
             Class modelClass = null;
             if (templeList != null && templeList.size() > 0) {
-                modelClass = DynamicClass.getDynamicModel(templeList.get(0));
+                if (modelClass == null) {
+                    modelClass = DynamicClass.getDynamicModel(templeList.get(0));
+                }
                 for (List<MetadataEntity> columnList : templeList) {
                     Object obj = modelClass.newInstance();
                     for (MetadataEntity metadataEntity : columnList) {
@@ -225,7 +231,7 @@ public class NewJDBCUtil {
                 }
             }
         } catch (Exception e) {
-          throw e;
+            throw e;
         } finally {
             release();
         }
@@ -291,7 +297,7 @@ public class NewJDBCUtil {
             }
             commit();
         } catch (SQLException e) {
-          throw e;
+            throw e;
         } finally {
             release();
         }
@@ -332,7 +338,7 @@ public class NewJDBCUtil {
             rs.close();
             pstmt.close();
         } catch (Exception e) {
-          throw e;
+            throw e;
         } finally {
             release();
         }
@@ -340,5 +346,66 @@ public class NewJDBCUtil {
         return list;
     }
 
+
+    public Class selectStream(String sql, File tempFile) throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException {
+        Class modelClass = null;
+        try {
+            String tableName = "";
+            tableName = getTableName(sql);
+            if (tableName.contains(".")) {
+                tableName = tableName.substring(tableName.indexOf("."), tableName.length());
+            }
+            Connection conn = NewDBPUtils.getConnection(dataSource);
+            PreparedStatement pstmt = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            pstmt.setFetchSize(10000);
+            pstmt.setFetchDirection(ResultSet.FETCH_REVERSE);
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columncount = 0;
+            Output output = new Output(new FileOutputStream(tempFile),1024000);
+            Kryo kryo = new Kryo();
+
+
+            while (rs.next()) {
+                List<MetadataEntity> columnList = new ArrayList<>();
+                columncount = rsmd.getColumnCount();
+                for (int i = 1; i < columncount + 1; i++) {
+                    String columnLabel = rsmd.getColumnLabel(i);
+                    String columnType = rsmd.getColumnTypeName(i);
+                    Object columnValue = rs.getObject(i);
+                    MetadataEntity metadataEntity = new MetadataEntity();
+                    metadataEntity.tableName = tableName;
+                    metadataEntity.columnLabel = columnLabel;
+                    metadataEntity.columnType = columnType;
+                    metadataEntity.objectValue = columnValue;
+                    EntityDaoTemplate entityDaoTemplate = new SimpleEntityDaoTemplate();
+                    metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
+                    columnList.add(metadataEntity);
+                }
+                SimpleAssemble simpleAssemble = new SimpleAssemble();
+                if (modelClass == null) {
+                    modelClass = DynamicClass.getDynamicModel(columnList);
+                    kryo.register(modelClass,new DynameicSerializer(modelClass));
+                }
+
+                Object obj = modelClass.newInstance();
+                for (MetadataEntity metadataEntity : columnList) {
+                    obj = simpleAssemble.assembling(metadataEntity, obj);
+                }
+                System.out.println("---");
+                kryo.writeObject(output, obj);
+            }
+            rs.close();
+            pstmt.close();
+            output.close();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            release();
+        }
+
+        return modelClass;
+    }
 
 }

@@ -21,5 +21,7 @@ open module common {
     requires cglib;
     requires org.apache.commons.net;
     requires org.slf4j;
+    requires com.esotericsoftware.kryo;
+
 
 }

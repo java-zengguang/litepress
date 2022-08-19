@@ -1,6 +1,6 @@
 package com.zg.common.util.reflect;
 
-import com.zg.common.Test2;
+
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.util.CommonUtil;
 import org.slf4j.Logger;
