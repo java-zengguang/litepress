@@ -20,10 +20,12 @@ public class DynamicClass {
     private static final Logger logger = LoggerFactory.getLogger(DynamicClass.class.getName());
 
 
-    private static String produceEntityJavaCode(List<String> referenceList, String calssName, Map<String, String> natureMap, List<String> interfaceList, String parentClass) throws Exception {
+    private static String produceEntityJavaCode(List<String> referenceList, String calssName, List<MetadataEntity> columnList, List<String> interfaceList, String parentClass) throws Exception {
+
+        List<String> pkFieldList = new ArrayList<>();
 
         StringBuffer sb = new StringBuffer();
-        if (calssName == null || natureMap.size() == 0) {
+        if (calssName == null || columnList.size() == 0) {
             throw new Exception();
         } else {
             sb.append("package com.zg.common.bean.entity;\r\n");
@@ -46,10 +48,21 @@ public class DynamicClass {
                 }
             }
             sb.append("{\r\n");
-            Set<String> natureSet = natureMap.keySet();
-            for (String name : natureSet) {
-                sb.append("public " + natureMap.get(name) + " " + name + ";\r\n");
+
+            for (MetadataEntity metadataEntity : columnList) {
+                if ("1".equals(metadataEntity.isPK)) {
+                    sb.append("@PrimaryKey\r\n");
+                }
+                if("1".equals(metadataEntity.isNotCommit)){
+                    sb.append("@NotCommitField\r\n");
+                }
+                if("1".equals(metadataEntity.isAutoIncrease)){
+                    sb.append("@AutoIncrease\r\n");
+                }
+                sb.append("public " + metadataEntity.fieldType + " " + metadataEntity.fieldName + ";\r\n");
             }
+
+
             sb.append("}");
         }
 
@@ -57,27 +70,22 @@ public class DynamicClass {
     }
 
     public static Class getDynamicModel(List<MetadataEntity> columnList) {
-        Class model=null;
-        if(columnList!=null&&columnList.size()>0) {
-            String entityName="";
+        Class model = null;
+        if (columnList != null && columnList.size() > 0) {
+
             List importList = Arrays.asList("com.zg.common.bean.entity.MainModel",
-                    "com.zg.common.annotation.FieldTypeMode",
-                    "com.zg.common.annotation.Model",
+                    "com.zg.common.annotation.*",
                     "java.math.BigDecimal");
-            Map tableInfoMap=new HashMap();
-            for(MetadataEntity metadataEntity:columnList){
-                entityName=metadataEntity.entityName;
-               tableInfoMap.put(metadataEntity.fieldName,metadataEntity.fieldType);
-            }
-            model = DynamicClass.getDynamicModel(importList, entityName, tableInfoMap, null, "MainModel");
+            String entityName = columnList.get(0).entityName;
+            model = DynamicClass.getDynamicModel(importList, entityName, columnList, null, "MainModel");
         }
         return model;
     }
 
-    public static Class getDynamicModel(List<String> referenceList, String className, Map<String, String> natureMap, List<String> interfaceList, String parentClass) {
+    public static Class getDynamicModel(List<String> referenceList, String className, List<MetadataEntity> columnList, List<String> interfaceList, String parentClass) {
         String javaCode;
         try {
-            javaCode = produceEntityJavaCode(referenceList, className, natureMap, interfaceList, parentClass);
+            javaCode = produceEntityJavaCode(referenceList, className, columnList, interfaceList, parentClass);
             return getDynamicModel(className, javaCode);
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -86,20 +94,21 @@ public class DynamicClass {
         }
 
     }
+
     private static Class getDynamicModel(String name, String javaCode) throws ClassNotFoundException, InstantiationException, IllegalAccessException, FileNotFoundException, MalformedURLException, URISyntaxException {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         StandardJavaFileManager standardFileManager = compiler.getStandardFileManager(null, null, null);
         ClassJavaFileManager classJavaFileManager = new ClassJavaFileManager(standardFileManager);
-        StringObject stringObject = new StringObject(new URI(name+".java"), JavaFileObject.Kind.SOURCE, javaCode);
+        StringObject stringObject = new StringObject(new URI(name + ".java"), JavaFileObject.Kind.SOURCE, javaCode);
         List<String> options = new ArrayList<String>();
-        String path = CommonUtil.getThisPath()+"";
+        String path = CommonUtil.getThisPath(CommonUtil.class) + "";
         logger.info(DynamicClass.class + "====calss生成路径" + path);
-        options.addAll(Arrays.asList("-d",path,"--limit-modules","java.base,java.logging"));
+        options.addAll(Arrays.asList("-d", path, "--limit-modules", "java.base,java.logging"));
         JavaCompiler.CompilationTask task = compiler.getTask(null, classJavaFileManager, null, options, null, Arrays.asList(stringObject));
         if (task.call()) {
             ClassJavaFileObject javaFileObject = classJavaFileManager.getClassJavaFileObject();
             ClassLoader classLoader = new MyClassLoader(javaFileObject);
-            String classAllName="com.zg.common.bean.entity." + name;
+            String classAllName = "com.zg.common.bean.entity." + name;
             Class clazz = classLoader.loadClass(classAllName);
             return clazz;
 
@@ -110,6 +119,7 @@ public class DynamicClass {
     static class ClassJavaFileManager extends ForwardingJavaFileManager {
 
         private ClassJavaFileObject classJavaFileObject;
+
         public ClassJavaFileManager(JavaFileManager fileManager) {
             super(fileManager);
         }
@@ -117,16 +127,18 @@ public class DynamicClass {
         public ClassJavaFileObject getClassJavaFileObject() {
             return classJavaFileObject;
         }
+
         //这个方法一定要自定义
         @Override
         public JavaFileObject getJavaFileForOutput(Location location, String className, JavaFileObject.Kind kind, FileObject sibling) throws IOException {
-            return (classJavaFileObject = new ClassJavaFileObject(className,kind));
+            return (classJavaFileObject = new ClassJavaFileObject(className, kind));
         }
     }
+
     /**
      * 存储源文件
      */
-    static class StringObject extends SimpleJavaFileObject{
+    static class StringObject extends SimpleJavaFileObject {
 
         private String content;
 
@@ -144,7 +156,7 @@ public class DynamicClass {
     /**
      * class文件（不需要存到文件中）
      */
-    static class ClassJavaFileObject extends SimpleJavaFileObject{
+    static class ClassJavaFileObject extends SimpleJavaFileObject {
 
         ByteArrayOutputStream outputStream;
 
@@ -152,27 +164,30 @@ public class DynamicClass {
             super(URI.create(className + kind.extension), kind);
             this.outputStream = new ByteArrayOutputStream();
         }
+
         //这个也要实现
         @Override
         public OutputStream openOutputStream() throws IOException {
             return this.outputStream;
         }
 
-        public byte[] getBytes(){
+        public byte[] getBytes() {
             return this.outputStream.toByteArray();
         }
     }
+
     //自定义classloader
-    static class MyClassLoader extends ClassLoader{
+    static class MyClassLoader extends ClassLoader {
         private ClassJavaFileObject stringObject;
-        public MyClassLoader(ClassJavaFileObject stringObject){
+
+        public MyClassLoader(ClassJavaFileObject stringObject) {
             this.stringObject = stringObject;
         }
 
         @Override
         protected Class<?> findClass(String name) throws ClassNotFoundException {
             byte[] bytes = this.stringObject.getBytes();
-            return defineClass(name,bytes,0,bytes.length);
+            return defineClass(name, bytes, 0, bytes.length);
         }
     }
 
@@ -203,7 +218,6 @@ public class DynamicClass {
         }
     }
 */
-
 
 
 }

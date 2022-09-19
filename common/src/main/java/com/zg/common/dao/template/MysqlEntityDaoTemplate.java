@@ -6,12 +6,12 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class SimpleEntityDaoTemplate extends BaseEntityDaoTemplate {
+public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
     private List<List<String>> configArrayList;
     private Map<String, List<String>> columnConfigMap;  //第一列放fieldtype,第二三列放引号用来拼sql
     private Map<String, List<String>> fieldConfigMap;
 
-    public SimpleEntityDaoTemplate() {
+    public MysqlEntityDaoTemplate() {
         init();
     }
 
@@ -31,11 +31,11 @@ public class SimpleEntityDaoTemplate extends BaseEntityDaoTemplate {
                 add( Arrays.asList("NUMBER","BigDecimal", "", ""));
                 add( Arrays.asList("NUMERIC","BigDecimal", "", ""));
                 add( Arrays.asList("DATE","Date", "to_date('", "','yyyy-MM-dd)"));
-                add( Arrays.asList("DATETIME","Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
-                add( Arrays.asList("TIMESTAMP","Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));}
-
+                add( Arrays.asList("DATETIME","Date", "'", "'"));
+                add( Arrays.asList("TIMESTAMP","Date","'", "'"));}
 
         };
+
         columnConfigMap = new HashMap();
         for(List<String> list: configArrayList){
             columnConfigMap.put(list.get(0),list);
@@ -60,6 +60,7 @@ public class SimpleEntityDaoTemplate extends BaseEntityDaoTemplate {
                 metadataEntity.fieldValue= BigDecimal.valueOf(Double.parseDouble(""+metadataEntity.objectValue));
             }
             if ("Date".equals(metadataEntity.fieldType)) {
+
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 metadataEntity.columnValue = configList.get(2) + dateFormat.format(metadataEntity.objectValue) + configList.get(3);
             } else {
@@ -71,6 +72,7 @@ public class SimpleEntityDaoTemplate extends BaseEntityDaoTemplate {
 
     @Override
     public MetadataEntity translateDatabase(MetadataEntity metadataEntity) {
+
         metadataEntity.tableName = metadataEntity.entityName;
         metadataEntity.columnLabel = metadataEntity.fieldName;
         List<String> configList = fieldConfigMap.get(metadataEntity.fieldType);

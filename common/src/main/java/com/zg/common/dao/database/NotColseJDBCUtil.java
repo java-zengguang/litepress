@@ -1,10 +1,12 @@
 package com.zg.common.dao.database;
 
 import com.zg.common.bean.entity.MetadataEntity;
+import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.assemble.SimpleAssemble;
+import com.zg.common.dao.template.EntityDaoTemplateFactory;
+import com.zg.common.init.Config;
 import com.zg.common.util.reflect.ModelSQLUtils;
 import com.zg.common.dao.template.EntityDaoTemplate;
-import com.zg.common.dao.template.SimpleEntityDaoTemplate;
 import com.zg.common.util.reflect.DynamicClass;
 import com.zg.common.util.reflect.EntityUtils;
 import com.zg.common.util.reflect.SerializeObjectUtils;
@@ -28,7 +30,6 @@ public class NotColseJDBCUtil {
     }
 
 
-
     private String getTableName(String sql) {
         String stringArray[] = sql.split(" ");
         for (int i = 0; i < stringArray.length; i++) {
@@ -39,14 +40,16 @@ public class NotColseJDBCUtil {
         logger.debug(" getTableName   未找到tableName");
         return null;
     }
+
     //插入model_list ，未提交，未初始化连接
     private int[] insertTables(List modelList, Class modelClass, String tableName) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         int[] result = null;
         Connection conn = NewDBPUtils.getConnection(dataSource);
         Statement stmt = conn.createStatement();
+        OptionDB optionDB=(OptionDB)Config.getConfig(dataSource);
         logger.debug("-----------------start batch-----------");
         for (Object model : modelList) {
-            String sql = ModelSQLUtils.insert(model, tableName);
+            String sql = ModelSQLUtils.insert(model, tableName,optionDB.DBType);
             logger.info(sql);
 
             stmt.addBatch(sql);
@@ -97,12 +100,9 @@ public class NotColseJDBCUtil {
     }
 
 
-
-
     private void release() throws SQLException, ClassNotFoundException {
         NewDBPUtils.release(dataSource);
     }
-
 
 
     private boolean commit() throws SQLException, ClassNotFoundException {
@@ -135,30 +135,53 @@ public class NotColseJDBCUtil {
     }
 
 
-
     //查询出列明，数据对应的list集合
-    private List<List<MetadataEntity>> select2TempleList(String sql,String tableName) throws SQLException, ClassNotFoundException {
+    private List<List<MetadataEntity>> select2TempleList(String sql, String tableName) throws SQLException, ClassNotFoundException {
         logger.debug(sql);
-        List list = new ArrayList();
+        //获取链接
         Connection conn = NewDBPUtils.getConnection(dataSource);
+        //获取组件
+        List<String> pkColumnList=new ArrayList<>();
+        DatabaseMetaData dmd = conn.getMetaData();
+        ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
+        while (dmdrs.next()) {
+            String pkStr = dmdrs.getString("COLUMN_NAME");
+            pkColumnList.add(pkStr);
+        }
+        //获取数据
+        List list = new ArrayList();
         PreparedStatement pstmt = conn.prepareStatement(sql);
         ResultSet rs = pstmt.executeQuery();
         ResultSetMetaData rsmd = rs.getMetaData();
-        EntityDaoTemplate entityDaoTemplate=new SimpleEntityDaoTemplate();
+        OptionDB optionDB=(OptionDB)Config.getConfig(dataSource);
+        EntityDaoTemplate entityDaoTemplate= EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
         int columncount = 0;
         while (rs.next()) {
-            List<MetadataEntity> columnList=new ArrayList<>();
+            List<MetadataEntity> columnList = new ArrayList<>();
             columncount = rsmd.getColumnCount();
             for (int i = 1; i < columncount + 1; i++) {
                 String columnLabel = rsmd.getColumnLabel(i);
-                String columnType=rsmd.getColumnTypeName(i);
+                String columnType = rsmd.getColumnTypeName(i);
                 Object columnValue = rs.getObject(i);
-                MetadataEntity metadataEntity =new MetadataEntity();
-                metadataEntity.tableName=tableName;
-                metadataEntity.columnLabel=columnLabel;
-                metadataEntity.columnType=columnType;
-                metadataEntity.objectValue =columnValue;
-             //   System.out.println(columnLabel+" "+columnType);
+                MetadataEntity metadataEntity = new MetadataEntity();
+                metadataEntity.tableName = tableName;
+                metadataEntity.columnLabel = columnLabel;
+                metadataEntity.columnType = columnType;
+                metadataEntity.objectValue = columnValue;
+                metadataEntity.dbType = optionDB.DBType;
+                if(pkColumnList.contains(columnLabel)){
+                    metadataEntity.isPK="1";
+                }else{
+                    metadataEntity.isPK="0";
+                }
+                if(rsmd.isAutoIncrement(i)){
+                    metadataEntity.isAutoIncrease="1";  //自增
+                    metadataEntity.isNotCommit="1"; //自增不提交
+                }else{
+                    metadataEntity.isAutoIncrease="0";
+                    metadataEntity.isNotCommit="0";  //不自增的列才提交
+                }
+                //   System.out.println(columnLabel+" "+columnType);
                 metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
                 columnList.add(metadataEntity);
             }
@@ -172,7 +195,7 @@ public class NotColseJDBCUtil {
 
     private int[] insertTables(List modelLIst, Class modelClass) throws SQLException, ClassNotFoundException {
         String tableName = EntityUtils.getTableNameFromModel(modelClass);
-        int[] result= new int[0];
+        int[] result = new int[0];
         try {
             result = insertTables(modelLIst, modelClass, tableName);
             commit();
@@ -184,26 +207,26 @@ public class NotColseJDBCUtil {
             e.printStackTrace();
         } catch (InstantiationException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             release();
         }
         return result;
     }
 
 
-
     //查询H2专用
-    public List selectNotColse(String sql,String tableName) throws SQLException, ClassNotFoundException {
+    public List selectNotColse(String sql, String tableName) throws SQLException, ClassNotFoundException {
         List<List<MetadataEntity>> templeList = null;
-        List modelList=new ArrayList();
+        List modelList = new ArrayList();
         try {
 
-            templeList = select2TempleList(sql,tableName);
-            SimpleAssemble simpleAssemble=new SimpleAssemble();
+            templeList = select2TempleList(sql, tableName);
+            OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+            SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
 
             Class modelClass = null;
-            if(templeList!=null&&templeList.size()>0) {
-                modelClass=DynamicClass.getDynamicModel(templeList.get(0));
+            if (templeList != null && templeList.size() > 0) {
+                modelClass = DynamicClass.getDynamicModel(templeList.get(0));
                 for (List<MetadataEntity> columnList : templeList) {
                     Object obj = modelClass.newInstance();
                     for (MetadataEntity metadataEntity : columnList) {
@@ -225,22 +248,22 @@ public class NotColseJDBCUtil {
     //查询
     public List selectNotColse(String sql) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
         List<List<MetadataEntity>> templeList = null;
-        List modelList=new ArrayList();
+        List modelList = new ArrayList();
 
-            templeList = select2TempleList(sql,getTableName(sql));
-            SimpleAssemble simpleAssemble=new SimpleAssemble();
-
-            Class modelClass = null;
-            if(templeList!=null&&templeList.size()>0) {
-                modelClass=DynamicClass.getDynamicModel(templeList.get(0));
-                for (List<MetadataEntity> columnList : templeList) {
-                    Object obj = modelClass.newInstance();
-                    for (MetadataEntity metadataEntity : columnList) {
-                        obj = simpleAssemble.assembling(metadataEntity, obj);
-                    }
-                    modelList.add(obj);
+        templeList = select2TempleList(sql, getTableName(sql));
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
+        Class modelClass = null;
+        if (templeList != null && templeList.size() > 0) {
+            modelClass = DynamicClass.getDynamicModel(templeList.get(0));
+            for (List<MetadataEntity> columnList : templeList) {
+                Object obj = modelClass.newInstance();
+                for (MetadataEntity metadataEntity : columnList) {
+                    obj = simpleAssemble.assembling(metadataEntity, obj);
                 }
+                modelList.add(obj);
             }
+        }
 
 
         return modelList;
@@ -283,7 +306,7 @@ public class NotColseJDBCUtil {
             }
             pstmt.close();
             rs.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
@@ -291,11 +314,11 @@ public class NotColseJDBCUtil {
 
     //执行批操作 H2专用
     public int[] batchSqlNoCommit(List<String> sqlList, Boolean model) throws SQLException, ClassNotFoundException {
-      int[] result;
+        int[] result;
         if (!model) {
-            result= batchSql(sqlList);
+            result = batchSql(sqlList);
         } else {
-            result= batchOneSql(sqlList);
+            result = batchOneSql(sqlList);
         }
         return result;
     }
@@ -304,9 +327,9 @@ public class NotColseJDBCUtil {
     public int[] batchSqlNoColse(List<String> sqlList, Boolean model) throws SQLException, ClassNotFoundException {
         int[] result;
         if (!model) {
-            result= batchSql(sqlList);
+            result = batchSql(sqlList);
         } else {
-            result= batchOneSql(sqlList);
+            result = batchOneSql(sqlList);
         }
         commit();
         return result;
@@ -322,8 +345,6 @@ public class NotColseJDBCUtil {
     public void closeH2() throws SQLException, ClassNotFoundException {
         release();
     }
-
-
 
 
 }

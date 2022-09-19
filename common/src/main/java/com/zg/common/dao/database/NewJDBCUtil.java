@@ -3,11 +3,14 @@ package com.zg.common.dao.database;
 import com.esotericsoftware.kryo.serializers.ClosureSerializer;
 import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import com.zg.common.bean.entity.MetadataEntity;
+import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.assemble.SimpleAssemble;
 import com.zg.common.dao.template.EntityDaoTemplate;
-import com.zg.common.dao.template.SimpleEntityDaoTemplate;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
+import com.zg.common.dao.template.EntityDaoTemplateFactory;
+import com.zg.common.init.Config;
 import com.zg.common.util.reflect.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +19,7 @@ import java.io.*;
 import java.lang.invoke.SerializedLambda;
 import java.math.BigDecimal;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class NewJDBCUtil {
@@ -35,8 +35,8 @@ public class NewJDBCUtil {
     private String getTableName(String sql) {
         String stringArray[] = sql.split(" ");
         for (int i = 0; i < stringArray.length; i++) {
-            if ("from".equals(stringArray[i].toLowerCase().trim()) || "*from".equals(stringArray[i].toLowerCase().trim())) {
-                return stringArray[i + 1];
+            if ("FROM".equals(stringArray[i].toUpperCase().trim()) || "*FROM".equals(stringArray[i].toUpperCase().trim())) {
+                return stringArray[i + 1].toUpperCase();
             }
         }
         logger.debug(" getTableName   未找到tableName");
@@ -48,9 +48,10 @@ public class NewJDBCUtil {
         int[] result = null;
         Connection conn = NewDBPUtils.getConnection(dataSource);
         Statement stmt = conn.createStatement();
+        OptionDB optionDB=(OptionDB)Config.getConfig(dataSource);
         logger.debug("-----------------start batch-----------");
         for (Object model : modelList) {
-            String sql = ModelSQLUtils.insert(model, tableName);
+            String sql = ModelSQLUtils.insert(model, tableName,optionDB.DBType);
             logger.info(sql);
 
             stmt.addBatch(sql);
@@ -159,16 +160,27 @@ public class NewJDBCUtil {
     //查询出列明，数据对应的list集合
     private List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException {
         logger.debug(sql);
-        String tableName = "";
-        tableName = getTableName(sql);
-        if (tableName.contains(".")) {
-            tableName = tableName.substring(tableName.indexOf("."), tableName.length());
-        }
-        List list = new ArrayList();
+        String tableName="";
+        //获取表名
+        tableName=getTableName(sql);
+        //获取链接
         Connection conn = NewDBPUtils.getConnection(dataSource);
+
+        //获取组件
+        List<String> pkColumnList=new ArrayList<>();
+        DatabaseMetaData dmd = conn.getMetaData();
+        ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
+        while (dmdrs.next()) {
+            String pkStr = dmdrs.getString("COLUMN_NAME");
+            pkColumnList.add(pkStr);
+        }
+        //获取数据
+        List list = new ArrayList();
         PreparedStatement pstmt = conn.prepareStatement(sql);
         ResultSet rs = pstmt.executeQuery();
         ResultSetMetaData rsmd = rs.getMetaData();
+        OptionDB optionDB=(OptionDB)Config.getConfig(dataSource);
+        EntityDaoTemplate entityDaoTemplate= EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
         int columncount = 0;
         while (rs.next()) {
             List<MetadataEntity> columnList = new ArrayList<>();
@@ -182,7 +194,19 @@ public class NewJDBCUtil {
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
                 metadataEntity.objectValue = columnValue;
-                EntityDaoTemplate entityDaoTemplate = new SimpleEntityDaoTemplate();
+                metadataEntity.dbType=optionDB.DBType;
+                if(pkColumnList.contains(columnLabel)){
+                    metadataEntity.isPK="1";
+                }else{
+                    metadataEntity.isPK="0";
+                }
+                if(rsmd.isAutoIncrement(i)){
+                    metadataEntity.isAutoIncrease="1";  //自增
+                    metadataEntity.isNotCommit="1"; //自增不提交
+                }else{
+                    metadataEntity.isAutoIncrease="0";
+                    metadataEntity.isNotCommit="0";  //不自增的列才提交
+                }
                 metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
                 columnList.add(metadataEntity);
             }
@@ -215,7 +239,9 @@ public class NewJDBCUtil {
         List modelList = new ArrayList();
         try {
             templeList = select2TempleList(sql);
-            SimpleAssemble simpleAssemble = new SimpleAssemble();
+
+            OptionDB optionDB=(OptionDB) Config.getConfig(dataSource);
+            SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
 
             Class modelClass = null;
             if (templeList != null && templeList.size() > 0) {
@@ -307,8 +333,9 @@ public class NewJDBCUtil {
     public int updateModel(Object object, String... terms) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         int result = 0;
         try {
+            OptionDB optionDB=(OptionDB) Config.getConfig(dataSource);
             if (terms != null && terms.length > 0) {
-                String sql = ModelSQLUtils.update(object, terms);
+                String sql = ModelSQLUtils.update(optionDB.getDBType(),object, terms);
                 result = operation(sql);
                 commit();
             }
@@ -366,7 +393,8 @@ public class NewJDBCUtil {
             Output output = new Output(new FileOutputStream(tempFile),1024000);
             Kryo kryo = new Kryo();
 
-
+            OptionDB optionDB=(OptionDB)Config.getConfig(dataSource);
+            EntityDaoTemplate entityDaoTemplate= EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
             while (rs.next()) {
                 List<MetadataEntity> columnList = new ArrayList<>();
                 columncount = rsmd.getColumnCount();
@@ -379,11 +407,10 @@ public class NewJDBCUtil {
                     metadataEntity.columnLabel = columnLabel;
                     metadataEntity.columnType = columnType;
                     metadataEntity.objectValue = columnValue;
-                    EntityDaoTemplate entityDaoTemplate = new SimpleEntityDaoTemplate();
                     metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
                     columnList.add(metadataEntity);
                 }
-                SimpleAssemble simpleAssemble = new SimpleAssemble();
+                SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
                 if (modelClass == null) {
                     modelClass = DynamicClass.getDynamicModel(columnList);
                     kryo.register(modelClass,new DynameicSerializer(modelClass));

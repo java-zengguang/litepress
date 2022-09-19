@@ -2,9 +2,11 @@ package com.zg.common.dao.database;
 
 
 import com.zg.common.bean.entity.MetadataEntity;
+import com.zg.common.bean.entity.OptionDB;
+import com.zg.common.dao.template.EntityDaoTemplateFactory;
+import com.zg.common.init.Config;
 import com.zg.common.util.reflect.ModelSQLUtils;
 import com.zg.common.dao.template.EntityDaoTemplate;
-import com.zg.common.dao.template.SimpleEntityDaoTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,12 +71,25 @@ public class BaseJDBCDao {
     public List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException {
         logger.debug(sql);
         String tableName="";
+        //获取表名
         tableName=getTableName(sql);
-        List list = new ArrayList();
+        //获取链接
         Connection conn = getConnection();
+        //获取组件
+        List<String> pkColumnList=new ArrayList<>();
+        DatabaseMetaData dmd = conn.getMetaData();
+        ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
+        while (dmdrs.next()) {
+            String pkStr = dmdrs.getString("COLUMN_NAME");
+            pkColumnList.add(pkStr);
+        }
+        //获取数据
+        List list = new ArrayList();
         PreparedStatement pstmt = conn.prepareStatement(sql);
         ResultSet rs = pstmt.executeQuery();
         ResultSetMetaData rsmd = rs.getMetaData();
+        OptionDB optionDB=(OptionDB)Config.getConfig(dataSource);
+        EntityDaoTemplate entityDaoTemplate= EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
         int columncount = 0;
         while (rs.next()) {
             List<MetadataEntity> columnList=new ArrayList<>();
@@ -88,7 +103,19 @@ public class BaseJDBCDao {
                 metadataEntity.columnLabel=columnLabel;
                 metadataEntity.columnType=columnType;
                 metadataEntity.objectValue =columnValue;
-                EntityDaoTemplate entityDaoTemplate=new SimpleEntityDaoTemplate();
+                metadataEntity.dbType=optionDB.DBType;
+                if(pkColumnList.contains(columnLabel)){
+                    metadataEntity.isPK="1";
+                }else{
+                    metadataEntity.isPK="0";
+                }
+                if(rsmd.isAutoIncrement(i)){
+                    metadataEntity.isAutoIncrease="1";  //自增
+                    metadataEntity.isNotCommit="1"; //自增不提交
+                }else{
+                    metadataEntity.isAutoIncrease="0";
+                    metadataEntity.isNotCommit="0";  //不自增的列才提交
+                }
                 metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
                 columnList.add(metadataEntity);
             }
@@ -179,9 +206,10 @@ public class BaseJDBCDao {
         Connection conn = getConnection();
         Statement stmt = conn.createStatement();
         logger.debug("-----------------start batch-----------");
+        OptionDB optionDB=(OptionDB)Config.getConfig(dataSource);
         for (Object model : modelList) {
 
-            String sql = ModelSQLUtils.insert(model, tableName);
+            String sql = ModelSQLUtils.insert(model, tableName,optionDB.DBType);
             stmt.addBatch(sql);
 
         }

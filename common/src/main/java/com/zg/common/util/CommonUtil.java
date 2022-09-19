@@ -32,7 +32,7 @@ public class CommonUtil {
         if (System.getProperty("projectRootPath") != null) {
             path = System.getProperty("projectRootPath");
         } else {
-            getThisPath();
+            path = System.getProperty("user.dir") + File.separator;
         }
 
 
@@ -40,25 +40,15 @@ public class CommonUtil {
     }
 
 
-    public static String getThisPath() {
+    public static String getThisPath(Class classes) {
         String path = "";
         try {
-            if (CommonUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath() != null) {
-                path = CommonUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-                File file = new File(path);
-                path = file.getPath();
-                path = java.net.URLDecoder.decode(path, "UTF-8");
-                path = path + "\\";
-                logger.info("---" + path);
-            } else {
-                path = CommonUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-                File file = new File(path);
-                path = file.getParent();
-                path = java.net.URLDecoder.decode(path, "UTF-8");
-                path = path + "\\";
-
-                logger.info("===" + path);
-            }
+            path = classes.getProtectionDomain().getCodeSource().getLocation().getPath();
+            File file = new File(path);
+            path = file.getPath();
+            path = java.net.URLDecoder.decode(path, "UTF-8");
+            path = path + File.separator;
+            logger.info("---" + path);
         } catch (Exception e) {
             e.printStackTrace();
         }

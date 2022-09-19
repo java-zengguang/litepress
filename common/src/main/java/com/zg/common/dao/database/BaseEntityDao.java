@@ -2,7 +2,9 @@ package com.zg.common.dao.database;
 
 import com.zg.common.bean.entity.MainModel;
 import com.zg.common.bean.entity.MetadataEntity;
+import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.assemble.SimpleAssemble;
+import com.zg.common.init.Config;
 import com.zg.common.util.reflect.ModelSQLUtils;
 import com.zg.common.util.reflect.DynamicClass;
 import com.zg.common.util.reflect.EntityUtils;
@@ -41,7 +43,8 @@ public class BaseEntityDao extends BaseJDBCDao {
     //查询
     public List select(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
         List<List<MetadataEntity>> templeList = select2TempleList(sql);
-        SimpleAssemble simpleAssemble=new SimpleAssemble();
+        OptionDB optionDB=(OptionDB) Config.getConfig(dataSource);
+        SimpleAssemble simpleAssemble=new SimpleAssemble(optionDB.DBType);
         List modelList=new ArrayList();
         Class modelClass = null;
         if(templeList!=null&&templeList.size()>0) {
@@ -62,7 +65,8 @@ public class BaseEntityDao extends BaseJDBCDao {
     //查询
     public List select(String sql, Class modelClass) throws Exception {
         List<List<MetadataEntity>> templeList = select2TempleList(sql);
-        SimpleAssemble simpleAssemble = new SimpleAssemble();
+        OptionDB optionDB=(OptionDB) Config.getConfig(dataSource);
+        SimpleAssemble simpleAssemble=new SimpleAssemble(optionDB.DBType);
         List modelList = new ArrayList();
         for (List<MetadataEntity> columnList : templeList) {
             Object obj = modelClass.newInstance();
@@ -94,8 +98,9 @@ public class BaseEntityDao extends BaseJDBCDao {
 
     public int updateModel(Object object, String... terms) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         int result = 0;
+        OptionDB optionDB=(OptionDB) Config.getConfig(dataSource);
         if (terms != null && terms.length > 0) {
-            String sql = ModelSQLUtils.update(object, terms);
+            String sql = ModelSQLUtils.update(optionDB.DBType,object, terms);
             result = operation(sql);
         }
         return result;
