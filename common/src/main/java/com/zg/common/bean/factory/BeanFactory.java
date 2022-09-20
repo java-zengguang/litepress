@@ -33,7 +33,7 @@ public class BeanFactory {
                             EntityUtils.setField(field, o, property.getStringValue());
                         }
                         if (property.attributeValue("ref") != null) {
-                            field.set(o, BeanFactory.createBean(property.attributeValue("ref")));
+                            field.set(o, BeanFactory.createBean(rootPath,property.attributeValue("ref")));
                         }
                     }
                 }//

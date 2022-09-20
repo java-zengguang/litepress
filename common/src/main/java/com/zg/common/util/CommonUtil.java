@@ -20,13 +20,12 @@ import java.util.jar.JarFile;
  * Created by Administrator on 2018/11/27 0027.
  */
 public class CommonUtil {
-    public static final String PATH;
+    public static  String PATH;
     private static final Logger logger = LoggerFactory.getLogger(CommonUtil.class.getName());
 
-    static {
+    public static void init() {
         //获取项目的相对路径
         String path = "";
-
 
         System.out.println(System.getProperty("projectRootPath"));
         if (System.getProperty("projectRootPath") != null) {
@@ -84,7 +83,8 @@ public class CommonUtil {
     public static Element getRootElement(String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
         // logger.info("配置文件路径："+FileUtils.PATH + fileName);
-        Document doc = reader.read(new File(CommonUtil.PATH + fileName));
+        init();
+        Document doc = reader.read(new File(PATH + fileName));
         Element root = doc.getRootElement();
         return root;
     }

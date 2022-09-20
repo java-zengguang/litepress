@@ -5,10 +5,10 @@ open module direction {
     exports com.zg.direction.register;
     requires common;
     requires network.util;
-    requires zookeeper;
     requires fastjson;
     requires io.netty.all;
     requires org.slf4j;
 
+    requires zookeeper;
 
 }

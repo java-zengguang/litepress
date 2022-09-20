@@ -83,7 +83,7 @@ public class ConsumerHandler implements InvocationHandler {
         if (value instanceof JSONObject) {
             result = ((JSONObject) value).toJavaObject(type);
         } else if (value instanceof JSONArray) {
-            result = ((JSONArray) value).toJavaList(type.getClass());
+            result = ((JSONArray) value).toJavaObject(type);
         }
         return result;
     }

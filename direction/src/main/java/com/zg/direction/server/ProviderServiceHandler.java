@@ -1,5 +1,6 @@
 package com.zg.direction.server;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zg.common.util.reflect.EntityUtils;
@@ -33,7 +34,7 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
     }
 
     public Class[] getParamterTypes(List<String> paramterTypes) throws ClassNotFoundException {
-        Class[] result = null;
+        Class[] result = new Class[paramterTypes.size()];
         result = new Class[paramterTypes.size()];
         for (int i = 0; i < result.length; i++) {
             String paramterType = paramterTypes.get(i); //取泛型类型
@@ -49,7 +50,7 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
         if (value instanceof JSONObject) {
             result = ((JSONObject) value).toJavaObject(type);
         } else if (value instanceof JSONArray) {
-            result=((JSONArray) value).toJavaObject(type.getClass());
+            result=((JSONArray) value).toJavaObject(type);
         }
         return result;
     }
@@ -90,8 +91,8 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             String uuid = request.uuid;
             String token = request.token;
 
-
-            Class[] paramterTypes = getParamterTypes(request.methodParamterTypes);
+            List<String> methodParamterTypes=  request.methodParamterTypes;
+            Class[] paramterTypes = getParamterTypes(methodParamterTypes);
             Class classes = Class.forName(className);
             Method method = classes.getDeclaredMethod(methodName, paramterTypes);
             Type[] paramerTypes = method.getGenericParameterTypes();

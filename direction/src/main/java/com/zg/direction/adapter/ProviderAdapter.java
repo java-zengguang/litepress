@@ -1,6 +1,7 @@
 package com.zg.direction.adapter;
 
 import com.zg.common.init.Config;
+import com.zg.common.util.CommonUtil;
 import com.zg.direction.entity.ProviderConfig;
 import com.zg.direction.register.Register;
 import com.zg.direction.register.ZookeeperBoot;
@@ -18,6 +19,9 @@ public class ProviderAdapter {
     private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
 
     public static void main(String args[]) throws InterruptedException, IOException, KeeperException, IllegalAccessException, QuorumPeerConfig.ConfigException {
+        String rootPath= CommonUtil.getThisPath(ProviderAdapter.class);
+        System.setProperty("projectRootPath",rootPath);
+        System.out.println(System.getProperty("111"+"projectRootPath"));
         ProviderAdapter providerAdapter = new ProviderAdapter();
         providerAdapter.init();
     }
