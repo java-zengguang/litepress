@@ -20,10 +20,10 @@ import java.util.jar.JarFile;
  * Created by Administrator on 2018/11/27 0027.
  */
 public class CommonUtil {
-    public static  String PATH;
+
     private static final Logger logger = LoggerFactory.getLogger(CommonUtil.class.getName());
 
-    public static void init() {
+    public static String  getRootPath() {
         //获取项目的相对路径
         String path = "";
 
@@ -34,8 +34,7 @@ public class CommonUtil {
             path = System.getProperty("user.dir") + File.separator;
         }
 
-
-        PATH = path;
+        return path;
     }
 
 
@@ -50,6 +49,26 @@ public class CommonUtil {
             logger.info("---" + path);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        return path;
+    }
+
+    public static String getModulePath(Class classes) {
+        String path = "";
+
+        try {
+            path = classes.getProtectionDomain().getCodeSource().getLocation().getPath();
+            File file = new File(path);
+            path = file.getPath();
+            if(path.contains(".jar")){
+                path=file.getParent();
+            }
+            path = URLDecoder.decode(path, "UTF-8");
+            path = path + File.separator;
+            logger.info("---" + path);
+        } catch (Exception var3) {
+            var3.printStackTrace();
         }
 
         return path;
@@ -83,8 +102,8 @@ public class CommonUtil {
     public static Element getRootElement(String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
         // logger.info("配置文件路径："+FileUtils.PATH + fileName);
-        init();
-        Document doc = reader.read(new File(PATH + fileName));
+        String path=getRootPath();
+        Document doc = reader.read(new File(path + fileName));
         Element root = doc.getRootElement();
         return root;
     }

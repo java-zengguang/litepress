@@ -91,7 +91,9 @@ public class ZookeeperUtil implements Watcher {
     public String findNodeOne(String path) throws InterruptedException, KeeperException {
         List<String> nodeList=  findChildNodeList(path);
         if(nodeList!=null&&nodeList.size()>0){
-            return nodeList.get(nodeList.size()-1);
+            Random random = new Random();
+            int randomNum = random.nextInt(nodeList.size());  //完全随机
+            return nodeList.get(randomNum);
         }
         return null;
     }

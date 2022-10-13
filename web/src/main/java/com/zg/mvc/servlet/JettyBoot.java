@@ -69,7 +69,11 @@ public class JettyBoot {
 
             if(true){
                 ResourceHandler resourceHandler=new ResourceHandler();
-                resourceHandler.setBaseResource( Resource.newResource(CommonUtil.PATH+"static"));
+                String path=CommonUtil.getRootPath();
+                if (System.getProperty("projectRootPath") != null) {
+                    path  = System.getProperty("projectRootPath");
+                }
+                resourceHandler.setBaseResource( Resource.newResource(path+"static"));
                 resourceHandler.setPathInfoOnly(true);
                 resourceHandler.setDirAllowed(true);
                 server.insertHandler(resourceHandler);
