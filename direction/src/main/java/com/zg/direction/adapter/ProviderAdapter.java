@@ -29,11 +29,13 @@ public class ProviderAdapter {
     public synchronized void init() throws InterruptedException, IllegalAccessException, KeeperException, IOException, QuorumPeerConfig.ConfigException {
 
         //启动本地zookeperboot服务
-/*        ZookeeperBoot zookeeperBoot = new ZookeeperBoot(this);
+/*
+        ZookeeperBoot zookeeperBoot = new ZookeeperBoot(this);
         Thread thread1=new Thread(zookeeperBoot);
         thread1.start();
         System.out.println("等待zookeeper启动");
-        this.wait(10000);*/
+        this.wait(10000);
+*/
 
         //开启服务
         System.out.println("开始启动服务");

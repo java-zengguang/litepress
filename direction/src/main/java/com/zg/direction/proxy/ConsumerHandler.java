@@ -116,6 +116,7 @@ public class ConsumerHandler implements InvocationHandler {
         request.methodParamterTypes = methodParamterTypes;
         request.methodParamters = methodParamters;
         request.methodParamterDataTypes = methodParamterDataTypes;
+        request.path=consumerClient.getProviderEntity().path;
         consumerClient.addRequest(request);
 
         DTPResponse response = null;

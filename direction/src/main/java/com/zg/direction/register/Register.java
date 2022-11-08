@@ -2,10 +2,13 @@ package com.zg.direction.register;
 
 import com.zg.common.util.reflect.JsonUtils;
 import com.zg.direction.adapter.ProviderFactory;
+import com.zg.direction.entity.ProviderEntity;
 import org.apache.zookeeper.KeeperException;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 public class Register {
@@ -16,7 +19,7 @@ public class Register {
     }
 
     public Register(String connectString) throws IOException {
-        zookeeperUtil = new ZookeeperUtil(connectString);
+        zookeeperUtil = ZookeeperUtil.getInstance(connectString);
     }
 
     public static void main(String[] args) throws Exception {
@@ -45,7 +48,27 @@ public class Register {
     }
 
 
-    public String findNode(String providerName) throws KeeperException, InterruptedException {
-        return zookeeperUtil.findNodeOne(providerName);
+    public ProviderEntity findNode(String providerName) throws KeeperException, InterruptedException {
+        String json= zookeeperUtil.findNodeOne(providerName);
+        ProviderEntity providerEntity = (ProviderEntity) JsonUtils.jsonToObject(json, ProviderEntity.class);
+        return providerEntity;
     }
+    public ProviderEntity findPriorityNode(String providerName) throws KeeperException, InterruptedException {
+        // return zookeeperUtil.findNodeOne(providerName);
+        ProviderEntity result=null;
+        Map<String,String> nodeMap=  zookeeperUtil.findChildNodeMap(providerName);
+        Set<Map.Entry<String,String>> nodeSet= nodeMap.entrySet();
+        for(Map.Entry<String,String> entry:nodeSet){
+          ProviderEntity  providerEntity = (ProviderEntity) JsonUtils.jsonToObject(entry.getValue(), ProviderEntity.class);
+          providerEntity.path=entry.getKey();
+          if(result==null){
+              result=providerEntity;
+          }else if(providerEntity.getPriority()<result.getPriority()){
+             result=providerEntity;
+          }
+        }
+
+        return result;
+    }
+
 }

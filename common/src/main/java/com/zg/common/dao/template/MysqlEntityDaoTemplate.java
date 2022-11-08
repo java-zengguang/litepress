@@ -18,7 +18,10 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
     private void init() {
 
         configArrayList =new ArrayList<List<String>>(){
+
             {
+                add( Arrays.asList("DECIMAL","BigDecimal", "", ""));
+                add( Arrays.asList("DOUBLE","BigDecimal", "", ""));
                 add( Arrays.asList("INTEGER","Integer", "", ""));
                 add(Arrays.asList("INT", "Integer", "", ""));
                 add(Arrays.asList("DECFLOAT", "Double", "", ""));
@@ -32,7 +35,8 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
                 add( Arrays.asList("NUMERIC","BigDecimal", "", ""));
                 add( Arrays.asList("DATE","Date", "to_date('", "','yyyy-MM-dd)"));
                 add( Arrays.asList("DATETIME","Date", "'", "'"));
-                add( Arrays.asList("TIMESTAMP","Date","'", "'"));}
+                add( Arrays.asList("TIMESTAMP","Date","'", "'"));
+            }
 
         };
 
@@ -54,6 +58,10 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
         metadataEntity.fieldValue = metadataEntity.objectValue;
 
         List<String> configList = columnConfigMap.get(metadataEntity.columnType);
+        if (configList==null||configList.size()==0){
+            System.out.println("错误的类型"+metadataEntity.columnType);
+            return null;
+        }
         metadataEntity.fieldType = configList.get(1);
         if (metadataEntity.objectValue != null) {
             if("BigDecimal".equals(metadataEntity.fieldType)){ //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下

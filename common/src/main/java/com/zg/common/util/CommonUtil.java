@@ -27,7 +27,7 @@ public class CommonUtil {
         //获取项目的相对路径
         String path = "";
 
-        System.out.println(System.getProperty("projectRootPath"));
+        System.out.println("projectRootPath="+System.getProperty("projectRootPath"));
         if (System.getProperty("projectRootPath") != null) {
             path = System.getProperty("projectRootPath");
         } else {

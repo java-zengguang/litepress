@@ -23,18 +23,19 @@ public class ConsumerClient {
 
 
     public static ConsumerClient getInstance(String providerName) throws InterruptedException, IOException, KeeperException {
-        ConsumerClient consumerClient = clientMap.get(providerName);
+        Register register = new Register(providerConfig.registerURL);
+        ProviderEntity providerEntity = register.findPriorityNode(providerName);
+
+        ConsumerClient consumerClient = clientMap.get(providerEntity.path);
         if (consumerClient == null) {
-            consumerClient = new ConsumerClient(providerName);
-            clientMap.put(providerName, consumerClient);
+            consumerClient = new ConsumerClient(providerEntity);
+            clientMap.put(providerEntity.path, consumerClient);
         }
         return consumerClient;
     }
 
-    private ConsumerClient(String providerName) throws IOException, KeeperException, InterruptedException {
-        Register register = new Register(providerConfig.registerURL);
-        String json = register.findNode(providerName);
-        providerEntity = (ProviderEntity) JsonUtils.jsonToObject(json, ProviderEntity.class);
+    private ConsumerClient(ProviderEntity providerEntity) throws IOException, KeeperException, InterruptedException {
+        this.providerEntity=providerEntity;
         simpleClient = SimpleClient.getInstance(providerEntity.host, providerEntity.port);
 
     }
@@ -51,5 +52,9 @@ public class ConsumerClient {
 
     public Object getResult(String id) {
         return simpleClient.getResult(id);
+    }
+
+    public ProviderEntity getProviderEntity() {
+        return providerEntity;
     }
 }

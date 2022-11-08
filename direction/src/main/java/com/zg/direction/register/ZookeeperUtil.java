@@ -3,6 +3,8 @@ package com.zg.direction.register;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.zg.common.util.reflect.JsonUtils;
+import com.zg.direction.entity.ProviderEntity;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.Watcher.Event.EventType;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
@@ -24,12 +26,21 @@ public class ZookeeperUtil implements Watcher {
     private static CountDownLatch connectedSemaphore = new CountDownLatch(1);
     private static ZooKeeper zk = null;
     private static Stat stat = new Stat();
+    private static Map<String, ZookeeperUtil> zookeeperUtilMap = new HashMap<>();
 
 
-    public ZookeeperUtil() {
+    public static synchronized ZookeeperUtil getInstance(String connectString) throws IOException {
+        ZookeeperUtil zookeeperUtil = zookeeperUtilMap.get(connectString);
+        if (zookeeperUtil == null) {
+            zookeeperUtilMap.put(connectString, new ZookeeperUtil(connectString));
+        }
+        return zookeeperUtilMap.get(connectString);
     }
 
-    public ZookeeperUtil(String connectString) throws IOException {
+    private ZookeeperUtil() {
+    }
+
+    private ZookeeperUtil(String connectString) throws IOException {
         zk = new ZooKeeper(connectString, 5000,
                 new ZookeeperUtil());
     }
@@ -47,9 +58,9 @@ public class ZookeeperUtil implements Watcher {
 
     public void createNode(String path, String value) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
-        if("parent".equals(value)) {
+        if ("parent".equals(value)) {
             zk.create(path, value.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-        }else {
+        } else {
             zk.create(path, value.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
 
         }
@@ -58,19 +69,37 @@ public class ZookeeperUtil implements Watcher {
     }
 
 
-
     public void createChildNode(String path, String value) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
-        Stat stat = zk.exists(path,false);
-        if(stat==null){
-            createNode(path,"parent");//创建父节点
+        Stat stat = zk.exists(path, false);
+        if (stat == null) {
+            createNode(path, "parent");//创建父节点
         }
-        String childPath=path+"/"+(new Date()).getTime();
-        createNode(childPath,value);//创建子节点
+        String childPath = path + "/" + (new Date()).getTime();
+        createNode(childPath, value);//创建子节点
         logger.info("success create znode: " + path);
     }
 
+    public synchronized void occupy(String path) throws InterruptedException, KeeperException {
+        connectedSemaphore.await();
+        String json = findNode(path);
+        ProviderEntity providerEntity = (ProviderEntity) JsonUtils.jsonToObject(json, ProviderEntity.class);
+        providerEntity.occupy();
+        String value = JsonUtils.objectToJsonString(providerEntity);
+        System.out.println("调用开始" + value);
+        zk.setData(path, value.getBytes(), stat.getVersion());
+    }
 
+    public synchronized void release(String path) throws InterruptedException, KeeperException {
+        connectedSemaphore.await();
+        String json = findNode(path);
+        ProviderEntity providerEntity = (ProviderEntity) JsonUtils.jsonToObject(json, ProviderEntity.class);
+        providerEntity.release();
+        providerEntity.addCount(); //每次释放的时候，记录一下调用次数
+        String value = JsonUtils.objectToJsonString(providerEntity);
+        System.out.println("调用结束" + value);
+        zk.setData(path, value.getBytes(), stat.getVersion());
+    }
 
     public void updateNode(String path, String value, int version) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
@@ -89,8 +118,8 @@ public class ZookeeperUtil implements Watcher {
     }
 
     public String findNodeOne(String path) throws InterruptedException, KeeperException {
-        List<String> nodeList=  findChildNodeList(path);
-        if(nodeList!=null&&nodeList.size()>0){
+        List<String> nodeList = findChildNodeList(path);
+        if (nodeList != null && nodeList.size() > 0) {
             Random random = new Random();
             int randomNum = random.nextInt(nodeList.size());  //完全随机
             return nodeList.get(randomNum);
@@ -113,10 +142,22 @@ public class ZookeeperUtil implements Watcher {
         List<String> resultList = new ArrayList<>();
         List<String> list = zk.getChildren(path, true, stat);
         for (String key : list) {
-            String data = new String(zk.getData(path+"/" + key, true, stat));
+            String data = new String(zk.getData(path + "/" + key, true, stat));
             resultList.add(data);
         }
         return resultList;
+    }
+
+    public Map<String, String> findChildNodeMap(String path) throws InterruptedException, KeeperException {
+        connectedSemaphore.await();
+        Map<String, String> resultMap = new HashMap<>();
+        List<String> list = zk.getChildren(path, true, stat);
+        for (String key : list) {
+
+            String data = new String(zk.getData(path + "/" + key, true, stat));
+            resultMap.put(path + "/" + key, data);
+        }
+        return resultMap;
     }
 
     public List<Map<String, String>> findChildNodes(String path) throws InterruptedException, KeeperException {
@@ -124,7 +165,7 @@ public class ZookeeperUtil implements Watcher {
         List<Map<String, String>> resultList = new ArrayList<>();
         List<String> list = zk.getChildren(path, true, stat);
         for (String key : list) {
-            String data = new String(zk.getData(path+"/" + key, true, stat));
+            String data = new String(zk.getData(path + "/" + key, true, stat));
             Map map = new HashMap();
             map.put(key, data);
             resultList.add(map);

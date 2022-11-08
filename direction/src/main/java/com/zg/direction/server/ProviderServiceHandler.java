@@ -3,17 +3,19 @@ package com.zg.direction.server;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.zg.common.init.Config;
 import com.zg.common.util.reflect.EntityUtils;
 import com.zg.common.util.reflect.JsonUtils;
-import com.zg.direction.entity.DTPRequest;
-import com.zg.direction.entity.DTPResponse;
-import com.zg.direction.entity.ParamterEntity;
+import com.zg.direction.entity.*;
+import com.zg.direction.register.ZookeeperUtil;
 import com.zg.network.common.service.BaseServiceHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -21,6 +23,17 @@ import java.util.List;
 @ChannelHandler.Sharable
 public class ProviderServiceHandler extends BaseServiceHandler<String> {
     public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
+    String registURL = providerConfig.registerURL;
+    ZookeeperUtil zookeeperUtil;
+
+    {
+        try {
+            zookeeperUtil = ZookeeperUtil.getInstance(registURL);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     private Object[] getParamters(List<ParamterEntity> paramterEntityList) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -97,7 +110,16 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             Method method = classes.getDeclaredMethod(methodName, paramterTypes);
             Type[] paramerTypes = method.getGenericParameterTypes();
             Object paramters[] = getParamters(request.methodParamters, Arrays.asList(paramerTypes));
+            //方法体执行开始
+            //zookeeper暂用
+            String path= request.path;
+            System.out.println("调用的"+path);
+
+            zookeeperUtil.occupy(path);
             Object result = method.invoke(classes.newInstance(), paramters);
+            zookeeperUtil.release(path);
+            //zookeeper释放
+            //方法体执行结束
             response.success = true;
             response.resultData = result;
             response.resultType = request.resultType;

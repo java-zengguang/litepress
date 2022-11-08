@@ -202,7 +202,7 @@ public class NewJDBCUtil {
                 }
                 if(rsmd.isAutoIncrement(i)){
                     metadataEntity.isAutoIncrease="1";  //自增
-                    metadataEntity.isNotCommit="1"; //自增不提交
+                  //  metadataEntity.isNotCommit="1"; //自增不提交
                 }else{
                     metadataEntity.isAutoIncrease="0";
                     metadataEntity.isNotCommit="0";  //不自增的列才提交

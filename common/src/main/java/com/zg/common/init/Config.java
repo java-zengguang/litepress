@@ -19,7 +19,7 @@ public class Config {
 
     public static CountDownLatch count = new CountDownLatch(ERROR_REPEAT);
 
-    private static void createConfigMap(String array[]) {
+    private static synchronized void createConfigMap(String array[]) {
         for (String beanName : array) {
             Object object = BeanFactory.createBean(beanName);
             if (object != null) {
@@ -43,5 +43,7 @@ public class Config {
         }
         return object;
     }
+
+
 
 }

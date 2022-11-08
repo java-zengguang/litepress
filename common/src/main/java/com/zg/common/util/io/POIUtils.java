@@ -6,6 +6,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import jxl.write.*;
+import jxl.write.Number;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -104,6 +105,7 @@ public class POIUtils {
     }
 
 
+/*
     public static boolean writeXLSX(Map<String, List<Map>> mapList, File file) throws IOException, WriteException {
         if (!file.exists()) {
             if (!file.createNewFile()) {
@@ -120,7 +122,7 @@ public class POIUtils {
             sheet.getSettings().setDefaultColumnWidth(20);
             for (Map<String, String> map : list) {
                 int x = 0;
-                Set<String> columnSet = map.keySet();
+                Set<String> columnSet = list.get(0).keySet();
                 for (String column : columnSet) {
                     WritableCell cell;
                     String content = String.valueOf(map.get(column));
@@ -137,6 +139,59 @@ public class POIUtils {
         workbook.write();
         workbook.close();
         return true;
+    }
+*/
+
+
+    public static   boolean writeXLSX(Map<String, List<Map>> mapList, File file) throws IOException, WriteException {
+        if (!file.exists() && !file.createNewFile()) {
+            return false;
+        } else {
+            WritableWorkbook workbook = Workbook.createWorkbook(file);
+            Set<String> keySet = mapList.keySet();
+            int i = 0;
+
+            for(String key:keySet) {
+                int j = 0;
+                List<Map> list = (List)mapList.get(key);
+                WritableSheet sheet = workbook.createSheet(key, i);
+                sheet.getSettings().setAutomaticFormulaCalculation(true);
+
+                for(Map<String, String> map:list) {
+                    int x = 0;
+                    Set<String> columnSet = list.get(0).keySet();
+
+                    for(String column:columnSet) {
+                        Object content= map.get(column);
+                        if(content instanceof Integer ){
+                            WritableCell cell = new Number(x, j, (Integer) content);
+                            sheet.addCell(cell);
+                        }
+
+                        if( content instanceof Double){
+                            WritableCell cell = new Number(x, j, (Double) content);
+                            sheet.addCell(cell);
+                        }
+                        if(content instanceof String){
+                            WritableCell cell = new Label(x, j, String.valueOf(content));
+                            sheet.addCell(cell);
+                        }
+                        if(content instanceof Date){
+                            WritableCell cell = new DateTime(x, j, (Date) content);
+                            sheet.addCell(cell);
+                        }
+                        x++;
+                    }
+
+                    j++;
+                }
+                ++i;
+            }
+
+            workbook.write();
+            workbook.close();
+            return true;
+        }
     }
 
     public static void main(String args[]) throws SQLException, IOException, ClassNotFoundException {
