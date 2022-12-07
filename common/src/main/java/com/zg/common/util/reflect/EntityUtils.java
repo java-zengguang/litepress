@@ -460,6 +460,23 @@ public class EntityUtils {
 
     }
 
+    public static List getPKData(Object obj) throws IllegalAccessException {
+
+        List list = new ArrayList();
+        Class modelClass=obj.getClass();
+        Field[] fields = modelClass.getFields();
+
+        for (Field field : fields) {
+            PrimaryKey primaryKeyField = field.getAnnotation(PrimaryKey.class);
+            if (primaryKeyField != null) {
+                list.add(field.get(obj));
+            }
+        }
+
+        return list;
+
+    }
+
 
     public static List<String> getIncreaseFields(Class modelClass) {
 
