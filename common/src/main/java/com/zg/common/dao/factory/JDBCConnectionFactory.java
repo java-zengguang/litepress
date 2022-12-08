@@ -1,7 +1,6 @@
 package com.zg.common.dao.factory;
 
 import com.zg.common.bean.entity.OptionDB;
-import com.zg.common.dao.database.NewDBPUtils;
 import com.zg.common.init.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -41,7 +41,7 @@ public class ZookeeperUtil implements Watcher {
     }
 
     private ZookeeperUtil(String connectString) throws IOException {
-        zk = new ZooKeeper(connectString, 5000,
+        zk = new ZooKeeper(connectString, 20000,
                 new ZookeeperUtil());
     }
 

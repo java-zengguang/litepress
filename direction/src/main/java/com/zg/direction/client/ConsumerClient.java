@@ -25,7 +25,6 @@ public class ConsumerClient {
     public static ConsumerClient getInstance(String providerName) throws InterruptedException, IOException, KeeperException {
         Register register = new Register(providerConfig.registerURL);
         ProviderEntity providerEntity = register.findPriorityNode(providerName);
-
         ConsumerClient consumerClient = clientMap.get(providerEntity.path);
         if (consumerClient == null) {
             consumerClient = new ConsumerClient(providerEntity);

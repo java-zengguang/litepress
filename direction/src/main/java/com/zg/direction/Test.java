@@ -9,10 +9,12 @@ import java.util.Map;
 public class Test {
 
         public static void main(String args[]) throws IOException, InterruptedException, KeeperException {
-            ZookeeperUtil zookeeperUtil= ZookeeperUtil.getInstance("10.200.125.5:2181");
-            Map<String,String> list= zookeeperUtil.findChildNodeMap("/SynDataDriverProvider");
-            System.out.println(list);
+            ZookeeperUtil zookeeperUtil= ZookeeperUtil.getInstance("10.7.128.188:2181");
+            Map<String,String> map= zookeeperUtil.findChildNodeMap("/SynDataDriverProvider");
 
+            map.forEach((key,value)->{
+                System.out.println(key+"-----"+value);
+            });
         }
 
 }

@@ -65,10 +65,19 @@ public class Register {
               result=providerEntity;
           }else if(providerEntity.getPriority()<result.getPriority()){
              result=providerEntity;
+          }else if(providerEntity.getPriority()==result.getPriority()&&new Random().nextBoolean()){
+              result=providerEntity;
           }
         }
-
         return result;
     }
+
+    public synchronized void occupy(String path) throws InterruptedException, KeeperException {
+        zookeeperUtil.occupy(path);
+    };
+    public synchronized void release(String path) throws InterruptedException, KeeperException {
+        zookeeperUtil.release(path);
+    };
+
 
 }

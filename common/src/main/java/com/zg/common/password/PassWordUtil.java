@@ -34,6 +34,8 @@ public class PassWordUtil {
         System.out.println("oR2kjDx0QfRx      " + encryptUtil.AESencode("oR2kjDx0QfRx", "hello"));
         System.out.println("w3QxlnIb06j_NH4eR      " + encryptUtil.AESdecode("2F541CBF36E75CF263D15EE74CAF2BD6", "hello"));
 
+        System.out.println("9308B3717B1389CB20DB087BD86CAA61    " + encryptUtil.AESdecode("9308B3717B1389CB20DB087BD86CAA61", "hello"));
+
     }
 }
 
