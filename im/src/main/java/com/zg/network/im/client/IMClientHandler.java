@@ -2,6 +2,7 @@ package com.zg.network.im.client;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.zg.incache.prestuctural.manager.CacheManager;
 import com.zg.network.bean.UserBean;
 import com.zg.network.bean.ZGMPBean;
 import com.zg.network.common.MessgeReceivedListener;
@@ -9,7 +10,7 @@ import com.zg.network.common.client.BaseClientHandler;
 import com.zg.network.common.fileservcie.ReceiveFile;
 import com.zg.network.common.fileservcie.SendFile;
 import com.zg.network.im.utils.AudioUtils;
-import com.zg.incache.prestuctural.manager.CacheManager;
+
 import com.zg.common.util.reflect.EntityUtils;
 import com.zg.common.util.url.GetServerRealPathUnit;
 import io.netty.channel.ChannelHandlerContext;

@@ -3,6 +3,7 @@ package com.zg.common.dao.template;
 import com.zg.common.bean.entity.MetadataEntity;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -59,7 +60,9 @@ public class OracleEntityDaoTemplate extends BaseEntityDaoTemplate {
                 metadataEntity.fieldValue= BigDecimal.valueOf(Double.parseDouble(""+metadataEntity.objectValue));
             }
             if ("Date".equals(metadataEntity.fieldType)) {
-
+                if(metadataEntity.objectValue instanceof Timestamp) {
+                    metadataEntity.fieldValue = new Date(((Timestamp) metadataEntity.objectValue).getTime()); //将timestap转成date，防止比较对不上
+                }
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 metadataEntity.columnValue = configList.get(2) + dateFormat.format(metadataEntity.objectValue) + configList.get(3);
             } else {

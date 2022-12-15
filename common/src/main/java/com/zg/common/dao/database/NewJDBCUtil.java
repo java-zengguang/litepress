@@ -157,12 +157,17 @@ public class NewJDBCUtil {
     }
 
 
-    //查询出列明，数据对应的list集合
     private List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException {
-        logger.debug(sql);
         String tableName="";
         //获取表名
         tableName=getTableName(sql);
+        return select2TempleList(sql,tableName);
+    }
+
+    //查询出列明，数据对应的list集合
+    private List<List<MetadataEntity>> select2TempleList(String sql,String tableName) throws SQLException, ClassNotFoundException {
+        logger.debug(sql);
+
         //获取链接
         Connection conn = NewDBPUtils.getConnection(dataSource);
 
@@ -239,6 +244,38 @@ public class NewJDBCUtil {
         List modelList = new ArrayList();
         try {
             templeList = select2TempleList(sql);
+
+            OptionDB optionDB=(OptionDB) Config.getConfig(dataSource);
+            SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
+
+            Class modelClass = null;
+            if (templeList != null && templeList.size() > 0) {
+                if (modelClass == null) {
+                    modelClass = DynamicClass.getDynamicModel(templeList.get(0));
+                }
+                for (List<MetadataEntity> columnList : templeList) {
+                    Object obj = modelClass.newInstance();
+                    for (MetadataEntity metadataEntity : columnList) {
+                        obj = simpleAssemble.assembling(metadataEntity, obj);
+                    }
+                    modelList.add(obj);
+                }
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            release();
+        }
+
+        return modelList;
+    }
+
+
+    public List select(String sql,String tableName) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+        List<List<MetadataEntity>> templeList = null;
+        List modelList = new ArrayList();
+        try {
+            templeList = select2TempleList(sql,tableName);
 
             OptionDB optionDB=(OptionDB) Config.getConfig(dataSource);
             SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
@@ -371,6 +408,31 @@ public class NewJDBCUtil {
         }
 
         return list;
+    }
+
+
+    public String selectOneValue(String sql) throws SQLException, ClassNotFoundException {
+        String value="";
+        try {
+
+
+            Connection conn = NewDBPUtils.getConnection(dataSource);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                 value = rs.getString(1); // 此方法比较高效
+
+            }
+            rs.close();
+            pstmt.close();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            release();
+        }
+
+        return value;
     }
 
 
