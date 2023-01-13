@@ -115,9 +115,9 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             String path= request.path;
             System.out.println("调用的"+path);
 
-            zookeeperUtil.occupy(path);
+         //   zookeeperUtil.occupy(path);
             Object result = method.invoke(classes.newInstance(), paramters);
-            zookeeperUtil.release(path);
+        //    zookeeperUtil.release(path);
             //zookeeper释放
             //方法体执行结束
             response.success = true;

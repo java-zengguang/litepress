@@ -17,6 +17,7 @@
         <module>im</module>
         <module>sso</module>
         <module>login-provider</module>
+        <module>groovy-common</module>
 
 <!--        <module>webdemo</module>
         <module>webiodemo</module>

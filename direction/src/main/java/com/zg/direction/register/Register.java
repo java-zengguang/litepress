@@ -61,12 +61,8 @@ public class Register {
         for(Map.Entry<String,String> entry:nodeSet){
           ProviderEntity  providerEntity = (ProviderEntity) JsonUtils.jsonToObject(entry.getValue(), ProviderEntity.class);
           providerEntity.path=entry.getKey();
-          if(result==null){
-              result=providerEntity;
-          }else if(providerEntity.getPriority()<result.getPriority()){
-             result=providerEntity;
-          }else if(providerEntity.getPriority()==result.getPriority()&&new Random().nextBoolean()){
-              result=providerEntity;
+          if(result==null || new Random().nextBoolean()){
+              result=providerEntity;  //取随机
           }
         }
         return result;
