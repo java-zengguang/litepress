@@ -23,9 +23,9 @@ public class ConsumerHandler implements InvocationHandler {
     private ConsumerClient consumerClient;
 
     public ConsumerHandler(String providerName, String synFlag) {
-        this.synFlag = synFlag;
 
         try {
+            this.synFlag=synFlag;
             consumerClient = ConsumerClient.getInstance(providerName);
             className = consumerClient.getClassName();
 
@@ -116,34 +116,23 @@ public class ConsumerHandler implements InvocationHandler {
         request.methodParamterTypes = methodParamterTypes;
         request.methodParamters = methodParamters;
         request.methodParamterDataTypes = methodParamterDataTypes;
+        request.providerName=consumerClient.getProviderEntity().providerName;
         request.path=consumerClient.getProviderEntity().path;
-        consumerClient.addRequest(request);
 
-        DTPResponse response = null;
-        Object result = null;
-        if ("0".equals(synFlag)) {//同步处理
-            int maxWait = 10 * 60 * 1000;
-            int oneWait = 50;
-            int currentWait = 0;
-            do {
-                Thread.sleep(oneWait);
-                response = (DTPResponse) consumerClient.getResult(request.id);
-                currentWait = currentWait + oneWait;
-                if (currentWait > maxWait) {
-                    throw new Exception("请求超时");
-                }
-            } while (response == null);
-            if (!response.success) {
-                throw new Exception(response.error);
-            }
-            if (!"".equals(response.resultType) && !"NULL".equals(response.resultType)) {
-                result = response.resultData;
-            }
-
-            if (result != null) {
-                result = analysisObject(method.getGenericReturnType(), result);
-            }
+        DTPResponse response ;
+        if("0".equals(synFlag)){
+            response =  consumerClient.addSynRequest(request);
+        }else{
+             response =  consumerClient.addASynRequest(request);
         }
+        Object result = null;
+        if (!"".equals(response.resultType) && !"NULL".equals(response.resultType)) {
+            result = response.resultData;
+        }
+        if (result != null) {
+            result = analysisObject(method.getGenericReturnType(), result);
+        }
+
         return result;
     }
 }

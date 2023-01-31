@@ -2,7 +2,6 @@ package com.zg.direction.register;
 
 import com.zg.common.init.Config;
 import com.zg.common.util.CommonUtil;
-import com.zg.direction.adapter.ProviderAdapter;
 import com.zg.direction.entity.ZooKeeperConfig;
 import org.apache.zookeeper.server.*;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
@@ -62,7 +61,7 @@ public class ZookeeperBoot implements Runnable{
 
 
     public static void main(String[] args) throws Exception {
-        String rootPath= CommonUtil.getThisPath(ProviderAdapter.class);
+        String rootPath= CommonUtil.getThisPath(ZookeeperBoot.class);
         System.setProperty("projectRootPath",rootPath);
         ZookeeperBoot zookeeperBoot=new ZookeeperBoot("");
         zookeeperBoot.run();

@@ -7,6 +7,7 @@ import java.util.List;
 public class DTPRequest extends MainModel {
     public String id;
 
+    public String providerName;
     public String path; //zookeeper对应path，服务端还要用
 
     public String uuid;

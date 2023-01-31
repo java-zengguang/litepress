@@ -23,7 +23,7 @@ public class PassWordUtil {
         logger.info("Zg_phq123#      " + encryptUtil.AESencode("Zg_phq123#", "hello"));
         logger.info("helloworld      " + encryptUtil.AESencode("helloworld", "hello"));
         logger.info("basecode      " + encryptUtil.AESencode("basecode", "hello"));
-        logger.info("stageapp1154      " + encryptUtil.AESencode("stageapp1154", "hello"));
+        logger.info("QAerUDN#VlrQ1pX0_      " + encryptUtil.AESencode("QAerUDN#VlrQ1pX0_", "hello"));
 
         logger.info("HvgaE#7ML_      " + encryptUtil.AESdecode("3CE6B72634FF4536552C0DD08D24DB1A", "hello"));
         logger.info("Zst_phq123#      " + encryptUtil.AESdecode("1449820864936D6E26FAFF20D0DF8E00", "hello"));

@@ -8,7 +8,6 @@ open module direction {
     requires fastjson;
     requires io.netty.all;
     requires org.slf4j;
-
     requires zookeeper;
-
+    requires guava;
 }

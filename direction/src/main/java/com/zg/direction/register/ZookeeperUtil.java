@@ -40,7 +40,7 @@ public class ZookeeperUtil implements Watcher {
     private ZookeeperUtil() {
     }
 
-    private ZookeeperUtil(String connectString) throws IOException {
+    public ZookeeperUtil(String connectString) throws IOException {
         zk = new ZooKeeper(connectString, 20000,
                 new ZookeeperUtil());
     }
@@ -69,18 +69,24 @@ public class ZookeeperUtil implements Watcher {
     }
 
 
-    public void createChildNode(String path, String value) throws InterruptedException, KeeperException {
+    public void  createChildNode(String providerName,String childPath, ProviderEntity providerEntity) throws InterruptedException, KeeperException, IllegalAccessException {
         connectedSemaphore.await();
-        Stat stat = zk.exists(path, false);
+        Stat stat = zk.exists(providerName, false);
         if (stat == null) {
-            createNode(path, "parent");//创建父节点
+            createNode(providerName, "parent");//创建父节点
         }
-        String childPath = path + "/" + (new Date()).getTime();
+        providerEntity.path=childPath;
+        providerEntity.count=0;
+        providerEntity.priority=0;
+        providerEntity.times=0;
+        providerEntity.providerName=providerName;
+        String value = JsonUtils.objectToJson(providerEntity).toString();
         createNode(childPath, value);//创建子节点
-        logger.info("success create znode: " + path);
+        logger.info("success create znode: " + providerEntity.path);
+
     }
 
-    public synchronized void occupy(String path) throws InterruptedException, KeeperException {
+/*    public synchronized void occupy(String path) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
         String json = findNode(path);
         ProviderEntity providerEntity = (ProviderEntity) JsonUtils.jsonToObject(json, ProviderEntity.class);
@@ -99,11 +105,16 @@ public class ZookeeperUtil implements Watcher {
         String value = JsonUtils.objectToJsonString(providerEntity);
         System.out.println("调用结束" + value);
         zk.setData(path, value.getBytes(), stat.getVersion());
-    }
+    }*/
 
+
+    public synchronized void updateNode(String path, String value) throws InterruptedException, KeeperException {
+        connectedSemaphore.await();
+        stat=  zk.setData(path, value.getBytes(), -1);
+    }
     public void updateNode(String path, String value, int version) throws InterruptedException, KeeperException {
         connectedSemaphore.await();
-        zk.setData(path, value.getBytes(), version);
+       zk.setData(path, value.getBytes(), version);
     }
 
     public void deleteNode(String path, int version) throws KeeperException, InterruptedException {

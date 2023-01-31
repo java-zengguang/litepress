@@ -1,40 +1,29 @@
 package com.zg.direction.client;
 
-import com.zg.common.init.Config;
-import com.zg.common.util.reflect.JsonUtils;
-import com.zg.direction.entity.ProviderConfig;
+import com.zg.direction.adapter.ProviderRegister;
+import com.zg.direction.entity.DTPRequest;
+import com.zg.direction.entity.DTPResponse;
 import com.zg.direction.entity.ProviderEntity;
-import com.zg.direction.register.Register;
 import org.apache.zookeeper.KeeperException;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ConsumerClient {
-
-
-    private static ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
-
     private ProviderEntity providerEntity;
     private SimpleClient simpleClient;
 
-    private static Map<String, ConsumerClient> clientMap = new ConcurrentHashMap<>();
+    /*    private static Map<String, ConsumerClient> clientMap = new ConcurrentHashMap<>();*/
 
 
     public static ConsumerClient getInstance(String providerName) throws InterruptedException, IOException, KeeperException {
-        Register register = new Register(providerConfig.registerURL);
-        ProviderEntity providerEntity = register.findPriorityNode(providerName);
-        ConsumerClient consumerClient = clientMap.get(providerEntity.path);
-        if (consumerClient == null) {
-            consumerClient = new ConsumerClient(providerEntity);
-            clientMap.put(providerEntity.path, consumerClient);
-        }
+        ProviderRegister providerRegister = ProviderRegister.getInstance();
+        ProviderEntity providerEntity = providerRegister.findPriorityNode(providerName);
+        ConsumerClient consumerClient = new ConsumerClient(providerEntity);
         return consumerClient;
     }
 
     private ConsumerClient(ProviderEntity providerEntity) throws IOException, KeeperException, InterruptedException {
-        this.providerEntity=providerEntity;
+        this.providerEntity = providerEntity;
         simpleClient = SimpleClient.getInstance(providerEntity.host, providerEntity.port);
 
     }
@@ -44,8 +33,37 @@ public class ConsumerClient {
         return this.providerEntity.getClassName();
     }
 
-    public void addRequest(Object request) {
+
+    public DTPResponse addASynRequest(DTPRequest request) throws Exception {
         simpleClient.addRequest(request);
+        DTPResponse response = new DTPResponse();
+        response.id=request.id;
+        response.success=true;
+        return response;
+
+    }
+
+    //同步返回结果
+    public DTPResponse addSynRequest(DTPRequest request) throws Exception {
+        simpleClient.addRequest(request);
+        DTPResponse response = null;
+        int maxWait = 10 * 60 * 1000;
+        int oneWait = 50;
+        int currentWait = 0;
+        do {
+            Thread.sleep(oneWait);
+            response = (DTPResponse) getResult(request.id);
+            currentWait = currentWait + oneWait;
+            if (currentWait > maxWait) {
+                throw new Exception("请求超时");
+            }
+        } while (response == null);
+        if (!response.success) {
+            throw new Exception(response.error);
+        }
+
+        return response;
+
     }
 
 

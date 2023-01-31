@@ -6,8 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.zg.common.init.Config;
 import com.zg.common.util.reflect.EntityUtils;
 import com.zg.common.util.reflect.JsonUtils;
+import com.zg.direction.adapter.ProviderRegister;
 import com.zg.direction.entity.*;
-import com.zg.direction.register.ZookeeperUtil;
 import com.zg.network.common.service.BaseServiceHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 @ChannelHandler.Sharable
@@ -25,15 +27,17 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
     public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
     String registURL = providerConfig.registerURL;
-    ZookeeperUtil zookeeperUtil;
 
-    {
+    public static ProviderRegister providerRegister;
+
+    static {
         try {
-            zookeeperUtil = ZookeeperUtil.getInstance(registURL);
+            providerRegister = ProviderRegister.getInstance();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 
 
     private Object[] getParamters(List<ParamterEntity> paramterEntityList) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -113,11 +117,13 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             //方法体执行开始
             //zookeeper暂用
             String path= request.path;
+            String providerName=request.providerName;
             System.out.println("调用的"+path);
-
-         //   zookeeperUtil.occupy(path);
+            providerRegister.occupy(providerName,path);
+            LocalDateTime startTime=LocalDateTime.now();
             Object result = method.invoke(classes.newInstance(), paramters);
-        //    zookeeperUtil.release(path);
+            LocalDateTime endTime=LocalDateTime.now();
+            providerRegister.release(providerName,path, Duration.between(startTime,endTime).toMillis());
             //zookeeper释放
             //方法体执行结束
             response.success = true;

@@ -31,7 +31,7 @@ public class NotColseJDBCUtil {
 
 
     private String getTableName(String sql) {
-        String stringArray[] = sql.split(" ");
+        String stringArray[] = sql.split("\\s+");
         for (int i = 0; i < stringArray.length; i++) {
             if ("from".equals(stringArray[i].toLowerCase().trim()) || "*from".equals(stringArray[i].toLowerCase().trim())) {
                 return stringArray[i + 1];
