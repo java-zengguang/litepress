@@ -3,6 +3,7 @@ package com.zg.direction.entity;
 import com.zg.common.bean.entity.MainModel;
 
 import java.util.List;
+import java.util.Map;
 
 public class DTPRequest extends MainModel {
     public String id;
@@ -27,6 +28,8 @@ public class DTPRequest extends MainModel {
     public List<String> methodParamterTypes;
 
     public List<String> methodParamterDataTypes;
+
+    public List<Map<String,String>> methodParamterDataTypeMapList;
 
     public DTPRequest() {
     }

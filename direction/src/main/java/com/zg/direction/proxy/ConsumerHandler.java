@@ -1,6 +1,5 @@
 package com.zg.direction.proxy;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zg.direction.client.ConsumerClient;
@@ -91,9 +90,9 @@ public class ConsumerHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
+        UUID uuid = UUID.randomUUID();//使用唯一请求标识
         DTPRequest request = new DTPRequest();
-        request.id = "" + (new Date()).getTime();
+        request.id = uuid.toString();
         request.className = className;
         request.methodName = method.getName();
         Map<String, String> returnDataMap = analysisType(method.getGenericReturnType());
@@ -103,6 +102,7 @@ public class ConsumerHandler implements InvocationHandler {
         List methodParamters = new ArrayList<>();
         List<String> methodParamterTypes = new ArrayList<>();
         List<String> methodParamterDataTypes = new ArrayList<>();
+        List<Map<String,String>> methodParamterDataTypeMap=new ArrayList<>();
         Type[] paramerTypes = method.getGenericParameterTypes();
 
         for (int i = 0; i < paramerTypes.length; i++) {
@@ -111,11 +111,13 @@ public class ConsumerHandler implements InvocationHandler {
             Map<String, String> methodParamDataMap = analysisType(paramerTypes[i]);
             methodParamterTypes.add(methodParamDataMap.get("Type"));
             methodParamterDataTypes.add(methodParamDataMap.get("DataType"));
+            methodParamterDataTypeMap.add(methodParamDataMap);
         }
 
         request.methodParamterTypes = methodParamterTypes;
         request.methodParamters = methodParamters;
         request.methodParamterDataTypes = methodParamterDataTypes;
+        request.methodParamterDataTypeMapList =methodParamterDataTypeMap;
         request.providerName=consumerClient.getProviderEntity().providerName;
         request.path=consumerClient.getProviderEntity().path;
 
@@ -124,6 +126,15 @@ public class ConsumerHandler implements InvocationHandler {
             response =  consumerClient.addSynRequest(request);
         }else{
              response =  consumerClient.addASynRequest(request);
+        }
+        if(response==null){
+            response=new DTPResponse();
+            response.id=request.id;
+            response.success=false;
+            response.error=request.id+"没有收到返回消息，可能服务变化"+request.path+"clieckversion"+consumerClient.getProviderEntity().clientVersion;
+        }
+        if (response!=null&&!response.success) {
+            throw new Exception(response.error);
         }
         Object result = null;
         if (!"".equals(response.resultType) && !"NULL".equals(response.resultType)) {

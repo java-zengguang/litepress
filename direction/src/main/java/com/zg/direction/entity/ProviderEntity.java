@@ -6,14 +6,18 @@ public class ProviderEntity extends MainModel {
 
     // public String interfaceName;
     public String providerName;
+
+    public String clientVersion;
     public String path;
     public String className;
     public String host;
     public int port;
     public int priority;  //优先级默认为0，且每次占用加1，调用结束-1
-    public int count; //调用次数，用作监控，策略是否有效
+    public Long count; //调用次数，用作监控，策略是否有效
 
-    public long times; //调用时间，用作负载参数
+    public Long times; //调用时间，用作负载参数
+
+    public Double averageTime=0.0;
 
 
 
@@ -43,11 +47,13 @@ public class ProviderEntity extends MainModel {
 
     public synchronized void occupy(){
         priority++;
-        count++;
+
     }
     public synchronized void release(long time){
         priority--;
         times=times+time;
+        count++;
+        averageTime=times.doubleValue()/(count+1);
     }
 
 

@@ -17,8 +17,8 @@ public class SimpleClient extends BaseClient {
 
     private  static Map<String,SimpleClient> clientMap=new HashMap<>();
 
-    public static SimpleClient getInstance(String host, int port){
-        String address=host+":"+port;
+    public static SimpleClient getInstance(String host, int port,String clientVersion){
+        String address=host+":"+port+":"+clientVersion;
         SimpleClient simpleClient=clientMap.get(address);
         if(simpleClient==null){
             simpleClient=new SimpleClient(host,port);

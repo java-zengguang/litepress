@@ -76,9 +76,9 @@ public class ZookeeperUtil implements Watcher {
             createNode(providerName, "parent");//创建父节点
         }
         providerEntity.path=childPath;
-        providerEntity.count=0;
+        providerEntity.count=0L;
         providerEntity.priority=0;
-        providerEntity.times=0;
+        providerEntity.times=0L;
         providerEntity.providerName=providerName;
         String value = JsonUtils.objectToJson(providerEntity).toString();
         createNode(childPath, value);//创建子节点

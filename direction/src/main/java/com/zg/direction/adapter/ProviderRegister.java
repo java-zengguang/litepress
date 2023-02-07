@@ -82,6 +82,7 @@ public class ProviderRegister {
         for (String key : keySet) {
             String providerName = key;
             ProviderEntity providerEntity = (ProviderEntity) providerMap.get(key);
+            providerEntity.clientVersion=""+System.currentTimeMillis();
             String childPath = providerName + "/" + (new Date()).getTime();
             //  zookeeperUtil.createNode(path, value);
             zookeeperUtil.createChildNode(providerName, childPath, providerEntity);
@@ -106,6 +107,7 @@ public class ProviderRegister {
         zookeeperUtil.updateNode(path,JsonUtils.objectToJsonString(providerEntity));
     }
 
+    //轮询选择，选择优先级小的，当优先级相同时，存在次数小于500的，选择调用次数少的，不存在小于500的，选择平均时长小的
     public ProviderEntity findPriorityNode(String providerName) throws KeeperException, InterruptedException {
         // return zookeeperUtil.findNodeOne(providerName);
         ProviderEntity result=null;
@@ -118,8 +120,17 @@ public class ProviderRegister {
                    result= providerEntity;
                 }else if(result.priority>providerEntity.priority){
                     result=providerEntity;
-                }else if(result.priority==providerEntity.priority&&result.times/(result.count+1)>providerEntity.times/(result.count+1)){
-                    result=providerEntity; //当优先级相同，选择平均时长小的
+                }else if(result.priority==providerEntity.priority){
+                    if(providerEntity.count<500 || result.count<500){
+                        if(result.count>providerEntity.count){
+                            result=providerEntity;
+                        }
+                    }else{
+                        if(result.averageTime>providerEntity.averageTime){
+                            result =providerEntity;
+                        }
+                    }
+
                 }
             }
         }

@@ -68,9 +68,10 @@ public class ControllerAdapter {
     }
 
 
-    public static void resovleViewObject(Object viewObject, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public static String resovleViewObject(Object viewObject, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String result = "";
         if (viewObject == null) {
-            return;
+            return result;
         }
         if (viewObject instanceof String) {
             String viewString = (String) viewObject;
@@ -96,14 +97,13 @@ public class ControllerAdapter {
                 case "json": {
                     response.setHeader("content-type", "application/json");
                     response.setCharacterEncoding("UTF-8");
-                    PrintWriter out = response.getWriter();
-                    out.print(stirngArray[1]);
-                    out.flush();
-                    out.close();
+                    result=stirngArray[1];
                     break;
+
                 }
                 default: {
                     logger.info(ControllerAdapter.classMap + " 跳转失败");
+                    break;
                 }
             }
         } else if (viewObject instanceof ViewObject) {
@@ -140,14 +140,12 @@ public class ControllerAdapter {
                     }
                     response.setHeader("content-type", "application/json");
                     response.setCharacterEncoding("UTF-8");
-                    PrintWriter out = response.getWriter();
-                    out.print(json);
-                    out.flush();
-                    out.close();
+                    result = json;
                     break;
                 }
                 default: {
                     logger.info(ControllerAdapter.classMap + " 跳转失败");
+                    break;
                 }
             }
         } else if (viewObject instanceof File) {
@@ -159,6 +157,7 @@ public class ControllerAdapter {
             int size = IOUtils.inputFile(out, file);
             logger.info(ControllerAdapter.classMap + "文件下载完成");
         }
+        return result;
     }
 
 
@@ -182,20 +181,20 @@ public class ControllerAdapter {
             Class paramentType = Class.forName(parameters[i].getType().getName());
             if (HttpServletRequest.class.isAssignableFrom(paramentType)) {
                 parameterValues[i] = request;
-            }else if (HttpServletResponse.class.isAssignableFrom(paramentType)) {
+            } else if (HttpServletResponse.class.isAssignableFrom(paramentType)) {
                 parameterValues[i] = response;
-            }else{
-                ParamEntity paramEntity=new ParamEntity();
-                paramEntity.annotations=annotationArrays[i];
-                paramEntity.paramName=parameters[i].getName();
-                paramEntity.paramType=paramentType;
+            } else {
+                ParamEntity paramEntity = new ParamEntity();
+                paramEntity.annotations = annotationArrays[i];
+                paramEntity.paramName = parameters[i].getName();
+                paramEntity.paramType = paramentType;
 
                 Annotation[] annotations = paramEntity.annotations;
-                RequestAnalysis requestAnalysis=null;
+                RequestAnalysis requestAnalysis = null;
                 if (annotations != null && annotations.length > 0) {
                     for (Annotation annotation : annotations) {
-                        if( annotation instanceof RequestBody){
-                            String value="";
+                        if (annotation instanceof RequestBody) {
+                            String value = "";
                             BufferedReader reader = null;
                             StringBuilder sb = new StringBuilder();
                             reader = new BufferedReader(new InputStreamReader(request.getInputStream(), "utf-8"));
@@ -203,26 +202,26 @@ public class ControllerAdapter {
                             while ((line = reader.readLine()) != null) {
                                 sb.append(line);
                             }
-                            value=sb.toString();
-                            paramEntity.paramObject=value;
-                            requestAnalysis=new JsonRequestAnalysis();
+                            value = sb.toString();
+                            paramEntity.paramObject = value;
+                            requestAnalysis = new JsonRequestAnalysis();
                         }
                     }
                 }
                 //兜底的
-                if(requestAnalysis==null){
-                    paramEntity.paramObject=request.getParameter(paramEntity.paramName);
-                    requestAnalysis=new SimpleRequestAnalysis();
+                if (requestAnalysis == null) {
+                    paramEntity.paramObject = request.getParameter(paramEntity.paramName);
+                    requestAnalysis = new SimpleRequestAnalysis();
                 }
-                parameterValues[i]= requestAnalysis.extractParam(paramEntity);
+                parameterValues[i] = requestAnalysis.extractParam(paramEntity);
             }
 
         }
         return parameterValues;
     }
 
-    public static void resovleRequest(HttpServletRequest request, HttpServletResponse response) {
-
+    public static void resovleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String result = "";
         logger.info("请求的url " + request.getRequestURL());
         String requestURI = request.getRequestURI();
         Object viewObject = null;
@@ -233,43 +232,32 @@ public class ControllerAdapter {
             String parentURI = "/" + requestURI.split("/")[1];
             Class classes = classMap.get(parentURI);
             Method method = methodMap.get(requestURI);
+
             try {
                 if (requestURI.endsWith(mvcOption.controllerSuffix)) {
-                    Object[] paramArray =getParamter(request, response, method);
+                    Object[] paramArray = getParamter(request, response, method);
                     if (paramArray == null) {
                         viewObject = method.invoke(classes.newInstance());
                     } else {
                         viewObject = method.invoke(classes.newInstance(), paramArray);
                     }
-
                 }
                 if (requestURI.endsWith(mvcOption.upLoadSuffix)) {
                     Object[] paramArray = getInputStream(request, response, method, mvcOption.temporaryFilePath);
                     viewObject = method.invoke(classes.newInstance(), paramArray);
                 }
 
-                if (viewObject != null) {
-                    resovleViewObject(viewObject, request, response);
-                }
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (ServletException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                result = e.getMessage();
             }
-
-        } else {
-            logger.info("走defaultServlet");
         }
+        result= resovleViewObject(viewObject, request, response);
+        PrintWriter out = response.getWriter();
+        out.print(result);
+        out.flush();
+        out.close();
+
 
     }
 }

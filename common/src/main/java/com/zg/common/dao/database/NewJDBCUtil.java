@@ -482,7 +482,6 @@ public class NewJDBCUtil {
                 for (MetadataEntity metadataEntity : columnList) {
                     obj = simpleAssemble.assembling(metadataEntity, obj);
                 }
-                System.out.println("---");
                 kryo.writeObject(output, obj);
             }
             rs.close();
