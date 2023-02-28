@@ -8,10 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class ModelSQLUtils {
@@ -217,6 +215,62 @@ public class ModelSQLUtils {
         return sql;
     }
 
+
+    private static boolean isCompare(String s1, String s2) {
+        if (s1 == null && s2 == null) {
+            return true;
+        }
+        if (s1 == null && s2 != null) {
+            return false;
+        }
+        if (s1 != null && s2 == null) {
+            return false;
+        }
+
+        return s1.equals(s2);
+    }
+
+    public static String updateByPK(Object newModel, Object oldModel, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
+        String sql;
+        String condition = " ";
+        String tableName = EntityUtils.getTableNameFromModel(newModel.getClass());
+        List<String> memberList = new ArrayList();
+        List<String> valuesList = new ArrayList();
+        Assemble assemble = new SimpleAssemble(dbType);
+        List<MetadataEntity> newList = assemble.analysis(newModel);
+        List<MetadataEntity> oldList = assemble.analysis(oldModel);
+        for (int i = 0; i < newList.size(); i++) {
+            MetadataEntity newEntity = newList.get(i);
+            if ("1".equals(newEntity.isPK)) {  //主鍵條件
+                condition = condition + " and " + newEntity.fieldName + "=" + newEntity.columnValue;
+
+            } else {
+                MetadataEntity oldEntity = oldList.stream().filter(a -> Objects.equals(a.fieldName, newEntity.fieldName)).collect(Collectors.toList()).get(0);
+                if ("1".equals(newEntity.isNotCommit) && !isCompare(oldEntity.columnValue, newEntity.columnValue)) {  //只提交不同的位置
+                    memberList.add(newEntity.fieldName);
+                    valuesList.add(newEntity.columnValue);
+                }
+            }
+        }
+        if (valuesList == null || valuesList.size() == 0) {
+            return null;
+        }
+        //  List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
+        StringBuffer memberValues = new StringBuffer();
+        for (int i = 0; i < memberList.size(); i++) {
+            if (memberList.get(i) != null && !"".equals(valuesList.get(i))) {
+                if (valuesList.get(i) != null) {
+                    memberValues.append(" " + memberList.get(i) + "=" + valuesList.get(i) + ",");
+                } else {
+                    memberValues.append(" " + memberList.get(i) + " = null ,");
+                }
+            }
+        }
+        memberValues.setCharAt(memberValues.length() - 1, ' ');
+        sql = "update " + tableName + " set " + memberValues + "where 1=1 " + condition;
+
+        return sql;
+    }
 
 /*
 

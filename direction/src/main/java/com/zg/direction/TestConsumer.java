@@ -7,6 +7,8 @@ import com.zg.direction.proxy.ConsumerHandler;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TestConsumer {
 
@@ -22,6 +24,23 @@ public class TestConsumer {
         System.out.println(test.hello2(testEntity));
         test.hello3(testEntity,"xxx");
        System.out.println(test.hello4(new ArrayList(Arrays.asList(testEntity)),"xxx"));
-        System.exit(-1);
+
+       Runnable runnable=new Runnable() {
+           @Override
+           public void run() {
+               TestInte test = (TestInte) Proxy.newProxyInstance(TestInte.class.getClassLoader(), classes, new ConsumerHandler("/Test"));
+               try {
+                   System.out.println("================="+test.hello());
+               } catch (InterruptedException e) {
+                   throw new RuntimeException(e);
+               }
+           }
+       };
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        for (int i = 0; i < 10; i++) {
+            executorService.submit(runnable);
+        }
+
+
     }
 }

@@ -8,10 +8,11 @@ import java.util.List;
 @Provider(providerName = "/Test")
 public class TestServer implements TestInte{
     @Override
-    public TestEntity hello() {
+    public TestEntity hello() throws InterruptedException {
         System.out.println("你好");
         TestEntity testEntity=new TestEntity();
-        testEntity.s="hello";
+        testEntity.s = "hello";
+
         return testEntity;
     }
 

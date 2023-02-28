@@ -3,12 +3,13 @@ package com.zg.direction.register;
 import com.zg.common.init.Config;
 import com.zg.common.util.CommonUtil;
 import com.zg.direction.entity.ZooKeeperConfig;
-import org.apache.zookeeper.server.*;
-import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
+import com.zg.direction.util.IpConfig;
+import org.apache.zookeeper.server.ServerCnxnFactory;
+import org.apache.zookeeper.server.ServerConfig;
+import org.apache.zookeeper.server.ZooKeeperServerMain;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 import java.lang.reflect.Field;
 import java.net.InetAddress;
@@ -43,8 +44,9 @@ public class ZookeeperBoot implements Runnable{
             for (Field field : fields) {
                 properties.setProperty(field.getName(), (String) field.get(zooKeeperConfig));
             }
-           // properties.setProperty("clientPortAddress", "127.0.0.1");
-            String ipAddresss= InetAddress.getLocalHost().getHostAddress();
+            // properties.setProperty("clientPortAddress", "127.0.0.1");
+            InetAddress inetAddress = IpConfig.getLocalHostLANAddress();
+            String ipAddresss = inetAddress.getHostAddress();
             properties.setProperty("clientPortAddress", ipAddresss);
             QuorumPeerConfig quorumConfig = new QuorumPeerConfig();
             quorumConfig.parseProperties(properties);

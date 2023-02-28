@@ -3,10 +3,10 @@ package com.zg.direction.adapter;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.zg.common.init.Config;
 import com.zg.common.util.reflect.JsonUtils;
 import com.zg.direction.annotation.ProviderResovleAnnotation;
 import com.zg.direction.entity.ProviderConfig;
-import com.zg.common.init.Config;
 import com.zg.direction.entity.ProviderEntity;
 import com.zg.direction.register.ZookeeperUtil;
 import com.zg.direction.server.ProviderService;
@@ -107,7 +107,7 @@ public class ProviderRegister {
         zookeeperUtil.updateNode(path,JsonUtils.objectToJsonString(providerEntity));
     }
 
-    //轮询选择，选择优先级小的，当优先级相同时，存在次数小于500的，选择调用次数少的，不存在小于500的，选择平均时长小的
+/*    //轮询选择，选择优先级小的，当优先级相同时，存在次数小于500的，选择调用次数少的，不存在小于500的，选择平均时长小的
     public ProviderEntity findPriorityNode(String providerName) throws KeeperException, InterruptedException {
         // return zookeeperUtil.findNodeOne(providerName);
         ProviderEntity result=null;
@@ -135,8 +135,26 @@ public class ProviderRegister {
             }
         }
         return result;
-    }
+    }*/
 
+
+    //随机
+    public ProviderEntity findPriorityNode(String providerName) throws KeeperException, InterruptedException {
+        // return zookeeperUtil.findNodeOne(providerName);
+        ProviderEntity result = null;
+        Map<String, String> nodeMap = zookeeperUtil.findChildNodeMap(providerName);
+        Set<Map.Entry<String, String>> nodeSet = nodeMap.entrySet();
+
+        if (nodeSet != null && nodeSet.size() > 0) {
+            List<Map.Entry<String, String>> nodeList = new ArrayList<>(nodeSet);
+            Random random = new Random();
+            Integer index = random.nextInt(nodeSet.size());
+            Map.Entry<String, String> entry = nodeList.get(index);
+            result = (ProviderEntity) JsonUtils.jsonToObject(entry.getValue(), ProviderEntity.class);
+
+        }
+        return result;
+    }
 
     public void doMain() throws IOException, InterruptedException, KeeperException, IllegalAccessException {
         doServer();//启动守护线程

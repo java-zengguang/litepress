@@ -5,7 +5,7 @@ import com.zg.direction.annotation.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
-@Provider(providerName = "/Test")
+@Provider(providerName = "/Test1")
 public class TestServer1 implements TestInte{
     @Override
     public TestEntity hello() {

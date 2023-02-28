@@ -1,17 +1,18 @@
 package com.zg.direction.server;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zg.common.init.Config;
 import com.zg.common.util.reflect.EntityUtils;
 import com.zg.common.util.reflect.JsonUtils;
 import com.zg.direction.adapter.ProviderRegister;
-import com.zg.direction.entity.*;
+import com.zg.direction.entity.DTPRequest;
+import com.zg.direction.entity.DTPResponse;
+import com.zg.direction.entity.ParamterEntity;
+import com.zg.direction.entity.ProviderConfig;
 import com.zg.network.common.service.BaseServiceHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,7 +95,7 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
 
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws IllegalAccessException {
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) {
 
         logger.info("get msg >" + msg);
 
