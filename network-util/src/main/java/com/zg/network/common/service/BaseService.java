@@ -29,6 +29,8 @@ public abstract class BaseService implements Runnable {
     private int port;
     private BaseServiceHandler baseServiceHandler;
 
+    private final int threadSize=10;  //并发数量
+
     public BaseService(BaseServiceHandler<String> baseServiceHandler, int port) {
 
         this.baseServiceHandler = baseServiceHandler;
@@ -40,8 +42,8 @@ public abstract class BaseService implements Runnable {
     public void getConnectin() {
 
         //boss线程监听端口，worker线程负责数据读写
-        bossGroup = new NioEventLoopGroup(1);
-        workerGroup = new NioEventLoopGroup();
+        bossGroup = new NioEventLoopGroup(threadSize);
+        workerGroup = new NioEventLoopGroup(threadSize);
         //辅助启动类
         ServerBootstrap bootstrap = new ServerBootstrap();
         try {
