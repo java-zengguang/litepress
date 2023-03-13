@@ -2,6 +2,8 @@ package com.zg.common.dao.factory;
 
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.pool.DataBaseInte;
+import com.zg.common.dao.pool.DruidImpl;
+import com.zg.common.dao.pool.HikariCPImpl;
 import com.zg.common.dao.pool.ZGDBPImpl;
 import com.zg.common.init.Config;
 import org.slf4j.Logger;
@@ -33,7 +35,14 @@ public class PoolConnectionFactory extends BaseConnectionFactory {
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
 
         if ("ZGDBP".equals(optionDB.getDBPType())) {
+            logger.info("使用ZGDBP链接");
             databasePool = ZGDBPImpl.getInstance();
+        }else if("Druid".equals(optionDB.getDBPType())){
+            databasePool= DruidImpl.getInstance();
+            logger.info("使用Druid链接");
+        } else if("HikariCP".equals(optionDB.getDBPType())){
+            databasePool= HikariCPImpl.getInstance();
+            logger.info("HikariCP");
         } else if (optionDB.getDBPType() == null || "".equals(optionDB.getDBPType())) {
             logger.info("未使用链接池");
         } else {

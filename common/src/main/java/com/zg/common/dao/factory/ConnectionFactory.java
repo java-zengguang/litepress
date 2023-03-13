@@ -3,13 +3,12 @@ package com.zg.common.dao.factory;
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.init.Config;
 
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class ConnectionFactory extends BaseConnectionFactory {
 
-    public static ConnectionFactory connectionFactory;
+    public static  ConnectionFactory connectionFactory ;
 
 
     private ConnectionFactory() {
@@ -34,7 +33,7 @@ public class ConnectionFactory extends BaseConnectionFactory {
             factory = JDBCConnectionFactory.getInstance();
         } else {
             //从连接池获取链接
-            factory = JDBCConnectionFactory.getInstance();
+            factory = PoolConnectionFactory.getInstance();
         }
         connection = factory.createConnection(dataSource);
 

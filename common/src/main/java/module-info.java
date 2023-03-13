@@ -22,6 +22,9 @@ open module common {
     requires org.apache.commons.net;
     requires org.slf4j;
     requires com.esotericsoftware.kryo;
+    requires druid;
+    requires java.naming;
+    requires com.zaxxer.hikari;
 
 
 }
