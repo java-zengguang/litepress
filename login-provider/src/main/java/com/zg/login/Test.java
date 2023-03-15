@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class Test {
 
-    public static void main(String args[]) throws InterruptedException, IOException, KeeperException, IllegalAccessException, QuorumPeerConfig.ConfigException {
+    public static void main(String args[]) throws Exception {
         ProviderAdapter providerAdapter = ProviderAdapter.getInstance();
         providerAdapter.init();
     }

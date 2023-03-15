@@ -12,6 +12,8 @@ import java.util.Map;
  */
 public abstract class BaseResolveAnnotation {
 
+    private static final String providerPath="/provider";
+
 
     public Map<String, Object> resovleAnnoation(String packageName, Class annotationClass) throws ClassNotFoundException, IllegalAccessException, InstantiationException, UnknownHostException {
         return getAnnotationClass(packageName, annotationClass);

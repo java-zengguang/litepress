@@ -1,6 +1,7 @@
 package com.zg.direction.adapter;
 
 
+import com.google.common.collect.BoundType;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.zg.common.init.Config;
@@ -8,42 +9,116 @@ import com.zg.common.util.reflect.JsonUtils;
 import com.zg.direction.annotation.ProviderResovleAnnotation;
 import com.zg.direction.entity.ProviderConfig;
 import com.zg.direction.entity.ProviderEntity;
-import com.zg.direction.register.ZookeeperUtil;
 import com.zg.direction.server.ProviderService;
 import com.zg.direction.server.ProviderServiceHandler;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.api.UnhandledErrorListener;
+import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.curator.framework.recipes.cache.TreeCache;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheListener;
+import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 public class ProviderRegister {
 
-    private static ProviderRegister providerRegister = null;
+    private static ProviderRegister providerRegister = null;  //单例
 
     private static Logger logger = LoggerFactory.getLogger(ProviderRegister.class);
 
-    private static ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
-
-    private static ZookeeperUtil zookeeperUtil;  //绑定zookeeper服务器
+    private static ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig"); //初始化配置
 
     private static Thread thread; //服务守护线程
 
-    public static Table<String, String, ProviderEntity> providerTable = HashBasedTable.create();
+    public static final Table<String, String, ProviderEntity> providerTable = HashBasedTable.create();
+    private static Stat stat = new Stat();
+    private static CuratorFramework zkClient = null;
 
 
-    private ProviderRegister() throws IOException {
-        zookeeperUtil = new ZookeeperUtil(providerConfig.registerURL);
+    //使用CountDownLatch等待zk创建完成，在执行主线程
+    private static CountDownLatch countDownLatch = new CountDownLatch(1);
+
+    private ProviderRegister() {
     }
 
 
-    public static synchronized ProviderRegister getInstance() throws IOException {
+    private static void init(){
+
+        zkClient = CuratorFrameworkFactory.builder().connectString(providerConfig.registerURL)
+                .sessionTimeoutMs(5000)
+                .connectionTimeoutMs(3000)
+                .retryPolicy(new ExponentialBackoffRetry(1000, 5))
+                .namespace("provider")
+                .build();
+        zkClient.start();
+
+
+        final TreeCache treeCache = new TreeCache(zkClient, "/");
+        try {
+            treeCache.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //添加错误监听器
+        treeCache.getUnhandledErrorListenable().addListener(new UnhandledErrorListener() {
+            public void unhandledError(String s, Throwable throwable) {
+                logger.info(".错误原因：" + throwable.getMessage() + "\n==============\n");
+            }
+        });
+
+        //节点变化的监logger.info听器
+        treeCache.getListenable().addListener(new TreeCacheListener() {
+            public void childEvent(CuratorFramework curatorFramework, TreeCacheEvent treeCacheEvent) throws Exception {
+
+                if (treeCacheEvent.getType() == TreeCacheEvent.Type.INITIALIZED) {
+                    logger.info("初始化！");
+                }
+                if (treeCacheEvent.getType() == TreeCacheEvent.Type.CONNECTION_RECONNECTED) {
+                    logger.info("重新连接！");
+                }
+                if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_ADDED) {
+                    ChildData childData = treeCacheEvent.getData();
+                    logger.info("创建！" + childData.getPath());
+                    if (childData.getData() != null && childData.getData().length > 0) {
+                        ProviderEntity provider = (ProviderEntity) JsonUtils.jsonToObject(new String(childData.getData()), ProviderEntity.class);
+                        providerTable.put(provider.providerName, provider.path, provider);
+                        System.out.println("data:" + provider);
+                    }
+                }
+                if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_UPDATED) {
+                    ChildData childData = treeCacheEvent.getData();
+                    logger.info("修改！" + childData.getPath());
+                    if (childData.getData() != null && childData.getData().length > 0) {
+                        ProviderEntity provider = (ProviderEntity) JsonUtils.jsonToObject(new String(childData.getData()), ProviderEntity.class);
+                        providerTable.put(provider.providerName, provider.path, provider);
+                    }
+                }
+                if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_REMOVED) {
+                    ChildData childData = treeCacheEvent.getData();
+                    logger.info("删除！" + childData.getPath());
+                    ProviderEntity provider = (ProviderEntity) JsonUtils.jsonToObject(new String(childData.getData()), ProviderEntity.class);
+                    providerTable.remove(provider.providerName, provider.path);
+                }
+            }
+        });
+
+
+    }
+
+    public static synchronized ProviderRegister getInstance() throws Exception {
         if (providerRegister == null) {
             providerRegister = new ProviderRegister();
+            init();
         }
-
         return providerRegister;
 
     }
@@ -51,14 +126,12 @@ public class ProviderRegister {
 
     public void doServer() {
         //开启服务
-        System.out.println("开始启动服务");
         ProviderService providerService = new ProviderService(new ProviderServiceHandler());
         if (thread == null) {
             thread = new Thread(providerService);
             thread.start();
-
         }
-
+        logger.info("启动服务：" + thread.getId() + "：" + thread.getState());
     }
     private Map<String, Object> loadProvider() {
         Map<String, Object> providerMap = null;
@@ -77,88 +150,86 @@ public class ProviderRegister {
         return providerMap;
     }
 
-    private void doRegist(Map<String, Object> providerMap) throws IOException, InterruptedException, KeeperException, IllegalAccessException {
+    private void doRegist(Map<String, Object> providerMap) throws Exception {
         Set<String> keySet = providerMap.keySet();
+
         for (String key : keySet) {
             String providerName = key;
             ProviderEntity providerEntity = (ProviderEntity) providerMap.get(key);
-            providerEntity.clientVersion=""+System.currentTimeMillis();
+            providerEntity.clientVersion = "" + System.currentTimeMillis();
             String childPath = providerName + "/" + (new Date()).getTime();
             //  zookeeperUtil.createNode(path, value);
-            zookeeperUtil.createChildNode(providerName, childPath, providerEntity);
-            providerTable.put(providerName, childPath, providerEntity);
+            createChildNode(providerName, childPath, providerEntity);
+            logger.info("服务注册：" + childPath);
+
         }
         //  Thread.sleep(Integer.MAX_VALUE);
     }
 
-    // 占用锁-锁定
-    public  synchronized void occupy(String providerName,String path) throws InterruptedException, KeeperException {
-       ProviderEntity providerEntity=  providerTable.get(providerName,path);
-       providerEntity.occupy();
-       zookeeperUtil.updateNode(path,JsonUtils.objectToJsonString(providerEntity));
-    }
-
-
-    // 占用锁-解锁
-    public  synchronized void release(String providerName,String path,long times) throws InterruptedException, KeeperException {
-        System.out.println(path+"调用时长"+times);
-        ProviderEntity providerEntity=  providerTable.get(providerName,path);
-        providerEntity.release(times);
-        zookeeperUtil.updateNode(path,JsonUtils.objectToJsonString(providerEntity));
-    }
-
-/*    //轮询选择，选择优先级小的，当优先级相同时，存在次数小于500的，选择调用次数少的，不存在小于500的，选择平均时长小的
-    public ProviderEntity findPriorityNode(String providerName) throws KeeperException, InterruptedException {
-        // return zookeeperUtil.findNodeOne(providerName);
-        ProviderEntity result=null;
-        Map<String,String> nodeMap=  zookeeperUtil.findChildNodeMap(providerName);
-        Set<Map.Entry<String,String>> nodeSet= nodeMap.entrySet();
-        if(nodeSet!=null&&nodeSet.size()>0) {
-            for (Map.Entry<String, String> entry : nodeSet) {
-                ProviderEntity providerEntity = (ProviderEntity) JsonUtils.jsonToObject(entry.getValue(), ProviderEntity.class);
-                if(result==null){
-                   result= providerEntity;
-                }else if(result.priority>providerEntity.priority){
-                    result=providerEntity;
-                }else if(result.priority==providerEntity.priority){
-                    if(providerEntity.count<500 || result.count<500){
-                        if(result.count>providerEntity.count){
-                            result=providerEntity;
-                        }
-                    }else{
-                        if(result.averageTime>providerEntity.averageTime){
-                            result =providerEntity;
-                        }
-                    }
-
-                }
-            }
-        }
-        return result;
-    }*/
-
 
     //随机
-    public ProviderEntity findPriorityNode(String providerName) throws KeeperException, InterruptedException {
+    public ProviderEntity findPriorityNode(String providerName) throws Exception {
         // return zookeeperUtil.findNodeOne(providerName);
         ProviderEntity result = null;
-        Map<String, String> nodeMap = zookeeperUtil.findChildNodeMap(providerName);
-        Set<Map.Entry<String, String>> nodeSet = nodeMap.entrySet();
-
+        Map<String, ProviderEntity> nodeMap = providerTable.row(providerName);
+        if (nodeMap == null || nodeMap.isEmpty()) {
+            getProviderByName(providerName);
+        }
+        Set<Map.Entry<String, ProviderEntity>> nodeSet = nodeMap.entrySet();
         if (nodeSet != null && nodeSet.size() > 0) {
-            List<Map.Entry<String, String>> nodeList = new ArrayList<>(nodeSet);
+            List<Map.Entry<String, ProviderEntity>> nodeList = new ArrayList<>(nodeSet);
             Random random = new Random();
             Integer index = random.nextInt(nodeSet.size());
-            Map.Entry<String, String> entry = nodeList.get(index);
-            result = (ProviderEntity) JsonUtils.jsonToObject(entry.getValue(), ProviderEntity.class);
-
+            Map.Entry<String, ProviderEntity> entry = nodeList.get(index);
+            result = entry.getValue();
         }
+
         return result;
     }
 
-    public void doMain() throws IOException, InterruptedException, KeeperException, IllegalAccessException {
+    public void doMain() throws Exception {
         doServer();//启动守护线程
         Map<String, Object> providerMap = loadProvider(); //扫描服务
         doRegist(providerMap);//注册服务
     }
+
+
+    private void createNode(String path, String value) throws Exception {
+        zkClient.create().creatingParentContainersIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path, value.getBytes());
+        logger.info("success create znode: " + path);
+    }
+
+    //创建节点需要同步操作
+    private void createChildNode(String providerName, String childPath, ProviderEntity providerEntity) throws Exception {
+
+        providerEntity.path = childPath;
+        providerEntity.count = 0L;
+        providerEntity.priority = 0;
+        providerEntity.times = 0L;
+        providerEntity.providerName = providerName;
+        String value = JsonUtils.objectToJson(providerEntity).toString();
+        createNode(childPath, value);//创建子节点
+        logger.info("success create znode: " + providerEntity.path);
+    }
+
+
+    private void getProviderByName(String providerName) throws Exception {
+        //去远程获取
+        List<String> dataList = zkClient.getChildren().forPath(providerName);
+        for (String data : dataList) {
+           ProviderEntity provider= findProviderByPath(providerName+"/"+data);
+            providerTable.put(provider.providerName, provider.path, provider);
+        }
+
+    }
+
+    private ProviderEntity findProviderByPath(String path) throws Exception {
+        //去远程获取
+        String data = new String(zkClient.getData().forPath(path));
+        ProviderEntity provider = (ProviderEntity) JsonUtils.jsonToObject(data, ProviderEntity.class);
+        providerTable.put(provider.providerName, provider.path, provider);
+        return provider;
+    }
+
+
 }

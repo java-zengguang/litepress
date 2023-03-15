@@ -10,4 +10,7 @@ open module direction {
     requires org.slf4j;
     requires zookeeper;
     requires guava;
+    requires curator.client;
+    requires curator.framework;
+    requires curator.recipes;
 }

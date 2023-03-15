@@ -2,10 +2,8 @@ package com.zg.direction.adapter;
 
 
 import com.zg.common.util.CommonUtil;
-
-
 import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
+
 
 import java.io.IOException;
 
@@ -23,7 +21,7 @@ public class ProviderAdapter {
         return providerAdapter;
     }
 
-    public static void main(String args[]) throws InterruptedException, IOException, KeeperException, IllegalAccessException, QuorumPeerConfig.ConfigException {
+    public static void main(String args[]) throws Exception {
         String rootPath= CommonUtil.getThisPath(ProviderAdapter.class);
         System.setProperty("projectRootPath",rootPath);
         System.out.println(System.getProperty("111"+"projectRootPath"));
@@ -31,7 +29,7 @@ public class ProviderAdapter {
         providerAdapter.init();
     }
 
-    public synchronized void init() throws InterruptedException, IllegalAccessException, KeeperException, IOException, QuorumPeerConfig.ConfigException {
+    public synchronized void init() throws Exception {
         //开始运行
         ProviderRegister providerRegister = ProviderRegister.getInstance();
         providerRegister.doMain();
