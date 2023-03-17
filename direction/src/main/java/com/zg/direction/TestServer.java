@@ -5,7 +5,7 @@ import com.zg.direction.annotation.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
-@Provider(providerName = "/Test")
+@Provider(providerName = "/Test/good")
 public class TestServer implements TestInte{
     @Override
     public TestEntity hello() throws InterruptedException {

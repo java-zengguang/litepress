@@ -48,6 +48,7 @@ public class ProviderRegister {
     private static CountDownLatch countDownLatch = new CountDownLatch(1);
 
     private ProviderRegister() {
+        init();
     }
 
 
@@ -112,12 +113,13 @@ public class ProviderRegister {
         });
 
 
+
     }
 
     public static synchronized ProviderRegister getInstance() throws Exception {
         if (providerRegister == null) {
             providerRegister = new ProviderRegister();
-            init();
+
         }
         return providerRegister;
 

@@ -18,7 +18,7 @@ public class TestConsumer {
 
         Class[] classes = new Class[1];
         classes[0] = TestInte.class;
-        TestInte test = (TestInte) Proxy.newProxyInstance(TestInte.class.getClassLoader(), classes, new ConsumerHandler("/Test"));
+        TestInte test = (TestInte) Proxy.newProxyInstance(TestInte.class.getClassLoader(), classes, new ConsumerHandler("/Test/good"));
            TestEntity testEntity = test.hello1("你好");
         System.out.println("===="+testEntity);
         System.out.println(test.hello2(testEntity));

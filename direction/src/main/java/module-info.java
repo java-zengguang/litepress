@@ -13,4 +13,5 @@ open module direction {
     requires curator.client;
     requires curator.framework;
     requires curator.recipes;
+    requires io.github.javadiffutils;
 }
