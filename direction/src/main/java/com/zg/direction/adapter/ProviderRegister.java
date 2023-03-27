@@ -35,7 +35,7 @@ public class ProviderRegister {
 
     private static Logger logger = LoggerFactory.getLogger(ProviderRegister.class);
 
-    private static ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig"); //初始化配置
+    private static ProviderConfig providerConfig ; //初始化配置
 
     private static Thread thread; //服务守护线程
 
@@ -47,12 +47,13 @@ public class ProviderRegister {
     //使用CountDownLatch等待zk创建完成，在执行主线程
     private static CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    private ProviderRegister() {
+    private ProviderRegister() throws InterruptedException {
         init();
     }
 
 
-    private static void init(){
+    private static void init() throws InterruptedException {
+        providerConfig=  (ProviderConfig) Config.getConfig("providerConfig");
 
         zkClient = CuratorFrameworkFactory.builder().connectString(providerConfig.registerURL)
                 .sessionTimeoutMs(5000)
@@ -81,6 +82,7 @@ public class ProviderRegister {
             public void childEvent(CuratorFramework curatorFramework, TreeCacheEvent treeCacheEvent) throws Exception {
 
                 if (treeCacheEvent.getType() == TreeCacheEvent.Type.INITIALIZED) {
+                    countDownLatch.countDown();
                     logger.info("初始化！");
                 }
                 if (treeCacheEvent.getType() == TreeCacheEvent.Type.CONNECTION_RECONNECTED) {
@@ -113,7 +115,7 @@ public class ProviderRegister {
         });
 
 
-
+        countDownLatch.await();
     }
 
     public static synchronized ProviderRegister getInstance() throws Exception {
