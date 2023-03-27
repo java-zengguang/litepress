@@ -17,12 +17,13 @@ public class AnalysisTempFile {
         while ((line = raf.readLine()) != null) {
             if (line.equals(str)) {
                 Long index = raf.getFilePointer();
-                indexList.add(index - line.length());
+                indexList.add(index - line.length()-2);//有个\r\n被读掉了
                 indexList.add(index);
 
             }
-            if (line.equals(str+"--")) { //报文最后多个--\r\n 所以往前进3
-                Long index = raf.getFilePointer()-3;
+
+            if (line.equals(str+"--")) { //报文最后多个-- 所以往前进2
+                Long index = raf.getFilePointer()-2;
                 indexList.add(index - line.length());
                 indexList.add(index);
 
@@ -113,7 +114,7 @@ public class AnalysisTempFile {
             requestParamEntity.type = "file";
             requestParamEntity.value = fileEntity;
         } else {
-            int length = (int) (endPoint - startPoint );
+            int length = (int) (endPoint - startPoint )-2;//剪掉一个\r\n的长度
             byte[] bytes = new byte[length];
             RandomAccessFile rafw = new RandomAccessFile(file, "r");
             rafw.seek(startPoint);

@@ -477,6 +477,21 @@ public class EntityUtils {
 
     }
 
+    public static Map getPKDataMap(Object obj) throws IllegalAccessException {
+        Map<String,Object> hashMap=new HashMap();
+        Class modelClass=obj.getClass();
+        Field[] fields = modelClass.getFields();
+        for (Field field : fields) {
+            PrimaryKey primaryKeyField = field.getAnnotation(PrimaryKey.class);
+            if (primaryKeyField != null) {
+                hashMap.put(field.getName(),field.get(obj));
+            }
+        }
+
+        return hashMap;
+
+    }
+
 
     public static List<String> getIncreaseFields(Class modelClass) {
 
@@ -865,6 +880,8 @@ public class EntityUtils {
         }
 
     }
+
+
 
 }
 

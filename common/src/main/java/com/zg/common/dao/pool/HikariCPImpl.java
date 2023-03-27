@@ -63,8 +63,9 @@ public class HikariCPImpl implements DataBaseInte {
         config.setDriverClassName(optionDB.driver);
         config.setKeepaliveTime(60000);
         config.setMaxLifetime(1500000);
-        config.setConnectionTestQuery("SELECT 1 FROM DUAL");
-        config.setMaximumPoolSize(30);
+        config.setValidationTimeout(5000);
+        config.setConnectionTestQuery("SELECT 1 from  dual");
+        config.setMaximumPoolSize(9);
 /*        config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");*/

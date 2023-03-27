@@ -32,6 +32,7 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
                 add( Arrays.asList("CHARACTER VARYING","String", "'", "'"));
                 add( Arrays.asList("CHAR","String", "'", "'"));
                 add( Arrays.asList("TEXT","String", "'", "'"));
+                add( Arrays.asList("JSON","String", "'", "'"));
                 add( Arrays.asList("NUMBER","BigDecimal", "", ""));
                 add( Arrays.asList("NUMERIC","BigDecimal", "", ""));
                 add( Arrays.asList("DATE","Date", "to_date('", "','yyyy-MM-dd)"));

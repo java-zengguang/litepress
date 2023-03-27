@@ -32,6 +32,7 @@ public class JsonUtils {
         return map;
     }
 
+
     public static String objectToJsonString(Object object) {
         return JSON.toJSONString(object);
     }

@@ -57,11 +57,15 @@ public class JettyBoot {
                     filterHolder.setClassName(CrossOriginFilter.class.getName());
                     filterHolder.setName("cross-origin");
                     filterHolder.setInitParameter("allowedOrigins", "*");
-                    filterHolder.setInitParameter("allowedMethods", "GET,POST,HEAD");
-                    filterHolder.setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin");
+                    filterHolder.setInitParameter("allowedMethods", "GET,POST,OPTIONS,DELETE,PUT,HEAD");
+                   // filterHolder.setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin");
+                    filterHolder.setInitParameter("allowedHeaders", "*");
+
+                    filterHolder.setInitParameter("allowCredentials","true");
                     FilterMapping filterMapping=new FilterMapping();
                     filterMapping.setFilterName("cross-origin");
                     filterMapping.setPathSpec("/*");
+
                     servletHandler.addFilter(filterHolder, filterMapping );
                 }
                 server.insertHandler(servletHandler);
