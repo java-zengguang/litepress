@@ -138,6 +138,12 @@ public class NotColseJDBCUtil {
     //查询出列明，数据对应的list集合
     private List<List<MetadataEntity>> select2TempleList(String sql, String tableName) throws SQLException, ClassNotFoundException {
         logger.debug(sql);
+        String ownName="";
+        if(tableName.contains(".")){
+            String[] splits= tableName.split("\\.");
+            ownName=splits[0];
+            tableName=splits[1];
+        }
         //获取链接
         Connection conn = NewDBPUtils.getConnection(dataSource);
         //获取组件
@@ -164,6 +170,7 @@ public class NotColseJDBCUtil {
                 String columnType = rsmd.getColumnTypeName(i);
                 Object columnValue = rs.getObject(i);
                 MetadataEntity metadataEntity = new MetadataEntity();
+                metadataEntity.ownName=ownName;
                 metadataEntity.tableName = tableName;
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;

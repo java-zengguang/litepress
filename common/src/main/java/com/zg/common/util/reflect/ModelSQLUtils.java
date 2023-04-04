@@ -127,6 +127,9 @@ public class ModelSQLUtils {
 
 
     public static String updateByPK(Object model,List<String> pkList,String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
+       if(pkList==null||pkList.size()==0){
+           logger.error("没有输入主键");
+       }
         String sql ;
         String condition = " ";
         String tableName = EntityUtils.getTableNameFromModel(model.getClass());
@@ -210,6 +213,9 @@ public class ModelSQLUtils {
             }
         }
         memberValues.setCharAt(memberValues.length() - 1, ' ');
+        if(condition==null||"".equals(condition)){
+            return "";
+        }
         sql = "update " + tableName + " set " + memberValues + "where 1=1 " + condition;
 
         return sql;

@@ -71,6 +71,12 @@ public class BaseJDBCDao {
     public List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException {
         logger.debug(sql);
         String tableName="";
+        String ownName="";
+        if(tableName.contains(".")){
+            String[] splits= tableName.split("\\.");
+            ownName=splits[0];
+            tableName=splits[1];
+        }
         //获取表名
         tableName=getTableName(sql);
         //获取链接
@@ -99,6 +105,7 @@ public class BaseJDBCDao {
                 String columnType=rsmd.getColumnTypeName(i);
                 Object columnValue = rs.getObject(i);
                 MetadataEntity metadataEntity =new MetadataEntity();
+                metadataEntity.ownName=ownName;
                 metadataEntity.tableName=tableName;
                 metadataEntity.columnLabel=columnLabel;
                 metadataEntity.columnType=columnType;

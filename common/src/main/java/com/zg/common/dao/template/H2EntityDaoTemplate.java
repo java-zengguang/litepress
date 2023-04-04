@@ -7,19 +7,22 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class OracleEntityDaoTemplate extends BaseEntityDaoTemplate {
+public class H2EntityDaoTemplate extends BaseEntityDaoTemplate {
     private List<List<String>> configArrayList;
     private Map<String, List<String>> columnConfigMap;  //第一列放fieldtype,第二三列放引号用来拼sql
     private Map<String, List<String>> fieldConfigMap;
 
-    public OracleEntityDaoTemplate() {
+    public H2EntityDaoTemplate() {
         init();
     }
 
     private void init() {
 
         configArrayList =new ArrayList<List<String>>(){
+
             {
+                add( Arrays.asList("DECIMAL","BigDecimal", "", ""));
+                add( Arrays.asList("DOUBLE","BigDecimal", "", ""));
                 add( Arrays.asList("INTEGER","Integer", "", ""));
                 add(Arrays.asList("INT", "Integer", "", ""));
                 add(Arrays.asList("DECFLOAT", "Double", "", ""));
@@ -29,11 +32,15 @@ public class OracleEntityDaoTemplate extends BaseEntityDaoTemplate {
                 add( Arrays.asList("CHARACTER VARYING","String", "'", "'"));
                 add( Arrays.asList("CHAR","String", "'", "'"));
                 add( Arrays.asList("TEXT","String", "'", "'"));
+                add( Arrays.asList("JSON","String", "'", "'"));
+                add( Arrays.asList("CHARACTER LARGE OBJECT","String", "'", "'"));
                 add( Arrays.asList("NUMBER","BigDecimal", "", ""));
                 add( Arrays.asList("NUMERIC","BigDecimal", "", ""));
                 add( Arrays.asList("DATE","Date", "to_date('", "','yyyy-MM-dd)"));
-                add( Arrays.asList("DATETIME","Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
-                add( Arrays.asList("TIMESTAMP","Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));}
+                add( Arrays.asList("DATETIME","Date", "'", "'"));
+                add( Arrays.asList("TIMESTAMP","Date","'", "'"));
+
+            }
 
         };
 
@@ -53,7 +60,12 @@ public class OracleEntityDaoTemplate extends BaseEntityDaoTemplate {
         metadataEntity.entityName = metadataEntity.tableName.replace(".","");
         metadataEntity.fieldName = metadataEntity.columnLabel;
         metadataEntity.fieldValue = metadataEntity.objectValue;
+
         List<String> configList = columnConfigMap.get(metadataEntity.columnType);
+        if (configList==null||configList.size()==0){
+            System.out.println("错误的类型"+metadataEntity.columnType);
+            return null;
+        }
         metadataEntity.fieldType = configList.get(1);
         if (metadataEntity.objectValue != null) {
             if("BigDecimal".equals(metadataEntity.fieldType)){ //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下
@@ -75,7 +87,7 @@ public class OracleEntityDaoTemplate extends BaseEntityDaoTemplate {
     @Override
     public MetadataEntity translateDatabase(MetadataEntity metadataEntity) {
 
-        //metadataEntity.tableName = metadataEntity.entityName;
+       // metadataEntity.tableName = metadataEntity.entityName;
         metadataEntity.columnLabel = metadataEntity.fieldName;
         List<String> configList = fieldConfigMap.get(metadataEntity.fieldType);
        // metadataEntity.columnType = configList.get(0);

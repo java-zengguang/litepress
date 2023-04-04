@@ -10,6 +10,9 @@ public class EntityDaoTemplateFactory {
             entityDaoTemplate=new OracleEntityDaoTemplate();
         }
 
+        if("H2".equals(dbType)){
+            entityDaoTemplate=new H2EntityDaoTemplate();
+        }
         return entityDaoTemplate;
     }
 }

@@ -45,11 +45,11 @@ public class NewDBPUtils {
         try {
             if (!conn.getAutoCommit()) {
                 conn.commit();
-
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            conn.rollback();
             return false;
         }
 
@@ -64,6 +64,8 @@ public class NewDBPUtils {
             dataSourceMap.remove(dataSource);
         }
     }
+
+
 
 
 }

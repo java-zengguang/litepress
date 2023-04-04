@@ -20,7 +20,7 @@ public class DynamicClass {
     private static final Logger logger = LoggerFactory.getLogger(DynamicClass.class.getName());
 
 
-    private static String produceEntityJavaCode(List<String> referenceList, String calssName, List<MetadataEntity> columnList, List<String> interfaceList, String parentClass) throws Exception {
+    private static String produceEntityJavaCode(List<String> referenceList, String calssName,String tableName, List<MetadataEntity> columnList, List<String> interfaceList, String parentClass) throws Exception {
 
         List<String> pkFieldList = new ArrayList<>();
 
@@ -35,7 +35,7 @@ public class DynamicClass {
                 }
             }
             sb.append("import java.util.*;\r\n");
-            sb.append("@Model(tableName = \"" + calssName.toUpperCase() + "\")\n");
+            sb.append("@Model(tableName = \"" + tableName.toUpperCase() + "\")\n");
             sb.append("@FieldTypeMode(typeMode = \"entity\")\n");
             sb.append("public class ");
             sb.append(calssName);
@@ -77,15 +77,19 @@ public class DynamicClass {
                     "com.zg.common.annotation.*",
                     "java.math.BigDecimal");
             String entityName = columnList.get(0).entityName;
-            model = DynamicClass.getDynamicModel(importList, entityName, columnList, null, "MainModel");
+            String tableName=columnList.get(0).tableName;
+            if(!"".equals(columnList.get(0).ownName)){
+                tableName=columnList.get(0).ownName+"."+tableName;
+            }
+            model = DynamicClass.getDynamicModel(importList, entityName,tableName, columnList, null, "MainModel");
         }
         return model;
     }
 
-    public static Class getDynamicModel(List<String> referenceList, String className, List<MetadataEntity> columnList, List<String> interfaceList, String parentClass) {
+    public static Class getDynamicModel(List<String> referenceList, String className,String tableName, List<MetadataEntity> columnList, List<String> interfaceList, String parentClass) {
         String javaCode;
         try {
-            javaCode = produceEntityJavaCode(referenceList, className, columnList, interfaceList, parentClass);
+            javaCode = produceEntityJavaCode(referenceList, className, tableName, columnList, interfaceList, parentClass);
             return getDynamicModel(className, javaCode);
         } catch (Exception e) {
             // TODO Auto-generated catch block

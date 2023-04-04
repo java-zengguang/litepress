@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration status="warn" monitorInterval="5">
     <properties>
-        <property name="LOG_HOME">D:/logs</property>
+        <property name="LOG_HOME">./logs</property>
     </properties>
 
     <Appenders>
@@ -18,7 +18,7 @@
         </RandomAccessFile>
 
         <RollingFile name="rollingFile" fileName="${LOG_HOME}/myrollog.log"
-                     filePattern="D:/logs/$${date:yyyy-MM-dd}/myrollog-%d{yyyy-MM-dd-HH-mm}-%i.log">
+                     filePattern="./logs/$${date:yyyy-MM-dd}/myrollog-%d{yyyy-MM-dd-HH-mm}-%i.log">
             <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY" />
             <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] %l %c{36} - %msg%n" />
             <Policies>

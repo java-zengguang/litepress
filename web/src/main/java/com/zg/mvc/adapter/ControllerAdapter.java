@@ -16,13 +16,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.map.HashedMap;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Map;
@@ -68,17 +66,17 @@ public class ControllerAdapter {
     }
 
 
-    public static String resovleViewObject(Object viewObject, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public static String resovleViewString(String viewObject, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String result = "";
         if (viewObject == null) {
             return result;
         }
-        if (viewObject instanceof String) {
-            String viewString = (String) viewObject;
-            String[] stirngArray = viewString.split("::");
-            switch (stirngArray[0]) {
-                case "forward": {
-                    request.getRequestDispatcher(stirngArray[1]).forward(request, response);
+
+        String viewString = (String) viewObject;
+        String[] stirngArray = viewString.split("::");
+        switch (stirngArray[0]) {
+            case "forward": {
+                request.getRequestDispatcher(stirngArray[1]).forward(request, response);
                     break;
                 }
                 case "redirect": {
@@ -101,65 +99,78 @@ public class ControllerAdapter {
                     break;
 
                 }
-                default: {
-                    logger.info(ControllerAdapter.classMap + " 跳转失败");
-                    break;
-                }
+            default: {
+                logger.info(ControllerAdapter.classMap + " 跳转失败");
+                break;
             }
-        } else if (viewObject instanceof ViewObject) {
-
-            switch (((ViewObject) viewObject).operation) {
-                case "forward": {
-                    String url = (String) ((ViewObject) viewObject).url;
-                    request.getRequestDispatcher(url).forward(request, response);
-                    break;
-                }
-                case "redirect": {
-                    String url = (String) ((ViewObject) viewObject).url;
-                    response.sendRedirect(url);
-                    break;
-                }
-                case "staticURL": {
-                    String url = (String) ((ViewObject) viewObject).url;
-                    response.sendRedirect(url);
-                    break;
-                }
-                case "privateURL": {
-                    String url = (String) ((ViewObject) viewObject).url;
-                    request.getRequestDispatcher(url).forward(request, response);
-                    // response.sendRedirect(stirngArray[1]);
-                    break;
-                }
-                case "json": {
-                    String data = (String) ((ViewObject) viewObject).data;
-                    String json = null;
-                    try {
-                        json = JsonUtils.objectToJson(data).toString();
-                    } catch (IllegalAccessException e) {
-                        logger.error("json转化错误", e);
-                    }
-                    response.setHeader("content-type", "application/json");
-                    response.setCharacterEncoding("UTF-8");
-                    result = json;
-                    break;
-                }
-                default: {
-                    logger.info(ControllerAdapter.classMap + " 跳转失败");
-                    break;
-                }
-            }
-        } else if (viewObject instanceof File) {
-            File file = (File) viewObject;
-            response.setContentType("application/force-download");
-            response.setHeader("Content-Disposition",
-                    "attachment;filename=" + file.getName());
-            OutputStream out = response.getOutputStream();
-            int size = IOUtils.inputFile(out, file);
-            logger.info(ControllerAdapter.classMap + "文件下载完成");
         }
+
         return result;
     }
 
+
+    public static String resovleViewObject(ViewObject viewObject, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String result = "";
+        if (viewObject == null) {
+            return result;
+        }
+
+
+        switch (((ViewObject) viewObject).operation) {
+            case "forward": {
+                String url = (String) ((ViewObject) viewObject).url;
+                request.getRequestDispatcher(url).forward(request, response);
+                break;
+            }
+            case "redirect": {
+                String url = (String) ((ViewObject) viewObject).url;
+                response.sendRedirect(url);
+                break;
+            }
+            case "staticURL": {
+                String url = (String) ((ViewObject) viewObject).url;
+                response.sendRedirect(url);
+                break;
+            }
+            case "privateURL": {
+                String url = (String) ((ViewObject) viewObject).url;
+                request.getRequestDispatcher(url).forward(request, response);
+                // response.sendRedirect(stirngArray[1]);
+                break;
+            }
+            case "json": {
+                String data = (String) ((ViewObject) viewObject).data;
+                String json = null;
+                try {
+                    json = JsonUtils.objectToJson(data).toString();
+                } catch (IllegalAccessException e) {
+                    logger.error("json转化错误", e);
+                }
+                response.setHeader("content-type", "application/json");
+                response.setCharacterEncoding("UTF-8");
+                result = json;
+                break;
+            }
+            default: {
+                logger.info(ControllerAdapter.classMap + " 跳转失败");
+                break;
+            }
+        }
+
+        return result;
+    }
+
+
+    public static void resovleViewFile(File viewObject, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        File file = (File) viewObject;
+        response.setContentType("application/force-download");
+        response.setHeader("Content-Disposition",
+                "attachment;filename=" + file.getName());
+        OutputStream out = response.getOutputStream();
+        int size = IOUtils.inputFile(out, file);
+        logger.info(ControllerAdapter.classMap + "文件下载完成");
+    }
 
     //用于处理文件上传
     private static Object[] getInputStream(HttpServletRequest request, HttpServletResponse response, Method method, String inputFilePath) throws IOException, InterruptedException {
@@ -252,12 +263,23 @@ public class ControllerAdapter {
                 result = e.getMessage();
             }
         }
-        result= resovleViewObject(viewObject, request, response);
-        PrintWriter out = response.getWriter();
-        out.print(result);
-        out.flush();
-        out.close();
-
+        //处理返回参数
+        if (viewObject instanceof File) {  //处理文件下载
+            resovleViewFile((File) viewObject, request, response);
+            return;
+        } else {
+            if (viewObject instanceof String) {  //String类型
+                result = resovleViewString((String) viewObject, request, response);
+            }
+            if (viewObject instanceof ViewObject) { //标准viewObject类型
+                result = resovleViewObject((ViewObject) viewObject, request, response);
+            }
+            PrintWriter out = response.getWriter();
+            out.print(result);
+            out.flush();
+            out.close();
+            return;
+        }
 
     }
 }

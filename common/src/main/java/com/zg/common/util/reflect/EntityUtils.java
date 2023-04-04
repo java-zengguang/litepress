@@ -460,10 +460,46 @@ public class EntityUtils {
 
     }
 
+    public static Integer getPKHashCode(Object obj) throws IllegalAccessException {
+        Class modelClass = obj.getClass();
+        Integer pkHashCode = 0;
+
+        Field[] fields = modelClass.getFields();
+
+        for (Field field : fields) {
+            PrimaryKey primaryKey = field.getAnnotation(PrimaryKey.class);
+            if (primaryKey != null) {
+                pkHashCode = pkHashCode + Objects.hashCode(field.get(obj));
+            }
+        }
+
+        return pkHashCode;
+
+    }
+
+    public static Map<Integer,Object> transToPKMap(Collection list) throws IllegalAccessException {
+        Map<Integer,Object> resultMap=new HashMap<>();
+        for(Object obj:list) {
+            Class modelClass = obj.getClass();
+            Integer pkHashCode = 0;
+            Field[] fields = modelClass.getFields();
+            for (Field field : fields) {
+                PrimaryKey primaryKey = field.getAnnotation(PrimaryKey.class);
+                if (primaryKey != null) {
+                    pkHashCode = pkHashCode + Objects.hashCode(field.get(obj));
+                }
+            }
+            resultMap.put(pkHashCode,obj);
+        }
+        return resultMap;
+
+    }
+
+
     public static List getPKData(Object obj) throws IllegalAccessException {
 
         List list = new ArrayList();
-        Class modelClass=obj.getClass();
+        Class modelClass = obj.getClass();
         Field[] fields = modelClass.getFields();
 
         for (Field field : fields) {

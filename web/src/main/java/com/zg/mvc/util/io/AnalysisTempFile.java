@@ -121,7 +121,7 @@ public class AnalysisTempFile {
             rafw.read(bytes);
             rafw.close();
             requestParamEntity.type = "param";
-            requestParamEntity.value = new String(bytes);
+            requestParamEntity.value = new String(bytes,"UTF-8");
         }
 
 

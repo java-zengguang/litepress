@@ -28,7 +28,7 @@ public abstract class BaseAssemble implements Assemble {
         Field[] fields= classes.getFields();
         for(Field field: fields){
             String fileName=field.getName();
-            if(fileName.equals(metadataEntity.fieldName)){
+            if(fileName.equalsIgnoreCase(metadataEntity.fieldName)){
                 if(field.getType().getSimpleName().equals(metadataEntity.fieldType)){
                     field.set(obj,metadataEntity.fieldValue);
                 }else{
@@ -44,6 +44,7 @@ public abstract class BaseAssemble implements Assemble {
         List<MetadataEntity> metadataEntityList=new ArrayList<>();
         Class classes=obj.getClass();
         String tableName = EntityUtils.getTableNameFromModel(classes);
+        String entityName=classes.getSimpleName();
         Field fields[] = classes.getFields();
         EntityDaoTemplate simpleEntityDaoTemplate= EntityDaoTemplateFactory.getTemplate(dbType);
 
@@ -52,7 +53,8 @@ public abstract class BaseAssemble implements Assemble {
             metadataEntity.fieldName=field.getName();
             metadataEntity.fieldType=field.getType().getSimpleName();
             metadataEntity.objectValue=field.get(obj);
-            metadataEntity.entityName=tableName;
+            metadataEntity.tableName=tableName;
+            metadataEntity.entityName=entityName;
             metadataEntity=simpleEntityDaoTemplate.translateDatabase(metadataEntity);
             NotCommitField notCommitField = field.getAnnotation(NotCommitField.class);
             if (notCommitField == null) {

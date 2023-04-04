@@ -1,5 +1,10 @@
 package com.zg.groovy.common
 
+import groovy.time.TimeCategory
+import groovyjarjarpicocli.CommandLine
+
+import java.util.zip.DataFormatException
+
 class IOUtils {
     //全量读取
     static readFullList(File file){
@@ -41,6 +46,13 @@ class IOUtils {
 
 
      static void main(String[] args) {
-         map();
+        // map();
+
+
+
+         use( TimeCategory ) {
+             return STARTDATE  + ((PAYNO as int)-1).month
+         }
+
     }
 }

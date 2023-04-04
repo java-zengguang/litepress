@@ -2,6 +2,7 @@ package com.zg.common.handler;
 
 
 import com.zg.common.dao.database.NewDBPUtils;
+import com.zg.common.dao.database.NewJDBCUtil;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodProxy;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public class CommitClassHandler extends BaseClassHandler {
 
         } catch (Throwable throwable) {
             throwable.printStackTrace();
-            throw new Exception("事务提交失败！");
+            new Exception("事务提交失败");
         } finally {
             NewDBPUtils.release("optionDB");
         }

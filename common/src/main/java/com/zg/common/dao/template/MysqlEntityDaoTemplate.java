@@ -55,7 +55,7 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
 
     @Override
     public MetadataEntity translateEntity(MetadataEntity metadataEntity) {
-        metadataEntity.entityName = metadataEntity.tableName;
+        metadataEntity.entityName = metadataEntity.tableName.replace(".","");
         metadataEntity.fieldName = metadataEntity.columnLabel;
         metadataEntity.fieldValue = metadataEntity.objectValue;
 
@@ -85,7 +85,7 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
     @Override
     public MetadataEntity translateDatabase(MetadataEntity metadataEntity) {
 
-        metadataEntity.tableName = metadataEntity.entityName;
+     //   metadataEntity.tableName = metadataEntity.entityName;
         metadataEntity.columnLabel = metadataEntity.fieldName;
         List<String> configList = fieldConfigMap.get(metadataEntity.fieldType);
        // metadataEntity.columnType = configList.get(0);

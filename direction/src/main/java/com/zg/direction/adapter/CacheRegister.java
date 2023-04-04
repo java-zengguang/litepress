@@ -124,7 +124,11 @@ public class CacheRegister {
     }
 
     public void put(String key, String value) throws Exception {
-        zkClient.create().orSetData().forPath(key, value.getBytes());
+        if(zkClient.checkExists().forPath(key)==null){
+            createNode(key,value);
+        }else{
+           zkClient.setData().forPath(key,value.getBytes());
+        }
     }
 
     public String get(String key) {
@@ -134,8 +138,14 @@ public class CacheRegister {
     public static void main(String args[]) throws Exception {
         System.setProperty("projectRootPath", "D:\\work\\project\\databases\\direction\\target\\classes\\");
         CacheRegister cacheRegister = CacheRegister.getInstance();
-        //cacheRegister.put("/1", "老张");
-        System.out.println(cacheRegister.get("/1"));
+        cacheRegister.put("/2", "老铁");
+        cacheRegister.put("/2", "老王");
+
+        System.out.println(cacheRegister.get("/2"));
+        Thread.sleep(1000);
+        System.out.println(cacheRegister.get("/2"));
+        Thread.sleep(1000);
+        System.out.println(cacheRegister.get("/2"));
 
     }
 

@@ -44,7 +44,8 @@ public class CommitInterfaceHandler implements InvocationHandler {
 
         } catch (Throwable throwable) {
             throwable.printStackTrace();
-            throw new Exception("事务提交失败！");
+            new Exception("事务提交失败");
+
         } finally {
             NewDBPUtils.release(dataSource);
         }

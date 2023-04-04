@@ -167,7 +167,13 @@ public class NewJDBCUtil {
     //查询出列明，数据对应的list集合
     private List<List<MetadataEntity>> select2TempleList(String sql, String tableName) throws SQLException, ClassNotFoundException {
         logger.debug(sql);
-
+        tableName=tableName.trim().toUpperCase();
+        String ownName="";
+        if(tableName.contains(".")){
+            String[] splits= tableName.split("\\.");
+            ownName=splits[0];
+            tableName=splits[1];
+        }
         //获取链接
         Connection conn = NewDBPUtils.getConnection(dataSource);
 
@@ -186,6 +192,7 @@ public class NewJDBCUtil {
         ResultSetMetaData rsmd = rs.getMetaData();
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
+
         int columncount = 0;
         while (rs.next()) {
             List<MetadataEntity> columnList = new ArrayList<>();
@@ -195,6 +202,7 @@ public class NewJDBCUtil {
                 String columnType = rsmd.getColumnTypeName(i);
                 Object columnValue = rs.getObject(i);
                 MetadataEntity metadataEntity = new MetadataEntity();
+                metadataEntity.ownName=ownName;
                 metadataEntity.tableName = tableName;
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
