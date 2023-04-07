@@ -18,11 +18,12 @@
         <module>sso</module>
         <module>login-provider</module>
         <module>groovy-common</module>
+        <module>mq</module>
 
-<!--        <module>webdemo</module>
-        <module>webiodemo</module>
-        <module>scala</module>
-        <module>admin</module>-->
+        <!--        <module>webdemo</module>
+                <module>webiodemo</module>
+                <module>scala</module>
+                <module>admin</module>-->
     </modules>
 
     <repositories>
