@@ -21,8 +21,6 @@ public class ProviderService extends BaseService {
 
     @Override
     public void startHeartbeat() {
-   /*  IMHeartbeatHandle IMHeartbeatHandle =new IMHeartbeatHandle(BaseChannelGroups.getChanelGroups());
-            Thread t=new Thread(IMHeartbeatHandle);
-            t.start();*/
+
     }
 }

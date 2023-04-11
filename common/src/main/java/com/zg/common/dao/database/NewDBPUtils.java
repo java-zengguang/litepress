@@ -1,10 +1,14 @@
 package com.zg.common.dao.database;
 
+import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.factory.ConnectionFactory;
+import com.zg.common.dao.factory.PoolConnectionFactory;
+import com.zg.common.init.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,28 +18,38 @@ import java.util.Map;
  */
 public class NewDBPUtils {
 
-    public  final Logger logger = LoggerFactory.getLogger(this.getClass());
+    public final static Logger logger = LoggerFactory.getLogger(NewDBPUtils.class);
     private static ThreadLocal<Map<String, Connection>> threadLocal = new ThreadLocal();
 
 
     public static Connection getConnection(String dataSource) throws SQLException, ClassNotFoundException {
-        ConnectionFactory factory = ConnectionFactory.getInstance();
         Connection connection = null;
 
         Map<String, Connection> dataSourceMap = threadLocal.get();
+
         if (dataSourceMap == null) {
             dataSourceMap = new HashMap<>();
-            connection = factory.createConnection(dataSource);
-            dataSourceMap.put(dataSource, connection);
             threadLocal.set(dataSourceMap);
-
-        } else {
-            connection = dataSourceMap.get(dataSource);
-            if (connection == null) {
-                connection = factory.createConnection(dataSource);
-                dataSourceMap.put(dataSource, connection);
-            }
         }
+
+        connection = dataSourceMap.get(dataSource);
+
+        if (connection == null) {
+            OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+            if (optionDB.getDBPType() == null || "".equals(optionDB.getDBPType())) {
+                logger.info("使用JDBC链接");
+                Class.forName(optionDB.driver);
+                connection = DriverManager.getConnection(optionDB.url, optionDB.username, optionDB.password);
+                connection.setAutoCommit(false);
+            } else {
+                //从连接池获取链接
+                ConnectionFactory factory = PoolConnectionFactory.getInstance();
+                connection = factory.createConnection(dataSource);
+            }
+            dataSourceMap.put(dataSource, connection);
+        }
+
+
         return connection;
     }
 

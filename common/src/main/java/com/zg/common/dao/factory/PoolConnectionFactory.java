@@ -9,7 +9,6 @@ import com.zg.common.init.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -53,6 +52,7 @@ public class PoolConnectionFactory extends BaseConnectionFactory {
 
     @Override
     public Connection createConnection(String dataSourceName) throws ClassNotFoundException, SQLException {
+
         DataBaseInte dataBaseInte = createDataBasePool(dataSourceName);
         return dataBaseInte.getConnection(dataSourceName);
 

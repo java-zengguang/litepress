@@ -3,10 +3,8 @@ package com.zg.direction.server;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zg.common.util.reflect.EntityUtils;
-import com.zg.common.util.reflect.JsonUtils;
 import com.zg.direction.entity.DTPRequest;
 import com.zg.direction.entity.DTPResponse;
-import com.zg.direction.entity.ParamterEntity;
 import com.zg.network.common.service.BaseServiceHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -24,7 +22,7 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
     public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
 
-    private Object[] getParamters(List<ParamterEntity> paramterEntityList) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+/*    private Object[] getParamters(List<ParamterEntity> paramterEntityList) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         Object[] objects = new Object[paramterEntityList.size()];
         for (int i = 0; i < paramterEntityList.size(); i++) {
             ParamterEntity paramterEntity = paramterEntityList.get(i);
@@ -32,11 +30,10 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
 
         }
         return objects;
-    }
+    }*/
 
     public Class[] getParamterTypes(List<String> paramterTypes) throws ClassNotFoundException {
         Class[] result = new Class[paramterTypes.size()];
-        result = new Class[paramterTypes.size()];
         for (int i = 0; i < result.length; i++) {
             String paramterType = paramterTypes.get(i); //取泛型类型
             result[i] = Class.forName(paramterType);
@@ -45,13 +42,12 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
         return result;
     }
 
-    public Object analysisObject(Type type, Object value) throws ClassNotFoundException {
-        Object result = null;
-        result = value;
+    public Object analysisObject(Type type, Object value) {
+        Object result = value;
         if (value instanceof JSONObject) {
             result = ((JSONObject) value).toJavaObject(type);
         } else if (value instanceof JSONArray) {
-            result=((JSONArray) value).toJavaObject(type);
+            result = ((JSONArray) value).toJavaObject(type);
         }
         return result;
     }
