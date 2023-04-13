@@ -2,6 +2,8 @@ package com.zg.network.im.client;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.url.GetServerRealPathUnit;
 import com.zg.incache.prestuctural.manager.CacheManager;
 import com.zg.network.bean.UserBean;
 import com.zg.network.bean.ZGMPBean;
@@ -10,10 +12,8 @@ import com.zg.network.common.client.BaseClientHandler;
 import com.zg.network.common.fileservcie.ReceiveFile;
 import com.zg.network.common.fileservcie.SendFile;
 import com.zg.network.im.utils.AudioUtils;
-
-import com.zg.common.util.reflect.EntityUtils;
-import com.zg.common.util.url.GetServerRealPathUnit;
 import io.netty.channel.ChannelHandlerContext;
+import org.tinylog.Logger;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -30,7 +30,7 @@ public class IMClientHandler extends BaseClientHandler<String> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws UnknownHostException {
-        // logger.info(" get msg >> " + msg);
+        // Logger.info(" get msg >> " + msg);
 
         ZGMPBean response = JSON.parseObject(msg, ZGMPBean.class);
 
@@ -42,38 +42,38 @@ public class IMClientHandler extends BaseClientHandler<String> {
             case "LOGIN": {
 
                 if (response.status < 0) {
-                    logger.info(response.errorStr);
+                    Logger.info(response.errorStr);
                 } else {
                     UserBean user = new UserBean();
                     user.uuid = response.uuid;
                     user.token = response.token;
                     // clientDB.insert("user",user);
                     CacheManager.put("user", user, 30 * 60 * 1000);
-                    logger.info(response.message);
+                    Logger.info(response.message);
                 }
                 break;
 
             }
             case "SEND": {
                 AudioUtils.playAudioThread();
-                logger.info("message >> " + response.uuid + " : " + response.message);
+                Logger.info("message >> " + response.uuid + " : " + response.message);
                 break;
             }
 
             case "LOGOUT": {
-                logger.info(response.message);
+                Logger.info(response.message);
                 break;
             }
 
             case "SYS": {
-                logger.info(response.message);
+                Logger.info(response.message);
                 break;
             }
 
             case "FILESERVICEREQUEST": {
                 String fileName = new File(response.message).getName();
                 String rootPath = GetServerRealPathUnit.getPath("file");
-                logger.info(response.uuid + " 发送来个文件" + fileName + "  存放在目录：" + rootPath + " 下");
+                Logger.info(response.uuid + " 发送来个文件" + fileName + "  存放在目录：" + rootPath + " 下");
                 //BeanFactory.createBean("IM");
                 // String rootPath="D:\\test";
                 File file = new File(rootPath, fileName);
@@ -103,7 +103,7 @@ public class IMClientHandler extends BaseClientHandler<String> {
             }
 
             case "FILESERVICEREADY": {
-                logger.info("开始传输");
+                Logger.info("开始传输");
                 JSONObject jsonObj = JSON.parseObject(response.message);
                 File file = new File(jsonObj.getString("filePath"));
                 SendFile sendFile = new SendFile(file, jsonObj.getString("ip"), jsonObj.getInteger("port"));
@@ -113,7 +113,7 @@ public class IMClientHandler extends BaseClientHandler<String> {
             }
 
             case "HEARTBEAT": {
-                //    logger.info("message  :" + response.message);
+                //    Logger.info("message  :" + response.message);
                 String json = null;
                 ZGMPBean request = new ZGMPBean("REQUEST");
                 request.methodType = "HEARTBEAT";

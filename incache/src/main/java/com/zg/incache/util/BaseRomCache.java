@@ -42,7 +42,7 @@ public abstract class BaseRomCache implements RomCacheInte {
             }
             modelList.set(index, model);
         } else {
-            //logger.info(message.get("error_print_1"));
+            //Logger.info(message.get("error_print_1"));
         }
         return true;
     }
@@ -59,7 +59,7 @@ public abstract class BaseRomCache implements RomCacheInte {
         try {
             num_list = findModelIndex(terms);
         } catch (NoSuchFieldException | SecurityException
-                | IllegalArgumentException | IllegalAccessException e) {
+                 | IllegalArgumentException | IllegalAccessException e) {
             e.printStackTrace();
             return false;
         }
@@ -70,7 +70,7 @@ public abstract class BaseRomCache implements RomCacheInte {
             while (it.hasPrevious()) {
                 i = (int) it.previous();
                 modelList.remove(i);
-                //	logger.info(message.get("delete_print_1")+i);
+                //	Logger.info(message.get("delete_print_1")+i);
             }
         }
         return true;
@@ -87,7 +87,7 @@ public abstract class BaseRomCache implements RomCacheInte {
                         modelList.set(j + 1, copyJ);
                     }
                 } catch (NoSuchFieldException | SecurityException
-                        | IllegalArgumentException | IllegalAccessException e) {
+                         | IllegalArgumentException | IllegalAccessException e) {
                     e.printStackTrace();
                     return false;
                 }
@@ -130,7 +130,7 @@ public abstract class BaseRomCache implements RomCacheInte {
         try {
             num_list = findModelIndex(terms);
         } catch (NoSuchFieldException | SecurityException
-                | IllegalArgumentException | IllegalAccessException e) {
+                 | IllegalArgumentException | IllegalAccessException e) {
 
             e.printStackTrace();
 
@@ -162,7 +162,7 @@ public abstract class BaseRomCache implements RomCacheInte {
             }
 
         } catch (NoSuchFieldException | SecurityException
-                | IllegalArgumentException | IllegalAccessException e) {
+                 | IllegalArgumentException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return false;

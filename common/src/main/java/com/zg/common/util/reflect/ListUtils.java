@@ -41,7 +41,7 @@ public class ListUtils {
             }
             modelList.set(index, model);
         } else {
-            //logger.info(message.get("error_print_1"));
+            //Logger.info(message.get("error_print_1"));
         }
         return true;
     }
@@ -53,7 +53,7 @@ public class ListUtils {
         try {
             num_list = findModelIndex(classes, modelList, terms);
         } catch (NoSuchFieldException | SecurityException
-                | IllegalArgumentException | IllegalAccessException e) {
+                 | IllegalArgumentException | IllegalAccessException e) {
             e.printStackTrace();
             return false;
         }
@@ -64,7 +64,7 @@ public class ListUtils {
             while (it.hasPrevious()) {
                 i = (int) it.previous();
                 modelList.remove(i);
-                //	logger.info(message.get("delete_print_1")+i);
+                //	Logger.info(message.get("delete_print_1")+i);
             }
         }
         return true;
@@ -81,7 +81,7 @@ public class ListUtils {
                         modelList.set(j + 1, copyJ);
                     }
                 } catch (NoSuchFieldException | SecurityException
-                        | IllegalArgumentException | IllegalAccessException e) {
+                         | IllegalArgumentException | IllegalAccessException e) {
                     e.printStackTrace();
                     return false;
                 }
@@ -124,7 +124,7 @@ public class ListUtils {
         try {
             num_list = findModelIndex(classes, modelList, terms);
         } catch (NoSuchFieldException | SecurityException
-                | IllegalArgumentException | IllegalAccessException e) {
+                 | IllegalArgumentException | IllegalAccessException e) {
 
             e.printStackTrace();
 

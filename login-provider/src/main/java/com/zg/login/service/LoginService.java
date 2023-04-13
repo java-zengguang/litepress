@@ -4,8 +4,7 @@ package com.zg.login.service;
 import com.zg.login.dao.LoginEntityDao;
 import com.zg.login.inte.LoginServiceInte;
 import org.apache.commons.collections.map.HashedMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -15,7 +14,6 @@ import java.util.*;
  */
 public class LoginService implements LoginServiceInte {
 
-    public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     private LoginEntityDao loginDao = new LoginEntityDao();
 
     public String verification(String username, String passworld) {
@@ -114,7 +112,7 @@ public class LoginService implements LoginServiceInte {
 
 
     public boolean updateToken(String uuid, String token, String url) {
-        logger.info(uuid + token + url);
+        Logger.info(uuid + token + url);
         if (uuid == null) {
             uuid = "";
         }

@@ -8,7 +8,6 @@ import com.zg.sso.common.SimpleLogin;
 import com.zg.sso.entity.SSOOpthion;
 import jakarta.servlet.*;
 
-
 import java.io.IOException;
 
 /**

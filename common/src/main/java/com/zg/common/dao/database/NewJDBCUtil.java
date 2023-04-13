@@ -1,29 +1,27 @@
 package com.zg.common.dao.database;
 
-import com.esotericsoftware.kryo.serializers.ClosureSerializer;
-import com.esotericsoftware.kryo.serializers.JavaSerializer;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Output;
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.assemble.SimpleAssemble;
 import com.zg.common.dao.template.EntityDaoTemplate;
-
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Output;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
 import com.zg.common.util.reflect.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
-import java.io.*;
-import java.lang.invoke.SerializedLambda;
-import java.math.BigDecimal;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class NewJDBCUtil {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     private String dataSource;
 
 
@@ -39,7 +37,7 @@ public class NewJDBCUtil {
                 return stringArray[i + 1].toUpperCase();
             }
         }
-        logger.debug(" getTableName   未找到tableName");
+        Logger.debug(" getTableName   未找到tableName");
         return null;
     }
 
@@ -49,15 +47,15 @@ public class NewJDBCUtil {
         Connection conn = NewDBPUtils.getConnection(dataSource);
         Statement stmt = conn.createStatement();
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-        logger.debug("-----------------start batch-----------");
+        Logger.debug("-----------------start batch-----------");
         for (Object model : modelList) {
             String sql = ModelSQLUtils.insert(model, tableName, optionDB.DBType);
-            logger.info(sql);
+            Logger.info(sql);
 
             stmt.addBatch(sql);
 
         }
-        logger.debug("------------------end batch-------------");
+        Logger.debug("------------------end batch-------------");
         result = stmt.executeBatch();
         stmt.close();
         return result;
@@ -100,7 +98,7 @@ public class NewJDBCUtil {
 
     //执行增删改
     private Integer operation(String sql) throws SQLException, ClassNotFoundException {
-        logger.debug(sql);
+        Logger.debug(sql);
         Connection conn = NewDBPUtils.getConnection(dataSource);
         PreparedStatement pstmt = conn.prepareStatement(sql);
         int x = pstmt.executeUpdate();
@@ -144,13 +142,13 @@ public class NewJDBCUtil {
         Connection conn = NewDBPUtils.getConnection(dataSource);
 
         stmt = conn.createStatement();
-        logger.info("--------------start batch-----------");
+        Logger.info("--------------start batch-----------");
         for (String sql : sqlList) {
-            logger.info(sql);
+            Logger.info(sql);
             stmt.addBatch(sql);
         }
         i = stmt.executeBatch();
-        logger.info("--------------end batch-----------");
+        Logger.info("--------------end batch-----------");
         stmt.close();
 
         return i;
@@ -166,13 +164,13 @@ public class NewJDBCUtil {
 
     //查询出列明，数据对应的list集合
     private List<List<MetadataEntity>> select2TempleList(String sql, String tableName) throws SQLException, ClassNotFoundException {
-        logger.debug(sql);
-        tableName=tableName.trim().toUpperCase();
-        String ownName="";
-        if(tableName.contains(".")){
-            String[] splits= tableName.split("\\.");
-            ownName=splits[0];
-            tableName=splits[1];
+        Logger.debug(sql);
+        tableName = tableName.trim().toUpperCase();
+        String ownName = "";
+        if (tableName.contains(".")) {
+            String[] splits = tableName.split("\\.");
+            ownName = splits[0];
+            tableName = splits[1];
         }
         //获取链接
         Connection conn = NewDBPUtils.getConnection(dataSource);
@@ -202,7 +200,7 @@ public class NewJDBCUtil {
                 String columnType = rsmd.getColumnTypeName(i);
                 Object columnValue = rs.getObject(i);
                 MetadataEntity metadataEntity = new MetadataEntity();
-                metadataEntity.ownName=ownName;
+                metadataEntity.ownName = ownName;
                 metadataEntity.tableName = tableName;
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
@@ -325,7 +323,7 @@ public class NewJDBCUtil {
     public List<Map> selectToMapList(String sql) throws SQLException, ClassNotFoundException {
 
         // 记录error级别的信息
-        logger.debug(sql);
+        Logger.debug(sql);
         List list = new ArrayList();
         try {
             Connection conn = NewDBPUtils.getConnection(dataSource);

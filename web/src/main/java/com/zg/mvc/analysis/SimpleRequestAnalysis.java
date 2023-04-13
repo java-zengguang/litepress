@@ -9,10 +9,10 @@ public class SimpleRequestAnalysis extends BaseRequestAnalysis {
 
     @Override
     public Object extractParam(ParamEntity paramEntity) {
-        Object obj=null;
-            if(EntityUtils.isPrimitive(paramEntity.paramType)){
-                obj = EntityUtils.translateType((String) paramEntity.paramObject,paramEntity.paramType);
-            }
+        Object obj = null;
+        if (EntityUtils.isPrimitive(paramEntity.paramType)) {
+            obj = EntityUtils.translateType((String) paramEntity.paramObject, paramEntity.paramType);
+        }
 
         return obj;
     }

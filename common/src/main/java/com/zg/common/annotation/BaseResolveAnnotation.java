@@ -1,10 +1,9 @@
 package com.zg.common.annotation;
 
-import com.zg.common.util.CommonUtil;
+
 import org.apache.commons.collections.map.HashedMap;
 
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,7 +20,7 @@ public abstract class BaseResolveAnnotation {
     public Map<String, Object> getAnnotationClass(String packageName, Class annotationClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnknownHostException {
 
         Map<String, Object> resultMap = new HashedMap();
-        Set<Class<?>> classList =  ScanAnnotation.getClassFromAnn(annotationClass);
+        Set<Class<?>> classList = ScanAnnotation.getClassFromAnn(annotationClass);
         for (Class classes : classList) {
             Object annotationObject = classes.getAnnotation(annotationClass);
             if (annotationObject != null) {

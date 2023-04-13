@@ -1,15 +1,14 @@
 package com.zg.network.im.service;
 
 import com.alibaba.fastjson.JSON;
+import com.zg.common.util.reflect.EntityUtils;
 import com.zg.network.bean.ChannelBean;
 import com.zg.network.bean.ZGMPBean;
 import com.zg.network.common.service.BaseServiceHandler;
 import com.zg.network.im.login.LoginManager;
-import com.zg.common.util.reflect.EntityUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.Map;
  */
 public class IMServerHandle extends BaseServiceHandler<String> {
 
-    public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /***
      * 消息操作的业务类
@@ -33,7 +31,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) {
-        // logger.info(" get msg >> " + msg);
+        // Logger.info(" get msg >> " + msg);
         ZGMPBean request = (ZGMPBean) EntityUtils.unSerialize(msg, ZGMPBean.class);//把JSON数据进行反序列化
         ZGMPBean response = new ZGMPBean("RESPONSE");
         response.sendTime = System.currentTimeMillis();
@@ -48,7 +46,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
         }
 
         String methodType = request.methodType;
-        // logger.info("the req method >> " + methodType);
+        // Logger.info("the req method >> " + methodType);
         response.methodType = methodType;
         if (methodType != null) {
             switch (methodType) {
@@ -73,7 +71,7 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                 }
 
                 case ("SEND"): {
-                    logger.info(request.toString());
+                    Logger.info(request.toString());
                     String uuid = request.targetUuid;
                     if (uuid != null && "all".equals(uuid)) {
                         List<Channel> channelList = IMChannelGroups.getAllChannel();
@@ -129,34 +127,34 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                 }
 
                 case ("HEARTBEAT"): {
-                    //  logger.info(request.message);
+                    //  Logger.info(request.message);
                     String uuid = request.uuid;
                     ChannelBean channelBean = IMChannelGroups.get(uuid);
                     if (channelBean != null && channelBean.heartBeatID.equals(request.heartBeatID)) {
                         long expectTime = channelBean.time + TIMEOUT;
                         long actualTime = new Date().getTime();
-                   /* logger.info("应到时间" + expectTime);
-                    logger.info("实到时间" + actualTime);*/
+                   /* Logger.info("应到时间" + expectTime);
+                    Logger.info("实到时间" + actualTime);*/
                         if (expectTime > actualTime) {
                             channelBean.count = 3;
                         } else {
-                            logger.info(channelBean.uuid + "The " + channelBean.count + "th disconnection");
+                            Logger.info(channelBean.uuid + "The " + channelBean.count + "th disconnection");
                         }
                     } else {
-                        logger.info("Heartbeat packet timeout");
+                        Logger.info("Heartbeat packet timeout");
                     }
                     break;
                 }
 
 
                 case "FILESERVICEREQUEST": {
-                    logger.info("请求打开文件服务");
+                    Logger.info("请求打开文件服务");
 
                     break;
                 }
 
                 case "FILESERVICEREADY": {
-                    logger.info("文件服务已打开");
+                    Logger.info("文件服务已打开");
 
                     break;
                 }

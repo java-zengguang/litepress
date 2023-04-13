@@ -3,15 +3,14 @@ package com.zg.common.dao.database;
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.assemble.SimpleAssemble;
+import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
-import com.zg.common.util.reflect.ModelSQLUtils;
-import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.util.reflect.DynamicClass;
 import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.ModelSQLUtils;
 import com.zg.common.util.reflect.SerializeObjectUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import java.util.Map;
 
 
 public class NotColseJDBCUtil {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     private String dataSource;
 
 
@@ -37,7 +35,7 @@ public class NotColseJDBCUtil {
                 return stringArray[i + 1];
             }
         }
-        logger.debug(" getTableName   未找到tableName");
+        Logger.debug(" getTableName   未找到tableName");
         return null;
     }
 
@@ -46,16 +44,16 @@ public class NotColseJDBCUtil {
         int[] result = null;
         Connection conn = NewDBPUtils.getConnection(dataSource);
         Statement stmt = conn.createStatement();
-        OptionDB optionDB=(OptionDB)Config.getConfig(dataSource);
-        logger.debug("-----------------start batch-----------");
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        Logger.debug("-----------------start batch-----------");
         for (Object model : modelList) {
-            String sql = ModelSQLUtils.insert(model, tableName,optionDB.DBType);
-            logger.info(sql);
+            String sql = ModelSQLUtils.insert(model, tableName, optionDB.DBType);
+            Logger.info(sql);
 
             stmt.addBatch(sql);
 
         }
-        logger.debug("------------------end batch-------------");
+        Logger.debug("------------------end batch-------------");
         result = stmt.executeBatch();
         stmt.close();
         return result;
@@ -78,7 +76,7 @@ public class NotColseJDBCUtil {
 
     //执行增删改
     private Integer operation(String sql) throws SQLException, ClassNotFoundException {
-        logger.debug(sql);
+        Logger.debug(sql);
         Connection conn = NewDBPUtils.getConnection(dataSource);
         PreparedStatement pstmt = conn.prepareStatement(sql);
         int x = pstmt.executeUpdate();
@@ -122,13 +120,13 @@ public class NotColseJDBCUtil {
         Connection conn = NewDBPUtils.getConnection(dataSource);
 
         stmt = conn.createStatement();
-        logger.info("--------------start batch-----------");
+        Logger.info("--------------start batch-----------");
         for (String sql : sqlList) {
-            logger.info(sql);
+            Logger.info(sql);
             stmt.addBatch(sql);
         }
         i = stmt.executeBatch();
-        logger.info("--------------end batch-----------");
+        Logger.info("--------------end batch-----------");
         stmt.close();
 
         return i;
@@ -137,17 +135,17 @@ public class NotColseJDBCUtil {
 
     //查询出列明，数据对应的list集合
     private List<List<MetadataEntity>> select2TempleList(String sql, String tableName) throws SQLException, ClassNotFoundException {
-        logger.debug(sql);
-        String ownName="";
-        if(tableName.contains(".")){
-            String[] splits= tableName.split("\\.");
-            ownName=splits[0];
-            tableName=splits[1];
+        Logger.debug(sql);
+        String ownName = "";
+        if (tableName.contains(".")) {
+            String[] splits = tableName.split("\\.");
+            ownName = splits[0];
+            tableName = splits[1];
         }
         //获取链接
         Connection conn = NewDBPUtils.getConnection(dataSource);
         //获取组件
-        List<String> pkColumnList=new ArrayList<>();
+        List<String> pkColumnList = new ArrayList<>();
         DatabaseMetaData dmd = conn.getMetaData();
         ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
         while (dmdrs.next()) {
@@ -159,8 +157,8 @@ public class NotColseJDBCUtil {
         PreparedStatement pstmt = conn.prepareStatement(sql);
         ResultSet rs = pstmt.executeQuery();
         ResultSetMetaData rsmd = rs.getMetaData();
-        OptionDB optionDB=(OptionDB)Config.getConfig(dataSource);
-        EntityDaoTemplate entityDaoTemplate= EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
         int columncount = 0;
         while (rs.next()) {
             List<MetadataEntity> columnList = new ArrayList<>();
@@ -170,23 +168,23 @@ public class NotColseJDBCUtil {
                 String columnType = rsmd.getColumnTypeName(i);
                 Object columnValue = rs.getObject(i);
                 MetadataEntity metadataEntity = new MetadataEntity();
-                metadataEntity.ownName=ownName;
+                metadataEntity.ownName = ownName;
                 metadataEntity.tableName = tableName;
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
                 metadataEntity.objectValue = columnValue;
                 metadataEntity.dbType = optionDB.DBType;
-                if(pkColumnList.contains(columnLabel)){
-                    metadataEntity.isPK="1";
-                }else{
-                    metadataEntity.isPK="0";
+                if (pkColumnList.contains(columnLabel)) {
+                    metadataEntity.isPK = "1";
+                } else {
+                    metadataEntity.isPK = "0";
                 }
-                if(rsmd.isAutoIncrement(i)){
-                    metadataEntity.isAutoIncrease="1";  //自增
-                    metadataEntity.isNotCommit="1"; //自增不提交
-                }else{
-                    metadataEntity.isAutoIncrease="0";
-                    metadataEntity.isNotCommit="0";  //不自增的列才提交
+                if (rsmd.isAutoIncrement(i)) {
+                    metadataEntity.isAutoIncrease = "1";  //自增
+                    metadataEntity.isNotCommit = "1"; //自增不提交
+                } else {
+                    metadataEntity.isAutoIncrease = "0";
+                    metadataEntity.isNotCommit = "0";  //不自增的列才提交
                 }
                 //   System.out.println(columnLabel+" "+columnType);
                 metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
@@ -291,7 +289,7 @@ public class NotColseJDBCUtil {
     private List<Map> selectToMapList(String sql) throws SQLException, ClassNotFoundException {
 
         // 记录error级别的信息
-        logger.debug(sql);
+        Logger.debug(sql);
         List list = new ArrayList();
         try {
             Connection conn = NewDBPUtils.getConnection(dataSource);

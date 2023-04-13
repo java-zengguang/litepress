@@ -3,8 +3,7 @@ package com.zg.common.util.reflect;
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.dao.assemble.Assemble;
 import com.zg.common.dao.assemble.SimpleAssemble;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
@@ -14,7 +13,6 @@ import java.util.stream.Collectors;
 
 public class ModelSQLUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(ModelSQLUtils.class);
 
     public static void fillSql(Object models) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
 
@@ -126,11 +124,11 @@ public class ModelSQLUtils {
     }
 
 
-    public static String updateByPK(Object model,List<String> pkList,String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
-       if(pkList==null||pkList.size()==0){
-           logger.error("没有输入主键");
-       }
-        String sql ;
+    public static String updateByPK(Object model, List<String> pkList, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
+        if (pkList == null || pkList.size() == 0) {
+            Logger.error("没有输入主键");
+        }
+        String sql;
         String condition = " ";
         String tableName = EntityUtils.getTableNameFromModel(model.getClass());
         List<String> memberList = new ArrayList();
@@ -138,10 +136,10 @@ public class ModelSQLUtils {
         Assemble assemble = new SimpleAssemble(dbType);
         List<MetadataEntity> list = assemble.analysis(model);
         for (MetadataEntity entity : list) {
-            if(pkList.containsAll(Arrays.asList(entity.columnValue,entity.columnValue.toLowerCase(),entity.columnValue.toUpperCase())))  {  //主鍵條件
-                condition = condition + " and " + entity.fieldName+"="+entity.columnValue;
-            }else{
-                if("1".equals(entity.isNotCommit)) {
+            if (pkList.containsAll(Arrays.asList(entity.columnValue, entity.columnValue.toLowerCase(), entity.columnValue.toUpperCase()))) {  //主鍵條件
+                condition = condition + " and " + entity.fieldName + "=" + entity.columnValue;
+            } else {
+                if ("1".equals(entity.isNotCommit)) {
                     memberList.add(entity.fieldName);
                     valuesList.add(entity.columnValue);
                 }
@@ -150,10 +148,10 @@ public class ModelSQLUtils {
         //  List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
         StringBuffer memberValues = new StringBuffer();
         for (int i = 0; i < memberList.size(); i++) {
-            if (memberList.get(i) != null  && !"".equals(valuesList.get(i)) ) {
-                if( valuesList.get(i) != null) {
+            if (memberList.get(i) != null && !"".equals(valuesList.get(i))) {
+                if (valuesList.get(i) != null) {
                     memberValues.append(" " + memberList.get(i) + "=" + valuesList.get(i) + ",");
-                }else{
+                } else {
                     memberValues.append(" " + memberList.get(i) + " = null ,");
                 }
             }
@@ -165,14 +163,14 @@ public class ModelSQLUtils {
     }
 
 
-    public static String deleteByPK(Object o,List<String> pkList, String dbType) throws Exception {
+    public static String deleteByPK(Object o, List<String> pkList, String dbType) throws Exception {
         StringBuffer condition = new StringBuffer();
         Assemble assemble = new SimpleAssemble(dbType);
         List<MetadataEntity> list = assemble.analysis(o);
         String tableName = "";
         for (MetadataEntity entity : list) {
             tableName = entity.tableName;
-            if (pkList.containsAll(Arrays.asList(entity.columnValue,entity.columnValue.toLowerCase(),entity.columnValue.toUpperCase()))) {
+            if (pkList.containsAll(Arrays.asList(entity.columnValue, entity.columnValue.toLowerCase(), entity.columnValue.toUpperCase()))) {
                 condition.append(entity.columnLabel + "=" + entity.columnValue + " and ");
             }
         }
@@ -182,8 +180,8 @@ public class ModelSQLUtils {
     }
 
 
-    public static String updateByPK(Object model,String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
-        String sql ;
+    public static String updateByPK(Object model, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
+        String sql;
         String condition = " ";
         String tableName = EntityUtils.getTableNameFromModel(model.getClass());
         List<String> memberList = new ArrayList();
@@ -191,29 +189,29 @@ public class ModelSQLUtils {
         Assemble assemble = new SimpleAssemble(dbType);
         List<MetadataEntity> list = assemble.analysis(model);
         for (MetadataEntity entity : list) {
-                if("1".equals(entity.isPK))  {  //主鍵條件
-                    condition = condition + " and " + entity.fieldName+"="+entity.columnValue;
+            if ("1".equals(entity.isPK)) {  //主鍵條件
+                condition = condition + " and " + entity.fieldName + "=" + entity.columnValue;
 
-                }else{
-                    if("1".equals(entity.isNotCommit)) {
-                        memberList.add(entity.fieldName);
-                        valuesList.add(entity.columnValue);
-                    }
+            } else {
+                if ("1".equals(entity.isNotCommit)) {
+                    memberList.add(entity.fieldName);
+                    valuesList.add(entity.columnValue);
                 }
+            }
         }
         //  List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
         StringBuffer memberValues = new StringBuffer();
         for (int i = 0; i < memberList.size(); i++) {
-            if (memberList.get(i) != null  && !"".equals(valuesList.get(i)) ) {
-                if( valuesList.get(i) != null) {
+            if (memberList.get(i) != null && !"".equals(valuesList.get(i))) {
+                if (valuesList.get(i) != null) {
                     memberValues.append(" " + memberList.get(i) + "=" + valuesList.get(i) + ",");
-                }else{
+                } else {
                     memberValues.append(" " + memberList.get(i) + " = null ,");
                 }
             }
         }
         memberValues.setCharAt(memberValues.length() - 1, ' ');
-        if(condition==null||"".equals(condition)){
+        if (condition == null || "".equals(condition)) {
             return "";
         }
         sql = "update " + tableName + " set " + memberValues + "where 1=1 " + condition;
@@ -421,7 +419,7 @@ public class ModelSQLUtils {
             sqlList.add(sql);
         }
 
-        logger.info("SQLList   " + sqlList);
+        Logger.info("SQLList   " + sqlList);
 
         return sqlList;
 

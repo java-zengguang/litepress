@@ -29,7 +29,7 @@ public class DTPRequest extends MainModel {
 
     public List<String> methodParamterDataTypes;
 
-    public List<Map<String,String>> methodParamterDataTypeMapList;
+    public List<Map<String, String>> methodParamterDataTypeMapList;
 
     public DTPRequest() {
     }

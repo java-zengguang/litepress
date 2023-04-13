@@ -1,7 +1,6 @@
 package com.zg.direction.adapter;
 
 
-import com.google.common.collect.BoundType;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.zg.common.init.Config;
@@ -20,10 +19,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.data.Stat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.net.UnknownHostException;
 import java.util.*;
@@ -31,16 +27,10 @@ import java.util.concurrent.CountDownLatch;
 
 public class ProviderRegister {
 
-    private static ProviderRegister providerRegister = null;  //单例
-
-    private static Logger logger = LoggerFactory.getLogger(ProviderRegister.class);
-
-    private static ProviderConfig providerConfig ; //初始化配置
-
-    private static Thread thread; //服务守护线程
-
     public static final Table<String, String, ProviderEntity> providerTable = HashBasedTable.create();
-    private static Stat stat = new Stat();
+    private static ProviderRegister providerRegister = null;  //单例
+    private static ProviderConfig providerConfig; //初始化配置
+    private static Thread thread; //服务守护线程
     private static CuratorFramework zkClient = null;
 
 
@@ -53,7 +43,7 @@ public class ProviderRegister {
 
 
     private static void init() throws InterruptedException {
-        providerConfig=  (ProviderConfig) Config.getConfig("providerConfig");
+        providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
 
         zkClient = CuratorFrameworkFactory.builder().connectString(providerConfig.registerURL)
                 .sessionTimeoutMs(5000)
@@ -73,24 +63,24 @@ public class ProviderRegister {
         //添加错误监听器
         treeCache.getUnhandledErrorListenable().addListener(new UnhandledErrorListener() {
             public void unhandledError(String s, Throwable throwable) {
-                logger.info(".错误原因：" + throwable.getMessage() + "\n==============\n");
+                Logger.info(".错误原因：" + throwable.getMessage() + "\n==============\n");
             }
         });
 
-        //节点变化的监logger.info听器
+        //节点变化的监Logger.info听器
         treeCache.getListenable().addListener(new TreeCacheListener() {
             public void childEvent(CuratorFramework curatorFramework, TreeCacheEvent treeCacheEvent) throws Exception {
 
                 if (treeCacheEvent.getType() == TreeCacheEvent.Type.INITIALIZED) {
                     countDownLatch.countDown();
-                    logger.info("初始化！");
+                    Logger.info("初始化！");
                 }
                 if (treeCacheEvent.getType() == TreeCacheEvent.Type.CONNECTION_RECONNECTED) {
-                    logger.info("重新连接！");
+                    Logger.info("重新连接！");
                 }
                 if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_ADDED) {
                     ChildData childData = treeCacheEvent.getData();
-                    logger.info("创建！" + childData.getPath());
+                    Logger.info("创建！" + childData.getPath());
                     if (childData.getData() != null && childData.getData().length > 0) {
                         ProviderEntity provider = (ProviderEntity) JsonUtils.jsonToObject(new String(childData.getData()), ProviderEntity.class);
                         providerTable.put(provider.providerName, provider.path, provider);
@@ -99,7 +89,7 @@ public class ProviderRegister {
                 }
                 if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_UPDATED) {
                     ChildData childData = treeCacheEvent.getData();
-                    logger.info("修改！" + childData.getPath());
+                    Logger.info("修改！" + childData.getPath());
                     if (childData.getData() != null && childData.getData().length > 0) {
                         ProviderEntity provider = (ProviderEntity) JsonUtils.jsonToObject(new String(childData.getData()), ProviderEntity.class);
                         providerTable.put(provider.providerName, provider.path, provider);
@@ -107,7 +97,7 @@ public class ProviderRegister {
                 }
                 if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_REMOVED) {
                     ChildData childData = treeCacheEvent.getData();
-                    logger.info("删除！" + childData.getPath());
+                    Logger.info("删除！" + childData.getPath());
                     ProviderEntity provider = (ProviderEntity) JsonUtils.jsonToObject(new String(childData.getData()), ProviderEntity.class);
                     providerTable.remove(provider.providerName, provider.path);
                 }
@@ -135,19 +125,20 @@ public class ProviderRegister {
             thread = new Thread(providerService);
             thread.start();
         }
-        logger.info("启动服务：" + thread.getId() + "：" + thread.getState());
+        Logger.info("启动服务：" + thread.getId() + "：" + thread.getState());
     }
+
     private Map<String, Object> loadProvider() {
         Map<String, Object> providerMap = null;
         ProviderResovleAnnotation pra = ProviderResovleAnnotation.getInstance();
         try {
             providerMap = pra.getProviders();
         } catch (ClassNotFoundException e) {
-            logger.error("ProviderAdapter初始化错误", e);
+            Logger.error("ProviderAdapter初始化错误", e);
         } catch (IllegalAccessException e) {
-            logger.error("ProviderAdapter初始化错误", e);
+            Logger.error("ProviderAdapter初始化错误", e);
         } catch (InstantiationException e) {
-            logger.error("ProviderAdapter初始化错误", e);
+            Logger.error("ProviderAdapter初始化错误", e);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -164,7 +155,7 @@ public class ProviderRegister {
             String childPath = providerName + "/" + (new Date()).getTime();
             //  zookeeperUtil.createNode(path, value);
             createChildNode(providerName, childPath, providerEntity);
-            logger.info("服务注册：" + childPath);
+            Logger.info("服务注册：" + childPath);
 
         }
         //  Thread.sleep(Integer.MAX_VALUE);
@@ -200,7 +191,7 @@ public class ProviderRegister {
 
     private void createNode(String path, String value) throws Exception {
         zkClient.create().creatingParentContainersIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path, value.getBytes());
-        logger.info("success create znode: " + path);
+        Logger.info("success create znode: " + path);
     }
 
     //创建节点需要同步操作
@@ -213,7 +204,7 @@ public class ProviderRegister {
         providerEntity.providerName = providerName;
         String value = JsonUtils.objectToJson(providerEntity).toString();
         createNode(childPath, value);//创建子节点
-        logger.info("success create znode: " + providerEntity.path);
+        Logger.info("success create znode: " + providerEntity.path);
     }
 
 
@@ -221,7 +212,7 @@ public class ProviderRegister {
         //去远程获取
         List<String> dataList = zkClient.getChildren().forPath(providerName);
         for (String data : dataList) {
-           ProviderEntity provider= findProviderByPath(providerName+"/"+data);
+            ProviderEntity provider = findProviderByPath(providerName + "/" + data);
             providerTable.put(provider.providerName, provider.path, provider);
         }
 

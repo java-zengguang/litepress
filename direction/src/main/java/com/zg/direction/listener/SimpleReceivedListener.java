@@ -20,13 +20,13 @@ public class SimpleReceivedListener implements MessgeReceivedListener {
     }
 
     @Override
-    public  void onMessageReceived(Object response) {
+    public void onMessageReceived(Object response) {
 
         DTPResponse dtpResponse = (DTPResponse) unSerialize((String) response, DTPResponse.class);
         if (response != null) {
             resultMap.put(dtpResponse.id, dtpResponse);
-            Thread thread= ConsumerClientUtil.synRequestThreadMap.remove(dtpResponse.id);
-            if(thread!=null){  //是空的说明走异步，不需要返回消息
+            Thread thread = ConsumerClientUtil.synRequestThreadMap.remove(dtpResponse.id);
+            if (thread != null) {  //是空的说明走异步，不需要返回消息
                 LockSupport.unpark(thread);  //唤醒线程
             }
         }
@@ -44,7 +44,7 @@ public class SimpleReceivedListener implements MessgeReceivedListener {
     }
 
 
-    public  Object getResult(String id)   {
+    public Object getResult(String id) {
         DTPResponse response = (DTPResponse) resultMap.remove(id);
         return response;
     }

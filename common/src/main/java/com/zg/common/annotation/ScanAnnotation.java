@@ -31,7 +31,7 @@ public class ScanAnnotation {
             if (!classes.isAnnotation()) {
                 Annotation[] annotations = classes.getAnnotations();
                 for (Annotation annotation : annotations) {
-                    Class annotationType=annotation.annotationType();
+                    Class annotationType = annotation.annotationType();
                     Set<Class<?>> classSet = annotationMap.get(annotationType);
                     if (classSet == null) {
                         classSet = new HashSet<>();
@@ -47,9 +47,14 @@ public class ScanAnnotation {
     }
 
 
-
     private static Set<Class<?>> scanModuleClass(Module module) {
         Set<String> packages = module.getPackages();
+/*        Set<String> subPackages = new HashSet<>();
+        for (String s:packages){
+            if(s.contains("com")){
+                subPackages.add(s);
+            }
+        }*/
         Set<Class<?>> classeSet = new HashSet<>();
         for (String aPackage : packages) {
             classeSet.addAll(CommonUtil.getClasses(aPackage));
@@ -58,12 +63,12 @@ public class ScanAnnotation {
     }
 
 
-    public static Set<Class<?>> getClassFromAnn(Class annotation){
-       return annotationMap.get(annotation);
+    public static Set<Class<?>> getClassFromAnn(Class annotation) {
+        return annotationMap.get(annotation);
     }
 
     public static void main(String args[]) {
         ScanAnnotation.scanModule(ScanAnnotation.class.getModule());
-        System.out.println( ScanAnnotation.getClassFromAnn(Model.class));
+        System.out.println(ScanAnnotation.getClassFromAnn(Model.class));
     }
 }

@@ -1,8 +1,7 @@
 package com.zg.common.dao.database;
 
 import com.zg.common.util.reflect.ListUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -13,7 +12,6 @@ import java.util.Map;
  * Created by Administrator on 2018/11/27 0027.
  */
 public class DataBaseUtil {
-    private static final Logger logger = LoggerFactory.getLogger(DataBaseUtil.class.getName());
 
     private static Map<String, Map> tableInfoMap = new HashMap<>();
 
@@ -69,7 +67,7 @@ public class DataBaseUtil {
             tableInfoMap.put(tableName, tableInfo);
         }
 
-        logger.info(DataBaseUtil.class + "====tableInfoMap:" + tableInfoMap);
+        Logger.info(DataBaseUtil.class + "====tableInfoMap:" + tableInfoMap);
     }
 
 

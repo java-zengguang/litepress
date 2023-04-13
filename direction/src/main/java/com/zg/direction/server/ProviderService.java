@@ -10,7 +10,7 @@ public class ProviderService extends BaseService {
     private static ProviderConfig providerConfig = (ProviderConfig) BeanFactory.createBean("providerConfig");
 
     public ProviderService(BaseServiceHandler<String> baseServiceHandler) {
-        super(baseServiceHandler,  providerConfig.DTPPort);
+        super(baseServiceHandler, providerConfig.DTPPort);
     }
 
     public static void main(String args[]) {

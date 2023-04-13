@@ -1,12 +1,12 @@
 package com.zg.sso.controller;
 
+import com.zg.common.util.reflect.JsonUtils;
 import com.zg.mvc.annotation.controller.Controller;
 import com.zg.mvc.annotation.controller.ResultMapping;
 import com.zg.mvc.controller.BaseController;
 import com.zg.mvc.entity.MessageBean;
 import com.zg.sso.service.LoginService;
 import com.zg.sso.utils.SSOUtils;
-import com.zg.common.util.reflect.JsonUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

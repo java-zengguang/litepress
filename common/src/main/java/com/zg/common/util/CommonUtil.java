@@ -4,12 +4,10 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.io.*;
 import java.net.JarURLConnection;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
@@ -21,13 +19,12 @@ import java.util.jar.JarFile;
  */
 public class CommonUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(CommonUtil.class.getName());
 
-    public static String  getRootPath() {
+    public static String getRootPath() {
         //获取项目的相对路径
         String path = "";
 
-        System.out.println("projectRootPath="+System.getProperty("projectRootPath"));
+        System.out.println("projectRootPath=" + System.getProperty("projectRootPath"));
         if (System.getProperty("projectRootPath") != null) {
             path = System.getProperty("projectRootPath");
         } else {
@@ -46,7 +43,7 @@ public class CommonUtil {
             path = file.getPath();
             path = java.net.URLDecoder.decode(path, "UTF-8");
             path = path + File.separator;
-            logger.info("---" + path);
+            Logger.info("---" + path);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -61,12 +58,12 @@ public class CommonUtil {
             path = classes.getProtectionDomain().getCodeSource().getLocation().getPath();
             File file = new File(path);
             path = file.getPath();
-            if(path.contains(".jar")){
-                path=file.getParent();
+            if (path.contains(".jar")) {
+                path = file.getParent();
             }
             path = URLDecoder.decode(path, "UTF-8");
             path = path + File.separator;
-            logger.info("---" + path);
+            Logger.info("---" + path);
         } catch (Exception var3) {
             var3.printStackTrace();
         }
@@ -101,8 +98,8 @@ public class CommonUtil {
 
     public static Element getRootElement(String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
-        // logger.info("配置文件路径："+FileUtils.PATH + fileName);
-        String path=getRootPath();
+        // Logger.info("配置文件路径："+FileUtils.PATH + fileName);
+        String path = getRootPath();
         Document doc = reader.read(new File(path + fileName));
         Element root = doc.getRootElement();
         return root;
@@ -110,7 +107,7 @@ public class CommonUtil {
 
     public static Element getRootElement(String rootPath, String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
-        // logger.info("配置文件路径："+FileUtils.PATH + fileName);
+        // Logger.info("配置文件路径："+FileUtils.PATH + fileName);
         Document doc = reader.read(new File(rootPath + fileName));
         Element root = doc.getRootElement();
         return root;

@@ -4,8 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.init.Config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -14,16 +13,20 @@ import java.util.Map;
 
 public class HikariCPImpl implements DataBaseInte {
 
-    public final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final static DataBaseInte hikarCP = new HikariCPImpl();
 
     private static final Map<String, DataSource> dataSourceMap = new Hashtable();
+
+    private HikariCPImpl() {
+    }
 
     public static DataBaseInte getInstance() {
         return hikarCP;
     }
 
-    private HikariCPImpl() {
+    public static void main(String[] args) throws Exception {
+
+
     }
 
     @Override
@@ -44,7 +47,7 @@ public class HikariCPImpl implements DataBaseInte {
             connection = dataSource.getConnection();
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("数据库链接获取失败" + e.getMessage());
+            Logger.error("数据库链接获取失败" + e.getMessage());
         }
 
         return connection;
@@ -72,11 +75,6 @@ public class HikariCPImpl implements DataBaseInte {
 
         DataSource dataSource = new HikariDataSource(config);
         return dataSource;
-    }
-
-    public static void main(String[] args) throws Exception {
-
-
     }
 
 }

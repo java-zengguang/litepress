@@ -1,7 +1,6 @@
 package com.zg.common.util.nio;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +14,6 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
 public class TCPClient {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
 
     public SocketChannel channel;
@@ -33,7 +31,7 @@ public class TCPClient {
         channel.configureBlocking(false);
         SelectionKey selectionKey = channel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);  //筛选出关注的集合
         int interestSet = selectionKey.interestOps();
-        logger.info("请求连接");
+        Logger.info("请求连接");
         if ((interestSet & SelectionKey.OP_READ) == SelectionKey.OP_READ) {
             getFile();
         }

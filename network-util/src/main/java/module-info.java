@@ -8,5 +8,6 @@ module network.util {
     exports com.zg.network.bean;
     exports com.zg.network.common.fileservcie;
     exports com.zg.network.common.heartbeat;
-    requires org.slf4j;
+
+    requires org.tinylog.api;
 }

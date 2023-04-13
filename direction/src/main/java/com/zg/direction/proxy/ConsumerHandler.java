@@ -19,7 +19,7 @@ public class ConsumerHandler implements InvocationHandler {
 
     private String providerName;
 
-    public ConsumerHandler( String providerName,String synFlag) {
+    public ConsumerHandler(String providerName, String synFlag) {
         this.synFlag = synFlag;
         this.providerName = providerName;
     }

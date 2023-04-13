@@ -29,19 +29,17 @@
         </dependency>
 
 
-
-
         <!-- curator-framework -->
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-framework</artifactId>
-            <version>4.2.0</version>
+            <version>5.4.0</version>
         </dependency>
         <!-- curator-recipes -->
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
-            <version>4.2.0</version>
+            <version>5.4.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/io.github.java-diff-utils/java-diff-utils -->
@@ -58,32 +56,13 @@
             <artifactId>guava</artifactId>
             <version>22.0</version>
         </dependency>
-        <!--zookeeper-->
-<!--        <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>3.4.8</version>
-        </dependency>-->
-        <!--CuratorFramework是一款连接zookeeper服务的框架-->
-<!--
         <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-framework</artifactId>
-            <version>4.0.0</version>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
+            <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-recipes</artifactId>
-            <version>4.0.0</version>
-        </dependency>
--->
 
-
-        <!--        <dependency>
-                    <groupId>io.streamnative</groupId>
-                    <artifactId>zookeeper</artifactId>
-                    <version>3.6.3.1</version>
-                </dependency>-->
     </dependencies>
 
 </project>

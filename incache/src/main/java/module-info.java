@@ -6,7 +6,8 @@ module incache {
     requires java.sql;
     requires org.mongodb.bson;
     requires org.mongodb.driver.core;
-    requires org.slf4j;
+
+    requires org.tinylog.api;
 
 
 }

@@ -5,5 +5,6 @@ module im {
     requires incache;
     requires fastjson;
     requires common;
-    requires org.slf4j;
+
+    requires org.tinylog.api;
 }

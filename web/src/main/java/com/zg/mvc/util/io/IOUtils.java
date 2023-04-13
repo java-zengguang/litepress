@@ -137,7 +137,7 @@ public class IOUtils {
                         break;
                     }
                     case 1: {
-                        logger.info(line);
+                        Logger.info(line);
                         bos.write(b);
                         break;
                     }
@@ -155,7 +155,7 @@ public class IOUtils {
                     case 1: {
                         bos.flush();
                         bos.close();
-                        logger.info("关闭流");
+                        Logger.info("关闭流");
                         break;
                     }
                     case 2: {
@@ -187,10 +187,10 @@ public class IOUtils {
                     String name = item.getFieldName();
                     String value = item.getString("UTF-8");
                     //value = new String(value.getBytes("iso8859-1"),"UTF-8");
-                    logger.info(name + "=" + value);
+                    Logger.info(name + "=" + value);
                 }else{
                     String filename = item.getName();
-                    logger.info(filename);
+                    Logger.info(filename);
                     if(filename==null || filename.trim().equals("")){
                         continue;
                     }

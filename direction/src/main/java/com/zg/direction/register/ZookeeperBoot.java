@@ -8,27 +8,30 @@ import org.apache.zookeeper.server.ServerCnxnFactory;
 import org.apache.zookeeper.server.ServerConfig;
 import org.apache.zookeeper.server.ZooKeeperServerMain;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.util.Properties;
 
 
-public class ZookeeperBoot implements Runnable{
-    private static final Logger logger = LoggerFactory.getLogger(ZookeeperBoot.class.getName());
+public class ZookeeperBoot implements Runnable {
 
 
     private static final String USAGE =
             "Usage: ZooKeeperServerMain configfile | port datadir [ticktime] [maxcnxns]";
-
-    private ServerCnxnFactory cnxnFactory;
-
     Object obj;
+    private ServerCnxnFactory cnxnFactory;
 
     public ZookeeperBoot(Object object) {
         this.obj = object;
+    }
+
+    public static void main(String[] args) throws Exception {
+        String rootPath = CommonUtil.getThisPath(ZookeeperBoot.class);
+        System.setProperty("projectRootPath", rootPath);
+        ZookeeperBoot zookeeperBoot = new ZookeeperBoot("");
+        zookeeperBoot.run();
+
     }
 
     @Override
@@ -58,15 +61,6 @@ public class ZookeeperBoot implements Runnable{
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    }
-
-
-    public static void main(String[] args) throws Exception {
-        String rootPath= CommonUtil.getThisPath(ZookeeperBoot.class);
-        System.setProperty("projectRootPath",rootPath);
-        ZookeeperBoot zookeeperBoot=new ZookeeperBoot("");
-        zookeeperBoot.run();
 
     }
 

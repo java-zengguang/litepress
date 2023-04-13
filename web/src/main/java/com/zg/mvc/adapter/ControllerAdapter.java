@@ -16,8 +16,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.map.HashedMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
@@ -31,7 +30,6 @@ import java.util.Set;
  */
 public class ControllerAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(ControllerAdapter.class);
     private static Set<String> keySet = null;
     private static Map<String, Method> methodMap = new HashedMap();
     private static Map<String, Class> classMap = null;
@@ -58,10 +56,10 @@ public class ControllerAdapter {
         } catch (InstantiationException e) {
             e.printStackTrace();
         }
-        logger.info("MVC初始化中");
-        logger.info("methodMap " + methodMap);
-        logger.info("classMap " + classMap);
-        logger.info("MVC初始化完成");
+        Logger.info("MVC初始化中");
+        Logger.info("methodMap " + methodMap);
+        Logger.info("classMap " + classMap);
+        Logger.info("MVC初始化完成");
         return true;
     }
 
@@ -77,30 +75,30 @@ public class ControllerAdapter {
         switch (stirngArray[0]) {
             case "forward": {
                 request.getRequestDispatcher(stirngArray[1]).forward(request, response);
-                    break;
-                }
-                case "redirect": {
-                    response.sendRedirect(stirngArray[1]);
-                    break;
-                }
-                case "staticURL": {
-                    response.sendRedirect(stirngArray[1]);
-                    break;
-                }
-                case "privateURL": {
-                    request.getRequestDispatcher(stirngArray[1]).forward(request, response);
-                    // response.sendRedirect(stirngArray[1]);
-                    break;
-                }
-                case "json": {
-                    response.setHeader("content-type", "application/json");
-                    response.setCharacterEncoding("UTF-8");
-                    result=stirngArray[1];
-                    break;
+                break;
+            }
+            case "redirect": {
+                response.sendRedirect(stirngArray[1]);
+                break;
+            }
+            case "staticURL": {
+                response.sendRedirect(stirngArray[1]);
+                break;
+            }
+            case "privateURL": {
+                request.getRequestDispatcher(stirngArray[1]).forward(request, response);
+                // response.sendRedirect(stirngArray[1]);
+                break;
+            }
+            case "json": {
+                response.setHeader("content-type", "application/json");
+                response.setCharacterEncoding("UTF-8");
+                result = stirngArray[1];
+                break;
 
-                }
+            }
             default: {
-                logger.info(ControllerAdapter.classMap + " 跳转失败");
+                Logger.info(ControllerAdapter.classMap + " 跳转失败");
                 break;
             }
         }
@@ -144,7 +142,7 @@ public class ControllerAdapter {
                 try {
                     json = JsonUtils.objectToJson(data).toString();
                 } catch (IllegalAccessException e) {
-                    logger.error("json转化错误", e);
+                    Logger.error("json转化错误", e);
                 }
                 response.setHeader("content-type", "application/json");
                 response.setCharacterEncoding("UTF-8");
@@ -152,7 +150,7 @@ public class ControllerAdapter {
                 break;
             }
             default: {
-                logger.info(ControllerAdapter.classMap + " 跳转失败");
+                Logger.info(ControllerAdapter.classMap + " 跳转失败");
                 break;
             }
         }
@@ -169,7 +167,7 @@ public class ControllerAdapter {
                 "attachment;filename=" + file.getName());
         OutputStream out = response.getOutputStream();
         int size = IOUtils.inputFile(out, file);
-        logger.info(ControllerAdapter.classMap + "文件下载完成");
+        Logger.info(ControllerAdapter.classMap + "文件下载完成");
     }
 
     //用于处理文件上传
@@ -233,7 +231,7 @@ public class ControllerAdapter {
 
     public static void resovleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String result = "";
-        logger.info("请求的url " + request.getRequestURL());
+        Logger.info("请求的url " + request.getRequestURL());
         String requestURI = request.getRequestURI();
         Object viewObject = null;
         if (requestURI.endsWith(mvcOption.controllerSuffix) || requestURI.endsWith(mvcOption.upLoadSuffix)) {

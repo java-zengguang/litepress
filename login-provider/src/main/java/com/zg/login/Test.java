@@ -1,10 +1,6 @@
 package com.zg.login;
 
 import com.zg.direction.adapter.ProviderAdapter;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
-
-import java.io.IOException;
 
 public class Test {
 

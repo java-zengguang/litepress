@@ -5,5 +5,5 @@ module login.provider {
     requires common;
     requires direction;
     requires zookeeper;
-    requires org.slf4j;
+    requires org.tinylog.api;
 }

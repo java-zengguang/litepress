@@ -1,8 +1,7 @@
 package com.zg.common.handler;
 
 import com.zg.common.dao.database.NewDBPUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -13,18 +12,17 @@ import java.util.List;
  * Created by Administrator on 2018/12/24 0024.
  */
 public class CommitInterfaceHandler implements InvocationHandler {
-    private static final Logger logger = LoggerFactory.getLogger(CommitInterfaceHandler.class);
     private Object target;
     private List methodList = new ArrayList();
-    private boolean commitAll=false;
+    private boolean commitAll = false;
     private String dataSource;
 
-    public CommitInterfaceHandler(String dataSource,Object target, String method) {
+    public CommitInterfaceHandler(String dataSource, Object target, String method) {
         this.target = target;
-        this.dataSource=dataSource;
+        this.dataSource = dataSource;
         for (String m : method.split(",")) {
             if ("ALL".equals(m)) {
-                commitAll=true;
+                commitAll = true;
             } else {
                 methodList.add(m);
             }
@@ -38,7 +36,7 @@ public class CommitInterfaceHandler implements InvocationHandler {
         try {
             result = method.invoke(target, args); //调用业务类（父类中）的方法
             if (commitAll || methodList.contains(method.getName())) {
-                logger.info(method.getName() + " 事务被提交");
+                Logger.info(method.getName() + " 事务被提交");
                 NewDBPUtils.commit(dataSource);
             }
 

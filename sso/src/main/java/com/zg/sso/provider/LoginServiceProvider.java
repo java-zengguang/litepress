@@ -7,7 +7,7 @@ import com.zg.sso.service.LoginServiceInte;
 
 public class LoginServiceProvider extends LoginService {
 
-    private static LoginServiceInte loginService = (LoginServiceInte) ProxyUtils.getProxyInterface(LoginService.class, new CommitInterfaceHandler("optionDB",new LoginService(), "login,loginout,registToken,updateLoginInvalid"));
+    private static LoginServiceInte loginService = (LoginServiceInte) ProxyUtils.getProxyInterface(LoginService.class, new CommitInterfaceHandler("optionDB", new LoginService(), "login,loginout,registToken,updateLoginInvalid"));
 
     private LoginServiceProvider() {
     }

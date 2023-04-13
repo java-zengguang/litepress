@@ -37,7 +37,6 @@
     </bean>
 
 
-
     <bean id="zooKeeperConfig" class="com.zg.direction.entity.ZooKeeperConfig">
         <property name="tickTime" type="java.lang.String">2000</property>
         <property name="dataDir" type="java.lang.String">/tmp/zookeeper/data</property>

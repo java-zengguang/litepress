@@ -1,10 +1,8 @@
 package com.zg.common.init;
 
 import com.zg.common.bean.factory.BeanFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -14,7 +12,6 @@ import java.util.concurrent.CountDownLatch;
  */
 public class Config {
     public static final int ERROR_REPEAT = 3;
-    private static final Logger logger = LoggerFactory.getLogger(Config.class.getName());
     public static Map configMap = new ConcurrentHashMap();
 
     public static CountDownLatch count = new CountDownLatch(ERROR_REPEAT);
@@ -33,7 +30,7 @@ public class Config {
         if (count.getCount() > 0) {
             if (object == null) {
                 count.countDown();
-                logger.info("初始化" + beanName);
+                Logger.info("初始化" + beanName);
                 String array[] = {beanName};
                 createConfigMap(array);
                 object = getConfig(beanName);
@@ -43,7 +40,6 @@ public class Config {
         }
         return object;
     }
-
 
 
 }

@@ -17,8 +17,7 @@ public class ProviderEntity extends MainModel {
 
     public Long times; //调用时间，用作负载参数
 
-    public Double averageTime=0.0;
-
+    public Double averageTime = 0.0;
 
 
     public String getHost() {
@@ -45,17 +44,17 @@ public class ProviderEntity extends MainModel {
         this.className = className;
     }
 
-    public synchronized void occupy(){
+    public synchronized void occupy() {
         priority++;
 
     }
-    public synchronized void release(long time){
-        priority--;
-        times=times+time;
-        count++;
-        averageTime=times.doubleValue()/(count+1);
-    }
 
+    public synchronized void release(long time) {
+        priority--;
+        times = times + time;
+        count++;
+        averageTime = times.doubleValue() / (count + 1);
+    }
 
 
     public int getPriority() {

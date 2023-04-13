@@ -13,8 +13,8 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
+
 
 /**
  * Created by Administrator on 2019/2/22 0022.
@@ -23,13 +23,11 @@ public abstract class BaseService implements Runnable {
 
     private final StringDecoder DECODER = new StringDecoder();
     private final StringEncoder ENCODER = new StringEncoder();
-    private Logger logger = LoggerFactory.getLogger(BaseService.class);
+    private final int threadSize = 10;  //并发数量
     private NioEventLoopGroup bossGroup = null;
     private NioEventLoopGroup workerGroup = null;
     private int port;
     private BaseServiceHandler baseServiceHandler;
-
-    private final int threadSize=10;  //并发数量
 
     public BaseService(BaseServiceHandler<String> baseServiceHandler, int port) {
 
@@ -60,7 +58,7 @@ public abstract class BaseService implements Runnable {
                     ChannelPipeline pipe = socketChannel.pipeline();
 
                     // Add the text line codec combination first,
-                    pipe.addLast(new DelimiterBasedFrameDecoder(1000*1000*1024, Delimiters.lineDelimiter()));
+                    pipe.addLast(new DelimiterBasedFrameDecoder(1000 * 1000 * 1024, Delimiters.lineDelimiter()));
                     // the encoder and decoder are static as these are sharable
                     //字符串编码器
                     pipe.addLast(DECODER);
@@ -81,7 +79,7 @@ public abstract class BaseService implements Runnable {
             // Bind and start to accept incoming connections.
             ChannelFuture f = bootstrap.bind(port).sync();
             if (f.isSuccess()) {
-                logger.info("server start success... port: " + port + ", main work thread: "
+                Logger.info("server start success... port: " + port + ", main work thread: "
                         + Thread.currentThread().getId());
             }
             ////等待服务端监听端口关闭
@@ -102,7 +100,7 @@ public abstract class BaseService implements Runnable {
         if (port != 0) {
             getConnectin();
         } else {
-            logger.info("没有定义端口");
+            Logger.info("没有定义端口");
         }
     }
 

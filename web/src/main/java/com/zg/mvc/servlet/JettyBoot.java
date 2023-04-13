@@ -1,7 +1,6 @@
 package com.zg.mvc.servlet;
 
 import com.zg.common.util.CommonUtil;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -10,18 +9,23 @@ import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.resource.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
+
 
 public class JettyBoot {
-    private static final Logger logger = LoggerFactory.getLogger(JettyBoot.class);
-    private int port=8080;
+    private int port = 8080;
 
     public JettyBoot() {
     }
 
     public JettyBoot(int port) {
         this.port = port;
+    }
+
+    public static void main(String[] args) {
+
+        JettyBoot jettyBoot = new JettyBoot();
+        jettyBoot.doMain();
     }
 
     public void doMain() {
@@ -50,7 +54,7 @@ public class JettyBoot {
                 ServletHandler servletHandler = new ServletHandler();
                 servletHandler.addServletWithMapping(AdapterServlet.class, "/");
                 //过滤
-                if(true) {
+                if (true) {
                     CrossOriginFilter crossOriginFilter = new CrossOriginFilter();
                     FilterHolder filterHolder = new FilterHolder();
                     filterHolder.setFilter(crossOriginFilter);
@@ -58,48 +62,40 @@ public class JettyBoot {
                     filterHolder.setName("cross-origin");
                     filterHolder.setInitParameter("allowedOrigins", "*");
                     filterHolder.setInitParameter("allowedMethods", "GET,POST,OPTIONS,DELETE,PUT,HEAD");
-                   // filterHolder.setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin");
+                    // filterHolder.setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin");
                     filterHolder.setInitParameter("allowedHeaders", "*");
 
-                    filterHolder.setInitParameter("allowCredentials","true");
-                    FilterMapping filterMapping=new FilterMapping();
+                    filterHolder.setInitParameter("allowCredentials", "true");
+                    FilterMapping filterMapping = new FilterMapping();
                     filterMapping.setFilterName("cross-origin");
                     filterMapping.setPathSpec("/*");
 
-                    servletHandler.addFilter(filterHolder, filterMapping );
+                    servletHandler.addFilter(filterHolder, filterMapping);
                 }
                 server.insertHandler(servletHandler);
             }
 
-            if(true){
-                ResourceHandler resourceHandler=new ResourceHandler();
-                String path=CommonUtil.getRootPath();
+            if (true) {
+                ResourceHandler resourceHandler = new ResourceHandler();
+                String path = CommonUtil.getRootPath();
                 if (System.getProperty("projectRootPath") != null) {
-                    path  = System.getProperty("projectRootPath");
+                    path = System.getProperty("projectRootPath");
                 }
-                resourceHandler.setBaseResource( Resource.newResource(path+"static"));
+                resourceHandler.setBaseResource(Resource.newResource(path + "static"));
                 resourceHandler.setPathInfoOnly(true);
                 resourceHandler.setDirAllowed(true);
                 server.insertHandler(resourceHandler);
             }
 
 
-
-            ServerConnector connector=server.getBean(ServerConnector.class);
-            connector.setIdleTimeout(24*60*60*1000);
+            ServerConnector connector = server.getBean(ServerConnector.class);
+            connector.setIdleTimeout(24 * 60 * 60 * 1000);
             //启动服务器
             server.start();
             //阻塞Jetty server的线程池，直到线程池停止
             server.join();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            Logger.error(e.getMessage(), e);
         }
-    }
-
-
-    public static void main(String[] args) {
-
-        JettyBoot jettyBoot = new JettyBoot();
-        jettyBoot.doMain();
     }
 }

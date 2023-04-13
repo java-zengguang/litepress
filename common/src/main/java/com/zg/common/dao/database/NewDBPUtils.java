@@ -4,8 +4,7 @@ import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.factory.ConnectionFactory;
 import com.zg.common.dao.factory.PoolConnectionFactory;
 import com.zg.common.init.Config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,7 +17,6 @@ import java.util.Map;
  */
 public class NewDBPUtils {
 
-    public final static Logger logger = LoggerFactory.getLogger(NewDBPUtils.class);
     private static ThreadLocal<Map<String, Connection>> threadLocal = new ThreadLocal();
 
 
@@ -37,7 +35,7 @@ public class NewDBPUtils {
         if (connection == null) {
             OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
             if (optionDB.getDBPType() == null || "".equals(optionDB.getDBPType())) {
-                logger.info("使用JDBC链接");
+                Logger.info("使用JDBC链接");
                 Class.forName(optionDB.driver);
                 connection = DriverManager.getConnection(optionDB.url, optionDB.username, optionDB.password);
                 connection.setAutoCommit(false);
@@ -78,8 +76,6 @@ public class NewDBPUtils {
             dataSourceMap.remove(dataSource);
         }
     }
-
-
 
 
 }

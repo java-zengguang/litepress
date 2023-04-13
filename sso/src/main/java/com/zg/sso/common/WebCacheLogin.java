@@ -7,8 +7,7 @@ import com.zg.sso.entity.UserLogin;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.UUID;
 public class WebCacheLogin extends BaseLogin {
     private static WebCacheLogin webCacheLogin = new WebCacheLogin();
     private RomCacheInte romCacheInte = RomCacheUtil.getRomCache("LoginCache");
-    private static final Logger logger = LoggerFactory.getLogger(WebCacheLogin.class);
 
     private WebCacheLogin() {
     }
@@ -59,7 +57,7 @@ public class WebCacheLogin extends BaseLogin {
             newCookieList.add(tokenCookie);
             setCookies(response, newCookieList, userLogin.domain, userLogin.rootPath, userLogin.url);
             String url = new String(userLogin.url);
-            logger.info("url=" + url);
+            Logger.info("url=" + url);
             return new MessageBean("操作成功", true, url);
 
         } else {

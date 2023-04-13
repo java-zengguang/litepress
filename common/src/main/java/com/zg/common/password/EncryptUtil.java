@@ -137,14 +137,14 @@ public class EncryptUtil {
             KeyGenerator kg = KeyGenerator.getInstance(algorithm);
             if (keysize == 0) {
                 byte[] keyBytes = charset == null ? key.getBytes() : key.getBytes(charset);
-                SecureRandom secureRandom= SecureRandom.getInstance("SHA1PRNG");
+                SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
                 secureRandom.setSeed(keyBytes);
                 kg.init(secureRandom);
             } else if (key == null) {
                 kg.init(keysize);
             } else {
                 byte[] keyBytes = charset == null ? key.getBytes() : key.getBytes(charset);
-                SecureRandom secureRandom= SecureRandom.getInstance("SHA1PRNG");
+                SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
                 secureRandom.setSeed(keyBytes);
                 kg.init(keysize, secureRandom);
             }

@@ -3,24 +3,25 @@ package com.zg.common.util.reflect;
 
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.util.CommonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import javax.tools.*;
-import javax.tools.JavaCompiler.CompilationTask;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class DynamicClass {
-    private static final Logger logger = LoggerFactory.getLogger(DynamicClass.class.getName());
 
 
-    private static String produceEntityJavaCode(List<String> referenceList, String calssName,String tableName, List<MetadataEntity> columnList, List<String> interfaceList, String parentClass) throws Exception {
+    private static String produceEntityJavaCode(List<String> referenceList, String calssName, String tableName, List<MetadataEntity> columnList, List<String> interfaceList, String parentClass) throws Exception {
 
         List<String> pkFieldList = new ArrayList<>();
 
@@ -53,10 +54,10 @@ public class DynamicClass {
                 if ("1".equals(metadataEntity.isPK)) {
                     sb.append("@PrimaryKey\r\n");
                 }
-                if("1".equals(metadataEntity.isNotCommit)){
+                if ("1".equals(metadataEntity.isNotCommit)) {
                     sb.append("@NotCommitField\r\n");
                 }
-                if("1".equals(metadataEntity.isAutoIncrease)){
+                if ("1".equals(metadataEntity.isAutoIncrease)) {
                     sb.append("@AutoIncrease\r\n");
                 }
                 sb.append("public " + metadataEntity.fieldType + " " + metadataEntity.fieldName + ";\r\n");
@@ -77,16 +78,16 @@ public class DynamicClass {
                     "com.zg.common.annotation.*",
                     "java.math.BigDecimal");
             String entityName = columnList.get(0).entityName;
-            String tableName=columnList.get(0).tableName;
-            if(!"".equals(columnList.get(0).ownName)){
-                tableName=columnList.get(0).ownName+"."+tableName;
+            String tableName = columnList.get(0).tableName;
+            if (!"".equals(columnList.get(0).ownName)) {
+                tableName = columnList.get(0).ownName + "." + tableName;
             }
-            model = DynamicClass.getDynamicModel(importList, entityName,tableName, columnList, null, "MainModel");
+            model = DynamicClass.getDynamicModel(importList, entityName, tableName, columnList, null, "MainModel");
         }
         return model;
     }
 
-    public static Class getDynamicModel(List<String> referenceList, String className,String tableName, List<MetadataEntity> columnList, List<String> interfaceList, String parentClass) {
+    public static Class getDynamicModel(List<String> referenceList, String className, String tableName, List<MetadataEntity> columnList, List<String> interfaceList, String parentClass) {
         String javaCode;
         try {
             javaCode = produceEntityJavaCode(referenceList, className, tableName, columnList, interfaceList, parentClass);
@@ -106,7 +107,7 @@ public class DynamicClass {
         StringObject stringObject = new StringObject(new URI(name + ".java"), JavaFileObject.Kind.SOURCE, javaCode);
         List<String> options = new ArrayList<String>();
         String path = CommonUtil.getThisPath(CommonUtil.class) + "";
-        logger.info(DynamicClass.class + "====calss生成路径" + path);
+        Logger.info(DynamicClass.class + "====calss生成路径" + path);
         options.addAll(Arrays.asList("-d", path, "--limit-modules", "java.base,java.logging"));
         JavaCompiler.CompilationTask task = compiler.getTask(null, classJavaFileManager, null, options, null, Arrays.asList(stringObject));
         if (task.call()) {

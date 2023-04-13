@@ -5,8 +5,6 @@ import com.zg.common.init.Config;
 import com.zg.direction.entity.ProviderConfig;
 import com.zg.direction.entity.ProviderEntity;
 import com.zg.direction.util.IpConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -15,7 +13,6 @@ import java.util.Map;
 public class ProviderResovleAnnotation extends BaseResolveAnnotation {
 
     private static ProviderResovleAnnotation pra = null;
-    private Logger logger = LoggerFactory.getLogger(ProviderResovleAnnotation.class);
     private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
 
     private ProviderResovleAnnotation() {

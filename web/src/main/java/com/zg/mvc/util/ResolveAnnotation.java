@@ -3,11 +3,9 @@ package com.zg.mvc.util;
 import com.zg.common.annotation.ScanAnnotation;
 import com.zg.mvc.annotation.controller.Controller;
 import com.zg.mvc.annotation.controller.ResultMapping;
-import com.zg.common.util.CommonUtil;
 import org.apache.commons.collections.map.HashedMap;
 
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,7 +24,7 @@ public class ResolveAnnotation {
             rootURL = "";
         }
         Map<String, Class> resultMap = new HashedMap();
-        Set<Class<?>> classList =  ScanAnnotation.getClassFromAnn(Controller.class);
+        Set<Class<?>> classList = ScanAnnotation.getClassFromAnn(Controller.class);
         for (Class classes : classList) {
             Controller controller = (Controller) classes.getAnnotation(Controller.class);
             if (controller != null) {

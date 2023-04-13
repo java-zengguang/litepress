@@ -5,9 +5,10 @@ import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.assemble.SimpleAssemble;
 import com.zg.common.init.Config;
-import com.zg.common.util.reflect.ModelSQLUtils;
 import com.zg.common.util.reflect.DynamicClass;
 import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.ModelSQLUtils;
+import org.tinylog.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -43,12 +44,12 @@ public class BaseEntityDao extends BaseJDBCDao {
     //查询
     public List select(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
         List<List<MetadataEntity>> templeList = select2TempleList(sql);
-        OptionDB optionDB=(OptionDB) Config.getConfig(dataSource);
-        SimpleAssemble simpleAssemble=new SimpleAssemble(optionDB.DBType);
-        List modelList=new ArrayList();
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
+        List modelList = new ArrayList();
         Class modelClass = null;
-        if(templeList!=null&&templeList.size()>0) {
-            modelClass=DynamicClass.getDynamicModel(templeList.get(0));
+        if (templeList != null && templeList.size() > 0) {
+            modelClass = DynamicClass.getDynamicModel(templeList.get(0));
             for (List<MetadataEntity> columnList : templeList) {
                 Object obj = modelClass.newInstance();
                 for (MetadataEntity metadataEntity : columnList) {
@@ -61,12 +62,11 @@ public class BaseEntityDao extends BaseJDBCDao {
     }
 
 
-
     //查询
     public List select(String sql, Class modelClass) throws Exception {
         List<List<MetadataEntity>> templeList = select2TempleList(sql);
-        OptionDB optionDB=(OptionDB) Config.getConfig(dataSource);
-        SimpleAssemble simpleAssemble=new SimpleAssemble(optionDB.DBType);
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
         List modelList = new ArrayList();
         for (List<MetadataEntity> columnList : templeList) {
             Object obj = modelClass.newInstance();
@@ -81,10 +81,10 @@ public class BaseEntityDao extends BaseJDBCDao {
 
 
     public List execute(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
-        logger.debug(sql);
+        Logger.debug(sql);
         List<MainModel> list = new ArrayList<MainModel>();
         if (sql == null) {
-            logger.debug(" execute  sql is null");
+            Logger.debug(" execute  sql is null");
         } else if (sql.startsWith("select")) {
             list = select(sql);
 
@@ -98,9 +98,9 @@ public class BaseEntityDao extends BaseJDBCDao {
 
     public int updateModel(Object object, String... terms) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         int result = 0;
-        OptionDB optionDB=(OptionDB) Config.getConfig(dataSource);
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         if (terms != null && terms.length > 0) {
-            String sql = ModelSQLUtils.update(optionDB.DBType,object, terms);
+            String sql = ModelSQLUtils.update(optionDB.DBType, object, terms);
             result = operation(sql);
         }
         return result;

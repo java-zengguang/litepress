@@ -10,21 +10,21 @@ open module common {
     exports com.zg.common.handler;
     exports com.zg.common.proxy;
     exports com.zg.common.util.url;
-    requires jxl;
     requires org.apache.poi.poi;
+    requires org.apache.poi.ooxml;
     requires commons.collections;
     requires java.sql;
     requires dom4j;
     requires fastjson;
     requires java.compiler;
-    requires svnkit;
     requires cglib;
     requires org.apache.commons.net;
-    requires org.slf4j;
+
     requires com.esotericsoftware.kryo;
     requires druid;
     requires java.naming;
     requires com.zaxxer.hikari;
+    requires org.tinylog.api;
 
 
 }

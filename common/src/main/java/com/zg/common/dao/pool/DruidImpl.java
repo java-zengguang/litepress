@@ -3,8 +3,7 @@ package com.zg.common.dao.pool;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.init.Config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -14,16 +13,20 @@ import java.util.Properties;
 
 public class DruidImpl implements DataBaseInte {
 
-    public  final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final static DataBaseInte druid = new DruidImpl();
 
     private static final Map<String, DataSource> dataSourceMap = new Hashtable();
+
+    private DruidImpl() {
+    }
 
     public static DataBaseInte getInstance() {
         return druid;
     }
 
-    private DruidImpl() {
+    public static void main(String[] args) throws Exception {
+
+
     }
 
     @Override
@@ -43,8 +46,8 @@ public class DruidImpl implements DataBaseInte {
             }
             connection = dataSource.getConnection();
         } catch (Exception e) {
-           e.printStackTrace();
-            logger.error("数据库链接获取失败"+e.getMessage());
+            e.printStackTrace();
+            Logger.error("数据库链接获取失败" + e.getMessage());
         }
 
         return connection;
@@ -74,17 +77,12 @@ public class DruidImpl implements DataBaseInte {
         properties.put("timeBetweenEvictionRunsMillis", "30000");
         properties.put("logAbandoned", "false");
         properties.put("filters", "stat,config,wall");
-        properties.put("defaultAutoCommit","false");
+        properties.put("defaultAutoCommit", "false");
         //  properties.put("connectionProperties","config.decrypt="true";config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALbMDWRmnQ21QFC8P8m75xpc2CbY3lcwJxAo5TQtgMx0GBnmr2vvvtmmdKvvYfrdM+DLfpB5jtu00HX2vEMmzBsCAwEAAQ==");
 
 
         DataSource dataSource = DruidDataSourceFactory.createDataSource(properties);
         return dataSource;
-    }
-
-    public static void main(String[] args) throws Exception {
-
-
     }
 
 }

@@ -7,11 +7,12 @@ open module direction {
     requires network.util;
     requires fastjson;
     requires io.netty.all;
-    requires org.slf4j;
     requires zookeeper;
     requires guava;
     requires curator.client;
     requires curator.framework;
     requires curator.recipes;
     requires io.github.javadiffutils;
+    requires org.tinylog.api;
+
 }

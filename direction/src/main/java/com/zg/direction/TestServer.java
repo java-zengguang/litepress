@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Provider(providerName = "/Test/good")
-public class TestServer implements TestInte{
+public class TestServer implements TestInte {
     @Override
     public TestEntity hello() throws InterruptedException {
         System.out.println("你好");
-        TestEntity testEntity=new TestEntity();
+        TestEntity testEntity = new TestEntity();
         testEntity.s = "hello";
 
         return testEntity;
@@ -18,8 +18,8 @@ public class TestServer implements TestInte{
 
     @Override
     public TestEntity hello1(String name) {
-        TestEntity testEntity=new TestEntity();
-        testEntity.s=name;
+        TestEntity testEntity = new TestEntity();
+        testEntity.s = name;
         return testEntity;
     }
 
@@ -31,7 +31,7 @@ public class TestServer implements TestInte{
     }
 
     @Override
-    public TestEntity hello3(TestEntity name,String x) {
+    public TestEntity hello3(TestEntity name, String x) {
 
         System.out.println(name);
         return name;

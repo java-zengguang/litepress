@@ -1,14 +1,12 @@
 package com.zg.network.im.service;
 
+import com.zg.common.util.reflect.EntityUtils;
 import com.zg.network.bean.ChannelBean;
 import com.zg.network.bean.ZGMPBean;
 import com.zg.network.common.heartbeat.BaseHeartbeatHandle;
 import com.zg.network.im.login.LoginManager;
-import com.zg.common.util.reflect.EntityUtils;
 import io.netty.channel.Channel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.tinylog.Logger;
 
 import java.util.Date;
 import java.util.Map;
@@ -20,7 +18,6 @@ import java.util.UUID;
 public class IMHeartbeatHandle extends BaseHeartbeatHandle {
 
     //  public final long HBTIME=30*60*1000;   //心跳时间
-    public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
 
     public IMHeartbeatHandle(Map<String, ChannelBean> channelMap, long HBTIME) {
@@ -36,7 +33,7 @@ public class IMHeartbeatHandle extends BaseHeartbeatHandle {
             ChannelBean channelBean = entry.getValue();
             int status = channelBean.status;
             if (status < 0) {    //判断是否失效
-                logger.info(channelBean.uuid + " 的channel失效");
+                Logger.info(channelBean.uuid + " 的channel失效");
 
                 LoginManager.logout(channelBean.uuid, channelBean.token);  //退出登陆
 
@@ -50,7 +47,7 @@ public class IMHeartbeatHandle extends BaseHeartbeatHandle {
                     String json = null;
                     ZGMPBean response = new ZGMPBean("RESPONSE");
                     response.uuid = channelBean.uuid;
-                    logger.info("向" + channelBean.uuid + "发送心跳");
+                    Logger.info("向" + channelBean.uuid + "发送心跳");
                     response.message = "心跳";
                     response.methodType = "HEARTBEAT";
                     response.heartBeatID = channelBean.heartBeatID;

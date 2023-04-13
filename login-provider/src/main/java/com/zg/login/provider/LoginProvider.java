@@ -1,8 +1,8 @@
 package com.zg.login.provider;
 
-import com.zg.direction.annotation.Provider;
 import com.zg.common.handler.CommitInterfaceHandler;
 import com.zg.common.proxy.ProxyUtils;
+import com.zg.direction.annotation.Provider;
 import com.zg.login.inte.LoginServiceInte;
 import com.zg.login.service.LoginService;
 
@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Provider(providerName = "/login")
 public class LoginProvider implements LoginServiceInte {
-    LoginServiceInte loginService = (LoginServiceInte) ProxyUtils.getProxyInterface(LoginService.class, new CommitInterfaceHandler("optionDB",new LoginService(), "login,loginout,registToken,updateLoginInvalid"));
+    LoginServiceInte loginService = (LoginServiceInte) ProxyUtils.getProxyInterface(LoginService.class, new CommitInterfaceHandler("optionDB", new LoginService(), "login,loginout,registToken,updateLoginInvalid"));
 
     @Override
     public String verification(String username, String passworld) {

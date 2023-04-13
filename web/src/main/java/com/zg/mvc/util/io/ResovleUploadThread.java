@@ -3,8 +3,7 @@ package com.zg.mvc.util.io;
 import com.zg.mvc.entity.RequestParamEntity;
 import com.zg.mvc.entity.SimpleFileEntity;
 import jakarta.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.io.*;
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.List;
  */
 public class ResovleUploadThread {
 
-    private static final Logger logger = LoggerFactory.getLogger(ResovleUploadThread.class);
     public RandomAccessFile raf;   //文件指针
 
     public long getStartPointFile(long start, long end, String targetS) throws IOException {
@@ -54,14 +52,14 @@ public class ResovleUploadThread {
 
         int length = (int) (writerEnd - writerStart + 1);
         byte[] bytes = new byte[length];
-        RandomAccessFile rf=new RandomAccessFile(inputFile,"r");
+        RandomAccessFile rf = new RandomAccessFile(inputFile, "r");
         rf.seek(writerStart);
         rf.read(bytes, 0, length);
         rf.close();
-        if(!targetFile.exists()){
+        if (!targetFile.exists()) {
             targetFile.createNewFile();
         }
-        OutputStream outputStream=new FileOutputStream(targetFile);
+        OutputStream outputStream = new FileOutputStream(targetFile);
         outputStream.write(bytes);
         outputStream.close();
 
@@ -83,7 +81,7 @@ public class ResovleUploadThread {
                 raf.read(b, 0, endPoint - startPoint);   //读取
                 line = new String(b);
                 if (line.contains(targetS)) {
-                    logger.info(line);
+                    Logger.info(line);
                     return startPoint - 3;
                 }
                 endPoint = startPoint;
@@ -93,14 +91,14 @@ public class ResovleUploadThread {
     }
 
 
-    public   List<RequestParamEntity>  execate(HttpServletRequest request, String inputFilePath) throws IOException, InterruptedException {
+    public List<RequestParamEntity> execate(HttpServletRequest request, String inputFilePath) throws IOException, InterruptedException {
         InputStream inputStream = request.getInputStream();
         String contentType = request.getContentType();
-        String targetS = "--"+contentType.substring(contentType.lastIndexOf("boundary=") + 9, contentType.length());
+        String targetS = "--" + contentType.substring(contentType.lastIndexOf("boundary=") + 9, contentType.length());
         String inputFileName = targetS;
         //生成临时文件
         if (IOUtils.createTemporaryFile(inputStream, inputFilePath, inputFileName) == -1) {
-            logger.info("文件上传失败");
+            Logger.info("文件上传失败");
         }
         File inputFile = new File(inputFilePath, inputFileName);
 /*
@@ -118,13 +116,13 @@ public class ResovleUploadThread {
 
         File targetFile = new File(fileEntity.fileParentPath, fileEntity.fileName);
         IOUtils.createFile(targetFile);
-        logger.info("OUTPUT线程开始");
+        Logger.info("OUTPUT线程开始");
         outputThread(writerStart, writerEnd, inputFile, targetFile);
-        logger.info("OUTPUT线程结束");
+        Logger.info("OUTPUT线程结束");
         raf.close();
        // inputFile.delete();
         fileEntity.filePath = targetFile.getAbsolutePath();*/
-       List<RequestParamEntity> list=  AnalysisTempFile.analysis(inputFile,targetS);
+        List<RequestParamEntity> list = AnalysisTempFile.analysis(inputFile, targetS);
         return list;
     }
 }

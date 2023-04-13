@@ -8,8 +8,6 @@ import com.zg.sso.entity.UserLogin;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.log4j.Logger;
-
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -20,7 +18,6 @@ public class SSOUtils {
 
     public static WebCacheLogin webCacheLogin = WebCacheLogin.getInstance();
     private static RomCacheInte romCache = RomCacheUtil.getRomCache("LoginCache");
-    private static final Logger logger = Logger.getLogger(SSOUtils.class.getName());
 
 
     public static MessageBean signOut(HttpServletRequest request, HttpServletResponse response) {

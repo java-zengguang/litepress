@@ -1,12 +1,6 @@
 package com.zg.common.util.io;
 
 
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-import jxl.write.*;
-import jxl.write.Number;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -83,116 +77,6 @@ public class POIUtils {
         return list;
     }
 
-    //将excel映射到内存中 Sheet,<TableList<Map<String,String>>>
-    public static Map<String, List<Map<String, String>>> readXLSX(File file) throws IOException, BiffException {
-        Map<String, List<Map<String, String>>> resultMap = new HashMap();
-        Workbook workbook = Workbook.getWorkbook(file);
-        Sheet[] sheets = workbook.getSheets();
-        for (Sheet sheet : sheets) {
-            String sheetName = sheet.getName();
-            Cell[] titleRow = sheet.getRow(0);
-            List<Map<String, String>> tableList = new ArrayList();
-            for (int i = 1; i < sheet.getRows() + 1; i++) {
-                Map<String, String> lineMap = new HashMap<>();
-                for (int j = 0; j < sheet.getColumns(); j++) {
-                    lineMap.put(titleRow[j].getContents().trim(), sheet.getCell(i, j).getContents().trim());
-                }
-                tableList.add(lineMap);
-            }
-            resultMap.put(sheetName, tableList);
-        }
-        return resultMap;
-    }
-
-
-/*
-    public static boolean writeXLSX(Map<String, List<Map>> mapList, File file) throws IOException, WriteException {
-        if (!file.exists()) {
-            if (!file.createNewFile()) {
-                return false;
-            }
-        }
-        WritableWorkbook workbook = Workbook.createWorkbook(file);
-        Set<String> keySet = mapList.keySet();
-        int i = 0;
-        for (String key : keySet) {
-            int j = 0;
-            List<Map> list = mapList.get(key);
-            WritableSheet sheet = workbook.createSheet(key, i);
-            sheet.getSettings().setDefaultColumnWidth(20);
-            for (Map<String, String> map : list) {
-                int x = 0;
-                Set<String> columnSet = list.get(0).keySet();
-                for (String column : columnSet) {
-                    WritableCell cell;
-                    String content = String.valueOf(map.get(column));
-                    cell = new Label(x, j, content);
-                    sheet.addCell(cell);
-                    x++;
-                }
-                j++;
-            }
-            //自动调整列宽
-            i++;
-        }
-
-        workbook.write();
-        workbook.close();
-        return true;
-    }
-*/
-
-
-    public static   boolean writeXLSX(Map<String, List<Map>> mapList, File file) throws IOException, WriteException {
-        if (!file.exists() && !file.createNewFile()) {
-            return false;
-        } else {
-            WritableWorkbook workbook = Workbook.createWorkbook(file);
-            Set<String> keySet = mapList.keySet();
-            int i = 0;
-
-            for(String key:keySet) {
-                int j = 0;
-                List<Map> list = (List)mapList.get(key);
-                WritableSheet sheet = workbook.createSheet(key, i);
-                sheet.getSettings().setAutomaticFormulaCalculation(true);
-
-                for(Map<String, String> map:list) {
-                    int x = 0;
-                    Set<String> columnSet = list.get(0).keySet();
-
-                    for(String column:columnSet) {
-                        Object content= map.get(column);
-                        if(content instanceof Integer ){
-                            WritableCell cell = new Number(x, j, (Integer) content);
-                            sheet.addCell(cell);
-                        }
-
-                        if( content instanceof Double){
-                            WritableCell cell = new Number(x, j, (Double) content);
-                            sheet.addCell(cell);
-                        }
-                        if(content instanceof String){
-                            WritableCell cell = new Label(x, j, String.valueOf(content));
-                            sheet.addCell(cell);
-                        }
-                        if(content instanceof Date){
-                            WritableCell cell = new DateTime(x, j, (Date) content);
-                            sheet.addCell(cell);
-                        }
-                        x++;
-                    }
-
-                    j++;
-                }
-                ++i;
-            }
-
-            workbook.write();
-            workbook.close();
-            return true;
-        }
-    }
 
     public static void main(String args[]) throws SQLException, IOException, ClassNotFoundException {
 

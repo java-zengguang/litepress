@@ -1,6 +1,7 @@
 package com.zg.groovy.common
 
-import java.lang.management.*
+
+import java.lang.management.ManagementFactory
 
 
 class JMXUtils {
