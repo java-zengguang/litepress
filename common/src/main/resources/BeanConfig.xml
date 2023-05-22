@@ -443,6 +443,7 @@
 
     <bean id="initConfig" class="com.zg.common.bean.entity.InitEntity">
         <property name="packageType" type="java.lang.String">jar</property>
+        <property name="appID" type="java.lang.String">common</property>
     </bean>
 
     <bean id="tableMapper" class="com.zg.webdemo.dao.TableMapper">

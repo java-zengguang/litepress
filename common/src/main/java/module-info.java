@@ -19,7 +19,6 @@ open module common {
     requires java.compiler;
     requires cglib;
     requires org.apache.commons.net;
-
     requires com.esotericsoftware.kryo;
     requires druid;
     requires java.naming;

@@ -16,6 +16,7 @@
     </parent>
 
 
+
     <dependencies>
 
         <dependency>
@@ -47,6 +48,11 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.zg.database</groupId>
+            <artifactId>incache</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
         <!--jstl标签依赖的jar包end -->
     </dependencies>
