@@ -128,9 +128,9 @@ public class JwtUtil {
         }
     }
 
-    public static UserInfo  getUserInfo(String token) throws Exception {
+    public static UserInfo  getUserInfo(String token,String safeToken) throws Exception {
         try {
-            DecodedJWT jwt = JWT.decode(token);
+            DecodedJWT jwt = JWT.decode(safeToken);
             UserInfo userInfo=new UserInfo();
             userInfo.safeToken =jwt.getClaim("safeToken").toString();
             userInfo.userCode=jwt.getClaim("userCode").toString();

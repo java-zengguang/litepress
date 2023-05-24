@@ -222,8 +222,8 @@ public class ControllerAdapter {
 
     public static void resovleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String result = "";
-        Logger.info("请求的url " + request.getRequestURL());
         String requestURI = request.getRequestURI();
+        Logger.info("请求的url " + requestURI);
         Object viewObject = null;
         if (requestURI.endsWith(mvcOption.controllerSuffix) || requestURI.endsWith(mvcOption.upLoadSuffix)) {
             if (mvcOption.projectRoot != null && !"".equals(mvcOption.projectRoot) && requestURI.contains(mvcOption.projectRoot)) {

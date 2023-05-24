@@ -3,6 +3,7 @@ package com.zg.mvc.servlet;
 import com.zg.common.init.Config;
 import com.zg.mvc.adapter.ControllerAdapter;
 import com.zg.mvc.entity.MVCOption;
+import com.zg.mvc.entity.UserInfo;
 import com.zg.mvc.util.JwtUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -53,12 +54,12 @@ public class AdapterServlet extends HttpServlet {
             for (Cookie cookie : cookies) {
                 if ("token".equals(cookie.getName())) {
                     String token = cookie.getValue();
-                    if (token != null && JwtUtil.verify(token)) {
-                        token = JwtUtil.getClaim(token, "safeToken");  //获取token的明文
-                        String userInfo = loginCache.get(token);  //查看token是否有效
-                        if (userInfo != null) {
-                            return true;
+                    if (token != null ) {
+                        String safeToken = loginCache.get(token);  //查看token是否有效
+                        if(safeToken!=null&&!"".equals(safeToken)){
+                            Logger.info("验签通过" );
                         }
+
                     }
                 }
             }
@@ -78,11 +79,10 @@ public class AdapterServlet extends HttpServlet {
             newCookie.setPath("/");
             response.addCookie(newCookie); //重新写入，将覆盖之前的
 
-
         } else {
             request.setCharacterEncoding("UTF-8");//传值编码
-            ControllerAdapter.resovleRequest(request, response);
             response.setContentType("text/html;charset=UTF-8");//设置传输编码
+            ControllerAdapter.resovleRequest(request, response);
         }
     }
 
