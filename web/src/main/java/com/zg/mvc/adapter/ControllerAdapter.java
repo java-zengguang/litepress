@@ -2,7 +2,6 @@ package com.zg.mvc.adapter;
 
 import com.zg.common.init.Config;
 import com.zg.common.util.reflect.JsonUtils;
-import com.zg.mvc.analysis.JsonRequestAnalysis;
 import com.zg.mvc.analysis.RequestAnalysis;
 import com.zg.mvc.analysis.SimpleRequestAnalysis;
 import com.zg.mvc.annotation.controller.ParamEntity;
@@ -18,10 +17,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.map.HashedMap;
 import org.tinylog.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -180,52 +184,39 @@ public class ControllerAdapter {
         return objects;
     }
 
+
     public static Object[] getParamter(HttpServletRequest request, HttpServletResponse response, Method method) throws IllegalAccessException, InstantiationException, ClassNotFoundException, IOException {
 
         int parameterCount = method.getParameterCount();
         Parameter parameters[] = method.getParameters();
         Annotation annotationArrays[][] = method.getParameterAnnotations();
         Object parameterValues[] = new Object[parameterCount];
+        List<ParamEntity> paramEntityList = new ArrayList<>();
         for (int i = 0; i < parameterCount; i++) {
             Class paramentType = Class.forName(parameters[i].getType().getName());
-            if (HttpServletRequest.class.isAssignableFrom(paramentType)) {
-                parameterValues[i] = request;
-            } else if (HttpServletResponse.class.isAssignableFrom(paramentType)) {
-                parameterValues[i] = response;
-            } else {
-                ParamEntity paramEntity = new ParamEntity();
-                paramEntity.annotations = annotationArrays[i];
-                paramEntity.paramName = parameters[i].getName();
-                paramEntity.paramType = paramentType;
-
-                Annotation[] annotations = paramEntity.annotations;
-                RequestAnalysis requestAnalysis = null;
-                if (annotations != null && annotations.length > 0) {
-                    for (Annotation annotation : annotations) {
-                        if (annotation instanceof RequestBody) {
-                            String value = "";
-                            BufferedReader reader = null;
-                            StringBuilder sb = new StringBuilder();
-                            reader = new BufferedReader(new InputStreamReader(request.getInputStream(), "utf-8"));
-                            String line = null;
-                            while ((line = reader.readLine()) != null) {
-                                sb.append(line);
-                            }
-                            value = sb.toString();
-                            paramEntity.paramObject = value;
-                            requestAnalysis = new JsonRequestAnalysis();
-                        }
+            ParamEntity paramEntity = new ParamEntity();
+            paramEntity.annotations = annotationArrays[i];
+            paramEntity.paramName = parameters[i].getName();
+            paramEntity.paramType = paramentType;
+            paramEntity.paramObject = request.getParameter(paramEntity.paramName); //标准表单
+            paramEntity.isJson = false;
+            Annotation[] annotations = paramEntity.annotations;
+            if (annotations != null && annotations.length >= 0) {
+                for (Annotation annotation : annotations) {
+                    if (annotation instanceof RequestBody) {
+                        paramEntity.isJson = true;
+                        paramEntity.paramObject=request.getInputStream();
                     }
                 }
-                //兜底的
-                if (requestAnalysis == null) {
-                    paramEntity.paramObject = request.getParameter(paramEntity.paramName);
-                    requestAnalysis = new SimpleRequestAnalysis();
-                }
-                parameterValues[i] = requestAnalysis.extractParam(paramEntity);
             }
-
+            paramEntityList.add(paramEntity);
         }
+
+        for (int j = 0; j < paramEntityList.size(); j++) {
+            RequestAnalysis requestAnalysis = new SimpleRequestAnalysis();
+            parameterValues[j] = requestAnalysis.extractParam(paramEntityList.get(j));
+        }
+
         return parameterValues;
     }
 

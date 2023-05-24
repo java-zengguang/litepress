@@ -1,5 +1,6 @@
 package com.zg.mvc.servlet;
 
+import com.zg.common.annotation.ScanAnnotation;
 import com.zg.common.util.CommonUtil;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -24,6 +25,9 @@ public class JettyBoot {
 
     public static void main(String[] args) {
 
+
+        System.setProperty("projectRootPath",CommonUtil.getModulePath(JettyBoot.class));
+        ScanAnnotation.scanModule(JettyBoot.class.getModule());
         JettyBoot jettyBoot = new JettyBoot();
         jettyBoot.doMain();
     }

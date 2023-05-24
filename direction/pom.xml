@@ -7,11 +7,10 @@
     <parent>
         <groupId>com.zg.database</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <groupId>com.zg.database</groupId>
     <artifactId>direction</artifactId>
-    <version>1.0-SNAPSHOT</version>
 
     <dependencies>
 
@@ -19,13 +18,13 @@
         <dependency>
             <groupId>com.zg.database</groupId>
             <artifactId>common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.zg.database</groupId>
             <artifactId>network-util</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
 
 

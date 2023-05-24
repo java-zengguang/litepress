@@ -7,14 +7,14 @@
 
     <groupId>com.zg.app</groupId>
     <artifactId>webiodemo</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>war</packaging>
 
 
     <parent>
         <groupId>com.zg.database</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <build>
@@ -47,20 +47,20 @@
         <dependency>
             <groupId>com.zg.mvc</groupId>
             <artifactId>web</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.zg.database</groupId>
             <artifactId>util</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <type>jar</type>
         </dependency>
 
         <dependency>
             <groupId>com.zg.singlepoint</groupId>
             <artifactId>sso</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
@@ -81,12 +81,12 @@
         <dependency>
             <groupId>com.zg.singlepoint</groupId>
             <artifactId>sso</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.zg.mvc</groupId>
             <artifactId>web</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
 

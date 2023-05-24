@@ -26,6 +26,8 @@
         <property name="upLoadPackage" type="java.lang.String">com.zg.mvc.controller</property>
         <property name="upLoadSuffix" type="java.lang.String">.file</property>
         <property name="temporaryFilePath" type="java.lang.String">E:\\upFile\\input.txt</property>
+        <property name="powerLevel" type="java.lang.String">1</property>
+
     </bean>
 
 
