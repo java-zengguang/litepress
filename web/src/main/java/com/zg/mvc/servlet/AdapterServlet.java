@@ -5,6 +5,7 @@ import com.zg.mvc.adapter.ControllerAdapter;
 import com.zg.mvc.entity.MVCOption;
 import com.zg.mvc.entity.UserInfo;
 import com.zg.mvc.util.JwtUtil;
+import com.zg.mvc.util.ThreadLocalCache;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
@@ -27,9 +28,6 @@ import java.util.List;
 public class AdapterServlet extends HttpServlet {
 
     private static MVCOption mvcOption = (MVCOption) Config.getConfig("MVCOption");
-
-    private static Cacheonix cacheonix = DistributedCacheonix.getInstance();  //分布式本地缓存，任意节点登录，所有节点授权
-    private static Cache<String, String> loginCache = cacheonix.getCache("loginCache");
     private static List<String> whiteList = Arrays.asList("/Login/toLogin.do", "/Login/verify.do");
 
     //白名单校验
@@ -54,12 +52,11 @@ public class AdapterServlet extends HttpServlet {
             for (Cookie cookie : cookies) {
                 if ("token".equals(cookie.getName())) {
                     String token = cookie.getValue();
-                    if (token != null ) {
-                        String safeToken = loginCache.get(token);  //查看token是否有效
-                        if(safeToken!=null&&!"".equals(safeToken)){
-                            Logger.info("验签通过" );
-                        }
-
+                    if (token != null && JwtUtil.verify(token)) {
+                        UserInfo userInfo=JwtUtil.getUserInfo(token);
+                       Logger.info("验签通过"+userInfo);
+                        ThreadLocalCache.setCache("currentUserInfo",userInfo);
+                       return true;
                     }
                 }
             }

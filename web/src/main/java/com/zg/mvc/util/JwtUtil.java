@@ -128,14 +128,14 @@ public class JwtUtil {
         }
     }
 
-    public static UserInfo  getUserInfo(String token,String safeToken) throws Exception {
+    public static UserInfo  getUserInfo(String token) throws Exception {
         try {
-            DecodedJWT jwt = JWT.decode(safeToken);
+            DecodedJWT jwt = JWT.decode(token);
             UserInfo userInfo=new UserInfo();
-            userInfo.safeToken =jwt.getClaim("safeToken").toString();
-            userInfo.userCode=jwt.getClaim("userCode").toString();
-            userInfo.state=jwt.getClaim("state").toString();
-            userInfo.userName=jwt.getClaim("userName").toString();
+            userInfo.safeToken =jwt.getClaim("safeToken").asString();
+            userInfo.userCode=jwt.getClaim("userCode").asString();
+            userInfo.state=jwt.getClaim("state").asString();
+            userInfo.userName=jwt.getClaim("userName").asString();
             return userInfo;
         } catch (JWTDecodeException e) {
             throw new Exception("解密Token中的公共信息出现JWTDecodeException异常:" + e.getMessage());
