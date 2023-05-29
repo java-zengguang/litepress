@@ -28,7 +28,7 @@ import java.util.List;
 public class AdapterServlet extends HttpServlet {
 
     private static MVCOption mvcOption = (MVCOption) Config.getConfig("MVCOption");
-    private static List<String> whiteList = Arrays.asList("/Login/toLogin.do", "/Login/verify.do");
+    private static List<String> whiteList = Arrays.asList("/Login/toLogin.do", "/favicon.ico");
 
     //白名单校验
     private boolean isWhite(HttpServletRequest request) {
