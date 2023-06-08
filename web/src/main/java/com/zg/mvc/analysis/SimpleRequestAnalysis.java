@@ -1,5 +1,6 @@
 package com.zg.mvc.analysis;
 
+import com.alibaba.fastjson.JSON;
 import com.zg.common.util.reflect.EntityUtils;
 import com.zg.common.util.reflect.JsonUtils;
 import com.zg.mvc.annotation.controller.ParamEntity;
@@ -30,7 +31,7 @@ public class SimpleRequestAnalysis extends BaseRequestAnalysis {
                     sb.append(line);
                 }
                 value = sb.toString();
-                obj = JsonUtils.jsonToObject(value, paramEntity.paramType);
+                obj = JSON.parseObject(value,paramEntity.paramGenericityType);
                 return obj;
             }
             if (HttpServletRequest.class.isAssignableFrom(paramEntity.paramType)) {

@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,17 @@ public class ControllerAdapter {
         return true;
     }
 
+
+    public static String resovleViewJsonObject(Object viewObject, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String result = "";
+        if (viewObject != null) {
+            response.setHeader("content-type", "application/json");
+            response.setCharacterEncoding("UTF-8");
+            result = JsonUtils.objectToJsonString(viewObject);
+        }
+
+        return result;
+    }
 
     public static String resovleViewString(String viewObject, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String result = "";
@@ -189,6 +201,7 @@ public class ControllerAdapter {
 
         int parameterCount = method.getParameterCount();
         Parameter parameters[] = method.getParameters();
+        Type  paramGenericityTypes[] = method.getGenericParameterTypes();
         Annotation annotationArrays[][] = method.getParameterAnnotations();
         Object parameterValues[] = new Object[parameterCount];
         List<ParamEntity> paramEntityList = new ArrayList<>();
@@ -198,6 +211,7 @@ public class ControllerAdapter {
             paramEntity.annotations = annotationArrays[i];
             paramEntity.paramName = parameters[i].getName();
             paramEntity.paramType = paramentType;
+            paramEntity.paramGenericityType=paramGenericityTypes[i];
             paramEntity.paramObject = request.getParameter(paramEntity.paramName); //标准表单
             paramEntity.isJson = false;
             Annotation[] annotations = paramEntity.annotations;
@@ -205,7 +219,7 @@ public class ControllerAdapter {
                 for (Annotation annotation : annotations) {
                     if (annotation instanceof RequestBody) {
                         paramEntity.isJson = true;
-                        paramEntity.paramObject=request.getInputStream();
+                        paramEntity.paramObject = request.getInputStream();
                     }
                 }
             }
@@ -259,9 +273,11 @@ public class ControllerAdapter {
         } else {
             if (viewObject instanceof String) {  //String类型
                 result = resovleViewString((String) viewObject, request, response);
-            }
-            if (viewObject instanceof ViewObject) { //标准viewObject类型
+            } else if (viewObject instanceof ViewObject) { //标准viewObject类型
                 result = resovleViewObject((ViewObject) viewObject, request, response);
+            } else {
+                result = resovleViewJsonObject(viewObject, request, response);
+
             }
             PrintWriter out = response.getWriter();
             out.print(result);

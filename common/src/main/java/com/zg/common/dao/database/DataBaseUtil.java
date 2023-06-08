@@ -1,9 +1,14 @@
 package com.zg.common.dao.database;
 
+import com.zg.common.bean.entity.ColumnInfo;
+import com.zg.common.bean.entity.OptionDB;
+import com.zg.common.bean.entity.TableInfo;
+import com.zg.common.init.Config;
 import com.zg.common.util.reflect.ListUtils;
 import org.tinylog.Logger;
 
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,5 +83,66 @@ public class DataBaseUtil {
         }
         return tableInfoMap;
     }
+
+
+    //查询数据库中的表名
+    public static List<String> getTableNameList(String dataSource) throws SQLException, ClassNotFoundException {
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        Connection conn = NewDBPUtils.getConnection(dataSource);
+        DatabaseMetaData dbmd = conn.getMetaData();
+        ResultSet rs = dbmd.getTables(optionDB.databaseName, optionDB.username.toUpperCase(), "%", new String[]{"TABLE"});
+        List<String> tableNameList = new ArrayList<>();
+        while (rs.next()) {
+            tableNameList.add(rs.getString("TABLE_NAME"));
+        }
+        NewDBPUtils.release(dataSource);
+        return tableNameList;
+    }
+
+
+    //查询数据库中的表结构
+    public static List<TableInfo> getTableInfoList(String dataSource, String tableName) throws SQLException, ClassNotFoundException {
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        Connection conn = NewDBPUtils.getConnection(dataSource);
+        DatabaseMetaData dbmd = conn.getMetaData();
+        ResultSet rs = dbmd.getTables(optionDB.databaseName, optionDB.username.toUpperCase(), "%" + tableName + "%", new String[]{"TABLE"});
+        List<TableInfo> tableInfoList = new ArrayList<>();
+        while (rs.next()) {
+            TableInfo tableInfo = new TableInfo();
+            tableInfo.tableName = rs.getString("TABLE_NAME");
+            ResultSetMetaData rsMD = rs.getMetaData();
+            List<ColumnInfo> columnInfoList = new ArrayList<>();
+            Integer columnCount = rsMD.getColumnCount();
+            for (int i = 1; i <= columnCount; i++) { // 获取列名称
+                ColumnInfo columnInfo = new ColumnInfo();
+                columnInfo.columnName = rsMD.getColumnName(i);
+                columnInfoList.add(columnInfo);
+            }
+            tableInfo.columnList = columnInfoList;
+            tableInfoList.add(tableInfo);
+        }
+        NewDBPUtils.release(dataSource);
+        return tableInfoList;
+    }
+
+
+    public static TableInfo getTableInfo(String dataSource, String tableName) throws SQLException, ClassNotFoundException {
+        Connection conn = NewDBPUtils.getConnection(dataSource);
+        DatabaseMetaData dbmd = conn.getMetaData();
+        ResultSet rs = dbmd.getColumns(null, null, tableName.toUpperCase(), "%");
+        TableInfo tableInfo = new TableInfo();
+        tableInfo.tableName = tableName;
+        List<ColumnInfo> columnInfoList = new ArrayList<>();
+        while (rs.next()) {
+            ColumnInfo columnInfo = new ColumnInfo();
+            columnInfo.columnName = rs.getString("COLUMN_NAME");
+            columnInfo.columnType = rs.getString("TYPE_NAME");
+            columnInfoList.add(columnInfo);
+        }
+        tableInfo.columnList = columnInfoList;
+        NewDBPUtils.release(dataSource);
+        return tableInfo;
+    }
+
 
 }

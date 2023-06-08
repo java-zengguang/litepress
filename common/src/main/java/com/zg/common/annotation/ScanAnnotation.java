@@ -21,11 +21,16 @@ public class ScanAnnotation {
 
 
     public synchronized static void scanModule(Module module) {
+        scanModule(module, new HashSet<>());
+    }
+
+    public synchronized static void scanModule(Module module, Set<String> excludePackages) {
         if (annotationMap == null) {
             annotationMap = new ConcurrentHashMap<>();
         }
+        Set<String> packages = module.getPackages();
 
-        Set<Class<?>> moduleClassSet = scanModuleClass(module);
+        Set<Class<?>> moduleClassSet = scanModuleClass(packages, excludePackages);
         for (Class classes : moduleClassSet) {
             if (!classes.isAnnotation()) {
                 Annotation[] annotations = classes.getAnnotations();
@@ -46,11 +51,13 @@ public class ScanAnnotation {
     }
 
 
-    private static Set<Class<?>> scanModuleClass(Module module) {
-        Set<String> packages = module.getPackages();
+    private static Set<Class<?>> scanModuleClass(Set<String> packages, Set<String> excludePackages) {
+
         Set<Class<?>> classeSet = new HashSet<>();
         for (String aPackage : packages) {
-            classeSet.addAll(CommonUtil.getClasses(aPackage));
+            if(!excludePackages.contains(aPackage)){
+                classeSet.addAll(CommonUtil.getClasses(aPackage));
+            }
         }
         return classeSet;
     }

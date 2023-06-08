@@ -127,4 +127,6 @@ public class BaseEntityDao extends BaseJDBCDao {
 
     }
 
+
+
 }

@@ -24,6 +24,7 @@ open module common {
     requires java.naming;
     requires com.zaxxer.hikari;
     requires org.tinylog.api;
+    requires com.fasterxml.jackson.databind;
 
 
 }

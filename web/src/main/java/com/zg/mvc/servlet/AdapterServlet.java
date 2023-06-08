@@ -12,9 +12,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.cacheonix.Cacheonix;
-import org.cacheonix.cache.Cache;
-import org.cacheonix.impl.DistributedCacheonix;
 import org.tinylog.Logger;
 
 import java.io.IOException;
@@ -41,7 +38,7 @@ public class AdapterServlet extends HttpServlet {
     }
 
     //权限校验
-    private boolean isPower(HttpServletRequest request)   {
+    private boolean isPower(HttpServletRequest request) {
         try {
 
             if (isWhite(request)) {
@@ -53,14 +50,14 @@ public class AdapterServlet extends HttpServlet {
                 if ("token".equals(cookie.getName())) {
                     String token = cookie.getValue();
                     if (token != null && JwtUtil.verify(token)) {
-                        UserInfo userInfo=JwtUtil.getUserInfo(token);
-                       Logger.info("验签通过"+userInfo);
-                        ThreadLocalCache.setCache("currentUserInfo",userInfo);
-                       return true;
+                        UserInfo userInfo = JwtUtil.getUserInfo(token);
+                        Logger.info("验签通过" + userInfo);
+                        ThreadLocalCache.setCache("currentUserInfo", userInfo);
+                        return true;
                     }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Logger.info(e.getMessage());
             return false;
         }
@@ -71,7 +68,7 @@ public class AdapterServlet extends HttpServlet {
 
         if ("1".equals(mvcOption.powerLevel) && !isPower(request)) {
             response.setStatus(401);
-            Cookie newCookie=new Cookie("token",""); //假如要删除名称为username的Cookie JSESSIONID是cookie名 记得换成要删除的
+            Cookie newCookie = new Cookie("token", ""); //假如要删除名称为username的Cookie JSESSIONID是cookie名 记得换成要删除的
             newCookie.setMaxAge(0); //立即删除型
             newCookie.setPath("/");
             response.addCookie(newCookie); //重新写入，将覆盖之前的
