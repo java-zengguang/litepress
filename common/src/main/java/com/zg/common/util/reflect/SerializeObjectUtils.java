@@ -1,6 +1,8 @@
 package com.zg.common.util.reflect;
 
-import java.io.IOException;
+import com.zg.common.bean.entity.MainModel;
+
+import java.io.*;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -8,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class SerializeObjectUtils implements Runnable {
+public class SerializeObjectUtils implements Cloneable, Serializable {
 
 
     private static boolean isCollection(Field field) {
@@ -82,9 +84,15 @@ public class SerializeObjectUtils implements Runnable {
     }
 
 
-    @Override
-    public void run() {
-        // TODO Auto-generated method stub
+
+    public static Object copyDeep(Object obj) throws IOException, ClassNotFoundException {
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(obj);
+            ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            return ois.readObject();
 
     }
 

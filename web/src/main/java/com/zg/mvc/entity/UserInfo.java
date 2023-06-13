@@ -8,6 +8,15 @@ public class UserInfo  extends MainModel {
     public String safeToken;
     public String state;
 
+    public String leaderCode;
+
+    public String businessBody;
+
+    public String officeType;    //0-内勤  1-外勤
+
+
+
+
     public String getUserName() {
         return userName;
     }

@@ -11,6 +11,9 @@ public class OptionDB extends MainModel {
     public String DBType = null;
     public String DBPType = null;
 
+    public String resourcesURL;
+
+    public String resourcesUser;
     public OptionDB() {
     }
 

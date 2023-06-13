@@ -36,6 +36,10 @@ public class JsonUtils {
         return JSON.toJSONString(object);
     }
 
+    public static Object deepCopy(Object obj){
+       return JSONObject.parseObject(JSONObject.toJSONString(obj),obj.getClass());
+    }
+
 }
 
 
