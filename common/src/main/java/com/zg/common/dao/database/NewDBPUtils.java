@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,6 +52,33 @@ public class NewDBPUtils {
         return connection;
     }
 
+
+
+
+    public static void release() throws SQLException, ClassNotFoundException {
+        Map<String, Connection> dataSourceMap = threadLocal.get();
+        for(Map.Entry<String,Connection> entry:dataSourceMap.entrySet()){
+            entry.getValue().close();
+            dataSourceMap.remove(entry.getKey());
+        }
+
+    }
+
+
+    public static void commit() throws SQLException {
+        Map<String, Connection> dataSourceMap = threadLocal.get();
+        List<Connection> connectionList = dataSourceMap.values().stream().toList();        for (Connection conn : connectionList) {
+            try {
+                if (!conn.getAutoCommit()) {
+                    conn.commit();
+                }
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                conn.rollback();
+            }
+        }
+    }
 
     public static boolean commit(String dataSource) throws SQLException, ClassNotFoundException {
         Connection conn = getConnection(dataSource);

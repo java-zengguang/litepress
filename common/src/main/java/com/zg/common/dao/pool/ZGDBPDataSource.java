@@ -1,11 +1,11 @@
 package com.zg.common.dao.pool;
 
 import com.zg.common.bean.entity.OptionDB;
-import com.zg.common.proxy.ProxyUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -94,7 +94,8 @@ public class ZGDBPDataSource {
 
             Class.forName(Driver);
             conn = DriverManager.getConnection(url, username, password);
-            conn = (Connection) ProxyUtils.getProxyInterface(conn.getClass(), new ZGDBPConnection(conn));
+            conn = (Connection) Proxy.newProxyInstance(conn.getClass().getClassLoader(), conn.getClass().getInterfaces(), new ZGDBPConnection(conn));
+
         } catch (Exception e) {
 
             e.printStackTrace();

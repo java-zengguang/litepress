@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Provider(providerName = "/login")
 public class LoginProvider implements LoginServiceInte {
-    LoginServiceInte loginService = (LoginServiceInte) ProxyUtils.getProxyInterface(LoginService.class, new CommitInterfaceHandler("optionDB", new LoginService(), "login,loginout,registToken,updateLoginInvalid"));
+    LoginServiceInte loginService = (LoginServiceInte) ProxyUtils.getServiceProxy(new LoginService());
 
     @Override
     public String verification(String username, String passworld) {

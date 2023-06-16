@@ -1,5 +1,6 @@
 package com.zg.common.dao.database;
 
+import com.zg.common.annotation.AutoIncrease;
 import com.zg.common.bean.entity.MainModel;
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.bean.entity.OptionDB;
@@ -11,12 +12,12 @@ import com.zg.common.util.reflect.ModelSQLUtils;
 import org.tinylog.Logger;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Administrator on 2018/11/27 0027.
@@ -33,6 +34,21 @@ public class BaseEntityDao extends BaseJDBCDao {
             result = results[0];
         }
         return result;
+    }
+
+    public Object insertAutoIncrease(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+        Class clazz=model.getClass();
+        Field[] fields= clazz.getFields();
+        Field idField= Arrays.stream(fields).filter(field -> field.isAnnotationPresent(AutoIncrease.class)).findFirst().get();
+       if(insertTable(model)>0){
+           String sql = "select @@IDENTITY as id ";
+           List<Map> list = selectToMapList(sql);
+           Map<String, BigInteger> map = list.get(0);
+           Logger.info("id=" + map.get("id").intValue());
+           Integer id = Integer.valueOf(map.get("id").intValue());
+           idField.set(model,id);
+       }
+        return model;
     }
 
     public int[] insertTables(List modelLIst, Class modelClass) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {

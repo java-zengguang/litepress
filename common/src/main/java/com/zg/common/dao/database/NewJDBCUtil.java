@@ -2,6 +2,7 @@ package com.zg.common.dao.database;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
+import com.zg.common.annotation.AutoIncrease;
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.assemble.SimpleAssemble;
@@ -14,6 +15,8 @@ import org.tinylog.Logger;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.sql.*;
 import java.util.*;
 
@@ -239,7 +242,20 @@ public class NewJDBCUtil {
         }
         return result;
     }
-
+    public Object insertAutoIncrease(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+        Class clazz=model.getClass();
+        Field[] fields= clazz.getFields();
+        Field idField= Arrays.stream(fields).filter(field -> field.isAnnotationPresent(AutoIncrease.class)).findFirst().get();
+        if(insertTable(model)>0){
+            String sql = "select @@IDENTITY as id ";
+            List<Map> list = selectToMapList(sql);
+            Map<String, BigInteger> map = list.get(0);
+            Logger.info("id=" + map.get("id").intValue());
+            Integer id = Integer.valueOf(map.get("id").intValue());
+            idField.set(model,id);
+        }
+        return model;
+    }
 
     //查询
     public List select(String sql) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
