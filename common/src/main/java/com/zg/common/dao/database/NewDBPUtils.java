@@ -9,6 +9,7 @@ import org.tinylog.Logger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,11 +54,15 @@ public class NewDBPUtils {
     }
 
 
-
-
     public static void release() throws SQLException, ClassNotFoundException {
         Map<String, Connection> dataSourceMap = threadLocal.get();
-        for(Map.Entry<String,Connection> entry:dataSourceMap.entrySet()){
+
+        List<Map.Entry<String, Connection>> removeList = new ArrayList<>();
+
+        for (Map.Entry<String, Connection> entry : dataSourceMap.entrySet()) {
+            removeList.add(entry);
+        }
+        for (Map.Entry<String, Connection> entry : removeList) {
             entry.getValue().close();
             dataSourceMap.remove(entry.getKey());
         }
@@ -67,7 +72,8 @@ public class NewDBPUtils {
 
     public static void commit() throws SQLException {
         Map<String, Connection> dataSourceMap = threadLocal.get();
-        List<Connection> connectionList = dataSourceMap.values().stream().toList();        for (Connection conn : connectionList) {
+        List<Connection> connectionList = dataSourceMap.values().stream().toList();
+        for (Connection conn : connectionList) {
             try {
                 if (!conn.getAutoCommit()) {
                     conn.commit();

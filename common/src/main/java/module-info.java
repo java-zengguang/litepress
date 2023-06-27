@@ -10,6 +10,7 @@ open module common {
     exports com.zg.common.handler;
     exports com.zg.common.proxy;
     exports com.zg.common.util.url;
+    exports com.zg.common.service;
     requires org.apache.poi.poi;
     requires org.apache.poi.ooxml;
     requires commons.collections;

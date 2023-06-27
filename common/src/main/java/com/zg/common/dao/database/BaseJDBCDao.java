@@ -6,6 +6,7 @@ import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
+import com.zg.common.service.BaseService;
 import com.zg.common.util.reflect.ModelSQLUtils;
 import org.tinylog.Logger;
 
@@ -19,12 +20,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BaseJDBCDao {
+public class BaseJDBCDao extends BaseService {
     public String dataSource = "optionDB";
 
 
     public Connection getConnection() throws SQLException, ClassNotFoundException {
-        return NewDBPUtils.getConnection(dataSource);
+        return getConnection(dataSource);
     }
 
     //查询出列明，数据对应的list集合
@@ -257,27 +258,5 @@ public class BaseJDBCDao {
         return x;
     }
 
-    public boolean commit() throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
-        try {
-            if (!conn.getAutoCommit()) {
-                conn.commit();
-                release();
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return false;
-        }
-
-        return true;
-    }
-
-
-    public void release() throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
-        conn.close();
-        NewDBPUtils.release(dataSource);
-    }
 
 }

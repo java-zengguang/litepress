@@ -8,10 +8,7 @@ import com.zg.common.util.reflect.ListUtils;
 import org.tinylog.Logger;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2018/11/27 0027.
@@ -129,17 +126,52 @@ public class DataBaseUtil {
     public static TableInfo getTableInfo(String dataSource, String tableName) throws SQLException, ClassNotFoundException {
         Connection conn = NewDBPUtils.getConnection(dataSource);
         DatabaseMetaData dbmd = conn.getMetaData();
-        ResultSet rs = dbmd.getColumns(null, null, tableName.toUpperCase(), "%");
+
         TableInfo tableInfo = new TableInfo();
         tableInfo.tableName = tableName;
+
+        //获取组件
+        Set<String> pkSet=new HashSet<>();
+        List<ColumnInfo> pkColumnList = new ArrayList<>();
+        DatabaseMetaData dmd = conn.getMetaData();
+        ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName.toUpperCase());
+        while (dmdrs.next()) {
+            ColumnInfo columnInfo = new ColumnInfo();
+            columnInfo.columnName=dmdrs.getString("COLUMN_NAME");
+            pkColumnList.add(columnInfo);
+            pkSet.add(columnInfo.columnName);
+        }
+        ResultSet rs = dbmd.getColumns(null, null, tableName.toUpperCase(), "%");
         List<ColumnInfo> columnInfoList = new ArrayList<>();
         while (rs.next()) {
             ColumnInfo columnInfo = new ColumnInfo();
             columnInfo.columnName = rs.getString("COLUMN_NAME");
             columnInfo.columnType = rs.getString("TYPE_NAME");
+            columnInfo.isNullAble =  rs.getString("IS_NULLABLE");
+            columnInfo.columnSize=  rs.getString("COLUMN_SIZE");
+            columnInfo.decimalDigits= rs.getString("DECIMAL_DIGITS");
+            if(pkSet.contains(columnInfo.columnName)){
+                columnInfo.isPK="1";
+            }else{
+                columnInfo.isPK="0";
+            }
+            String columnLine= columnInfo.columnName+"  "+columnInfo.columnType;
+
+            if(!Arrays.asList("DATE","ENUM","TIME","DATETIME","BOOL","BOOLEAN","TEXT","BLOB").contains(columnInfo.columnType)) {
+                columnLine = columnLine + "(" + columnInfo.columnSize;
+                if (columnInfo.decimalDigits != null) {
+                    columnLine = columnLine + "," + columnInfo.decimalDigits;
+                }
+                columnLine = columnLine + ") ";
+            }
+            if("NO".equals(columnInfo.isNullAble)){
+                columnLine=columnLine+" not null ";
+            }
+            columnInfo.columnLine=columnLine;
             columnInfoList.add(columnInfo);
         }
         tableInfo.columnList = columnInfoList;
+        tableInfo.pkColumnList=pkColumnList;
         NewDBPUtils.release(dataSource);
         return tableInfo;
     }
