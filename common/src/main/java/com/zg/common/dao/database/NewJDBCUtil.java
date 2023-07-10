@@ -2,14 +2,18 @@ package com.zg.common.dao.database;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
+import com.github.pagehelper.PageInfo;
 import com.zg.common.annotation.AutoIncrease;
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.bean.entity.OptionDB;
+import com.zg.common.bean.entity.PageEntity;
 import com.zg.common.dao.assemble.SimpleAssemble;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
+import com.zg.common.util.database.ParseSQLUtils;
 import com.zg.common.util.reflect.*;
+import net.sf.jsqlparser.JSQLParserException;
 import org.tinylog.Logger;
 
 import java.io.File;
@@ -29,17 +33,6 @@ public class NewJDBCUtil {
         this.dataSource = dataSource;
     }
 
-
-    private String getTableName(String sql) {
-        String stringArray[] = sql.split("\\s+");
-        for (int i = 0; i < stringArray.length; i++) {
-            if ("FROM".equals(stringArray[i].toUpperCase().trim()) || "*FROM".equals(stringArray[i].toUpperCase().trim())) {
-                return stringArray[i + 1].toUpperCase();
-            }
-        }
-        Logger.debug(" getTableName   未找到tableName");
-        return null;
-    }
 
     //插入model_list ，未提交，未初始化连接
     private int[] insertTables(List modelList, Class modelClass, String tableName) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
@@ -75,26 +68,7 @@ public class NewJDBCUtil {
         return result;
     }
 
-/*
-    //获取表格信息
-    public Map<String, String> tableInfo(String sql) throws SQLException, ClassNotFoundException {
-        Map map = new HashMap();
-        Connection conn = NewDBPUtils.getConnection(dataSource);
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        ResultSet rs;
-        rs = pstmt.executeQuery();
-        ResultSetMetaData rsmd = rs.getMetaData();
-        int columncount = 0;
-        columncount = rsmd.getColumnCount();
-        for (int i = 1; i < columncount + 1; i++) {
-            map.put(rsmd.getColumnLabel(i), EntityUtils.dataTranslateJava(rsmd.getColumnTypeName(i)));
-        }
-        rs.close();
-        pstmt.close();
-        //dataBasePool.release(conn);
-        return map;
-    }
-*/
+
 
     //执行增删改
     private Integer operation(String sql) throws SQLException, ClassNotFoundException {
@@ -155,11 +129,94 @@ public class NewJDBCUtil {
     }
 
 
-    private List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException {
-        String tableName = "";
-        //获取表名
-        tableName = getTableName(sql);
-        return select2TempleList(sql, tableName);
+    public  String addPageFromSql(String sql, PageEntity page) throws Exception {
+        String countSql = null;
+        if (sql != null) {
+            countSql = "select count(1) as totalResultSize  from ( " + sql + " ) as num";
+        }
+        List list = this.selectToMapList(countSql);
+        Map map = (Map) list.get(0);
+        Integer totalResultSize = Integer.valueOf((String) map.get("totalResultSize"));
+        page.setTotalResultSize(totalResultSize);
+        page.setTotalPageSize(totalResultSize / page.getPageSize());
+        Integer startRows = (page.getCurrentPage() - 1) * page.getPageSize();
+        /*  Integer endRows=(page.getCurrentPage())*page.getPageSize();*/
+        sql = sql + " limit " + startRows + " , " + page.getPageSize();
+        return sql;
+    }
+
+    public  <T> void convertPage(List<T> listT, PageEntity page) {
+        PageInfo<T> resultPage = new PageInfo<T>(listT);
+        page.setTotalResultSize(new Long(resultPage.getTotal()).intValue());
+        page.setTotalPageSize(resultPage.getPages());
+    }
+
+
+    private List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException, JSQLParserException {
+        Logger.debug(sql);
+
+        //获取链接
+        Connection conn = NewDBPUtils.getConnection(dataSource);
+
+        List<String> tableNameList = ParseSQLUtils.parseSelectMainTable(sql);
+        //获取组件
+        List<String> pkColumnList = new ArrayList<>();
+        DatabaseMetaData dmd = conn.getMetaData();
+        for (String tableName : tableNameList) {
+            ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
+            while (dmdrs.next()) {
+                String pkStr = dmdrs.getString("COLUMN_NAME");
+                pkColumnList.add(pkStr);
+            }
+        }
+
+        //合并主表
+        StringBuffer tableNameBuffer = new StringBuffer();
+        tableNameList.forEach(tableNameBuffer::append);
+        //获取数据
+        List list = new ArrayList();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
+        ResultSetMetaData rsmd = rs.getMetaData();
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
+
+        int columncount = 0;
+        while (rs.next()) {
+            List<MetadataEntity> columnList = new ArrayList<>();
+            columncount = rsmd.getColumnCount();
+            for (int i = 1; i < columncount + 1; i++) {
+                String columnLabel = rsmd.getColumnLabel(i);
+                String columnType = rsmd.getColumnTypeName(i);
+                Object columnValue = rs.getObject(i);
+                MetadataEntity metadataEntity = new MetadataEntity();
+                metadataEntity.ownName = "";
+                metadataEntity.tableName = tableNameBuffer.toString();
+                metadataEntity.columnLabel = columnLabel;
+                metadataEntity.columnType = columnType;
+                metadataEntity.objectValue = columnValue;
+                metadataEntity.dbType = optionDB.DBType;
+                if (pkColumnList.contains(columnLabel)) {
+                    metadataEntity.isPK = "1";
+                } else {
+                    metadataEntity.isPK = "0";
+                }
+                if (rsmd.isAutoIncrement(i)) {
+                    metadataEntity.isAutoIncrease = "1";  //自增
+                    //  metadataEntity.isNotCommit="1"; //自增不提交
+                } else {
+                    metadataEntity.isAutoIncrease = "0";
+                    metadataEntity.isNotCommit = "0";  //不自增的列才提交
+                }
+                metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
+                columnList.add(metadataEntity);
+            }
+            list.add(columnList);
+        }
+        pstmt.close();
+        rs.close();
+
+        return list;
     }
 
     //查询出列明，数据对应的list集合
@@ -242,23 +299,24 @@ public class NewJDBCUtil {
         }
         return result;
     }
+
     public Object insertAutoIncrease(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
-        Class clazz=model.getClass();
-        Field[] fields= clazz.getFields();
-        Field idField= Arrays.stream(fields).filter(field -> field.isAnnotationPresent(AutoIncrease.class)).findFirst().get();
-        if(insertTable(model)>0){
+        Class clazz = model.getClass();
+        Field[] fields = clazz.getFields();
+        Field idField = Arrays.stream(fields).filter(field -> field.isAnnotationPresent(AutoIncrease.class)).findFirst().get();
+        if (insertTable(model) > 0) {
             String sql = "select @@IDENTITY as id ";
             List<Map> list = selectToMapList(sql);
             Map<String, BigInteger> map = list.get(0);
             Logger.info("id=" + map.get("id").intValue());
             Integer id = Integer.valueOf(map.get("id").intValue());
-            idField.set(model,id);
+            idField.set(model, id);
         }
         return model;
     }
 
     //查询
-    public List select(String sql) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public List select(String sql) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException, JSQLParserException {
         List<List<MetadataEntity>> templeList = null;
         List modelList = new ArrayList();
         try {
@@ -455,14 +513,11 @@ public class NewJDBCUtil {
     }
 
 
-    public Class selectStream(String sql, File tempFile) throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException {
+    public Class selectStream(String sql, File tempFile) throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JSQLParserException {
         Class modelClass = null;
         try {
-            String tableName = "";
-            tableName = getTableName(sql);
-            if (tableName.contains(".")) {
-                tableName = tableName.substring(tableName.indexOf("."), tableName.length());
-            }
+            String tableName = ParseSQLUtils.parseSelectMainTable(sql).get(0);
+
             Connection conn = NewDBPUtils.getConnection(dataSource);
             PreparedStatement pstmt = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             pstmt.setFetchSize(10000);
@@ -514,7 +569,6 @@ public class NewJDBCUtil {
 
         return modelClass;
     }
-
 
 
 }

@@ -80,8 +80,6 @@ public class DruidImpl implements DataBaseInte {
         properties.put("defaultAutoCommit", "false");
         //  properties.put("connectionProperties","config.decrypt="true";config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALbMDWRmnQ21QFC8P8m75xpc2CbY3lcwJxAo5TQtgMx0GBnmr2vvvtmmdKvvYfrdM+DLfpB5jtu00HX2vEMmzBsCAwEAAQ==");
 
-
-
         DataSource dataSource = DruidDataSourceFactory.createDataSource(properties);
 
         return dataSource;

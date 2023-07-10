@@ -1,6 +1,4 @@
-package com.zg.mvc.entity;
-
-import com.zg.common.bean.entity.MainModel;
+package com.zg.common.bean.entity;
 
 import java.util.ArrayList;
 import java.util.List;

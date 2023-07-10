@@ -11,6 +11,7 @@ open module common {
     exports com.zg.common.proxy;
     exports com.zg.common.util.url;
     exports com.zg.common.service;
+    exports com.zg.common.util.database;
     requires org.apache.poi.poi;
     requires org.apache.poi.ooxml;
     requires commons.collections;
@@ -26,6 +27,9 @@ open module common {
     requires com.zaxxer.hikari;
     requires org.tinylog.api;
     requires com.fasterxml.jackson.databind;
+    requires jsqlparser;
+    requires pagehelper;
+
 
 
 }

@@ -1,13 +1,17 @@
 package com.zg.common.dao.database;
 
 
+import com.github.pagehelper.PageInfo;
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.bean.entity.OptionDB;
+import com.zg.common.bean.entity.PageEntity;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
 import com.zg.common.service.BaseService;
+import com.zg.common.util.database.ParseSQLUtils;
 import com.zg.common.util.reflect.ModelSQLUtils;
+import net.sf.jsqlparser.JSQLParserException;
 import org.tinylog.Logger;
 
 import java.io.BufferedReader;
@@ -15,10 +19,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BaseJDBCDao extends BaseService {
     public String dataSource = "optionDB";
@@ -57,42 +58,31 @@ public class BaseJDBCDao extends BaseService {
         return list;
     }
 
-    private String getTableName(String sql) {
-        String tableName = "";
-        String stringArray[] = sql.split("\\s+");
-        for (int i = 0; i < stringArray.length; i++) {
-            if ("from".equals(stringArray[i].toLowerCase().trim()) || "*from".equals(stringArray[i].toLowerCase().trim())) {
-                tableName = stringArray[i + 1];
-                if (tableName.contains(",")) {
-                    tableName.replace(",", "And");
-                }
-            }
-        }
-        return tableName;
-    }
+
+
+
+
 
     //查询出列明，数据对应的list集合
-    public List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException {
+    public List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException, JSQLParserException {
         Logger.debug(sql);
-        String tableName = "";
-        String ownName = "";
-        if (tableName.contains(".")) {
-            String[] splits = tableName.split("\\.");
-            ownName = splits[0];
-            tableName = splits[1];
-        }
         //获取表名
-        tableName = getTableName(sql);
+        List<String> tableNameList = ParseSQLUtils.parseSelectMainTable(sql);
         //获取链接
         Connection conn = getConnection();
         //获取组件
-        List<String> pkColumnList = new ArrayList<>();
+        Set<String> pkColumnList = new HashSet<>();
         DatabaseMetaData dmd = conn.getMetaData();
-        ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
-        while (dmdrs.next()) {
-            String pkStr = dmdrs.getString("COLUMN_NAME");
-            pkColumnList.add(pkStr);
+        for (String tableName : tableNameList) {
+            ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
+            while (dmdrs.next()) {
+                String pkStr = dmdrs.getString("COLUMN_NAME");
+                pkColumnList.add(pkStr);
+            }
         }
+        //合并主表
+        StringBuffer tableNameBuffer = new StringBuffer();
+        tableNameList.forEach(tableNameBuffer::append);
         //获取数据
         List list = new ArrayList();
         PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -107,15 +97,16 @@ public class BaseJDBCDao extends BaseService {
             for (int i = 1; i < columncount + 1; i++) {
                 String columnLabel = rsmd.getColumnLabel(i);
                 String columnType = rsmd.getColumnTypeName(i);
+                String columnName = rsmd.getColumnName(i);
                 Object columnValue = rs.getObject(i);
                 MetadataEntity metadataEntity = new MetadataEntity();
-                metadataEntity.ownName = ownName;
-                metadataEntity.tableName = tableName;
+                metadataEntity.ownName = "";
+                metadataEntity.tableName = tableNameBuffer.toString();
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
                 metadataEntity.objectValue = columnValue;
                 metadataEntity.dbType = optionDB.DBType;
-                if (pkColumnList.contains(columnLabel)) {
+                if (pkColumnList.contains(columnName)) {
                     metadataEntity.isPK = "1";
                 } else {
                     metadataEntity.isPK = "0";

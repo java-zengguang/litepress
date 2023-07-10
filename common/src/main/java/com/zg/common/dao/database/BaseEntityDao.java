@@ -1,14 +1,18 @@
 package com.zg.common.dao.database;
 
+import com.github.pagehelper.PageInfo;
 import com.zg.common.annotation.AutoIncrease;
 import com.zg.common.bean.entity.MainModel;
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.bean.entity.OptionDB;
+import com.zg.common.bean.entity.PageEntity;
 import com.zg.common.dao.assemble.SimpleAssemble;
 import com.zg.common.init.Config;
 import com.zg.common.util.reflect.DynamicClass;
 import com.zg.common.util.reflect.EntityUtils;
 import com.zg.common.util.reflect.ModelSQLUtils;
+import net.sf.jsqlparser.JSQLParserException;
+import org.apache.poi.ss.formula.functions.Log;
 import org.tinylog.Logger;
 
 import java.io.IOException;
@@ -58,7 +62,7 @@ public class BaseEntityDao extends BaseJDBCDao {
 
 
     //查询
-    public List select(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
+    public List select(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException, JSQLParserException {
         List<List<MetadataEntity>> templeList = select2TempleList(sql);
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
@@ -96,7 +100,25 @@ public class BaseEntityDao extends BaseJDBCDao {
     }
 
 
-    public List execute(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
+
+    public  List select2Page(String sql, Class tClass, PageEntity page) throws Exception {
+        String countSql = null;
+        if (sql != null) {
+            countSql = "select count(1) as totalResultSize  from ( " + sql + " ) as num";
+        }
+        List contMapList = this.selectToMapList(countSql);
+        Map map = (Map) contMapList.get(0);
+        Integer totalResultSize = Math.toIntExact((Long) map.get("totalResultSize"));
+        page.setTotalResultSize(totalResultSize);
+        page.setTotalPageSize((totalResultSize / page.getPageSize()));
+        Integer startRows = (page.getCurrentPage() - 1) * page.getPageSize();
+        /*  Integer endRows=(page.getCurrentPage())*page.getPageSize();*/
+        sql = sql + " limit " + startRows + " , " + page.getPageSize();
+        List resultList= select(sql,tClass);
+        return resultList;
+    }
+
+    public List execute(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException, JSQLParserException {
         Logger.debug(sql);
         List<MainModel> list = new ArrayList<MainModel>();
         if (sql == null) {
