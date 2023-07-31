@@ -186,7 +186,7 @@ public class NotColseJDBCUtil {
                     metadataEntity.isAutoIncrease = "0";
                     metadataEntity.isNotCommit = "0";  //不自增的列才提交
                 }
-                //   System.out.println(columnLabel+" "+columnType);
+                //   Logger.info(columnLabel+" "+columnType);
                 metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
                 columnList.add(metadataEntity);
             }

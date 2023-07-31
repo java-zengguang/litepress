@@ -208,7 +208,7 @@ public class DynamicClass {
         JavaFileObject jfo = new StringJavaFileObject(name, javaCode);
         List<String> options = new ArrayList<String>();
         String path = CommonUtil.PATH+"";
-        System.out.println(DynamicClass.class + "====calss生成路径" + path);
+        Logger.info(DynamicClass.class + "====calss生成路径" + path);
         options.addAll(Arrays.asList("-d",path,"--limit-modules","java.base,java.logging"));
         List<? extends JavaFileObject> jfos = Arrays.asList(jfo);
 

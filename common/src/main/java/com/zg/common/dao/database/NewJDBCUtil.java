@@ -163,7 +163,7 @@ public class NewJDBCUtil {
         List<String> pkColumnList = new ArrayList<>();
         DatabaseMetaData dmd = conn.getMetaData();
         for (String tableName : tableNameList) {
-            ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
+            ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName.toUpperCase());
             while (dmdrs.next()) {
                 String pkStr = dmdrs.getString("COLUMN_NAME");
                 pkColumnList.add(pkStr);

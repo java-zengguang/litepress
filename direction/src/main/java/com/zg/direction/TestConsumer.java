@@ -2,6 +2,7 @@ package com.zg.direction;
 
 import com.zg.common.util.CommonUtil;
 import com.zg.direction.proxy.ConsumerHandler;
+import org.tinylog.Logger;
 
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -19,17 +20,17 @@ public class TestConsumer {
         classes[0] = TestInte.class;
         TestInte test = (TestInte) Proxy.newProxyInstance(TestInte.class.getClassLoader(), classes, new ConsumerHandler("/Test/good"));
         TestEntity testEntity = test.hello1("你好");
-        System.out.println("====" + testEntity);
-        System.out.println(test.hello2(testEntity));
+        Logger.info("====" + testEntity);
+        Logger.info(test.hello2(testEntity));
         test.hello3(testEntity, "xxx");
-        System.out.println(test.hello4(new ArrayList(Arrays.asList(testEntity)), "xxx"));
+        Logger.info(test.hello4(new ArrayList(Arrays.asList(testEntity)), "xxx"));
 
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 TestInte test = (TestInte) Proxy.newProxyInstance(TestInte.class.getClassLoader(), classes, new ConsumerHandler("/Test"));
                 try {
-                    System.out.println("=================" + test.hello());
+                    Logger.info("=================" + test.hello());
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

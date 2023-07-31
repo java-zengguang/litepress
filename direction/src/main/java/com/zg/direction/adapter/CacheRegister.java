@@ -114,11 +114,11 @@ public class CacheRegister {
         cacheRegister.put("/2", "老铁");
         cacheRegister.put("/2", "老王");
 
-        System.out.println(cacheRegister.get("/2"));
+        Logger.info(cacheRegister.get("/2"));
         Thread.sleep(1000);
-        System.out.println(cacheRegister.get("/2"));
+        Logger.info(cacheRegister.get("/2"));
         Thread.sleep(1000);
-        System.out.println(cacheRegister.get("/2"));
+        Logger.info(cacheRegister.get("/2"));
 
     }
 

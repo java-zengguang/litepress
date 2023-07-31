@@ -31,7 +31,7 @@ public class OracleEntityDaoTemplate extends BaseEntityDaoTemplate {
                 add(Arrays.asList("TEXT", "String", "'", "'"));
                 add(Arrays.asList("NUMBER", "BigDecimal", "", ""));
                 add(Arrays.asList("NUMERIC", "BigDecimal", "", ""));
-                add(Arrays.asList("DATE", "Date", "to_date('", "','yyyy-MM-dd)"));
+                add(Arrays.asList("DATE", "Date", "to_date('", "','yyyy-MM-dd')"));
                 add(Arrays.asList("DATETIME", "Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
                 add(Arrays.asList("TIMESTAMP", "Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
             }

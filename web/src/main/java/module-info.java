@@ -1,4 +1,4 @@
-open  module web {
+open module web {
     requires common;
     requires commons.collections;
     requires org.eclipse.jetty.servlet;
@@ -15,7 +15,8 @@ open  module web {
     exports com.zg.mvc.controller;
     exports com.zg.mvc.entity;
     exports com.zg.mvc.util;
-
+    exports com.zg.mvc.auth;
+    exports com.zg.mvc.auth.entity;
 
 
 }

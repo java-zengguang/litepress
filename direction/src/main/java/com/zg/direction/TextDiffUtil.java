@@ -3,6 +3,7 @@ package com.zg.direction;
 import com.github.difflib.DiffUtils;
 import com.github.difflib.patch.AbstractDelta;
 import com.github.difflib.patch.Patch;
+import org.tinylog.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class TextDiffUtil {
         //两文件的不同点
         Patch<String> patch = DiffUtils.diff(original, revised);
         for (AbstractDelta<String> delta : patch.getDeltas()) {
-            System.out.println(delta);
+            Logger.info(delta);
         }
 
     }

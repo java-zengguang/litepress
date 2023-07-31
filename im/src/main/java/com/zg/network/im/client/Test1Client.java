@@ -1,6 +1,7 @@
 package com.zg.network.im.client;
 
 import com.zg.network.bean.ZGMPBean;
+import org.tinylog.Logger;
 
 import java.util.Scanner;
 
@@ -17,13 +18,13 @@ public class Test1Client {
         imClient.addRequest(request);
         Thread thread = new Thread(imClient);
         thread.start();
-        System.out.print("网络通信客户端");
+        Logger.info("网络通信客户端");
         boolean go = true;
 
         Scanner input = new Scanner(System.in);
         while (go) {
             try {
-                // System.out.print("-》");
+                // Logger.info("-》");
                 String command = input.nextLine();
                 if (command != null && !"".equals(command)) {
                     if ("end".equals(command)) {

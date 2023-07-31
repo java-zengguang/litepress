@@ -1,5 +1,7 @@
 package com.zg.mvc.controller;
 
+import org.tinylog.Logger;
+
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -23,14 +25,14 @@ public class MulticastReceive {
 
             msr.joinGroup(group);
             byte[] buffer = new byte[8192];
-            System.out.println("接收数据包启动！(启动时间: "+new Date()+")");
+            Logger.info("接收数据包启动！(启动时间: "+new Date()+")");
             while(true){
                 //建立一个指定缓冲区大小的数据包
                 DatagramPacket dp = new DatagramPacket(buffer, buffer.length);
                 msr.receive(dp);
                 String s = new String(dp.getData(),0,dp.getLength());
                 //解码组播数据包
-                System.out.println(s);
+                Logger.info(s);
             }
         } catch (Exception e) {
             e.printStackTrace();

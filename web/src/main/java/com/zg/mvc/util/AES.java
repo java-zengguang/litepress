@@ -2,6 +2,7 @@ package com.zg.mvc.util;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.Arrays;
+import org.tinylog.Logger;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -78,7 +79,7 @@ public class AES {
     public byte[] encrypt(byte[] content, byte[] keyBytes) {
         byte[] encryptedText = null;
         init(keyBytes);
-        System.out.println("IV：" + new String(iv));
+        Logger.info("IV：" + new String(iv));
         try {
             cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
             encryptedText = cipher.doFinal(content);
@@ -100,7 +101,7 @@ public class AES {
     public byte[] decrypt(byte[] encryptedData, byte[] keyBytes) {
         byte[] encryptedText = null;
         init(keyBytes);
-        System.out.println("IV：" + new String(iv));
+        Logger.info("IV：" + new String(iv));
         try {
             cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
             encryptedText = cipher.doFinal(encryptedData);

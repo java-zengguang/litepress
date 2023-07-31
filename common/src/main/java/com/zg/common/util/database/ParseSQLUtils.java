@@ -13,12 +13,14 @@ import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
+import org.tinylog.Logger;
 
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 
 public class ParseSQLUtils {
 
@@ -126,7 +128,7 @@ public class ParseSQLUtils {
     public static void main(String args[]) throws JSQLParserException {
         String sql = "select (select *from prptmain where policyno=a.policyno),a.*from prpcmain a right join xx on eee=xxxd where policyno='123' ";
         List<String> tableNameList = parseSelectMainTable(sql);
-        tableNameList.forEach(System.out::println);
+        tableNameList.forEach(Logger::info);
     }
 
 

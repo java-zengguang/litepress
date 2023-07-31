@@ -84,7 +84,7 @@ public class ProviderRegister {
                     if (childData.getData() != null && childData.getData().length > 0) {
                         ProviderEntity provider = (ProviderEntity) JsonUtils.jsonToObject(new String(childData.getData()), ProviderEntity.class);
                         providerTable.put(provider.providerName, provider.path, provider);
-                        System.out.println("data:" + provider);
+                        Logger.info("data:" + provider);
                     }
                 }
                 if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_UPDATED) {

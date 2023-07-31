@@ -5,29 +5,21 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.zg.common.init.Config;
+import com.zg.mvc.entity.AuthConfig;
 import com.zg.mvc.entity.UserInfo;
-
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 /**
- *
  * @description 描述：JWT 工具类
  **/
-//@Slf4j
 public class JwtUtil {
 
 
-    /**
-     * 过期时间40分钟
-     */
-    private static long accessTokenExpireTime = 40*60*1000;
+    private static AuthConfig authEntity = (AuthConfig) Config.getConfig("AuthConfig");
 
-    /**
-     * JWT认证加密私钥(Base64加密)
-     */
-    private static String perturbation = "helloWorld";//
 
     /**
      * 校验token是否正确
@@ -36,22 +28,21 @@ public class JwtUtil {
      * @return boolean 是否正确
      */
     public static boolean verify(String token) throws Exception {
-        boolean  flag = false;
+        boolean flag = false;
         try {
             // 帐号加JWT私钥解密
-            String secret = getClaim(token, "safeToken") + Base64Utils.decode(perturbation);
+            String secret = getClaim(token, "safeToken") + Base64Utils.decode(authEntity.perturbation);
             Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algorithm).build();
-            DecodedJWT result=  verifier.verify(token);
-            flag=true;
+            DecodedJWT result = verifier.verify(token);
+            flag = true;
             return true;
         } catch (IllegalArgumentException e) {
-              throw new Exception("JWTToken认证解密IllegalArgumentException异常:" + e.getMessage());
-        }
-        finally{
-           if (!flag){
-               return false;
-           }
+            throw new Exception("JWTToken认证解密IllegalArgumentException异常:" + e.getMessage());
+        } finally {
+            if (!flag) {
+                return false;
+            }
         }
     }
 
@@ -106,21 +97,22 @@ public class JwtUtil {
 
     /**
      * 生成签名
+     *
      * @return java.lang.String 返回加密的Token
      */
-    public static String sign( UserInfo userInfo) throws Exception {
+    public static String sign(UserInfo userInfo) throws Exception {
         try {
             // 帐号加JWT私钥加密
-            String secret = userInfo.safeToken + Base64Utils.decodeThrowsException(perturbation);
+            String secret = userInfo.safeToken + Base64Utils.decodeThrowsException(authEntity.perturbation);
             // 此处过期时间是以毫秒为单位，所以乘以1000
-            Date date = new Date(System.currentTimeMillis() + accessTokenExpireTime);
+            Date date = new Date(System.currentTimeMillis() + authEntity.accessTokenExpireTime);
             Algorithm algorithm = Algorithm.HMAC256(secret);
             // 附带account帐号信息
             return JWT.create()
                     .withClaim("safeToken", userInfo.safeToken)
                     .withClaim("userCode", userInfo.userCode)
                     .withClaim("state", userInfo.state)
-                    .withClaim("userName",userInfo.userName)
+                    .withClaim("userName", userInfo.userName)
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
@@ -128,14 +120,14 @@ public class JwtUtil {
         }
     }
 
-    public static UserInfo  getUserInfo(String token) throws Exception {
+    public static UserInfo getUserInfo(String token) throws Exception {
         try {
             DecodedJWT jwt = JWT.decode(token);
-            UserInfo userInfo=new UserInfo();
-            userInfo.safeToken =jwt.getClaim("safeToken").asString();
-            userInfo.userCode=jwt.getClaim("userCode").asString();
-            userInfo.state=jwt.getClaim("state").asString();
-            userInfo.userName=jwt.getClaim("userName").asString();
+            UserInfo userInfo = new UserInfo();
+            userInfo.safeToken = jwt.getClaim("safeToken").asString();
+            userInfo.userCode = jwt.getClaim("userCode").asString();
+            userInfo.state = jwt.getClaim("state").asString();
+            userInfo.userName = jwt.getClaim("userName").asString();
             return userInfo;
         } catch (JWTDecodeException e) {
             throw new Exception("解密Token中的公共信息出现JWTDecodeException异常:" + e.getMessage());

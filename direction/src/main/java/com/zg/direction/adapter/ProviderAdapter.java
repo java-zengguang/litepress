@@ -2,6 +2,7 @@ package com.zg.direction.adapter;
 
 
 import com.zg.common.util.CommonUtil;
+import org.tinylog.Logger;
 
 public class ProviderAdapter {
 
@@ -21,7 +22,7 @@ public class ProviderAdapter {
     public static void main(String args[]) throws Exception {
         String rootPath = CommonUtil.getThisPath(ProviderAdapter.class);
         System.setProperty("projectRootPath", rootPath);
-        System.out.println(System.getProperty("111" + "projectRootPath"));
+        Logger.info(System.getProperty("111" + "projectRootPath"));
         ProviderAdapter providerAdapter = new ProviderAdapter();
         providerAdapter.init();
     }

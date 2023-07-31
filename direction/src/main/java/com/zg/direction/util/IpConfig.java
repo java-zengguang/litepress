@@ -1,5 +1,7 @@
 package com.zg.direction.util;
 
+import org.tinylog.Logger;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
@@ -44,7 +46,7 @@ public class IpConfig {
     }
 
     public static void main(String args[]) throws UnknownHostException {
-        System.out.println(getLocalHostLANAddress().getHostAddress());
+        Logger.info(getLocalHostLANAddress().getHostAddress());
     }
 
 }

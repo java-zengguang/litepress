@@ -1,6 +1,7 @@
 package com.zg.common.dao.template;
 
 import com.zg.common.bean.entity.MetadataEntity;
+import org.tinylog.Logger;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -61,7 +62,7 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
 
         List<String> configList = columnConfigMap.get(metadataEntity.columnType);
         if (configList == null || configList.size() == 0) {
-            System.out.println("错误的类型" + metadataEntity.columnType);
+            Logger.info("错误的类型" + metadataEntity.columnType);
             return null;
         }
         metadataEntity.fieldType = configList.get(1);

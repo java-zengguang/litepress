@@ -2,9 +2,8 @@ package com.zg.mvc.servlet;
 
 import com.zg.common.init.Config;
 import com.zg.mvc.adapter.ControllerAdapter;
+import com.zg.mvc.auth.AuthManager;
 import com.zg.mvc.entity.MVCOption;
-import com.zg.mvc.entity.UserInfo;
-import com.zg.mvc.util.JwtUtil;
 import com.zg.mvc.util.ThreadLocalCache;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,8 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.tinylog.Logger;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2018/11/30 0030.
@@ -25,38 +23,35 @@ import java.util.List;
 public class AdapterServlet extends HttpServlet {
 
     private static MVCOption mvcOption = (MVCOption) Config.getConfig("MVCOption");
-    private static List<String> whiteList = Arrays.asList("/Login/toLogin.do", "/favicon.ico");
 
-    //白名单校验
-    private boolean isWhite(HttpServletRequest request) {
-        String pathInfo = request.getServletPath();
-        Logger.info("访问路径：" + pathInfo);
-        if (whiteList.contains(pathInfo)) {
-            return true;
-        }
-        return false;
-    }
+    private static AuthManager authManager = new AuthManager();
+
+
 
     //权限校验
     private boolean isPower(HttpServletRequest request) {
         try {
-
-            if (isWhite(request)) {
+            if (authManager.isWhite(request)) {
                 return true;
             }
-
-            Cookie[] cookies = request.getCookies();
-            for (Cookie cookie : cookies) {
-                if ("token".equals(cookie.getName())) {
-                    String token = cookie.getValue();
-                    if (token != null && JwtUtil.verify(token)) {
-                        UserInfo userInfo = JwtUtil.getUserInfo(token);
-                        Logger.info("验签通过" + userInfo);
-                        ThreadLocalCache.setCache("currentUserInfo", userInfo);
-                        return true;
+            String token = request.getHeader("token");
+            if (token == null || "".equals(token)) {
+                Cookie[] cookies = request.getCookies();
+                for (Cookie cookie : cookies) {
+                    if ("token".equals(cookie.getName())) {
+                        token = cookie.getValue();
                     }
                 }
             }
+            if (token != null) {
+                Map userInfo = authManager.verify(token);
+                if (userInfo != null) {
+                    Logger.info("验签通过" + userInfo);
+                    ThreadLocalCache.setCache("currentUserInfo", userInfo);
+                    return true;
+                }
+            }
+
         } catch (Exception e) {
             Logger.info(e.getMessage());
             return false;

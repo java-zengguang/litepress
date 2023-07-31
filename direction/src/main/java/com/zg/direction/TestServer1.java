@@ -1,6 +1,7 @@
 package com.zg.direction;
 
 import com.zg.direction.annotation.Provider;
+import org.tinylog.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 public class TestServer1 implements TestInte {
     @Override
     public TestEntity hello() {
-        System.out.println("你好");
+        Logger.info("你好");
         TestEntity testEntity = new TestEntity();
         testEntity.s = "hello";
         return testEntity;
@@ -25,20 +26,20 @@ public class TestServer1 implements TestInte {
     @Override
     public TestEntity hello2(TestEntity name) {
 
-        System.out.println(name);
+        Logger.info(name);
         return name;
     }
 
     @Override
     public TestEntity hello3(TestEntity name, String x) {
 
-        System.out.println(name);
+        Logger.info(name);
         return name;
     }
 
     @Override
     public List<TestEntity> hello4(ArrayList<TestEntity> name, String x) {
-        System.out.println(name);
+        Logger.info(name);
         return name;
     }
 }
