@@ -19,7 +19,7 @@
         <module>sso</module>
         <module>login-provider</module>
         <module>groovy-common</module>
-
+        <module>chain-common</module>
 
         <!--        <module>webdemo</module>
                 <module>webiodemo</module>
@@ -31,7 +31,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
-        <revision>1.0.6</revision>
+        <revision>1.0.7</revision>
     </properties>
 
 
@@ -107,7 +107,6 @@
             </resource>
         </resources>
     </build>
-
 
 
 </project>

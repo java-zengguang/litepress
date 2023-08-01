@@ -97,6 +97,7 @@ public class BaseJDBCDao extends BaseService {
             for (int i = 1; i < columncount + 1; i++) {
                 String columnLabel = rsmd.getColumnLabel(i);
                 String columnType = rsmd.getColumnTypeName(i);
+                Integer columnScale= rsmd.getScale(i);
                 String columnName = rsmd.getColumnName(i);
                 Object columnValue = rs.getObject(i);
                 MetadataEntity metadataEntity = new MetadataEntity();
@@ -104,6 +105,7 @@ public class BaseJDBCDao extends BaseService {
                 metadataEntity.tableName = tableNameBuffer.toString();
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
+                metadataEntity.columnScale=columnScale;
                 metadataEntity.objectValue = columnValue;
                 metadataEntity.dbType = optionDB.DBType;
                 if (pkColumnList.contains(columnName)) {

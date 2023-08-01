@@ -11,6 +11,9 @@ public class MetadataEntity extends MainModel {
     public String entityName;
     public String columnLabel;
     public String columnType;
+
+    public Integer columnScale;
+
     public String fieldName;
     public String fieldType;
     public Object objectValue;

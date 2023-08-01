@@ -166,12 +166,14 @@ public class NotColseJDBCUtil {
             for (int i = 1; i < columncount + 1; i++) {
                 String columnLabel = rsmd.getColumnLabel(i);
                 String columnType = rsmd.getColumnTypeName(i);
+                Integer columnScale= rsmd.getScale(i);
                 Object columnValue = rs.getObject(i);
                 MetadataEntity metadataEntity = new MetadataEntity();
                 metadataEntity.ownName = ownName;
                 metadataEntity.tableName = tableName;
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
+                metadataEntity.columnScale=columnScale;
                 metadataEntity.objectValue = columnValue;
                 metadataEntity.dbType = optionDB.DBType;
                 if (pkColumnList.contains(columnLabel)) {

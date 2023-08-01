@@ -117,6 +117,10 @@ public class EntityUtils {
                 object = Long.valueOf(value);
                 break;
             }
+            case "BigDecimal": {
+                object = new BigDecimal(value);
+                break;
+            }
             case "boolean": {
                 object = Boolean.valueOf(value);
                 break;

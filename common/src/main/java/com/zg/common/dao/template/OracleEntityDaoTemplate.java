@@ -3,6 +3,7 @@ package com.zg.common.dao.template;
 import com.zg.common.bean.entity.MetadataEntity;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -58,7 +59,10 @@ public class OracleEntityDaoTemplate extends BaseEntityDaoTemplate {
         metadataEntity.fieldType = configList.get(1);
         if (metadataEntity.objectValue != null) {
             if ("BigDecimal".equals(metadataEntity.fieldType)) { //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下
-                metadataEntity.fieldValue = BigDecimal.valueOf(Double.parseDouble("" + metadataEntity.objectValue));
+                BigDecimal bigDecimal = BigDecimal.valueOf(Double.valueOf(""+metadataEntity.objectValue));
+                bigDecimal = bigDecimal.setScale(metadataEntity.columnScale, RoundingMode.HALF_UP); //指定精度，避免科学计数法
+                metadataEntity.fieldValue = bigDecimal;
+                metadataEntity.columnValue=bigDecimal.toString();
             }
             if ("Date".equals(metadataEntity.fieldType)) {
                 if (metadataEntity.objectValue instanceof Timestamp) {
@@ -88,6 +92,11 @@ public class OracleEntityDaoTemplate extends BaseEntityDaoTemplate {
                     value = value.replace("'", "''");
                     metadataEntity.objectValue = value;
                 }
+            }
+
+            if ("BigDecimal".equals(metadataEntity.fieldType) &&  metadataEntity.objectValue instanceof BigDecimal) { //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下
+                BigDecimal bigDecimal = (BigDecimal) metadataEntity.objectValue;
+                metadataEntity.columnValue=bigDecimal.toString();
             }
 
             if (configList != null && configList.size() > 0) {
