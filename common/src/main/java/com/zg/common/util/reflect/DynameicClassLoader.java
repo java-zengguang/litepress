@@ -25,7 +25,7 @@ public class DynameicClassLoader extends ClassLoader {
 
             classes = defineClass(name, bytes, 0, bytes.length);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         if (classes == null) {
             super.findClass(name);

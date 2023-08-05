@@ -37,7 +37,7 @@ public class Test1Client {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.error(e);
                 continue;
             }
 

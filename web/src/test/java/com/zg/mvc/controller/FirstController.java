@@ -44,7 +44,7 @@ public class FirstController extends BaseController {
         try {
             out = response.getWriter();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         Logger.info("hello");
         out.println("hello");

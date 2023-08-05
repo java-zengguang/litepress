@@ -8,6 +8,7 @@ import org.apache.zookeeper.server.ServerCnxnFactory;
 import org.apache.zookeeper.server.ServerConfig;
 import org.apache.zookeeper.server.ZooKeeperServerMain;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
+import org.tinylog.Logger;
 
 import java.lang.reflect.Field;
 import java.net.InetAddress;
@@ -59,7 +60,7 @@ public class ZookeeperBoot implements Runnable {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
     }

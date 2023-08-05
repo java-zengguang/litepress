@@ -109,7 +109,7 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             response.resultType = request.resultType;
             response.resultDataType = request.resultDataType;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
             response.success = false;
             response.resultData = null;
             response.resultType = request.resultType;

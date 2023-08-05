@@ -82,7 +82,7 @@ public class DoMainDriver {
             autoDriver = driverFactory.getDriver(baseProcessBatch.systemflag, baseProcessBatch.functionFlag);
             baseProcessBatch = autoDriver.doExecute(baseProcessBatch);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
             baseProcessBatch.status = "-1";
             baseProcessBatch.setMessage(e.getMessage());
         }

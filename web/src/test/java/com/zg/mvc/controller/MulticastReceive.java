@@ -35,7 +35,7 @@ public class MulticastReceive {
                 Logger.info(s);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }finally{
             if(msr!=null){
                 try {

@@ -31,7 +31,7 @@ public class FileMapper extends BaseDao {
         try {
             return insertTable(fileEntity);
         } catch (IllegalAccessException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
             return -1;
         }
 

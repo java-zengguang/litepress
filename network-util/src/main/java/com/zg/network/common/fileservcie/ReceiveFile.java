@@ -54,7 +54,7 @@ public class ReceiveFile implements Runnable {
         try {
             execute();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
     }
 }

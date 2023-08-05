@@ -1,5 +1,7 @@
 package com.zg.common.util.url;
 
+import org.tinylog.Logger;
+
 import java.io.UnsupportedEncodingException;
 
 public class URLUtils {
@@ -11,7 +13,7 @@ public class URLUtils {
         try {
             result = java.net.URLEncoder.encode(str, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return result;
     }
@@ -24,7 +26,7 @@ public class URLUtils {
         try {
             result = java.net.URLDecoder.decode(str, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return result;
     }

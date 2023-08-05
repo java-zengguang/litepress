@@ -80,7 +80,7 @@ public class NewDBPUtils {
                 }
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                Logger.error(e);
                 conn.rollback();
             }
         }
@@ -94,7 +94,7 @@ public class NewDBPUtils {
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
             conn.rollback();
             return false;
         }

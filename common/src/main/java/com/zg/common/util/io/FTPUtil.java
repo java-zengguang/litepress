@@ -30,9 +30,9 @@ public class FTPUtil {
                 Logger.info("FTP连接成功----" + ftpHost + ":" + ftpPort);
             }
         } catch (SocketException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return ftpClient;
     }
@@ -55,12 +55,12 @@ public class FTPUtil {
             ftpClient.logout();
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (SocketException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (IOException e) {
-            e.printStackTrace();
-            e.printStackTrace();
+            Logger.error(e);
+            Logger.error(e);
         }
 
     }
@@ -90,7 +90,7 @@ public class FTPUtil {
             ftpClient.logout();
             success = true;
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } finally {
             if (ftpClient.isConnected()) {
                 try {

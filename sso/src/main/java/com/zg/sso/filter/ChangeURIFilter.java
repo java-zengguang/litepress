@@ -63,7 +63,7 @@ public class ChangeURIFilter implements Filter {
                 Logger.info("changeUrl=" + ((RequestFacade) servletRequest).getRequestURL());
 
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.error(e);
                 Logger.info("URL错误");
             }
         }

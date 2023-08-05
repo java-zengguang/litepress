@@ -2,6 +2,7 @@ package com.zg.chain.common.components;
 
 import com.zg.chain.common.entity.BaseProcess;
 import com.zg.chain.common.entity.BaseProcessBatch;
+import org.tinylog.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public abstract class BaseComponent implements Component {
 
                         baseProcess = doExecuteProcess(baseProcess);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Logger.error(e);
                         baseProcess.executestate = "-1";
                         baseProcess.setErrormassage(this.getClass() + ";" + e.getMessage());
                         errorList.add(baseProcess);

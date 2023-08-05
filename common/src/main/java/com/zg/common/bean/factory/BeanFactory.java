@@ -5,6 +5,7 @@ import com.zg.common.util.CommonUtil;
 import com.zg.common.util.reflect.EntityUtils;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import org.tinylog.Logger;
 
 import java.lang.reflect.*;
 
@@ -40,14 +41,14 @@ public class BeanFactory {
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         try {
             o = createProxy(o);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         }
         return o;
 
@@ -89,14 +90,14 @@ public class BeanFactory {
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         try {
             o = createProxy(o);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         }
         return o;
 

@@ -1,6 +1,8 @@
 package com.zg.common.password;
 
 
+import org.tinylog.Logger;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
@@ -89,7 +91,7 @@ public class EncryptUtil {
             byte[] resBytes = charset == null ? res.getBytes() : res.getBytes(charset);
             return base64(md.digest(resBytes));
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return null;
     }
@@ -117,7 +119,7 @@ public class EncryptUtil {
             byte[] result = mac.doFinal(res.getBytes());
             return base64(result);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return null;
     }
@@ -160,7 +162,7 @@ public class EncryptUtil {
                 return new String(cipher.doFinal(parseHexStr2Byte(res)));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return null;
     }

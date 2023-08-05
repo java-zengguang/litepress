@@ -55,11 +55,11 @@ public class ControllerAdapter {
             }
 
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         Logger.info("MVC初始化中");
         Logger.info("methodMap " + methodMap);
@@ -262,7 +262,7 @@ public class ControllerAdapter {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.error(e);
                 result = e.getMessage();
             }
         }

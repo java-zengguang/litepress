@@ -1,12 +1,11 @@
 package com.zg.common.handler;
 
 import com.zg.common.annotation.Transaction;
-import com.zg.common.dao.database.NewDBPUtils;
+import org.tinylog.Logger;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
 
 /**
  * Created by Administrator on 2018/12/24 0024.
@@ -21,14 +20,14 @@ public class TransactionHandler implements InvocationHandler {
     }
 
     public void commit() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-      Class clazz=target.getClass().getSuperclass();
-      Method method= clazz.getMethod("commit");
-      method.invoke(target);
+        Class clazz = target.getClass().getSuperclass();
+        Method method = clazz.getMethod("commit");
+        method.invoke(target);
     }
 
     public void release() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class clazz=target.getClass().getSuperclass();
-        Method method= clazz.getMethod("release");
+        Class clazz = target.getClass().getSuperclass();
+        Method method = clazz.getMethod("release");
         method.invoke(target);
     }
 
@@ -42,9 +41,9 @@ public class TransactionHandler implements InvocationHandler {
             if (method.isAnnotationPresent(Transaction.class)) {
                 commit();
             }
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-            new Exception("事务提交失败");
+        } catch (Exception e) {
+            Logger.error(e);
+            throw new Exception("事务提交失败");
         } finally {
             release();
         }

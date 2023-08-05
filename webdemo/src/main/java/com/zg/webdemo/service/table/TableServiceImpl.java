@@ -33,14 +33,14 @@ public class TableServiceImpl implements TableService {
                     }
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Logger.error(e);
 
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Logger.error(e);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                Logger.error(e);
             } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                Logger.error(e);
             }
         } else {
             Logger.info("参数错误");
@@ -54,7 +54,7 @@ public class TableServiceImpl implements TableService {
         try {
             list = tableMapper.searchTableName(table);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return list;
     }
@@ -77,7 +77,7 @@ public class TableServiceImpl implements TableService {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         Logger.info("缓存取出" + list);
         return list;
@@ -96,7 +96,7 @@ public class TableServiceImpl implements TableService {
         try {
             list = tableMapper.getTableDataPage(map, page);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         return list;

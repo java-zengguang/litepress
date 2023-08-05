@@ -43,7 +43,7 @@ public class CompareDataBase {
            // compareDataBase.load();
             compareDataBase.getCompareExcel();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
     }
@@ -121,7 +121,7 @@ public class CompareDataBase {
             String fileName = dateS + "数据结构对比结果.xlsx";
             POIUtils.writeXLSX(resultMap, new File(dir, fileName));
         } catch (SQLException | IOException | WriteException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
     }
 }

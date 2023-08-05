@@ -45,7 +45,7 @@ public class SimpleRequestAnalysis extends BaseRequestAnalysis {
                 return obj;
             }
         }catch (Exception e){
-            e.printStackTrace();
+            Logger.error(e);
             Logger.info("解析参数失败："+e.getMessage());
 
         }

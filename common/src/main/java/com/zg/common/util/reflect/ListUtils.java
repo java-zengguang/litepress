@@ -1,5 +1,7 @@
 package com.zg.common.util.reflect;
 
+import org.tinylog.Logger;
+
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -54,7 +56,7 @@ public class ListUtils {
             num_list = findModelIndex(classes, modelList, terms);
         } catch (NoSuchFieldException | SecurityException
                  | IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
             return false;
         }
         if (num_list.size() > 0) {
@@ -82,7 +84,7 @@ public class ListUtils {
                     }
                 } catch (NoSuchFieldException | SecurityException
                          | IllegalArgumentException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    Logger.error(e);
                     return false;
                 }
 
@@ -126,7 +128,7 @@ public class ListUtils {
         } catch (NoSuchFieldException | SecurityException
                  | IllegalArgumentException | IllegalAccessException e) {
 
-            e.printStackTrace();
+            Logger.error(e);
 
         }
         Iterator it = num_list.iterator();

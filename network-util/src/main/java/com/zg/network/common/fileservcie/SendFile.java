@@ -1,6 +1,8 @@
 package com.zg.network.common.fileservcie;
 
 
+import org.tinylog.Logger;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -37,7 +39,7 @@ public class SendFile implements Runnable {
             out.close();
             socket.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
     }
 

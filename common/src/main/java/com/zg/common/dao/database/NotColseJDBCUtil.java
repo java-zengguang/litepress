@@ -207,13 +207,13 @@ public class NotColseJDBCUtil {
             result = insertTables(modelLIst, modelClass, tableName);
             commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } finally {
             release();
         }
@@ -243,9 +243,9 @@ public class NotColseJDBCUtil {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         return modelList;
@@ -314,7 +314,7 @@ public class NotColseJDBCUtil {
             pstmt.close();
             rs.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return list;
     }

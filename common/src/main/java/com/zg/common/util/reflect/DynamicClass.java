@@ -94,7 +94,7 @@ public class DynamicClass {
             return getDynamicModel(className, javaCode);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
             return null;
         }
 

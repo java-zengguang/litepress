@@ -74,7 +74,7 @@ public class OutputFileThread implements Runnable {
         try {
             outputFile(start, end);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         getCompareCount();

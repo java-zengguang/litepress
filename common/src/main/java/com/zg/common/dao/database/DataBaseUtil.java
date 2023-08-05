@@ -30,7 +30,7 @@ public class DataBaseUtil {
                 NewJDBCUtil jdbcUtil = new NewJDBCUtil("opthinDB");
                 list = jdbcUtil.selectToMapList(tableInfoSQL);
             } catch (SQLException | ClassNotFoundException e) {
-                e.printStackTrace();
+                Logger.error(e);
             }
             tableInfo = ListUtils.createMap(list, "COLUMN_NAME", "DATA_TYPE");
             if (tableInfo != null && !tableInfo.isEmpty()) {

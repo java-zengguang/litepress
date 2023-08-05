@@ -45,7 +45,7 @@ public class CommonUtil {
             path = path + File.separator;
             Logger.info("---" + path);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         return path;
@@ -80,14 +80,14 @@ public class CommonUtil {
             ps.load(in);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Logger.error(e);
                 }
             }
         }
@@ -206,7 +206,7 @@ public class CommonUtil {
                                             // log
                                             // .error("添加用户自定义视图类错误
                                             // 找不到此类的.class文件");
-                                            e.printStackTrace();
+                                            Logger.error(e);
                                         }
                                     }
                                 }
@@ -214,12 +214,12 @@ public class CommonUtil {
                         }
                     } catch (IOException e) {
                         // log.error("在扫描用户定义视图时从jar包获取文件出错");
-                        e.printStackTrace();
+                        Logger.error(e);
                     }
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         return classes;
@@ -267,7 +267,7 @@ public class CommonUtil {
                             Thread.currentThread().getContextClassLoader().loadClass(packageName + '.' + className));
                 } catch (ClassNotFoundException e) {
                     // log.error("添加用户自定义视图类错误 找不到此类的.class文件");
-                    e.printStackTrace();
+                    Logger.error(e);
                 }
             }
         }

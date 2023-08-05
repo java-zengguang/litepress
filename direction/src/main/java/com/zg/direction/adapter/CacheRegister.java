@@ -51,7 +51,7 @@ public class CacheRegister {
         try {
             treeCache.start();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         //添加错误监听器
         treeCache.getUnhandledErrorListenable().addListener(new UnhandledErrorListener() {

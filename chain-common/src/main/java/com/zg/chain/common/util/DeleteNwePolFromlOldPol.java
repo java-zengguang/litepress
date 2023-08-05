@@ -48,7 +48,7 @@ public class DeleteNwePolFromlOldPol {
         try {
             deleteNwePolFromlOldPol.doMain();
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
     }
 

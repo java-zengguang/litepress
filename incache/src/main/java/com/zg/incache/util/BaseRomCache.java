@@ -1,6 +1,7 @@
 package com.zg.incache.util;
 
 import com.zg.common.util.reflect.EntityUtils;
+import org.tinylog.Logger;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -60,7 +61,7 @@ public abstract class BaseRomCache implements RomCacheInte {
             num_list = findModelIndex(terms);
         } catch (NoSuchFieldException | SecurityException
                  | IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
             return false;
         }
         if (num_list.size() > 0) {
@@ -88,7 +89,7 @@ public abstract class BaseRomCache implements RomCacheInte {
                     }
                 } catch (NoSuchFieldException | SecurityException
                          | IllegalArgumentException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    Logger.error(e);
                     return false;
                 }
 
@@ -132,7 +133,7 @@ public abstract class BaseRomCache implements RomCacheInte {
         } catch (NoSuchFieldException | SecurityException
                  | IllegalArgumentException | IllegalAccessException e) {
 
-            e.printStackTrace();
+            Logger.error(e);
 
         }
         Iterator it = num_list.iterator();
@@ -163,7 +164,7 @@ public abstract class BaseRomCache implements RomCacheInte {
 
         } catch (NoSuchFieldException | SecurityException
                  | IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return false;
     }

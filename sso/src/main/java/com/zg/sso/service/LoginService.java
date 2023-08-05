@@ -23,13 +23,13 @@ public class LoginService implements LoginServiceInte {
         try {
             list = loginDao.login(map);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         if (list != null && list.size() > 0) {
             return (String) list.get(0).get("uuid");
@@ -79,13 +79,13 @@ public class LoginService implements LoginServiceInte {
         try {
             x = loginDao.insertToken(map);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         if (x > 0) {
             return token;
@@ -126,7 +126,7 @@ public class LoginService implements LoginServiceInte {
         try {
             list = loginDao.isLogin(uuid, token);
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         if (list != null && list.size() > 0) {
@@ -151,13 +151,13 @@ public class LoginService implements LoginServiceInte {
         try {
             list = loginDao.selectToken(map);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         if (list != null && list.size() > 0) {
             resultMap = list.get(0);
@@ -173,7 +173,7 @@ public class LoginService implements LoginServiceInte {
         try {
             return loginDao.updateLoginStatus(uuid, token, "valid");
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return 0;
     }
@@ -182,7 +182,7 @@ public class LoginService implements LoginServiceInte {
         try {
             return loginDao.updateLoginStatus(uuid, token, "invalid");
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         return 0;

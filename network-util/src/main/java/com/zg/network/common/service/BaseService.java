@@ -86,7 +86,7 @@ public abstract class BaseService implements Runnable {
             // Wait until the server socket is closed.
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } finally {
             //优雅退出，释放线程池资源
             bossGroup.shutdownGracefully();

@@ -58,13 +58,13 @@ public class AES {
             cipher = Cipher.getInstance(algorithmStr, "BC");
         } catch (NoSuchAlgorithmException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         } catch (NoSuchPaddingException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         } catch (NoSuchProviderException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         }
     }
     /**
@@ -85,7 +85,7 @@ public class AES {
             encryptedText = cipher.doFinal(content);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         }
         return encryptedText;
     }
@@ -107,7 +107,7 @@ public class AES {
             encryptedText = cipher.doFinal(encryptedData);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         }
         return encryptedText;
     }

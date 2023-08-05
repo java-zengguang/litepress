@@ -1,6 +1,8 @@
 package com.zg.network.im.utils;
 
 
+import org.tinylog.Logger;
+
 public class AudioUtils {
 
 
@@ -12,7 +14,7 @@ public class AudioUtils {
  /*           AudioStream audioStream = new AudioStream(in);
             AudioPlayer.player.start(audioStream);*/
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
     }

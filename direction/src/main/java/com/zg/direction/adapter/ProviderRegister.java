@@ -58,7 +58,7 @@ public class ProviderRegister {
         try {
             treeCache.start();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         //添加错误监听器
         treeCache.getUnhandledErrorListenable().addListener(new UnhandledErrorListener() {
@@ -140,7 +140,7 @@ public class ProviderRegister {
         } catch (InstantiationException e) {
             Logger.error("ProviderAdapter初始化错误", e);
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return providerMap;
     }

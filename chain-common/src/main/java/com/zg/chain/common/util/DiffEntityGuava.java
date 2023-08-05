@@ -70,7 +70,7 @@ public class DiffEntityGuava {
                     hashCode1 = hashCode1 + Objects.hashCode(getFieldObj(fieldName, obj1));
                     hashCode2 = hashCode2 + Objects.hashCode(getFieldObj(fieldName, obj2));
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    Logger.error(e);
                 }
             }
             return hashCode1 - hashCode2;

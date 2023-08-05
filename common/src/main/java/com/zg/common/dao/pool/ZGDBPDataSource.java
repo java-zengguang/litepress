@@ -1,6 +1,7 @@
 package com.zg.common.dao.pool;
 
 import com.zg.common.bean.entity.OptionDB;
+import org.tinylog.Logger;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -98,7 +99,7 @@ public class ZGDBPDataSource {
 
         } catch (Exception e) {
 
-            e.printStackTrace();
+            Logger.error(e);
         }
         return conn;
     }
@@ -116,7 +117,7 @@ public class ZGDBPDataSource {
                 getConnection();
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                Logger.error(e);
             }
         } else {
             conn = (Connection) connectPool.remove(0);
@@ -125,7 +126,7 @@ public class ZGDBPDataSource {
         try {
             conn.setAutoCommit(false);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         //   tl.set(conn);

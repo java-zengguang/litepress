@@ -79,7 +79,7 @@ public class BaseService {
                     }
                 } catch (SQLException e) {
                     // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Logger.error(e);
                     conn.rollback();
                 }
             }

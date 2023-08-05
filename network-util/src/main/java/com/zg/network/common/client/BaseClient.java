@@ -12,6 +12,7 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import org.tinylog.Logger;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -69,7 +70,7 @@ public abstract class BaseClient implements Runnable {
         try {
             requests.put(request);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
     }
 

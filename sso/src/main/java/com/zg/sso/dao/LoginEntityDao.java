@@ -2,6 +2,7 @@ package com.zg.sso.dao;
 
 import com.zg.common.dao.database.BaseEntityDao;
 import com.zg.common.util.reflect.ModelSQLUtils;
+import org.tinylog.Logger;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -43,15 +44,15 @@ public class LoginEntityDao extends BaseEntityDao {
         try {
             sql = ModelSQLUtils.dynamicSQL(sql, map);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         Integer x = null;
         try {
             x = operation(sql);
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return x;
     }
@@ -70,14 +71,14 @@ public class LoginEntityDao extends BaseEntityDao {
         try {
             sql = ModelSQLUtils.dynamicSQL(sql, map);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            Logger.error(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         try {
             operation(sql);
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
     }

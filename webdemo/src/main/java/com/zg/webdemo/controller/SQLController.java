@@ -34,7 +34,7 @@ public class SQLController {
             json.put("success", true);
             json.put("message", "操作成功，共有" + 1 + "行受影响");
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
             json.put("success", false);
             json.put("message", "操作失败");
         }

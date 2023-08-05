@@ -2,6 +2,7 @@ package com.zg.common.dao.pool;
 
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.init.Config;
+import org.tinylog.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -58,7 +59,7 @@ public class ZGDBPImpl implements DataBaseInte {
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return connection;
     }

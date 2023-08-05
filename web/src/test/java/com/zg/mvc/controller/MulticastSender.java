@@ -27,7 +27,7 @@ public class MulticastSender {
                 TimeUnit.SECONDS.sleep(1);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }finally{
             try {
                 if(mss!=null){

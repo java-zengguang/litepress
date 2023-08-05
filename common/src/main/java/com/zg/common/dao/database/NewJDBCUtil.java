@@ -421,7 +421,7 @@ public class NewJDBCUtil {
             pstmt.close();
             rs.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
             throw e;
         } finally {
             release();

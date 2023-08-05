@@ -34,7 +34,7 @@ public class TableController extends BaseController {
         try {
             return "json::" + JsonUtils.objectToJson(json);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
             return "string::失败";
         }
     }
@@ -47,7 +47,7 @@ public class TableController extends BaseController {
         try {
             return "json::" + JsonUtils.objectToJson(json);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
             return "string::失败";
         }
     }
@@ -63,7 +63,7 @@ public class TableController extends BaseController {
         try {
             return "json::" + JsonUtils.objectToJson(json);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.error(e);
             return "string::失败";
         }
     }

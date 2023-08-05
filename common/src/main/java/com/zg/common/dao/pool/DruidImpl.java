@@ -46,7 +46,7 @@ public class DruidImpl implements DataBaseInte {
             }
             connection = dataSource.getConnection();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
             Logger.error("数据库链接获取失败" + e.getMessage());
         }
 
