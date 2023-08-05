@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="im" />
+        <module name="login-provider" />
+        <module name="common" />
+        <module name="scala" />
+        <module name="web" />
+        <module name="network-util" />
+        <module name="admin" />
+        <module name="incache" />
+        <module name="sso" />
+        <module name="chain-common" />
+        <module name="direction" />
+        <module name="groovy-common" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="admin" target="1.8" />
+      <module name="databases" target="17" />
+      <module name="mq" target="17" />
+      <module name="scala" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="admin" options="-parameters" />
+      <module name="common" options="" />
+      <module name="direction" options="" />
+      <module name="im" options="" />
+      <module name="incache" options="" />
+      <module name="login-provider" options="" />
+      <module name="network-util" options="" />
+      <module name="sso" options="-parameters" />
+      <module name="web" options="" />
+    </option>
+  </component>
+</project>

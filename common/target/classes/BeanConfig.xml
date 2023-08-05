@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+    <!--
+        <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
+            <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+            <property name="maxPoolSize" type="int">10</property>
+            <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+            <property name="username" type="java.lang.String">root</property>
+            <property name="password" type="java.lang.String">root</property>
+            <property name="DBType" type="java.lang.String">MYSQL</property>
+            <property name="DBPType" type="java.lang.String">C3p0</property>
+        </bean>-->
+
+
+    <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:mysql://10.7.128.226:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">sunshine</property>
+        <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
+        <property name="DBType" type="java.lang.String">MYSQL</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+    <!--
+        <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
+            <property name="url" type="java.lang.String">jdbc:mysql://10.65.211.110:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+            <property name="maxPoolSize" type="int">10</property>
+            <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+            <property name="username" type="java.lang.String">root</property>
+            <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
+            <property name="DBType" type="java.lang.String">MYSQL</property>
+            <property name="DBPType" type="java.lang.String">C3p0</property>
+        </bean>-->
+
+    <!--    <bean id="testDB" class="com.zg.common.bean.entity.OptionDB">
+            <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+            <property name="maxPoolSize" type="int">10</property>
+            <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+            <property name="username" type="java.lang.String">root</property>
+            <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
+            <property name="DBType" type="java.lang.String">MYSQL</property>
+            <property name="DBPType" type="java.lang.String">C3p0</property>
+        </bean>-->
+
+
+
+    <bean id="dev_new-non-auto_nvpolicy" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvpoldev</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="dev_new-non-auto_nvproposal" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvprodev</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvproposal</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="dev_new-non-auto_nvendorsement" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvprodev</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvendorsement</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="dev_new-non-auto_nvportal" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvprodev</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvportal</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="dev_new-non-auto_nvfactory" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvpoldev</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvfactory</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="dev_new-non-auto_nvsun" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvsundev</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+
+    <bean id="int_new-non-auto_nvpolicy" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvpolint</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="int_new-non-auto_nvproposal" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvproint</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvproposal</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="int_new-non-auto_nvendorsement" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvproint</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvendorsement</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+
+    <bean id="int_nvportal_nvportal" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:mysql://10.8.192.56:2883/nvportal_int?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">nvportal</property>
+        <property name="password" type="java.lang.String">QAerUDN#VlrQ1pX0_</property>
+        <property name="DBType" type="java.lang.String">MYSQL</property>
+    </bean>
+
+
+    <bean id="int_new-non-auto_nvfactory" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvpolint</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvfactory</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="int_new-non-auto_nvsun" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvsunint</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="uat_new-non-auto_nvpolicy" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvpoluat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="uat_new-non-auto_nvproposal" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvprouat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvproposal</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="uat_new-non-auto_nvendorsement" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvprouat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvendorsement</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+
+    <bean id="uat_new-non-auto_nvfactory" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvpoluat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvfactory</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="uat_new-non-auto_nvsun" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvsunuat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="stage_new-non-auto_nvpolicy" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvpolsta</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="stage_new-non-auto_nvproposal" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprosta</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvproposal</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="stage_new-non-auto_nvendorsement" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprosta</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvendorsement</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="stage_new-non-auto_nvportal" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprosta</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvportal</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="stage_new-non-auto_nvfactory" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvpolsta</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvfactory</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="stage_new-non-auto_nvsun" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvsunsta</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+
+    <bean id="dev_old-non-auto_sunshine" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.29:1521/stagedb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">stageapp</property>
+        <property name="password" type="java.lang.String">stageapp1154</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="dev_old-non-auto_prpins" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.29:1521/pcoreuat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">basecode</property>
+        <property name="password" type="java.lang.String">basecode</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="old_old-non-auto_sunshine" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.29:1521/stagedb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">stageapp</property>
+        <property name="password" type="java.lang.String">stageapp1154</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="old_old-non-auto_prpins" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.29:1521/pcoreuat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">basecode</property>
+        <property name="password" type="java.lang.String">basecode</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+    <bean id="test" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:h2:mem:test;MODE=Oracle</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">org.h2.Driver</property>
+        <property name="username" type="java.lang.String">su</property>
+        <property name="password" type="java.lang.String"></property>
+        <property name="DBType" type="java.lang.String">H2</property>
+    </bean>
+
+    <bean id="dev_platform_platform" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.30:1521/platuat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">basecode</property>
+        <property name="password" type="java.lang.String">FAD990C25C3A41B76AE734065EFC754B</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+
+    <bean id="pro_new-non-auto_nvprodb" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.3.93:1521/nvprodb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">zengguang_phq</property>
+        <property name="password" type="java.lang.String">1449820864936D6E26FAFF20D0DF8E00</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+    </bean>
+
+    <bean id="pro_new-non-auto_nvenddb" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.3.93:1521/nvenddb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">zengguang_phq</property>
+        <property name="password" type="java.lang.String">1449820864936D6E26FAFF20D0DF8E00</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+    </bean>
+
+    <bean id="pro_new-non-auto_nvpoldb" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.3.77:1521/nvpoldb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">zengguang_phq</property>
+        <property name="password" type="java.lang.String">1449820864936D6E26FAFF20D0DF8E00</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+    </bean>
+
+    <bean id="pro_old-non-auto_pcore" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.1.78:1521/pcore</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">zengguang_phq</property>
+        <property name="password" type="java.lang.String">2F541CBF36E75CF263D15EE74CAF2BD6</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+    </bean>
+
+    <bean id="pro_old-non-auto_sunsplit" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.1.29:1521/sunsplit</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">zengguang_phq</property>
+        <property name="password" type="java.lang.String">2F541CBF36E75CF263D15EE74CAF2BD6</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+    </bean>
+
+    <bean id="pro_old-non-auto_sundb" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.10.0.235:1521/sundb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">zengguang_phq</property>
+        <property name="password" type="java.lang.String">2F541CBF36E75CF263D15EE74CAF2BD6</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+    </bean>
+
+
+    <bean id="CreateSVNDirTask" class="com.zg.common.bean.entity.JobEntity">
+        <property name="name" type="java.lang.String">CreateSVNDirTask</property>
+        <property name="group" type="java.lang.String">1</property>
+        <property name="description" type="java.lang.String">自动创建svn目录</property>
+        <property name="className" type="java.lang.String">com.zg.task.CreateSVNDirTask</property>
+    </bean>
+
+    <bean id="CreateSVNDirTiming" class="com.zg.common.bean.entity.JobTriggerEntity">
+        <property name="jobEntity" ref="CreateSVNDirTask"></property>
+        <property name="name" type="java.lang.String">CreateSVNDirTiming</property>
+        <property name="group" type="java.lang.String">1</property>
+        <property name="startAt" type="java.lang.String">2022-01-01</property>
+        <property name="cron" type="java.lang.String">0 40 9 * * ?</property>
+    </bean>
+
+
+    <bean id="SQLExcuteTask" class="com.zg.common.bean.entity.JobEntity">
+        <property name="name" type="java.lang.String">SQLExcuteTask</property>
+        <property name="group" type="java.lang.String">1</property>
+        <property name="description" type="java.lang.String">当日uat脚本自动执行</property>
+        <property name="className" type="java.lang.String">com.zg.task.SQLExcuteTask</property>
+    </bean>
+
+    <bean id="SQLExcuteTaskTiming" class="com.zg.common.bean.entity.JobTriggerEntity">
+        <property name="jobEntity" ref="SQLExcuteTask"></property>
+        <property name="name" type="java.lang.String">SQLExcuteTaskTiming</property>
+        <property name="group" type="java.lang.String">1</property>
+        <property name="startAt" type="java.lang.String">2022-01-01</property>
+        <property name="cron" type="java.lang.String">0 30 17 * * ?</property>
+    </bean>
+
+
+    <bean id="optionMGDB" class="com.zg.common.bean.entity.OptionMGDB">
+        <property name="ip" type="java.lang.String">localhost</property>
+        <property name="port" type="java.lang.String">27017</property>
+        <property name="database" type="java.lang.String">admin</property>
+        <property name="username" type="java.lang.String">adminUser</property>
+        <property name="password" type="java.lang.String">adminPass</property>
+    </bean>
+
+
+    <bean id="MVCOption" class="com.zg.mvc.entity.MVCOption">
+        <property name="controllerPackage" type="java.lang.String">com.zg.webdemo.controller</property>
+        <property name="controllerSuffix" type="java.lang.String">.do</property>
+        <property name="upLoadPackage" type="java.lang.String">com.zg.mvc.controller</property>
+        <property name="upLoadSuffix" type="java.lang.String">.file</property>
+        <property name="temporaryFilePath" type="java.lang.String">E:\\upFile\\</property>
+    </bean>
+
+    <bean id="initConfig" class="com.zg.common.bean.entity.InitEntity">
+        <property name="packageType" type="java.lang.String">jar</property>
+        <property name="appID" type="java.lang.String">common</property>
+    </bean>
+
+    <bean id="tableMapper" class="com.zg.webdemo.dao.TableMapper">
+    </bean>
+
+    <bean id="tableService" class="com.zg.webdemo.service.table.TableServiceImpl">
+        <property name="tableMapper" ref="tableMapper"></property>
+    </bean>
+
+    <proxy package="com.zg.webdemo.service.table" handler="com.zg.common.handler.CommitInterfaceHandler"
+           method="deleteTableDate"></proxy>
+
+
+</beans>

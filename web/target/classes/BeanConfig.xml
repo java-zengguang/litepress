@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+    <!--  <bean id="optionDB" class="com.jdbc.dao.impl.OptionDB">
+           <property name="url" type="java.lang.String">jdbc:oracle:thin:@localhost:1521:orcl</property>
+          <property name="maxPoolSize" type="int">10</property>
+            <property name="Driver" type="java.lang.String">oracle.jdbc.OracleDriver</property>
+            <property name="username" type="java.lang.String">sys as sysdba</property>
+             <property name="password" type="java.lang.String">helloworld</property>
+      </bean>-->
+
+    <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">root</property>
+        <property name="password" type="java.lang.String">123456</property>
+        <property name="DBType" type="java.lang.String">MYSQL</property>
+        <property name="DBPType" type="java.lang.String">C3p0</property>
+    </bean>
+
+
+    <bean id="MVCOption" class="com.zg.mvc.entity.MVCOption">
+        <property name="controllerPackage" type="java.lang.String">com.zg.mvc.controller</property>
+        <property name="controllerSuffix" type="java.lang.String">.do</property>
+        <property name="upLoadPackage" type="java.lang.String">com.zg.mvc.controller</property>
+        <property name="upLoadSuffix" type="java.lang.String">.file</property>
+        <property name="temporaryFilePath" type="java.lang.String">E:\\upFile\\input.txt</property>
+        <property name="powerLevel" type="java.lang.String">1</property>
+
+    </bean>
+
+
+    <bean id="ModelControlDao" class="com.student.dao.impl.ModelControlImpl">
+        <property name="model" ref="Student"></property>
+        <property name="cpm" ref="ConnectPoolDao"></property>
+    </bean>
+
+
+    <bean id="StudentManagerBiz" class="com.student.biz.impl.StudentManagerImpl">
+        <property name="modelControl" ref="ModelControlDao"></property>
+        <property name="fileName" type="java.lang.String">Student.txt</property>
+    </bean>
+
+    <bean id="Users" class="com.student.model.Users"></bean>
+    <bean id="ModelControlDao1" class="com.student.dao.impl.ModelControlImpl">
+        <property name="model" ref="Users"></property>
+
+    </bean>
+
+    <bean id="UsersManagerBiz" class="com.student.biz.impl.UsersManagerImpl">
+        <property name="modelControl" ref="ModelControlDao1"></property>
+        <property name="fileName" type="java.lang.String">User.txt</property>
+    </bean>
+
+
+    <bean id="Tb_persion" class="com.student.model.Tb_persion"></bean>
+    <bean id="ModelControlDao2" class="com.student.dao.impl.ModelControlImpl">
+        <property name="model" ref="Tb_persion"></property>
+
+    </bean>
+
+    <bean id="PersionManagerBiz" class="com.student.biz.impl.PersionManagerImpl">
+        <property name="modelControl" ref="ModelControlDao2"></property>
+        <property name="fileName" type="java.lang.String">persion.txt</property>
+    </bean>
+
+
+    <bean id="Tb_education" class="com.student.model.Tb_education"></bean>
+    <bean id="ModelControlDao3" class="com.student.dao.impl.ModelControlImpl">
+        <property name="model" ref="Tb_education"></property>
+
+    </bean>
+
+    <bean id="EducationManagerBiz" class="com.student.biz.impl.EducationManagerImpl">
+        <property name="modelControl" ref="ModelControlDao3"></property>
+        <property name="fileName" type="java.lang.String">Education.txt</property>
+    </bean>
+
+
+    <bean id="Tb_technology" class="com.student.model.Tb_technology"></bean>
+    <bean id="ModelControlDao4" class="com.student.dao.impl.ModelControlImpl">
+        <property name="model" ref="Tb_technology"></property>
+
+    </bean>
+
+    <bean id="TechnologyManagerBiz" class="com.student.biz.impl.TechnologyManagerImpl">
+        <property name="modelControl" ref="ModelControlDao4"></property>
+        <property name="fileName" type="java.lang.String">Technology.txt</property>
+    </bean>
+
+
+    <bean id="Tb_position" class="com.student.model.Tb_position"></bean>
+    <bean id="ModelControlDao5" class="com.student.dao.impl.ModelControlImpl">
+        <property name="model" ref="Tb_position"></property>
+
+    </bean>
+
+    <bean id="PositionManagerBiz" class="com.student.biz.impl.PositionManagerImpl">
+        <property name="modelControl" ref="ModelControlDao5"></property>
+        <property name="fileName" type="java.lang.String">Position.txt</property>
+    </bean>
+
+
+    <bean id="X" class="com.student.model.X">
+        <property name="tb_t" ref="Tb_technology"></property>
+        <property name="tb_po" ref="Tb_position"></property>
+        <property name="tb_e" ref="Tb_education"></property>
+        <property name="tb_p" ref="Tb_persion"></property>
+    </bean>
+    <bean id="ModelControlDao6" class="com.student.dao.impl.ModelControlImpl">
+        <property name="model" ref="X"></property>
+
+    </bean>
+
+    <bean id="XManagerBiz" class="com.student.biz.impl.XManagerImpl">
+        <property name="modelControl" ref="ModelControlDao6"></property>
+    </bean>
+
+
+    <proxy package="com.student.biz.impl" handler="handler.BizHandler" method="x,upLoad"></proxy>
+
+</beans>
