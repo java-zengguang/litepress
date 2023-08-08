@@ -7,5 +7,5 @@ import java.util.Map;
 public class AuthEntity extends MainModel {
     public String safeToken;
     public long timestamp;
-    public Map<String,String> userInfo;
+    public Map<String, Object> userInfo;
 }

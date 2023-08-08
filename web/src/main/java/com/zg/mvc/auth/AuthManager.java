@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class AuthManager {
 
-    private static AuthConfig authEntity = (AuthConfig) Config.getConfig("AuthConfig");
+    private static AuthConfig authConfig = (AuthConfig) Config.getConfig("AuthConfig");
     private static List<String> whiteList = Arrays.asList("/Login/toLogin.do", "/favicon.ico");
 
     public boolean isWhite(HttpServletRequest request) {
@@ -42,8 +42,7 @@ public class AuthManager {
             // 帐号加JWT私钥解密
             DecodedJWT jwt = JWT.decode(token);
             String safeToken = jwt.getClaim("safeToken").asString();
-            String secret = safeToken + Base64Utils.decode(authEntity.perturbation);//token加私钥为密钥解密
-
+            String secret = safeToken + Base64Utils.decode(authConfig.perturbation);//token加私钥为密钥解密
             Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algorithm).build();
             DecodedJWT result = verifier.verify(token);
@@ -56,6 +55,27 @@ public class AuthManager {
 
     }
 
+
+    public String renewalToken(String token) {
+        try {
+            // 帐号加JWT私钥解密
+            DecodedJWT jwt = JWT.decode(token);
+            long expireTime = jwt.getExpiresAt().getTime();
+            if (expireTime < authConfig.renewalTokenExpireTime) {
+                AuthEntity auth = new AuthEntity();
+                auth.safeToken = jwt.getClaim("safeToken").asString();
+                auth.timestamp = System.currentTimeMillis();
+                auth.userInfo = jwt.getClaim("userInfo").asMap();
+                token = sign(auth);
+            }
+
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return token;
+
+    }
+
     /**
      * 生成签名
      *
@@ -64,9 +84,9 @@ public class AuthManager {
     public  String sign(AuthEntity authEntity) throws Exception {
         try {
             // 帐号加JWT私钥加密
-            String secret = authEntity.safeToken + Base64Utils.decodeThrowsException(AuthManager.authEntity.perturbation);
+            String secret = authEntity.safeToken + Base64Utils.decodeThrowsException(AuthManager.authConfig.perturbation);
             // 此处过期时间是以毫秒为单位，所以乘以1000
-            Date date = new Date(System.currentTimeMillis() + AuthManager.authEntity.accessTokenExpireTime);
+            Date date = new Date(System.currentTimeMillis() + AuthManager.authConfig.accessTokenExpireTime);
             Algorithm algorithm = Algorithm.HMAC256(secret);
             // 附带account帐号信息
             return JWT.create()
