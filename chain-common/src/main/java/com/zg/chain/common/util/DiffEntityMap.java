@@ -18,15 +18,15 @@ public class DiffEntityMap {
     public Map deffEntityMap(Collection newCol, Collection oldCol) throws IllegalAccessException {
 
 
-        Map<Integer, Object> newDataMap = EntityUtils.transToPKMap(newCol);
-        Map<Integer, Object> oldDataMap = EntityUtils.transToPKMap(oldCol);
+        Map<String, Object> newDataMap = EntityUtils.transToPKMap(newCol);
+        Map<String, Object> oldDataMap = EntityUtils.transToPKMap(oldCol);
         Map<Object, Object> updateMap = new HashMap<>(); //新老数据对
 
-        Set<Map.Entry<Integer, Object>> entrySet = oldDataMap.entrySet();
+        Set<Map.Entry<String, Object>> entrySet = oldDataMap.entrySet();
 
 
         if (newDataMap != null && oldDataMap != null && oldDataMap.size() == newDataMap.size()) {
-            for (Map.Entry<Integer, Object> entry : entrySet) {
+            for (Map.Entry<String, Object> entry : entrySet) {
                 updateMap.put(entry.getValue(), newDataMap.get(entry.getKey()));
             }
         } else {

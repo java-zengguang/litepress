@@ -479,16 +479,24 @@ public class EntityUtils {
 
     }
 
-    public static Map<Integer, Object> transToPKMap(Collection list) throws IllegalAccessException {
-        Map<Integer, Object> resultMap = new HashMap<>();
+
+    //这里弃用hash的方式，数据量大会出现重复，导致对比不准，改用String映射的方式，降低重复率
+    public static Map<String, Object> transToPKMap(Collection list) throws IllegalAccessException {
+        Map<String, Object> resultMap = new HashMap<>();
         for (Object obj : list) {
             Class modelClass = obj.getClass();
-            Integer pkHashCode = 0;
+            String pkHashCode = "";
             Field[] fields = modelClass.getFields();
             for (Field field : fields) {
                 PrimaryKey primaryKey = field.getAnnotation(PrimaryKey.class);
                 if (primaryKey != null) {
-                    pkHashCode = pkHashCode + Objects.hashCode(field.get(obj));
+                    Object value=field.get(obj);
+                    if(value instanceof String){
+                        pkHashCode = pkHashCode + value;
+                    }else{
+                        pkHashCode = pkHashCode + Objects.hashCode(value);
+                    }
+
                 }
             }
             resultMap.put(pkHashCode, obj);
