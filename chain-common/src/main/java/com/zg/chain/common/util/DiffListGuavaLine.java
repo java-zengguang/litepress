@@ -130,7 +130,7 @@ public class DiffListGuavaLine {
             CompareEntity compareEntity = (CompareEntity) o;
             try {
                 for (String fieldName : fieldNameList) {
-                    Object fieldValueA = getFieldObj(fieldName);
+/*                    Object fieldValueA = getFieldObj(fieldName);
                     Object fieldValueB = compareEntity.getFieldObj(fieldName);
                     //特殊处理Bigdecimal 避免数字相同，位数不同导致的误判
                     if (fieldValueA instanceof BigDecimal && fieldValueB instanceof BigDecimal) {
@@ -141,10 +141,10 @@ public class DiffListGuavaLine {
                         if (!Objects.equals(fieldValueA, fieldValueB)) {
                             return false;
                         }
-                    }
-      /*              if (!Objects.equals(getFieldObj(fieldName), compareEntity.getFieldObj(fieldName))) {
-                        return false;
                     }*/
+                    if (!Objects.equals(getFieldObj(fieldName), compareEntity.getFieldObj(fieldName))) {
+                        return false;
+                    }
                 }
             } catch (Exception e) {
                 Logger.error(e);
@@ -160,13 +160,13 @@ public class DiffListGuavaLine {
 
             for (String fieldName : fieldNameList) {
                 try {
-                    Object fieldValue = getFieldObj(fieldName);
+/*                    Object fieldValue = getFieldObj(fieldName);
                     if (fieldValue instanceof BigDecimal) {
                         //bigdecimal 特殊处理，避免小数位数不同导致的对比偏差
                     } else {
                         hashCode = hashCode + Objects.hashCode(fieldValue);
-                    }
-                  //  hashCode = hashCode + Objects.hashCode(getFieldObj(fieldName));
+                    }*/
+                    hashCode = hashCode + Objects.hashCode(getFieldObj(fieldName));
                 } catch (IllegalAccessException e) {
                     Logger.error(e);
                 }

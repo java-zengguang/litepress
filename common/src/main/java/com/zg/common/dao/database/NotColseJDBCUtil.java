@@ -167,6 +167,9 @@ public class NotColseJDBCUtil {
                 String columnLabel = rsmd.getColumnLabel(i);
                 String columnType = rsmd.getColumnTypeName(i);
                 Integer columnScale= rsmd.getScale(i);
+                if(columnScale==-127){
+                    columnScale=6;
+                }
                 Object columnValue = rs.getObject(i);
                 MetadataEntity metadataEntity = new MetadataEntity();
                 metadataEntity.ownName = ownName;

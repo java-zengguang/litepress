@@ -11,6 +11,7 @@ import com.zg.common.dao.assemble.SimpleAssemble;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
+import com.zg.common.util.CommonUtil;
 import com.zg.common.util.database.ParseSQLUtils;
 import com.zg.common.util.reflect.*;
 import net.sf.jsqlparser.JSQLParserException;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.sql.*;
+import java.util.Date;
 import java.util.*;
 
 
@@ -67,7 +69,6 @@ public class NewJDBCUtil {
 
         return result;
     }
-
 
 
     //执行增删改
@@ -129,7 +130,7 @@ public class NewJDBCUtil {
     }
 
 
-    public  String addPageFromSql(String sql, PageEntity page) throws Exception {
+    public String addPageFromSql(String sql, PageEntity page) throws Exception {
         String countSql = null;
         if (sql != null) {
             countSql = "select count(1) as totalResultSize  from ( " + sql + " ) as num";
@@ -145,9 +146,9 @@ public class NewJDBCUtil {
         return sql;
     }
 
-    public  <T> void convertPage(List<T> listT, PageEntity page) {
+    public <T> void convertPage(List<T> listT, PageEntity page) {
         PageInfo<T> resultPage = new PageInfo<T>(listT);
-        page.setTotalResultSize(new Long(resultPage.getTotal()).intValue());
+        page.setTotalResultSize(Long.valueOf(resultPage.getTotal()).intValue());
         page.setTotalPageSize(resultPage.getPages());
     }
 
@@ -188,7 +189,10 @@ public class NewJDBCUtil {
             for (int i = 1; i < columncount + 1; i++) {
                 String columnLabel = rsmd.getColumnLabel(i);
                 String columnType = rsmd.getColumnTypeName(i);
-                Integer columnScale= rsmd.getScale(i);
+                Integer columnScale = rsmd.getScale(i);
+                if (columnScale == -127) {
+                    columnScale = 6;
+                }
                 Object columnValue = rs.getObject(i);
                 MetadataEntity metadataEntity = new MetadataEntity();
                 metadataEntity.ownName = "";
@@ -196,7 +200,7 @@ public class NewJDBCUtil {
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
                 metadataEntity.objectValue = columnValue;
-                metadataEntity.columnScale=columnScale;
+                metadataEntity.columnScale = columnScale;
                 metadataEntity.dbType = optionDB.DBType;
                 if (pkColumnList.contains(columnLabel)) {
                     metadataEntity.isPK = "1";
@@ -257,14 +261,17 @@ public class NewJDBCUtil {
             for (int i = 1; i < columncount + 1; i++) {
                 String columnLabel = rsmd.getColumnLabel(i);
                 String columnType = rsmd.getColumnTypeName(i);
-                Integer columnScale= rsmd.getScale(i);
+                Integer columnScale = rsmd.getScale(i);
+                if (columnScale == -127) {
+                    columnScale = 6;
+                }
                 Object columnValue = rs.getObject(i);
                 MetadataEntity metadataEntity = new MetadataEntity();
                 metadataEntity.ownName = ownName;
                 metadataEntity.tableName = tableName;
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
-                metadataEntity.columnScale=columnScale;
+                metadataEntity.columnScale = columnScale;
                 metadataEntity.objectValue = columnValue;
                 metadataEntity.dbType = optionDB.DBType;
                 if (pkColumnList.contains(columnLabel)) {
@@ -523,6 +530,17 @@ public class NewJDBCUtil {
             String tableName = ParseSQLUtils.parseSelectMainTable(sql).get(0);
 
             Connection conn = NewDBPUtils.getConnection(dataSource);
+
+            //获取组件
+            List<String> pkColumnList = new ArrayList<>();
+            DatabaseMetaData dmd = conn.getMetaData();
+            ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
+            while (dmdrs.next()) {
+                String pkStr = dmdrs.getString("COLUMN_NAME");
+                pkColumnList.add(pkStr);
+            }
+
+
             PreparedStatement pstmt = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             pstmt.setFetchSize(10000);
             pstmt.setFetchDirection(ResultSet.FETCH_REVERSE);
@@ -539,6 +557,10 @@ public class NewJDBCUtil {
                 List<MetadataEntity> columnList = new ArrayList<>();
                 columncount = rsmd.getColumnCount();
                 for (int i = 1; i < columncount + 1; i++) {
+                    Integer columnScale = rsmd.getScale(i);
+                    if (columnScale == -127) {
+                        columnScale = 6;
+                    }
                     String columnLabel = rsmd.getColumnLabel(i);
                     String columnType = rsmd.getColumnTypeName(i);
                     Object columnValue = rs.getObject(i);
@@ -547,6 +569,20 @@ public class NewJDBCUtil {
                     metadataEntity.columnLabel = columnLabel;
                     metadataEntity.columnType = columnType;
                     metadataEntity.objectValue = columnValue;
+                    metadataEntity.columnScale = columnScale;
+                    metadataEntity.dbType = optionDB.DBType;
+                    if (pkColumnList.contains(columnLabel)) {
+                        metadataEntity.isPK = "1";
+                    } else {
+                        metadataEntity.isPK = "0";
+                    }
+                    if (rsmd.isAutoIncrement(i)) {
+                        metadataEntity.isAutoIncrease = "1";  //自增
+                        //  metadataEntity.isNotCommit="1"; //自增不提交
+                    } else {
+                        metadataEntity.isAutoIncrease = "0";
+                        metadataEntity.isNotCommit = "0";  //不自增的列才提交
+                    }
                     metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
                     columnList.add(metadataEntity);
                 }
@@ -565,6 +601,114 @@ public class NewJDBCUtil {
             rs.close();
             pstmt.close();
             output.close();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            release();
+        }
+
+        return modelClass;
+    }
+
+
+    public Class selectStream(String sql,String tableName,String tempFileDir, List<File> tempFileList, Integer fileSize) throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JSQLParserException {
+        Class modelClass = null;
+        try {
+            tableName = tableName.trim().toUpperCase();
+            String ownName = "";
+            if (tableName.contains(".")) {
+                String[] splits = tableName.split("\\.");
+                ownName = splits[0];
+                tableName = splits[1];
+            }
+            Connection conn = NewDBPUtils.getConnection(dataSource);
+            //获取组件
+            List<String> pkColumnList = new ArrayList<>();
+            DatabaseMetaData dmd = conn.getMetaData();
+            ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName.toUpperCase());
+            while (dmdrs.next()) {
+                String pkStr = dmdrs.getString("COLUMN_NAME");
+                pkColumnList.add(pkStr);
+            }
+
+
+            PreparedStatement pstmt = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            pstmt.setFetchSize(10000);
+            pstmt.setFetchDirection(ResultSet.FETCH_REVERSE);
+            ResultSet rs;
+            rs = pstmt.executeQuery();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columncount = 0;
+            Kryo kryo = new Kryo();
+
+            OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+            EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
+            Long count = Long.valueOf(0);
+            Output output = null;
+            while (rs.next()) {
+                if (count % fileSize == 0) {
+                    if (output != null ) {
+                        output.close();
+                    }
+                    File tempFile = new File(tempFileDir, ""+System.currentTimeMillis());
+                    tempFile.createNewFile();
+                    tempFileList.add(tempFile);
+                    output = new Output(new FileOutputStream(tempFile), 1024000);
+                }
+
+                List<MetadataEntity> columnList = new ArrayList<>();
+                columncount = rsmd.getColumnCount();
+                for (int i = 1; i < columncount + 1; i++) {
+                    Integer columnScale = rsmd.getScale(i);
+                    if (columnScale == -127) {
+                        columnScale = 6;
+                    }
+                    String columnLabel = rsmd.getColumnLabel(i);
+                    String columnType = rsmd.getColumnTypeName(i);
+                    Object columnValue = rs.getObject(i);
+                    MetadataEntity metadataEntity = new MetadataEntity();
+                    metadataEntity.ownName = ownName;
+                    metadataEntity.tableName = tableName;
+                    metadataEntity.columnLabel = columnLabel;
+                    metadataEntity.columnType = columnType;
+                    metadataEntity.objectValue = columnValue;
+                    metadataEntity.columnScale = columnScale;
+                    metadataEntity.dbType = optionDB.DBType;
+                    if (pkColumnList.contains(columnLabel)) {
+                        metadataEntity.isPK = "1";
+                    } else {
+                        metadataEntity.isPK = "0";
+                    }
+                    if (rsmd.isAutoIncrement(i)) {
+                        metadataEntity.isAutoIncrease = "1";  //自增
+                        //  metadataEntity.isNotCommit="1"; //自增不提交
+                    } else {
+                        metadataEntity.isAutoIncrease = "0";
+                        metadataEntity.isNotCommit = "0";  //不自增的列才提交
+                    }
+                    metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
+                    columnList.add(metadataEntity);
+
+                }
+                SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
+                if (modelClass == null) {
+                    modelClass = DynamicClass.getDynamicModel(columnList);
+                    kryo.register(modelClass, new DynameicSerializer(modelClass));
+                }
+
+
+                Object obj = modelClass.newInstance();
+                for (MetadataEntity metadataEntity : columnList) {
+                    obj = simpleAssemble.assembling(metadataEntity, obj);
+                }
+                kryo.writeObject(output, obj);
+                count++;
+            }
+            if (output != null ) {
+                output.close();
+            }
+            pstmt.close();
+            rs.close();
         } catch (Exception e) {
             throw e;
         } finally {

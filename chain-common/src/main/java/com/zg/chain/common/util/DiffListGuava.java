@@ -47,37 +47,45 @@ public class DiffListGuava {
         Logger.info("---目标--" + targetDataSet.size() + "---源----" + sourceDataSet.size());
 
         //全量对比
-
+        Logger.info("====0");
         Set<CompareEntity> intersectionSet = Sets.newHashSet();
         Sets.intersection(sourceSet, targetSet).copyInto(intersectionSet); //完全一致，不需要操作
-
+        Logger.info("====1");
 
         Set<CompareEntity> symmetricDifferenceSetS = Sets.newHashSet();
         Sets.difference(sourceSet, intersectionSet).copyInto(symmetricDifferenceSetS); //排除完全一致的 待操作的 insert update  集合
+        Logger.info("====2");
 
         Set<CompareEntity> symmetricDifferenceSetT = Sets.newHashSet();
         Sets.difference(targetSet, intersectionSet).copyInto(symmetricDifferenceSetT); //排除完全一致的 待操作的 insert update  集合 保留原值
-
+        Logger.info("====3");
         //主键对比
 
         Set<CompareEntity> intersectionSetPKS = Sets.newHashSet();
         Sets.intersection(sourceSetPK, targetSetPK).copyInto(intersectionSetPKS); //主键相同 保留source  新值
+        Logger.info("====4");
 
         Set<CompareEntity> intersectionSetPKT = Sets.newHashSet();
         Sets.intersection(targetSetPK, sourceSetPK).copyInto(intersectionSetPKT); //主键相同 保留target  原值
+        Logger.info("====5");
 
         Set<CompareEntity> sourceDifferenceSet = Sets.newHashSet();
         Sets.difference(sourceSetPK, targetSetPK).copyInto(sourceDifferenceSet); //源有目标没有  insert
+        Logger.info("====6");
 
         Set<CompareEntity> targetDifferenceSet = Sets.newHashSet();
         Sets.difference(targetSetPK, sourceSetPK).copyInto(targetDifferenceSet); //目标有源没有  delete
+        Logger.info("====7");
+
+        //
 
         Set<CompareEntity> intersectionSetPKAndDeffS = Sets.newHashSet();
         Sets.intersection(symmetricDifferenceSetS, Sets.newHashSet(transCompareEntity(transObject(intersectionSetPKS), "ALL"))).copyInto(intersectionSetPKAndDeffS);// 等待操作里的主键相同的就是 update 的，update的新值
+        Logger.info("====8");
 
         Set<CompareEntity> intersectionSetPKAndDeffT = Sets.newHashSet();
         Sets.intersection(symmetricDifferenceSetT, Sets.newHashSet(transCompareEntity(transObject(intersectionSetPKT), "ALL"))).copyInto(intersectionSetPKAndDeffT);// 等待操作里的主键相同的就是 update 的，update的原值
-
+        Logger.info("====9");
 
         //整理集合
         Collection<Object> insertSet = transObject(sourceDifferenceSet);  //insert
@@ -144,7 +152,7 @@ public class DiffListGuava {
                 for (String fieldName : fieldNameList) {
                     Object fieldValueA = getFieldObj(fieldName);
                     Object fieldValueB = compareEntity.getFieldObj(fieldName);
-                    //特殊处理Bigdecimal 避免数字相同，位数不同导致的误判
+/*                    //特殊处理Bigdecimal 避免数字相同，位数不同导致的误判
                     if (fieldValueA instanceof BigDecimal && fieldValueB instanceof BigDecimal) {
                         if (((BigDecimal) fieldValueA).compareTo((BigDecimal) fieldValueB) != 0) {
                             return false;
@@ -153,10 +161,10 @@ public class DiffListGuava {
                         if (!Objects.equals(fieldValueA, fieldValueB)) {
                             return false;
                         }
-                    }
-          /*          if (!Objects.equals(fieldValueA, fieldValueB)) {
-                        return false;
                     }*/
+                    if (!Objects.equals(fieldValueA, fieldValueB)) {
+                        return false;
+                    }
 
                 }
             } catch (Exception e) {
@@ -174,12 +182,12 @@ public class DiffListGuava {
             for (String fieldName : fieldNameList) {
                 try {
                     Object fieldValue = getFieldObj(fieldName);
-                    if (fieldValue instanceof BigDecimal) {
+  /*                  if (fieldValue instanceof BigDecimal) {
                         //bigdecimal 特殊处理，避免小数位数不同导致的对比偏差
                     } else {
                         hashCode = hashCode + Objects.hashCode(fieldValue);
-                    }
-/*                    hashCode = hashCode + Objects.hashCode(fieldValue);*/
+                    }*/
+                    hashCode = hashCode + Objects.hashCode(fieldValue);
 
                 } catch (IllegalAccessException e) {
                     Logger.error(e);
@@ -192,44 +200,7 @@ public class DiffListGuava {
 
     }
 
-    //比较器，用PK比较，用作PK排序，处理主键排序
-    class PKComparator implements java.util.Comparator {
-        @Override
-        public int compare(Object o1, Object o2) {
-            Object obj1 = o1;
-            Object obj2 = o2;
-            Field[] fields = obj1.getClass().getFields();
-            List<String> fieldNameList = new ArrayList<>();
-            for (Field field : fields) {
-                PrimaryKey primaryKey = field.getAnnotation(PrimaryKey.class);
-                if (primaryKey != null) {
-                    fieldNameList.add(field.getName());
-                }
-            }
-            int hashCode1 = 0;
-            int hashCode2 = 0;
-            for (String fieldName : fieldNameList) {
-                try {
-                    hashCode1 = hashCode1 + Objects.hashCode(getFieldObj(fieldName, obj1));
-                    hashCode2 = hashCode2 + Objects.hashCode(getFieldObj(fieldName, obj2));
-                } catch (IllegalAccessException e) {
-                    Logger.error(e);
-                }
-            }
-            return hashCode1 - hashCode2;
-        }
 
-        public Object getFieldObj(String fieldName, Object obj) throws IllegalAccessException {
-            Class classes = obj.getClass();
-            try {
-                Field field = classes.getField(fieldName);
-                return field.get(obj);
-            } catch (NoSuchFieldException e) {
-                return null;
-            }
-
-        }
-    }
 
 
 }

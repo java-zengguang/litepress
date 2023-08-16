@@ -20,6 +20,7 @@
         <module>login-provider</module>
         <module>groovy-common</module>
         <module>chain-common</module>
+        <module>event-common</module>
 
         <!--        <module>webdemo</module>
                 <module>webiodemo</module>

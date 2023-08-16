@@ -7,6 +7,8 @@
     <file url="file://$PROJECT_DIR$/common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/direction/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/direction/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/event-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/event-common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/groovy-common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/groovy-common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/im/src/main/java" charset="UTF-8" />

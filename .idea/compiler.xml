@@ -7,17 +7,18 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="im" />
-        <module name="login-provider" />
-        <module name="common" />
         <module name="scala" />
-        <module name="web" />
-        <module name="network-util" />
         <module name="admin" />
-        <module name="incache" />
         <module name="sso" />
         <module name="chain-common" />
-        <module name="direction" />
         <module name="groovy-common" />
+        <module name="login-provider" />
+        <module name="common" />
+        <module name="web" />
+        <module name="network-util" />
+        <module name="incache" />
+        <module name="direction" />
+        <module name="event-common" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

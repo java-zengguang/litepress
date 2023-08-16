@@ -6,7 +6,7 @@
     requires  guava;
     requires  org.apache.groovy;
 
-    exports com.zg.chain.common.factory;
+     exports com.zg.chain.common.factory;
     exports com.zg.chain.common;
     exports com.zg.chain.common.drivers;
     exports com.zg.chain.common.components;
