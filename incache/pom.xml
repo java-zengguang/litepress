@@ -36,5 +36,15 @@
             <scope>compile</scope>
         </dependency>
 
+
+        <!-- https://mvnrepository.com/artifact/org.infinispan/infinispan-core -->
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
+            <version>14.0.17.Final</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 </project>

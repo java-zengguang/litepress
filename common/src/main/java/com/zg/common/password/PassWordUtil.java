@@ -33,7 +33,7 @@ public class PassWordUtil {
         Logger.info("oR2kjDx0QfRx      " + encryptUtil.AESencode("oR2kjDx0QfRx", "hello"));
         Logger.info("w3QxlnIb06j_NH4eR      " + encryptUtil.AESdecode("2F541CBF36E75CF263D15EE74CAF2BD6", "hello"));
 
-        Logger.info("3C716D83A0661FFDB37D216FCFAB84324975CC2A4A8DDCB847D483709160BD9B    " + encryptUtil.AESdecode("3C716D83A0661FFDB37D216FCFAB84324975CC2A4A8DDCB847D483709160BD9B", "hello"));
+        Logger.info("3CE6B72634FF4536552C0DD08D24DB1A    " + encryptUtil.AESdecode("3CE6B72634FF4536552C0DD08D24DB1A", "hello"));
 
     }
 }

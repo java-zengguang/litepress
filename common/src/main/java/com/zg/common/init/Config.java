@@ -1,9 +1,16 @@
 package com.zg.common.init;
 
 import com.zg.common.bean.factory.BeanFactory;
+import com.zg.common.util.CommonUtil;
+import com.zg.common.util.reflect.EntityUtils;
 import org.tinylog.Logger;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
@@ -41,5 +48,30 @@ public class Config {
         return object;
     }
 
+
+    public static void updateBean2ConfigProperties(String beanConfigProperties) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        Properties properties = new Properties();
+        properties.load(new StringReader(beanConfigProperties));
+        String beanName = (String) properties.get("beanName");
+        String beanType = (String) properties.get("beanType");
+        Object obj = configMap.get(beanName);
+        if (obj == null) {
+            obj = Class.forName(beanType).getDeclaredConstructor().newInstance();
+        }
+        Class clazz = obj.getClass();
+        Field[] fields = clazz.getFields();
+        for (Field field : fields) {
+            String name = field.getName();
+            String value = properties.getProperty(name);
+            if(value!=null){
+               Object objValue= EntityUtils.translateType(value,field.getType());
+                field.set(obj, objValue);
+            }
+
+
+        }
+        configMap.put(beanName, obj);
+
+    }
 
 }

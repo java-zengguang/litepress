@@ -30,6 +30,7 @@ public abstract class BaseComponent implements Component {
 
                         baseProcess = doExecuteProcess(baseProcess);
                     } catch (Exception e) {
+                        e.printStackTrace();
                         Logger.error(e);
                         baseProcess.executestate = "-1";
                         baseProcess.setErrormassage(this.getClass() + ";" + e.getMessage());
