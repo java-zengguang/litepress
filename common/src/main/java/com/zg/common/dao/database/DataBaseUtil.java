@@ -157,7 +157,7 @@ public class DataBaseUtil {
             }
             String columnLine= columnInfo.columnName+"  "+columnInfo.columnType;
 
-            if(!Arrays.asList("DATE","ENUM","TIME","DATETIME","BOOL","BOOLEAN","TEXT","BLOB").contains(columnInfo.columnType)) {
+            if(!Arrays.asList("DATE","ENUM","TIME","DATETIME","BOOL","BOOLEAN","TEXT","BLOB").contains(columnInfo.columnType)&&!("NUMBER".equals(columnInfo.columnType) &&"-127".equals(columnInfo.decimalDigits) && "0".equals(columnInfo.columnSize))) {
                 columnLine = columnLine + "(" + columnInfo.columnSize;
                 if (columnInfo.decimalDigits != null) {
                     columnLine = columnLine + "," + columnInfo.decimalDigits;

@@ -11,9 +11,11 @@ import com.zg.common.dao.assemble.SimpleAssemble;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
-import com.zg.common.util.CommonUtil;
 import com.zg.common.util.database.ParseSQLUtils;
-import com.zg.common.util.reflect.*;
+import com.zg.common.util.reflect.DynameicSerializer;
+import com.zg.common.util.reflect.DynamicClass;
+import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.ModelSQLUtils;
 import net.sf.jsqlparser.JSQLParserException;
 import org.tinylog.Logger;
 
@@ -23,7 +25,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.sql.*;
-import java.util.Date;
 import java.util.*;
 
 
@@ -392,14 +393,48 @@ public class NewJDBCUtil {
 
 
     //查询
-    public List select(String sql, Class modelClass) throws Exception {
+/*    public List select(String sql, Class modelClass) throws Exception {
         List list = selectToMapList(sql);
         // Map<String, String> tableInfoMap = tableInfo(sql);
         List model_list = SerializeObjectUtils.setMember(list, modelClass);
         return model_list;
 
-    }
+    }*/
 
+    public List select(String sql, Class modelClass) throws Exception {
+        List<List<MetadataEntity>> templeList = null;
+        List modelList = new ArrayList();
+        try {
+
+            String tableName = EntityUtils.getTableNameFromModel(modelClass);
+
+            if (tableName != null) {
+                templeList = select2TempleList(sql, tableName);
+            } else {
+                templeList = select2TempleList(sql);
+            }
+
+
+            OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+            SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
+            if (templeList != null && templeList.size() > 0) {
+                for (List<MetadataEntity> columnList : templeList) {
+                    Object obj = modelClass.newInstance();
+                    for (MetadataEntity metadataEntity : columnList) {
+                        obj = simpleAssemble.assembling(metadataEntity, obj);
+                    }
+                    modelList.add(obj);
+                }
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            release();
+        }
+
+        return modelList;
+
+    }
 
     //查询出列明，数据对应的list集合
     public List<Map> selectToMapList(String sql) throws SQLException, ClassNotFoundException {
@@ -611,7 +646,7 @@ public class NewJDBCUtil {
     }
 
 
-    public Class selectStream(String sql,String tableName,String tempFileDir, List<File> tempFileList, Integer fileSize) throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JSQLParserException {
+    public Class selectStream(String sql, String tableName, String tempFileDir, List<File> tempFileList, Integer fileSize) throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JSQLParserException {
         Class modelClass = null;
         try {
             tableName = tableName.trim().toUpperCase();
@@ -647,10 +682,10 @@ public class NewJDBCUtil {
             Output output = null;
             while (rs.next()) {
                 if (count % fileSize == 0) {
-                    if (output != null ) {
+                    if (output != null) {
                         output.close();
                     }
-                    File tempFile = new File(tempFileDir, ""+System.currentTimeMillis());
+                    File tempFile = new File(tempFileDir, "" + System.currentTimeMillis());
                     tempFile.createNewFile();
                     tempFileList.add(tempFile);
                     output = new Output(new FileOutputStream(tempFile), 1024000);
@@ -704,7 +739,7 @@ public class NewJDBCUtil {
                 kryo.writeObject(output, obj);
                 count++;
             }
-            if (output != null ) {
+            if (output != null) {
                 output.close();
             }
             pstmt.close();

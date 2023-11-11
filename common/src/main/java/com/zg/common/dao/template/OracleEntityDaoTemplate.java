@@ -24,6 +24,7 @@ public class OracleEntityDaoTemplate extends BaseEntityDaoTemplate {
                 add(Arrays.asList("INTEGER", "Integer", "", ""));
                 add(Arrays.asList("INT", "Integer", "", ""));
                 add(Arrays.asList("DECFLOAT", "Double", "", ""));
+                add(Arrays.asList("LONG", "String", "'", "'"));
                 add(Arrays.asList("VARCHAR", "String", "'", "'"));
                 add(Arrays.asList("VARCHAR2", "String", "'", "'"));
                 add(Arrays.asList("NVARCHAR2", "String", "'", "'"));
