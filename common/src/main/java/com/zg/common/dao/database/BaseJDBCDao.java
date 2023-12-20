@@ -1,10 +1,8 @@
 package com.zg.common.dao.database;
 
 
-import com.github.pagehelper.PageInfo;
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.bean.entity.OptionDB;
-import com.zg.common.bean.entity.PageEntity;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
@@ -58,10 +56,77 @@ public class BaseJDBCDao extends BaseService {
         return list;
     }
 
+    //查询出列明，数据对应的list集合
+    public List<List<MetadataEntity>> select2TempleList(String sql, String tableName) throws SQLException, ClassNotFoundException {
+        Logger.debug(sql);
+        tableName = tableName.trim().toUpperCase();
+        String ownName = "";
+        if (tableName.contains(".")) {
+            String[] splits = tableName.split("\\.");
+            ownName = splits[0];
+            tableName = splits[1];
+        }
+        //获取链接
+        Connection conn = NewDBPUtils.getConnection(dataSource);
 
+        //获取组件
+        List<String> pkColumnList = new ArrayList<>();
+        DatabaseMetaData dmd = conn.getMetaData();
+        ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
+        while (dmdrs.next()) {
+            String pkStr = dmdrs.getString("COLUMN_NAME");
+            pkColumnList.add(pkStr);
+        }
+        //获取数据
+        List list = new ArrayList();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
+        ResultSetMetaData rsmd = rs.getMetaData();
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
 
+        int columncount = 0;
+        while (rs.next()) {
+            List<MetadataEntity> columnList = new ArrayList<>();
+            columncount = rsmd.getColumnCount();
+            for (int i = 1; i < columncount + 1; i++) {
+                String columnLabel = rsmd.getColumnLabel(i);
+                String columnType = rsmd.getColumnTypeName(i);
+                Integer columnScale = rsmd.getScale(i);
+                if (columnScale == -127) {
+                    columnScale = 6;
+                }
+                Object columnValue = rs.getObject(i);
+                MetadataEntity metadataEntity = new MetadataEntity();
+                metadataEntity.ownName = ownName;
+                metadataEntity.tableName = tableName;
+                metadataEntity.columnLabel = columnLabel;
+                metadataEntity.columnType = columnType;
+                metadataEntity.columnScale = columnScale;
+                metadataEntity.objectValue = columnValue;
+                metadataEntity.dbType = optionDB.DBType;
+                if (pkColumnList.contains(columnLabel)) {
+                    metadataEntity.isPK = "1";
+                } else {
+                    metadataEntity.isPK = "0";
+                }
+                if (rsmd.isAutoIncrement(i)) {
+                    metadataEntity.isAutoIncrease = "1";  //自增
+                    //  metadataEntity.isNotCommit="1"; //自增不提交
+                } else {
+                    metadataEntity.isAutoIncrease = "0";
+                    metadataEntity.isNotCommit = "0";  //不自增的列才提交
+                }
+                metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
+                columnList.add(metadataEntity);
+            }
+            list.add(columnList);
+        }
+        pstmt.close();
+        rs.close();
 
-
+        return list;
+    }
 
     //查询出列明，数据对应的list集合
     public List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException, JSQLParserException {
@@ -97,9 +162,9 @@ public class BaseJDBCDao extends BaseService {
             for (int i = 1; i < columncount + 1; i++) {
                 String columnLabel = rsmd.getColumnLabel(i);
                 String columnType = rsmd.getColumnTypeName(i);
-                Integer columnScale= rsmd.getScale(i);
-                if(columnScale==-127){
-                    columnScale=6;
+                Integer columnScale = rsmd.getScale(i);
+                if (columnScale == -127) {
+                    columnScale = 6;
                 }
                 String columnName = rsmd.getColumnName(i);
                 Object columnValue = rs.getObject(i);
@@ -108,7 +173,7 @@ public class BaseJDBCDao extends BaseService {
                 metadataEntity.tableName = tableNameBuffer.toString();
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
-                metadataEntity.columnScale=columnScale;
+                metadataEntity.columnScale = columnScale;
                 metadataEntity.objectValue = columnValue;
                 metadataEntity.dbType = optionDB.DBType;
                 if (pkColumnList.contains(columnName)) {

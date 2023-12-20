@@ -3,6 +3,7 @@ package com.zg.common.handler;
 import org.tinylog.Logger;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,11 @@ public class ServiceHandler implements InvocationHandler {
             //执行代理
             Method proxyMothod = target.getClass().getMethod("submit"); //获取代理方法
             Logger.info(ServiceHandler.class + "====" + currentMethod.getName() + "被" + proxyMothod.getName() + "代理");
-            proxyMothod.invoke(target);  //执行代理
+            try {
+                proxyMothod.invoke(target);  //执行代理
+            }catch (InvocationTargetException e){
+                e.getCause();
+            }
         } else {
 
             Logger.info(ServiceHandler.class + "====" + currentMethod.getName() + "没有被代理");

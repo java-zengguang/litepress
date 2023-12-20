@@ -1,7 +1,6 @@
 package com.zg.common.init;
 
 import com.zg.common.bean.factory.BeanFactory;
-import com.zg.common.util.CommonUtil;
 import com.zg.common.util.reflect.EntityUtils;
 import org.tinylog.Logger;
 
@@ -49,6 +48,14 @@ public class Config {
     }
 
 
+    public static synchronized void setConfig(String beanName, Object obj) {
+        configMap.put(beanName, obj);
+    }
+
+    public static synchronized boolean containsKey(String beanName) {
+        return configMap.containsKey(beanName);
+    }
+
     public static void updateBean2ConfigProperties(String beanConfigProperties) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Properties properties = new Properties();
         properties.load(new StringReader(beanConfigProperties));
@@ -63,8 +70,8 @@ public class Config {
         for (Field field : fields) {
             String name = field.getName();
             String value = properties.getProperty(name);
-            if(value!=null){
-               Object objValue= EntityUtils.translateType(value,field.getType());
+            if (value != null) {
+                Object objValue = EntityUtils.translateType(value, field.getType());
                 field.set(obj, objValue);
             }
 

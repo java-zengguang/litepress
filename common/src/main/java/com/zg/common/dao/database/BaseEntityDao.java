@@ -84,7 +84,14 @@ public class BaseEntityDao extends BaseJDBCDao {
 
     //查询
     public List select(String sql, Class modelClass) throws Exception {
-        List<List<MetadataEntity>> templeList = select2TempleList(sql);
+        List<List<MetadataEntity>> templeList = null;
+        String tableName = EntityUtils.getTableNameFromModel(modelClass);
+        if (tableName != null) {
+            templeList = select2TempleList(sql, tableName);
+        } else {
+            templeList = select2TempleList(sql);
+        }
+
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
         List modelList = new ArrayList();

@@ -12,10 +12,7 @@ import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
 import com.zg.common.util.database.ParseSQLUtils;
-import com.zg.common.util.reflect.DynameicSerializer;
-import com.zg.common.util.reflect.DynamicClass;
-import com.zg.common.util.reflect.EntityUtils;
-import com.zg.common.util.reflect.ModelSQLUtils;
+import com.zg.common.util.reflect.*;
 import net.sf.jsqlparser.JSQLParserException;
 import org.tinylog.Logger;
 
@@ -35,6 +32,7 @@ public class NewJDBCUtil {
     public NewJDBCUtil(String dataSource) {
         this.dataSource = dataSource;
     }
+
 
 
     //插入model_list ，未提交，未初始化连接

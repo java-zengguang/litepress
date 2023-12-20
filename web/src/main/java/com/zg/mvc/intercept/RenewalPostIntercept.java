@@ -1,7 +1,6 @@
 package com.zg.mvc.intercept;
 
 import com.zg.common.init.Config;
-import com.zg.mvc.auth.AuthManager;
 import com.zg.mvc.entity.MVCOption;
 import com.zg.mvc.util.ThreadLocalCache;
 import jakarta.servlet.http.Cookie;

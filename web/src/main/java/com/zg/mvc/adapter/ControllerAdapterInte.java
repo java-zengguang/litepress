@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public interface ControllerAdapterInte {
 
+
     void doMain(HttpServletRequest request, HttpServletResponse response);
     Object routeRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, InterruptedException;
     public void analysisResponse(HttpServletRequest request, HttpServletResponse response,Object resultObj) throws IOException, ServletException;

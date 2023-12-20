@@ -41,9 +41,8 @@ public class TransactionHandler implements InvocationHandler {
             if (method.isAnnotationPresent(Transaction.class)) {
                 commit();
             }
-        } catch (Exception e) {
-            Logger.error(e);
-            throw new Exception("事务提交失败");
+        } catch (InvocationTargetException e) {
+             e.getCause();
         } finally {
             release();
         }

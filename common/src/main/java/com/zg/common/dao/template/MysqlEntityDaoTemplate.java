@@ -40,6 +40,7 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
                 add(Arrays.asList("DATE", "Date", "to_date('", "','yyyy-MM-dd)"));
                 add(Arrays.asList("DATETIME", "Date", "'", "'"));
                 add(Arrays.asList("TIMESTAMP", "Date", "'", "'"));
+                add(Arrays.asList("MEDIUMTEXT", "String", "'", "'"));
             }
 
         };

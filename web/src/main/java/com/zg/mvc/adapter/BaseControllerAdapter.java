@@ -6,6 +6,10 @@ import com.zg.mvc.analysis.SimpleRequestAnalysis;
 import com.zg.mvc.annotation.controller.ParamEntity;
 import com.zg.mvc.annotation.controller.RequestBody;
 import com.zg.mvc.entity.MVCOption;
+import com.zg.mvc.intercept.FilePostIntercept;
+import com.zg.mvc.intercept.JsonPostIntercept;
+import com.zg.mvc.intercept.PostControllerIntercept;
+import com.zg.mvc.intercept.PreControllerIntercept;
 import com.zg.mvc.util.ResolveAnnotation;
 import com.zg.mvc.util.io.ResovleUploadThread;
 import jakarta.servlet.ServletException;
@@ -21,25 +25,30 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 public abstract class BaseControllerAdapter implements ControllerAdapterInte {
+
     private static Set<String> keySet = null;
     private static Map<String, Method> methodMap = new HashedMap();
     private static Map<String, Class> classMap = null;
     private static MVCOption mvcOption = null;
 
-    static {
-        initController();
+    public static List<PostControllerIntercept> postControllerIntercepts = new ArrayList<>();
+
+    public static List<PreControllerIntercept> preControllerIntercepts = new ArrayList<>();
+
+
+    public BaseControllerAdapter() {
+        if (mvcOption == null) {
+            initController();
+        }
     }
 
-    private static synchronized boolean initController() {
-
+    private synchronized boolean initController() {
         try {
+            postControllerIntercepts.addAll(Arrays.asList(new JsonPostIntercept(), new FilePostIntercept()));
             mvcOption = (MVCOption) Config.getConfig("MVCOption");
             classMap = ResolveAnnotation.resovleController(mvcOption.controllerPackage);
             keySet = classMap.keySet();

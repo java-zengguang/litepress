@@ -1,19 +1,26 @@
 package com.zg.mvc.adapter;
 
-import com.zg.mvc.intercept.*;
+import com.zg.mvc.intercept.PostControllerIntercept;
+import com.zg.mvc.intercept.PreControllerIntercept;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class SimpleControllerAdapter extends BaseControllerAdapter {
+    private static ControllerAdapterInte controllerAdapterInte;
 
-    public static List<PostControllerIntercept> postControllerIntercepts = Arrays.asList(new JsonPostIntercept(), new FilePostIntercept());
 
-    public static List<PreControllerIntercept> preControllerIntercepts = Arrays.asList(new AuthPreIntercept());
+    public synchronized static ControllerAdapterInte getInstance() {
+        if (controllerAdapterInte == null) {
+            controllerAdapterInte = new SimpleControllerAdapter();
+        }
+        return controllerAdapterInte;
+    }
+
+    private SimpleControllerAdapter() {
+    }
 
     @Override
     public Object postIntercept(HttpServletRequest request, HttpServletResponse response, Object args) throws IOException {
