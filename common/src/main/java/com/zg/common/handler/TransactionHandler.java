@@ -32,7 +32,7 @@ public class TransactionHandler implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Object result = null;
 
         try {
@@ -42,7 +42,7 @@ public class TransactionHandler implements InvocationHandler {
                 commit();
             }
         } catch (InvocationTargetException e) {
-             e.getCause();
+             throw  e.getCause();
         } finally {
             release();
         }

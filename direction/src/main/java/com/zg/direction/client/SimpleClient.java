@@ -26,7 +26,7 @@ public class SimpleClient extends BaseClient {
     public static synchronized SimpleClient getInstance(String host, int port, String clientVersion) {
         String address = host + ":" + port + ":" + clientVersion;
         SimpleClient simpleClient = clientMap.get(address);
-        if (simpleClient == null) {
+        if (simpleClient == null  ) {
             simpleClient = new SimpleClient(host, port);
             simpleClient.state = "3";
             clientMap.put(address, simpleClient);

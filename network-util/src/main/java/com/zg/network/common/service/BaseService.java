@@ -69,9 +69,7 @@ public abstract class BaseService implements Runnable {
                 }
             });
 
-        /*    IMHeartbeatHandle IMHeartbeatHandle =new IMHeartbeatHandle(BaseChannelGroups.getChanelGroups());
-            Thread t=new Thread(IMHeartbeatHandle);
-            t.start();*/
+
 
             startHeartbeat();
 

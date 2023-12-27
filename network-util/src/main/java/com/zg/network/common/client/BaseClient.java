@@ -23,7 +23,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Administrator on 2019/2/22 0022.
  */
 public abstract class BaseClient implements Runnable {
-
     /**
      * String字符串解码器
      */
@@ -76,16 +75,15 @@ public abstract class BaseClient implements Runnable {
 
     private void execute() {
         //工作线程
+
+
         EventLoopGroup workerGroup = new NioEventLoopGroup(threadSize);
         ExecutorService executorService = Executors.newCachedThreadPool();
-
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
+        for (int i = 0; i < threadSize; i++) {
+            executorService.submit(()->{
                 //辅助启动类
                 Bootstrap bootstrap = new Bootstrap(); // (1)
                 try {
-
                     //设置线程池
                     bootstrap.group(workerGroup); // (2)
                     //设置socket工厂 不是ServerSocket而是Socket
@@ -105,38 +103,37 @@ public abstract class BaseClient implements Runnable {
                             //IM业务处理类
                             pipe.addLast(clientHandler);
                         }
+
                     });
-
-
                     // Start the client.
                     ChannelFuture f = bootstrap.connect(host, port).sync(); // (5)
                     Channel channel = f.channel();
                     ChannelFuture lastWriteFuture = null;
                     while (run) {
-                        Object request = requests.take();
-
-                        String json = resovleProtocol(request);
-                        // Sends the received line to the server.
-                        lastWriteFuture = channel.writeAndFlush(json + "\r\n");
-
+                        try {
+                            Object request = requests.take();
+                            String json = resovleProtocol(request);
+                            // Sends the received line to the server.
+                            lastWriteFuture = channel.writeAndFlush(json + "\r\n");
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            Logger.info("channel已经失效，尝试重建channel");
+                            channel = f.channel();
+                            continue;
+                        }
                     }
                     // Wait until all messages are flushed before closing the channel.
                     if (lastWriteFuture != null) {
                         lastWriteFuture.sync();
                     }
-
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                    Logger.info("网络连接异常，连接被关闭");
                 } finally {
                     //优雅的关闭工作线程
                     workerGroup.shutdownGracefully();
                 }
-
-            }
-        };
-
-        for (int i = 0; i < threadSize; i++) {
-            executorService.submit(runnable);
+            });
         }
     }
 
@@ -144,10 +141,7 @@ public abstract class BaseClient implements Runnable {
     public abstract String resovleProtocol(Object object) throws IllegalAccessException;
 
     public void run() {
-        // host = "127.0.0.1";
-        // port = 10000;
         execute();
-
     }
 
     /**
