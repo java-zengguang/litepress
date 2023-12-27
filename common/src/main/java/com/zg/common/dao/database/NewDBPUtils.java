@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class NewDBPUtils {
 
-    private static ThreadLocal<Map<String, Connection>> threadLocal = new ThreadLocal();
+    private static final ThreadLocal<Map<String, Connection>> threadLocal = new ThreadLocal();
 
 
     public static Connection getConnection(String dataSource) throws SQLException, ClassNotFoundException {

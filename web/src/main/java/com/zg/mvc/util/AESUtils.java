@@ -9,14 +9,12 @@ public class AESUtils {
 
     public static String encode(String content, String key) {
         byte[] enc = aes.encrypt(content.getBytes(), key.getBytes());
-        String encode = new String(Hex.encode(enc));
-        return encode;
+        return new String(Hex.encode(enc));
     }
 
     public static String decode(String content, String key) {
         byte[] enc = aes.encrypt(content.getBytes(), key.getBytes());
-        String decode=new String(Hex.encode(enc));
-        return decode;
+        return new String(Hex.encode(enc));
     }
 
 

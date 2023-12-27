@@ -19,7 +19,7 @@ public class ProviderAdapter {
         return providerAdapter;
     }
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         String rootPath = CommonUtil.getThisPath(ProviderAdapter.class);
         System.setProperty("projectRootPath", rootPath);
         Logger.info(System.getProperty("111" + "projectRootPath"));

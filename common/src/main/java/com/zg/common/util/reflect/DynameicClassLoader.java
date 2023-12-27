@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 public class DynameicClassLoader extends ClassLoader {
 
     public static final byte DIGITAL_255 = (byte) 255;
-    private String rootPath;
+    private final String rootPath;
 
     public DynameicClassLoader(String rootPath) {
         this.rootPath = rootPath;

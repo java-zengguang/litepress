@@ -16,7 +16,7 @@ public class ResolveCommand {
     public ZGMPBean resolveCommand(String command) {
         ZGMPBean request = new ZGMPBean("REQUEST");
         try {
-            String s[] = command.split(" ");
+            String[] s = command.split(" ");
             if ("send".equals(s[0])) {
                 request.methodType = "SEND";
                 request.targetUuid = s[1];

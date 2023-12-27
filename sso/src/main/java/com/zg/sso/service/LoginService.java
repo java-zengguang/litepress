@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class LoginService implements LoginServiceInte {
 
-    private LoginEntityDao loginDao = new LoginEntityDao();
+    private final LoginEntityDao loginDao = new LoginEntityDao();
 
 
     public String verification(String username, String passworld) {
@@ -68,7 +68,7 @@ public class LoginService implements LoginServiceInte {
 
     public String registToken(String url, String domain, String rootPath) {
         UUID random = UUID.randomUUID();
-        String token = "" + random.toString();
+        String token = "" + random;
         Map map = new HashMap<>();
         map.put("token", token);
         map.put("url", url);
@@ -111,11 +111,7 @@ public class LoginService implements LoginServiceInte {
         map.put("url", url);
         map.put("uuid", uuid);
         int x = loginDao.updateToken(map);
-        if (x > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return x > 0;
     }
 
     public int isLogin(String token, String uuid) {
@@ -131,7 +127,7 @@ public class LoginService implements LoginServiceInte {
 
         if (list != null && list.size() > 0) {
             Map<String, String> map = list.get(0);
-            return Integer.valueOf(map.get("status"));
+            return Integer.parseInt(map.get("status"));
         } else {
             return -1;
         }

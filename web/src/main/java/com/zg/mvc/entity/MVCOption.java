@@ -14,8 +14,7 @@ public class MVCOption extends MainModel {
     public String temporaryFilePath;
     public String projectRoot;
 
-    public String powerLevel="0";   //0-不拦截  1-拦截未登录的  默认为0
-
+    public String powerLevel = "0";   //0-不拦截  1-拦截未登录的  默认为0
 
 
     public MVCOption clone() {

@@ -17,6 +17,6 @@ public class TraceIdMessageFormatter extends AdvancedMessageFormatter {
 
     @Override
     public String format(String s, Object[] objects) {
-        return "[" + TraceIdHolder.getTraceId() + "] " + super.format(s,objects);
+        return "[" + TraceIdHolder.getTraceId() + "] " + super.format(s, objects);
     }
 }

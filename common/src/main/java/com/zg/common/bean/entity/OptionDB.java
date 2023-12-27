@@ -16,6 +16,7 @@ public class OptionDB extends MainModel {
     public String resourcesURL;
 
     public String resourcesUser;
+
     public OptionDB() {
     }
 

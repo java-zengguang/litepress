@@ -70,12 +70,8 @@ public class HikariCPImpl implements DataBaseInte {
         config.setConnectionTestQuery("SELECT 1 from  dual");
         config.setMaximumPoolSize(9);
         config.setAutoCommit(false);
-/*        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");*/
 
-        DataSource dataSource = new HikariDataSource(config);
-        return dataSource;
+        return new HikariDataSource(config);
     }
 
 }

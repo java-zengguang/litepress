@@ -11,8 +11,6 @@
     <artifactId>chain-common</artifactId>
 
 
-
-
     <dependencies>
         <dependency>
             <groupId>com.zg.database</groupId>
@@ -36,8 +34,6 @@
 
 
     </dependencies>
-
-
 
 
 </project>

@@ -11,8 +11,8 @@ import java.util.List;
 
 public class ServiceHandler implements InvocationHandler {
 
-    private Object target;
-    private List methodList = new ArrayList();
+    private final Object target;
+    private final List methodList = new ArrayList();
 
     public ServiceHandler(Object target, String method) {
         this.target = target;
@@ -33,7 +33,7 @@ public class ServiceHandler implements InvocationHandler {
             Logger.info(ServiceHandler.class + "====" + currentMethod.getName() + "被" + proxyMothod.getName() + "代理");
             try {
                 proxyMothod.invoke(target);  //执行代理
-            }catch (InvocationTargetException e){
+            } catch (InvocationTargetException e) {
                 e.getCause();
             }
         } else {

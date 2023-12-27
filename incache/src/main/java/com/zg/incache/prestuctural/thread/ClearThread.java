@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class ClearThread implements Runnable {
 
-    private volatile Map<String, CacheEntity> map;
+    private final Map<String, CacheEntity> map;
 
     public ClearThread(Map<String, CacheEntity> map) {
         this.map = map;

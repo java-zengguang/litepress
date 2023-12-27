@@ -18,10 +18,11 @@ public class MessageBean extends MainModel {
         this.success = success;
         this.object = object;
     }
-    public MessageBean(String message, boolean success, Object object,PageEntity pageEntity) {
+
+    public MessageBean(String message, boolean success, Object object, PageEntity pageEntity) {
         this.message = message;
         this.success = success;
         this.object = object;
-        this.pageEntity=pageEntity;
+        this.pageEntity = pageEntity;
     }
 }

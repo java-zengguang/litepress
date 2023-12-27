@@ -1,7 +1,5 @@
 package com.zg.common.util.reflect;
 
-import com.zg.common.bean.entity.MainModel;
-
 import java.io.*;
 import java.lang.reflect.Field;
 import java.text.ParseException;
@@ -15,18 +13,12 @@ public class SerializeObjectUtils implements Cloneable, Serializable {
 
     private static boolean isCollection(Field field) {
         Class type = field.getType();
-        if ("List".equals(type.getSimpleName()) || "Set".equals(type.getSimpleName())) {
-            return true;
-        }
-        return false;
+        return "List".equals(type.getSimpleName()) || "Set".equals(type.getSimpleName());
     }
 
     private static boolean isMainModel(Field field) {
         Class type = field.getType().getSuperclass();
-        if (type != null && "MainModel".equals(type.getSimpleName())) {
-            return true;
-        }
-        return false;
+        return type != null && "MainModel".equals(type.getSimpleName());
     }
 
 
@@ -72,27 +64,20 @@ public class SerializeObjectUtils implements Cloneable, Serializable {
 
                 }
             }
-        /*    //序列化，实现深度克隆
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(bos);
-            out.writeObject(model);
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
-            Object model_copy = (Object) in.readObject();*/
             model_list.add(model);
         }
         return model_list;
     }
 
 
-
     public static Object copyDeep(Object obj) throws IOException, ClassNotFoundException {
 
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-            oos.writeObject(obj);
-            ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-            ObjectInputStream ois = new ObjectInputStream(bis);
-            return ois.readObject();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+        oos.writeObject(obj);
+        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bis);
+        return ois.readObject();
 
     }
 

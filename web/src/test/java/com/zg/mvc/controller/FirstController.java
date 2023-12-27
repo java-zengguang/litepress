@@ -32,8 +32,6 @@ public class FirstController extends BaseController {
         Map map = new HashedMap();
 
         Logger.info("开始转发");
-        //return "forward::/firstController/hello.do";
-        // return "staticURL::/WEB-INF/html/hello.html";
         return "json::" + JsonUtils.objectToJson(map);
     }
 

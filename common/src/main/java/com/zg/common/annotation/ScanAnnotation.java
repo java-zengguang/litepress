@@ -55,7 +55,7 @@ public class ScanAnnotation {
 
         Set<Class<?>> classeSet = new HashSet<>();
         for (String aPackage : packages) {
-            if(!excludePackages.contains(aPackage)){
+            if (!excludePackages.contains(aPackage)) {
                 classeSet.addAll(CommonUtil.getClasses(aPackage));
             }
         }

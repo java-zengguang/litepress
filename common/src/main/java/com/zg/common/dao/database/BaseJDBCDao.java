@@ -146,7 +146,7 @@ public class BaseJDBCDao extends BaseService {
             }
         }
         //合并主表
-        StringBuffer tableNameBuffer = new StringBuffer();
+        StringBuilder tableNameBuffer = new StringBuilder();
         tableNameList.forEach(tableNameBuffer::append);
         //获取数据
         List list = new ArrayList();
@@ -202,7 +202,7 @@ public class BaseJDBCDao extends BaseService {
     //执行批操作
     private int[] batchSql(List<String> sqlList) throws SQLException, ClassNotFoundException {
 
-        int result[] = new int[sqlList.size()];
+        int[] result = new int[sqlList.size()];
         for (int i = 0; i < sqlList.size(); i++) {
             String sql = sqlList.get(i);
             result[i] = operation(sql);
@@ -228,7 +228,7 @@ public class BaseJDBCDao extends BaseService {
             sql = sql.replace(";", "");
         }
 
-        int i[] = null;
+        int[] i = null;
         Statement stmt;
         Connection conn = NewDBPUtils.getConnection(dataSource);
 
@@ -260,7 +260,7 @@ public class BaseJDBCDao extends BaseService {
                 // 判断截取点
                 if (lineStr.endsWith(";")) {
                     lineStr = lineStr.replace(";", "");
-                    list.add(new String(lineStr));
+                    list.add(lineStr);
                     lineStr = "";
                 }
             }

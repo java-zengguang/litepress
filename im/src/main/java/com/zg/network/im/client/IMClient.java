@@ -11,7 +11,6 @@ public class IMClient extends BaseClient {
 
     @Override
     public String resovleProtocol(Object object) {
-        String json = JSON.toJSONString(object);
-        return json;
+        return JSON.toJSONString(object);
     }
 }

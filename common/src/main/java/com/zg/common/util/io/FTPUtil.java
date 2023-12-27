@@ -96,6 +96,7 @@ public class FTPUtil {
                 try {
                     ftpClient.disconnect();
                 } catch (IOException ioe) {
+                    throw new RuntimeException(ioe);
                 }
             }
         }

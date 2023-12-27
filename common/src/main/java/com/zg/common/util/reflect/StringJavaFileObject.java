@@ -17,8 +17,7 @@ public class StringJavaFileObject extends SimpleJavaFileObject {
     }
 
     private static URI createURI(String name) {
-        URI uri = URI.create("String:///" + name + Kind.SOURCE.extension);
-        return uri;
+        return URI.create("String:///" + name + Kind.SOURCE.extension);
     }
 
     public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {

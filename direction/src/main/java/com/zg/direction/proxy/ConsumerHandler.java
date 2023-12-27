@@ -17,7 +17,7 @@ public class ConsumerHandler implements InvocationHandler {
 
     private String synFlag = "0";  //0-同步 1-异步
 
-    private String providerName;
+    private final String providerName;
 
     public ConsumerHandler(String providerName, String synFlag) {
         this.synFlag = synFlag;

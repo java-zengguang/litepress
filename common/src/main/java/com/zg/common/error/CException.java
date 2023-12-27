@@ -1,6 +1,6 @@
 package com.zg.common.error;
 
-public class CException extends RuntimeException{
+public class CException extends RuntimeException {
     public CException() {
     }
 

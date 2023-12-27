@@ -3,6 +3,7 @@ package com.zg.common.util.url;
 import org.tinylog.Logger;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 public class URLUtils {
     public static String getURLEncoderString(String str) {
@@ -10,11 +11,7 @@ public class URLUtils {
         if (null == str) {
             return "";
         }
-        try {
-            result = java.net.URLEncoder.encode(str, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            Logger.error(e);
-        }
+        result = java.net.URLEncoder.encode(str, StandardCharsets.UTF_8);
         return result;
     }
 
@@ -23,11 +20,7 @@ public class URLUtils {
         if (null == str) {
             return "";
         }
-        try {
-            result = java.net.URLDecoder.decode(str, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            Logger.error(e);
-        }
+        result = java.net.URLDecoder.decode(str, StandardCharsets.UTF_8);
         return result;
     }
 }

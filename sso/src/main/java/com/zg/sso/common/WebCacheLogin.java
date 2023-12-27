@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class WebCacheLogin extends BaseLogin {
-    private static WebCacheLogin webCacheLogin = new WebCacheLogin();
-    private RomCacheInte romCacheInte = RomCacheUtil.getRomCache("LoginCache");
+    private static final WebCacheLogin webCacheLogin = new WebCacheLogin();
+    private final RomCacheInte romCacheInte = RomCacheUtil.getRomCache("LoginCache");
 
     private WebCacheLogin() {
     }
@@ -32,12 +32,7 @@ public class WebCacheLogin extends BaseLogin {
         } else {
             list = romCacheInte.findModel("token=" + token, "uuid=" + uuid);
         }
-        if (list != null && list.size() > 0) {
-            return true;
-        } else {
-            return false;
-
-        }
+        return list != null && list.size() > 0;
 
     }
 
@@ -56,7 +51,7 @@ public class WebCacheLogin extends BaseLogin {
             Cookie tokenCookie = new Cookie("token", token);
             newCookieList.add(tokenCookie);
             setCookies(response, newCookieList, userLogin.domain, userLogin.rootPath, userLogin.url);
-            String url = new String(userLogin.url);
+            String url = userLogin.url;
             Logger.info("url=" + url);
             return new MessageBean("操作成功", true, url);
 
@@ -70,7 +65,7 @@ public class WebCacheLogin extends BaseLogin {
     @Override
     public String registToken(String url, String domain, String rootPath) {
         UUID random = UUID.randomUUID();
-        String token = "" + random.toString();
+        String token = "" + random;
         UserLogin userLogin = new UserLogin();
         userLogin.token = token;
         userLogin.url = url;

@@ -21,8 +21,6 @@ public class ResovleUploadThread {
         while (raf.getFilePointer() < end) {
             line = raf.readLine();
             if (line.contains(targetS)) {
-                //resultEnd.add(raf.getFilePointer());
-                //resultStart.add(raf.getFilePointer() - line.length() - 2);
                 return raf.getFilePointer();
             }
         }
@@ -42,13 +40,6 @@ public class ResovleUploadThread {
 
 
     public synchronized void outputThread(long writerStart, long writerEnd, File inputFile, File targetFile) throws InterruptedException, IOException {
-/*        OutputFileThread ot = new OutputFileThread(inputFile, targetFile, writerStart, writerEnd - writerStart);
-        for (int i = 0; i < 5; i++) {
-            new Thread(ot).start();
-        }
-        while (ot.compareCount < 5) {
-            this.wait(10);
-        }*/
 
         int length = (int) (writerEnd - writerStart + 1);
         byte[] bytes = new byte[length];
@@ -94,36 +85,13 @@ public class ResovleUploadThread {
     public List<RequestParamEntity> execate(HttpServletRequest request, String inputFilePath) throws IOException, InterruptedException {
         InputStream inputStream = request.getInputStream();
         String contentType = request.getContentType();
-        String targetS = "--" + contentType.substring(contentType.lastIndexOf("boundary=") + 9, contentType.length());
-        String inputFileName = targetS;
+        String targetS = "--" + contentType.substring(contentType.lastIndexOf("boundary=") + 9);
         //生成临时文件
-        if (IOUtils.createTemporaryFile(inputStream, inputFilePath, inputFileName) == -1) {
+        if (IOUtils.createTemporaryFile(inputStream, inputFilePath, targetS) == -1) {
             Logger.info("文件上传失败");
         }
-        File inputFile = new File(inputFilePath, inputFileName);
-/*
-        raf = new RandomAccessFile(inputFile, "r");
-        long startPoint = getStartPointFile(0, raf.length(), targetS);
-        long writerEnd = getEndPointFile(targetS);
-        raf.seek(startPoint);
-        String formHead = raf.readLine();   //获取表单头信息
-        SimpleFileEntity fileEntity = analysisFormHead(formHead);//分析表头信息
-        fileEntity.fileParentPath = inputFilePath;
-        raf.readLine();
-        raf.readLine();
-        long writerStart = raf.getFilePointer();   //得到需要写入的信息
-
-
-        File targetFile = new File(fileEntity.fileParentPath, fileEntity.fileName);
-        IOUtils.createFile(targetFile);
-        Logger.info("OUTPUT线程开始");
-        outputThread(writerStart, writerEnd, inputFile, targetFile);
-        Logger.info("OUTPUT线程结束");
-        raf.close();
-       // inputFile.delete();
-        fileEntity.filePath = targetFile.getAbsolutePath();*/
-        List<RequestParamEntity> list = AnalysisTempFile.analysis(inputFile, targetS);
-        return list;
+        File inputFile = new File(inputFilePath, targetS);
+        return AnalysisTempFile.analysis(inputFile, targetS);
     }
 }
 

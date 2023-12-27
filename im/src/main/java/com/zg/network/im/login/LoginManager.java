@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class LoginManager {
     // private static LoginServiceInte loginService = LoginServiceProvider.getInstance();
-    private static LoginServiceInte loginService = LoginFactory.getLoginService();
+    private static final LoginServiceInte loginService = LoginFactory.getLoginService();
 
     public static synchronized Map login(ChannelHandlerContext ctx, ZGMPBean request) {
         String username = request.username;

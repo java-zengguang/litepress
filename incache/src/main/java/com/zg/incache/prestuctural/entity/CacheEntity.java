@@ -7,7 +7,6 @@ import java.util.UUID;
 public class CacheEntity {
     public String uuid = UUID.randomUUID().toString();
     public long timeStamp = System.currentTimeMillis();
-    ;
     public long validMillisecond;
     public Class aClass;
     public Object jsonObject;

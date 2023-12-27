@@ -22,7 +22,7 @@ public class AdapterServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UUID uuid = UUID.randomUUID();
-        ThreadContext.put("threadID",uuid);
+        ThreadContext.put("threadID", uuid);
         request.setCharacterEncoding("UTF-8");//传值编码
         response.setContentType("text/html;charset=UTF-8");//设置传输编码
         //ControllerAdapter.resovleRequest(request, response);

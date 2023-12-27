@@ -1,10 +1,6 @@
 package com.zg.common.password;
 
-import com.zg.common.log.TraceIdHolder;
-import com.zg.common.log.TraceIdMessageFormatter;
 import org.tinylog.Logger;
-import org.tinylog.ThreadContext;
-import org.tinylog.configuration.Configuration;
 
 
 public class PassWordUtil {
@@ -18,11 +14,11 @@ public class PassWordUtil {
     }
 
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         EncryptUtil encryptUtil = EncryptUtil.getInstance();
 
 
-        Logger.info( " V23##*#QxGDkcmUJ      " + encryptUtil.AESencode("V23##*#QxGDkcmUJ", "hello"));
+        Logger.info(" V23##*#QxGDkcmUJ      " + encryptUtil.AESencode("V23##*#QxGDkcmUJ", "hello"));
         Logger.info("Zst_phq123#      " + encryptUtil.AESencode("Zst_phq123#", "hello"));
         Logger.info("Zg_phq123#      " + encryptUtil.AESencode("Zg_phq123#", "hello"));
         Logger.info("Cvb_rTJRB7!w0oWV      " + encryptUtil.AESencode("Cvb_rTJRB7!w0oWV", "hello"));

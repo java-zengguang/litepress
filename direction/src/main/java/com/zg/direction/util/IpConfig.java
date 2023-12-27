@@ -45,7 +45,7 @@ public class IpConfig {
         }
     }
 
-    public static void main(String args[]) throws UnknownHostException {
+    public static void main(String[] args) throws UnknownHostException {
         Logger.info(getLocalHostLANAddress().getHostAddress());
     }
 

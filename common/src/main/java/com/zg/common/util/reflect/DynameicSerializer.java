@@ -18,7 +18,7 @@ public class DynameicSerializer extends Serializer {
     public static Class clazz;
 
     public DynameicSerializer(Class clazz) {
-        this.clazz = clazz;
+        DynameicSerializer.clazz = clazz;
     }
 
     public void write(Kryo kryo, Output output, Object object) {
@@ -46,7 +46,7 @@ public class DynameicSerializer extends Serializer {
                 graphContext.put(this, objectStream);
             }
 
-            return ((ObjectInputStream) objectStream).readObject();
+            return objectStream.readObject();
         } catch (Exception var6) {
             throw new KryoException("Error during Java deserialization.", var6);
         }

@@ -6,7 +6,7 @@ import com.zg.sso.service.LoginServiceInte;
 
 public class LoginServiceProvider extends LoginService {
 
-    private static LoginServiceInte loginService = (LoginServiceInte) ProxyUtils.getServiceProxy(new LoginService());
+    private static final LoginServiceInte loginService = (LoginServiceInte) ProxyUtils.getServiceProxy(new LoginService());
 
     private LoginServiceProvider() {
     }

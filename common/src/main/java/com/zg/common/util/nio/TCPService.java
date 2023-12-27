@@ -15,7 +15,7 @@ public class TCPService {
     public volatile AtomicBoolean isOpen = new AtomicBoolean(true);
     public ServerSocketChannel serviceChannel;
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String[] args) throws IOException {
 
         TCPService tcpService = new TCPService();
         ServerSocketChannel serviceChannel = ServerSocketChannel.open();
@@ -46,12 +46,6 @@ public class TCPService {
     }
 
     public void sendFile(SocketChannel channel) throws IOException {
-
-   /*     File file=new File("D:\\test\\in.text");
-        FileChannel localChannel=new FileInputStream(file).getChannel();
-        localChannel.read(byteBuffer);
-        byteBuffer.flip();
-        channel.write(byteBuffer);*/
 
     }
 

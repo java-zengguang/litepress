@@ -43,7 +43,7 @@ public abstract class BaseAssemble implements Assemble {
         Class classes = obj.getClass();
         String tableName = EntityUtils.getTableNameFromModel(classes);
         String entityName = classes.getSimpleName();
-        Field fields[] = classes.getFields();
+        Field[] fields = classes.getFields();
         EntityDaoTemplate simpleEntityDaoTemplate = EntityDaoTemplateFactory.getTemplate(dbType);
 
         for (Field field : fields) {

@@ -12,11 +12,10 @@ import java.util.concurrent.locks.LockSupport;
 
 //用于处理消息返回
 public class SimpleReceivedListener implements MessgeReceivedListener {
-    private Map<String, Object> resultMap = new Hashtable<>();
+    private final Map<String, Object> resultMap = new Hashtable<>();
 
     private Object unSerialize(String str, Class classType) {
-        Object object = EntityUtils.unSerialize(str, classType);
-        return object;
+        return EntityUtils.unSerialize(str, classType);
     }
 
     @Override
@@ -45,7 +44,6 @@ public class SimpleReceivedListener implements MessgeReceivedListener {
 
 
     public Object getResult(String id) {
-        DTPResponse response = (DTPResponse) resultMap.remove(id);
-        return response;
+        return (DTPResponse) resultMap.remove(id);
     }
 }

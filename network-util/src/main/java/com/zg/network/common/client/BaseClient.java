@@ -34,7 +34,7 @@ public abstract class BaseClient implements Runnable {
     private final int threadSize = 10;  //并发数量
     public int port;
     public String host;
-    private BlockingQueue<Object> requests = new LinkedBlockingQueue<>();
+    private final BlockingQueue<Object> requests = new LinkedBlockingQueue<>();
     /**
      * 客户端业务处理Handler
      */
@@ -42,7 +42,7 @@ public abstract class BaseClient implements Runnable {
     /**
      * 是否继续进行运行
      */
-    private boolean run = true;
+    private final boolean run = true;
 
 
     public BaseClient() {
@@ -80,7 +80,7 @@ public abstract class BaseClient implements Runnable {
         EventLoopGroup workerGroup = new NioEventLoopGroup(threadSize);
         ExecutorService executorService = Executors.newCachedThreadPool();
         for (int i = 0; i < threadSize; i++) {
-            executorService.submit(()->{
+            executorService.submit(() -> {
                 //辅助启动类
                 Bootstrap bootstrap = new Bootstrap(); // (1)
                 try {
@@ -115,17 +115,22 @@ public abstract class BaseClient implements Runnable {
                             String json = resovleProtocol(request);
                             // Sends the received line to the server.
                             lastWriteFuture = channel.writeAndFlush(json + "\r\n");
-                        }catch (Exception e){
+
+                            // Wait until all messages are flushed before closing the channel.
+                            //优化等待对端返回后再发下一个请求，后续可以做优化，封装请求报文和回调方法
+                            if (lastWriteFuture != null) {
+                                lastWriteFuture.sync();
+                            }
+
+                        } catch (Exception e) {
                             e.printStackTrace();
                             Logger.info("channel已经失效，尝试重建channel");
                             channel = f.channel();
                             continue;
                         }
+
                     }
-                    // Wait until all messages are flushed before closing the channel.
-                    if (lastWriteFuture != null) {
-                        lastWriteFuture.sync();
-                    }
+
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     Logger.info("网络连接异常，连接被关闭");

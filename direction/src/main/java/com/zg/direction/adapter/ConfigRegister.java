@@ -23,7 +23,7 @@ public class ConfigRegister {
     private static CuratorFramework zkClient = null;
 
     //使用CountDownLatch等待zk创建完成，在执行主线程
-    private static CountDownLatch countDownLatch = new CountDownLatch(1);
+    private static final CountDownLatch countDownLatch = new CountDownLatch(1);
 
 
     public static void init() throws InterruptedException {
@@ -44,44 +44,38 @@ public class ConfigRegister {
             Logger.error(e);
         }
         //添加错误监听器
-        treeCache.getUnhandledErrorListenable().addListener(new UnhandledErrorListener() {
-            public void unhandledError(String s, Throwable throwable) {
-                Logger.info(".错误原因：" + throwable.getMessage() + "\n==============\n");
-            }
-        });
+        treeCache.getUnhandledErrorListenable().addListener((s, throwable) -> Logger.info(".错误原因：" + throwable.getMessage() + "\n==============\n"));
 
         //节点变化的监Logger.info听器
-        treeCache.getListenable().addListener(new TreeCacheListener() {
-            public void childEvent(CuratorFramework curatorFramework, TreeCacheEvent treeCacheEvent) throws Exception {
+        treeCache.getListenable().addListener((curatorFramework, treeCacheEvent) -> {
 
-                if (treeCacheEvent.getType() == TreeCacheEvent.Type.INITIALIZED) {
-                    countDownLatch.countDown();
-                    Logger.info("初始化！");
+            if (treeCacheEvent.getType() == TreeCacheEvent.Type.INITIALIZED) {
+                countDownLatch.countDown();
+                Logger.info("初始化！");
+            }
+            if (treeCacheEvent.getType() == TreeCacheEvent.Type.CONNECTION_RECONNECTED) {
+                Logger.info("重新连接！");
+            }
+            if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_ADDED) {
+                ChildData childData = treeCacheEvent.getData();
+                Logger.info("创建！" + childData.getPath());
+                if (childData.getData() != null && childData.getData().length > 0) {
+                    String value = new String(childData.getData());
+                    Config.updateBean2ConfigProperties(value);
                 }
-                if (treeCacheEvent.getType() == TreeCacheEvent.Type.CONNECTION_RECONNECTED) {
-                    Logger.info("重新连接！");
+            }
+            if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_UPDATED) {
+                ChildData childData = treeCacheEvent.getData();
+                Logger.info("修改！" + childData.getPath());
+                if (childData.getData() != null && childData.getData().length > 0) {
+                    String value = new String(childData.getData());
+                    Config.updateBean2ConfigProperties(value);
                 }
-                if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_ADDED) {
-                    ChildData childData = treeCacheEvent.getData();
-                    Logger.info("创建！" + childData.getPath());
-                    if (childData.getData() != null && childData.getData().length > 0) {
-                        String value = new String(childData.getData());
-                        Config.updateBean2ConfigProperties(value);
-                    }
-                }
-                if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_UPDATED) {
-                    ChildData childData = treeCacheEvent.getData();
-                    Logger.info("修改！" + childData.getPath());
-                    if (childData.getData() != null && childData.getData().length > 0) {
-                        String value = new String(childData.getData());
-                        Config.updateBean2ConfigProperties(value);
-                    }
-                }
-                if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_REMOVED) {
-                    ChildData childData = treeCacheEvent.getData();
-                    Logger.info("删除！" + childData.getPath());
+            }
+            if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_REMOVED) {
+                ChildData childData = treeCacheEvent.getData();
+                Logger.info("删除！" + childData.getPath());
 
-                }
             }
         });
         countDownLatch.await();
@@ -90,10 +84,10 @@ public class ConfigRegister {
 
     //
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         System.setProperty("projectRootPath", "D:\\work\\project\\databases\\direction\\target\\classes\\");
         init();
-        OptionMGDB optionMGDB= (OptionMGDB) Config.getConfig("hello");
+        OptionMGDB optionMGDB = (OptionMGDB) Config.getConfig("hello");
         System.out.println(optionMGDB.ip);
 
     }

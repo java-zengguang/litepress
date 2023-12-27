@@ -22,13 +22,5 @@ public class AServletContainerInitializer implements ServletContainerInitializer
             servletDynamic.addMapping("/");
 
         }
-/*
-        if (true) {
-            Logger.info("加载Filter");
-            FilterRegistration.Dynamic corsFilter = servletContext.addFilter("CorsFilter", new CorsFilter());
-            corsFilter.setInitParameter("cors.allowed.origins", "*");
-            corsFilter.addMappingForServletNames(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC), false, "AdapterServlet");
-            corsFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC, DispatcherType.INCLUDE, DispatcherType.FORWARD, DispatcherType.ERROR), false, "/*");
-        }*/
     }
 }

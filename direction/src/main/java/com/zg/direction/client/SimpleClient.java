@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class SimpleClient extends BaseClient {
 
-    private static Map<String, SimpleClient> clientMap = new Hashtable<>();
+    private static final Map<String, SimpleClient> clientMap = new Hashtable<>();
     public String state = "0";// 0-初始化  1-执行完成  3-正在执行 2-执行出错
 
     public SimpleReceivedListener simpleReceivedListener;
@@ -26,7 +26,7 @@ public class SimpleClient extends BaseClient {
     public static synchronized SimpleClient getInstance(String host, int port, String clientVersion) {
         String address = host + ":" + port + ":" + clientVersion;
         SimpleClient simpleClient = clientMap.get(address);
-        if (simpleClient == null  ) {
+        if (simpleClient == null) {
             simpleClient = new SimpleClient(host, port);
             simpleClient.state = "3";
             clientMap.put(address, simpleClient);

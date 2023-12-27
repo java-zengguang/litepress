@@ -7,6 +7,6 @@ import java.io.IOException;
 
 public interface PostControllerIntercept {
 
-    Object doInvoke( HttpServletRequest request, HttpServletResponse response, Object args) throws IOException;
+    Object doInvoke(HttpServletRequest request, HttpServletResponse response, Object args) throws IOException;
 
 }

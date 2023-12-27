@@ -74,8 +74,6 @@ public class IMClientHandler extends BaseClientHandler<String> {
                 String fileName = new File(response.message).getName();
                 String rootPath = GetServerRealPathUnit.getPath("file");
                 Logger.info(response.uuid + " 发送来个文件" + fileName + "  存放在目录：" + rootPath + " 下");
-                //BeanFactory.createBean("IM");
-                // String rootPath="D:\\test";
                 File file = new File(rootPath, fileName);
                 Integer port = 9999;
                 InetAddress localhost = InetAddress.getLocalHost();
@@ -83,21 +81,19 @@ public class IMClientHandler extends BaseClientHandler<String> {
                 ReceiveFile receiveFile = new ReceiveFile(port, file);
                 Thread thread = new Thread(receiveFile);
                 thread.start();
-                ZGMPBean request = response;
-                request.methodType = "SEND";
-                request.operationType = "FILESERVICEREADY";
-                String uuid = request.targetUuid;
-                String targetUuid = request.uuid;
-                request.targetUuid = targetUuid;
-                request.uuid = uuid;
+                response.methodType = "SEND";
+                response.operationType = "FILESERVICEREADY";
+                String uuid = response.targetUuid;
+                response.targetUuid = response.uuid;
+                response.uuid = uuid;
                 String message = "";
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("ip", ip);
                 jsonObject.put("port", port);
-                jsonObject.put("filePath", request.message);
+                jsonObject.put("filePath", response.message);
                 message = JSON.toJSONString(jsonObject);
-                request.message = message;
-                String json = EntityUtils.serialize(request);
+                response.message = message;
+                String json = EntityUtils.serialize(response);
                 ctx.writeAndFlush(json + "\r\n");
                 break;
             }

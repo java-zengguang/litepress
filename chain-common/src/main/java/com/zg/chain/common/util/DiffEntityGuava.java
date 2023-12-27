@@ -41,21 +41,19 @@ public class DiffEntityGuava {
     class PKComparator implements Comparator {
         @Override
         public int compare(Object o1, Object o2) {
-            Object obj1 = o1;
-            Object obj2 = o2;
 
-            if (obj1 == null && obj2 == null) {
+            if (o1 == null && o2 == null) {
                 return 0;
             }
-            if (obj1 != null && obj2 == null) {
+            if (o1 != null && o2 == null) {
                 return 1;
             }
-            if (obj1 == null && obj2 != null) {
+            if (o1 == null && o2 != null) {
                 return -1;
             }
 
 
-            Field[] fields = obj1.getClass().getFields();
+            Field[] fields = o1.getClass().getFields();
             List<String> fieldNameList = new ArrayList<>();
             for (Field field : fields) {
                 PrimaryKey primaryKey = field.getAnnotation(PrimaryKey.class);
@@ -67,8 +65,8 @@ public class DiffEntityGuava {
             int hashCode2 = 0;
             for (String fieldName : fieldNameList) {
                 try {
-                    hashCode1 = hashCode1 + Objects.hashCode(getFieldObj(fieldName, obj1));
-                    hashCode2 = hashCode2 + Objects.hashCode(getFieldObj(fieldName, obj2));
+                    hashCode1 = hashCode1 + Objects.hashCode(getFieldObj(fieldName, o1));
+                    hashCode2 = hashCode2 + Objects.hashCode(getFieldObj(fieldName, o2));
                 } catch (IllegalAccessException e) {
                     Logger.error(e);
                 }

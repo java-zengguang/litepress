@@ -10,5 +10,4 @@ public class AuthConfig extends MainModel {
     public long renewalTokenExpireTime = 10 * 60 * 1000;  //过期时间
 
 
-
 }

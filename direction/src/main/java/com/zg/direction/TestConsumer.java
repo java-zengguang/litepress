@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 public class TestConsumer {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         String rootPath = CommonUtil.getThisPath(TestConsumer.class);
         System.setProperty("projectRootPath", rootPath);
 
@@ -25,15 +25,12 @@ public class TestConsumer {
         test.hello3(testEntity, "xxx");
         Logger.info(test.hello4(new ArrayList(Arrays.asList(testEntity)), "xxx"));
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                TestInte test = (TestInte) Proxy.newProxyInstance(TestInte.class.getClassLoader(), classes, new ConsumerHandler("/Test"));
-                try {
-                    Logger.info("=================" + test.hello());
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+        Runnable runnable = () -> {
+            TestInte test1 = (TestInte) Proxy.newProxyInstance(TestInte.class.getClassLoader(), classes, new ConsumerHandler("/Test"));
+            try {
+                Logger.info("=================" + test1.hello());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         };
         ExecutorService executorService = Executors.newFixedThreadPool(10);

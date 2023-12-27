@@ -17,7 +17,7 @@ import java.util.List;
 public class SSOUtils {
 
     public static WebCacheLogin webCacheLogin = WebCacheLogin.getInstance();
-    private static RomCacheInte romCache = RomCacheUtil.getRomCache("LoginCache");
+    private static final RomCacheInte romCache = RomCacheUtil.getRomCache("LoginCache");
 
 
     public static MessageBean signOut(HttpServletRequest request, HttpServletResponse response) {

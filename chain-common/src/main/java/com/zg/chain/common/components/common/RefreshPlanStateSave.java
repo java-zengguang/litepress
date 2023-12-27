@@ -1,12 +1,12 @@
 package com.zg.chain.common.components.common;
 
+import com.zg.chain.common.components.BaseCommonComponent;
+import com.zg.chain.common.components.Components;
 import com.zg.chain.common.entity.BaseProcess;
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.database.NewJDBCUtil;
 import com.zg.common.init.Config;
 import com.zg.common.util.reflect.ModelSQLUtils;
-import com.zg.chain.common.components.BaseCommonComponent;
-import com.zg.chain.common.components.Components;
 
 import java.util.ArrayList;
 import java.util.List;

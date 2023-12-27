@@ -21,28 +21,13 @@ import java.sql.SQLException;
 public class CacheLoginController extends BaseController {
 
     public WebCacheLogin loginService = WebCacheLogin.getInstance();
-    private RomCacheInte romCache = RomCacheUtil.getRomCache("LoginCache");
+    private final RomCacheInte romCache = RomCacheUtil.getRomCache("LoginCache");
 
     @ResultMapping("/toLogin.do")
     public String toLogin() {
 
         return "privateURL::/html/Wopop.html";
     }
-
-    /*@ResultMapping("/signOut.do")
-    public String signOut(HttpServletRequest request, HttpServletResponse response) throws SQLException, NoSuchFieldException, IllegalAccessException {
-
-        String token = getCookieValue("token", request);
-        String uuid = getCookieValue("uuid", request);
-        UserLogin userLogin = loginService.logout(uuid, token);
-        String url = "";
-        if (userLogin != null) {
-            clearCookie(response, "token", userLogin.domain, userLogin.rootPath);
-            clearCookie(response, "uuid", userLogin.domain, userLogin.rootPath);
-            url = userLogin.url;
-        }
-        return "redirect::" + url;
-    }*/
 
     @ResultMapping("/login.do")
     public String login(String username, String password, HttpServletRequest request, HttpServletResponse response) throws IllegalAccessException, NoSuchFieldException, SQLException, IOException {

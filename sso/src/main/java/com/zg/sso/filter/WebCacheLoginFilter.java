@@ -13,9 +13,9 @@ import java.io.IOException;
 public class WebCacheLoginFilter implements Filter {
     LoginInte baseLogin = WebCacheLogin.getInstance();
 
-    private SSOOpthion ssoOpthion = (SSOOpthion) Config.getConfig("SSOOpthion");
+    private final SSOOpthion ssoOpthion = (SSOOpthion) Config.getConfig("SSOOpthion");
 
-    private SSOAdapter ssoAdapter = SSOAdapter.getInstanse(ssoOpthion, baseLogin);
+    private final SSOAdapter ssoAdapter = SSOAdapter.getInstanse(ssoOpthion, baseLogin);
 
 
     @Override

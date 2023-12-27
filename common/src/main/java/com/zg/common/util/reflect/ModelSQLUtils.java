@@ -39,8 +39,8 @@ public class ModelSQLUtils {
 
         //   List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
         String sql = null;
-        StringBuffer member = new StringBuffer();
-        StringBuffer values = new StringBuffer();
+        StringBuilder member = new StringBuilder();
+        StringBuilder values = new StringBuilder();
         for (int i = 0; i < memberList.size(); i++) {
             if (memberList.get(i) != null && valuesList.get(i) != null && !"".equals(valuesList.get(i))) {
 
@@ -71,8 +71,8 @@ public class ModelSQLUtils {
 
         //   List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
         String sql = null;
-        StringBuffer member = new StringBuffer();
-        StringBuffer values = new StringBuffer();
+        StringBuilder member = new StringBuilder();
+        StringBuilder values = new StringBuilder();
         for (int i = 0; i < memberList.size(); i++) {
             if (memberList.get(i) != null && valuesList.get(i) != null && !"".equals(valuesList.get(i))) {
 
@@ -101,9 +101,8 @@ public class ModelSQLUtils {
             }
         }
         condition = condition.delete(condition.length() - 4, condition.length());
-        String sql = "delete from " + tableName + " where " + condition;
 
-        return sql;
+        return "delete from " + tableName + " where " + condition;
     }
 
 
@@ -119,8 +118,7 @@ public class ModelSQLUtils {
             }
         }
         condition = condition.delete(condition.length() - 4, condition.length());
-        String sql = "delete from " + tableName + " where " + condition;
-        return sql;
+        return "delete from " + tableName + " where " + condition;
     }
 
 
@@ -146,7 +144,7 @@ public class ModelSQLUtils {
             }
         }
         //  List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
-        StringBuffer memberValues = new StringBuffer();
+        StringBuilder memberValues = new StringBuilder();
         for (int i = 0; i < memberList.size(); i++) {
             if (memberList.get(i) != null && !"".equals(valuesList.get(i))) {
                 if (valuesList.get(i) != null) {
@@ -175,8 +173,7 @@ public class ModelSQLUtils {
             }
         }
         condition = condition.delete(condition.length() - 4, condition.length());
-        String sql = "delete from " + tableName + " where " + condition;
-        return sql;
+        return "delete from " + tableName + " where " + condition;
     }
 
 
@@ -200,7 +197,7 @@ public class ModelSQLUtils {
             }
         }
         //  List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
-        StringBuffer memberValues = new StringBuffer();
+        StringBuilder memberValues = new StringBuilder();
         for (int i = 0; i < memberList.size(); i++) {
             if (memberList.get(i) != null && !"".equals(valuesList.get(i))) {
                 if (valuesList.get(i) != null) {
@@ -243,8 +240,7 @@ public class ModelSQLUtils {
         Assemble assemble = new SimpleAssemble(dbType);
         List<MetadataEntity> newList = assemble.analysis(newModel);
         List<MetadataEntity> oldList = assemble.analysis(oldModel);
-        for (int i = 0; i < newList.size(); i++) {
-            MetadataEntity newEntity = newList.get(i);
+        for (MetadataEntity newEntity : newList) {
             if ("1".equals(newEntity.isPK)) {  //主鍵條件
                 condition = condition + " and " + newEntity.fieldName + "=" + newEntity.columnValue;
 
@@ -260,7 +256,7 @@ public class ModelSQLUtils {
             return null;
         }
         //  List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
-        StringBuffer memberValues = new StringBuffer();
+        StringBuilder memberValues = new StringBuilder();
         for (int i = 0; i < memberList.size(); i++) {
             if (memberList.get(i) != null && !"".equals(valuesList.get(i))) {
                 if (valuesList.get(i) != null) {
@@ -275,53 +271,6 @@ public class ModelSQLUtils {
 
         return sql;
     }
-
-/*
-
-    public static String updateByPK(Object model, String dbType) throws Exception {
-        String sql;
-        String condition = " ";
-
-        String tableName = EntityUtils.getTableNameFromModel(model.getClass());
-        List<String> memberList = new ArrayList();
-        List<String> valuesList = new ArrayList();
-        Assemble assemble = new SimpleAssemble(dbType);
-        List<MetadataEntity> list = assemble.analysis(model);
-        List<String> pkList = EntityUtils.getPKFields(model.getClass());
-        List<String> increaseList = EntityUtils.getIncreaseFields(model.getClass());
-
-        if (pkList == null && pkList.size() == 0) {
-            throw new Exception("没有找到主键");
-        }
-
-        for (MetadataEntity entity : list) {
-
-            if ("1".equals(entity.isNotCommit) || increaseList.contains(entity.fieldName)) {
-                if (!pkList.contains(entity.fieldName)) {
-                    memberList.add(entity.fieldName);
-                    valuesList.add(entity.columnValue);
-                } else {
-                    condition = condition + " and " + entity.fieldName + "=" + entity.columnValue;
-                }
-            }
-        }
-        //  List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
-        StringBuffer memberValues = new StringBuffer();
-        for (int i = 0; i < memberList.size(); i++) {
-            if (memberList.get(i) != null && !"".equals(valuesList.get(i))) {
-                if (valuesList.get(i) != null) {
-                    memberValues.append(" " + memberList.get(i) + "=" + valuesList.get(i) + ",");
-                } else {
-                    memberValues.append(" " + memberList.get(i) + " = null ,");
-                }
-            }
-        }
-        memberValues.setCharAt(memberValues.length() - 1, ' ');
-        sql = "update " + tableName + " set " + memberValues + "where 1=1 " + condition;
-
-        return sql;
-    }
-*/
 
 
     public static String update(String dbType, Object model, String... terms) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
@@ -342,7 +291,7 @@ public class ModelSQLUtils {
             }
         }
         //  List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
-        StringBuffer memberValues = new StringBuffer();
+        StringBuilder memberValues = new StringBuilder();
         for (int i = 0; i < memberList.size(); i++) {
             if (memberList.get(i) != null && valuesList.get(i) != null && !"".equals(valuesList.get(i))) {
                 memberValues.append(" " + memberList.get(i) + "=" + valuesList.get(i) + ",");
@@ -357,8 +306,8 @@ public class ModelSQLUtils {
 
     public static String insert(String table, List<String> member_list, List values_list) {
         String sql = null;
-        StringBuffer member = new StringBuffer();
-        StringBuffer values = new StringBuffer();
+        StringBuilder member = new StringBuilder();
+        StringBuilder values = new StringBuilder();
         for (int i = 0; i < member_list.size(); i++) {
             member.append(member_list.get(i) + ",");
             values.append("'" + values_list.get(i) + "',");
@@ -376,7 +325,7 @@ public class ModelSQLUtils {
             condition = condition + term + " and ";
         }
         String sql = null;
-        StringBuffer member_values = new StringBuffer();
+        StringBuilder member_values = new StringBuilder();
 
         for (int i = 0; i < member_list.size(); i++) {
             member_values.append(" " + member_list.get(i) + "='" + values_list.get(i) + "',");

@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class LoginService implements LoginServiceInte {
 
-    private LoginEntityDao loginDao = new LoginEntityDao();
+    private final LoginEntityDao loginDao = new LoginEntityDao();
 
     public String verification(String username, String passworld) {
         Map map = new HashedMap();
@@ -53,63 +53,6 @@ public class LoginService implements LoginServiceInte {
         return random.toString();
     }
 
-/*
-    public Map<String, String> login(String password, String username, String token) {
-
-        Map<String, String> map = getTokenValue(token);
-
-        if (map != null) {
-            String uuid = verification(username, password);
-
-
-            if (uuid != null) {
-
-                if (updateLoginValid(uuid, token) > 0) {
-                    map.put("uuid", uuid);
-                    map.put("message", "登陆成功");
-                } else {
-                    map.put("message", "用户已经登陆，锁定中");
-                }
-                invalidToken(token);
-            } else {
-                map.put("message", "用户名密码错误");
-            }
-        } else {
-            map = new HashMap<>();
-            map.put("message", "token失效");
-        }
-        return map;
-    }
-
-    public String registToken(String url, String domain, String rootPath) {
-        UUID random = UUID.randomUUID();
-        String token = random.toString();
-        Map map = new HashMap<>();
-        map.put("token", token);
-        map.put("url", url);
-        map.put("domain", domain);
-        map.put("rootPath", rootPath);
-
-        int x = 0;
-        try {
-            x = loginDao.insertToken(map);
-        } catch (SQLException e) {
-            Logger.error(e);
-        } catch (NoSuchFieldException e) {
-            Logger.error(e);
-        } catch (IllegalAccessException e) {
-            Logger.error(e);
-        } catch (ClassNotFoundException e) {
-            Logger.error(e);
-        }
-        if (x > 0) {
-            return token;
-        } else {
-            return null;
-        }
-    }
-*/
-
 
     public boolean updateToken(String uuid, String token, String url) {
         Logger.info(uuid + token + url);
@@ -127,11 +70,7 @@ public class LoginService implements LoginServiceInte {
         map.put("url", url);
         map.put("uuid", uuid);
         int x = loginDao.updateToken(map);
-        if (x > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return x > 0;
     }
 
     public Integer isLogin(String token, String uuid) {

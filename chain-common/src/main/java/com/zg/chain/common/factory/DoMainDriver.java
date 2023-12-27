@@ -3,7 +3,6 @@ package com.zg.chain.common.factory;
 import com.zg.chain.common.drivers.AutoDriver;
 import com.zg.chain.common.entity.BaseProcess;
 import com.zg.chain.common.entity.BaseProcessBatch;
-
 import org.tinylog.Logger;
 
 import java.util.*;
@@ -14,9 +13,9 @@ import java.util.stream.Collectors;
 
 public class DoMainDriver {
 
-    private static DoMainDriver doMainDriver = new DoMainDriver();
+    private static final DoMainDriver doMainDriver = new DoMainDriver();
     private final Map<String, Object> beanMap = new HashMap<>();
-    private DriverFactory driverFactory = DriverFactory.newInstance();
+    private final DriverFactory driverFactory = DriverFactory.newInstance();
 
     public DoMainDriver() {
     }
@@ -59,14 +58,12 @@ public class DoMainDriver {
         List<T> sinoSigSQLBatchEntities = doGroup(tClass, list);
         CountDownLatch cdl = new CountDownLatch(sinoSigSQLBatchEntities.size());
         ExecutorService executor = Executors.newCachedThreadPool();
-        sinoSigSQLBatchEntities.stream().forEach(sinoSigSQLBatchEntitie -> {
-            executor.execute(() -> {
-                Logger.info("线程开始");
-                doExecute(sinoSigSQLBatchEntitie);
-                Logger.info("第" + cdl.getCount() + "线程结束");
-                cdl.countDown();
-            });
-        });
+        sinoSigSQLBatchEntities.stream().forEach(sinoSigSQLBatchEntitie -> executor.execute(() -> {
+            Logger.info("线程开始");
+            doExecute(sinoSigSQLBatchEntitie);
+            Logger.info("第" + cdl.getCount() + "线程结束");
+            cdl.countDown();
+        }));
         executor.shutdown();
         cdl.await();
         return sinoSigSQLBatchEntities;

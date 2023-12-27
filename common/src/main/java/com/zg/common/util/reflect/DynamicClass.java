@@ -25,7 +25,7 @@ public class DynamicClass {
 
         List<String> pkFieldList = new ArrayList<>();
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (calssName == null || columnList.size() == 0) {
             throw new Exception();
         } else {
@@ -114,8 +114,7 @@ public class DynamicClass {
             ClassJavaFileObject javaFileObject = classJavaFileManager.getClassJavaFileObject();
             ClassLoader classLoader = new MyClassLoader(javaFileObject);
             String classAllName = "com.zg.common.bean.entity." + name;
-            Class clazz = classLoader.loadClass(classAllName);
-            return clazz;
+            return classLoader.loadClass(classAllName);
 
         }
         return null;
@@ -145,7 +144,7 @@ public class DynamicClass {
      */
     static class StringObject extends SimpleJavaFileObject {
 
-        private String content;
+        private final String content;
 
         public StringObject(URI uri, Kind kind, String content) {
             super(uri, kind);
@@ -183,7 +182,7 @@ public class DynamicClass {
 
     //自定义classloader
     static class MyClassLoader extends ClassLoader {
-        private ClassJavaFileObject stringObject;
+        private final ClassJavaFileObject stringObject;
 
         public MyClassLoader(ClassJavaFileObject stringObject) {
             this.stringObject = stringObject;
@@ -195,34 +194,6 @@ public class DynamicClass {
             return defineClass(name, bytes, 0, bytes.length);
         }
     }
-
-
-
-/*
-
-    private static Class getDynamicModel(String name, String javaCode) throws ClassNotFoundException, InstantiationException, IllegalAccessException, FileNotFoundException, MalformedURLException {
-        Object o = null;
-        Map<String, byte[]> results;
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        JavaFileManager stdManager = compiler.getStandardFileManager(null, null, null);
-        JavaFileObject jfo = new StringJavaFileObject(name, javaCode);
-        List<String> options = new ArrayList<String>();
-        String path = CommonUtil.PATH+"";
-        Logger.info(DynamicClass.class + "====calss生成路径" + path);
-        options.addAll(Arrays.asList("-d",path,"--limit-modules","java.base,java.logging"));
-        List<? extends JavaFileObject> jfos = Arrays.asList(jfo);
-
-        CompilationTask task = compiler.getTask(null, stdManager, null, options, null, jfos);
-        if (task.call()) {
-            String classAllName="com.zg.common.bean.entity." + name;
-            DynameicClassLoader dynameicClassLoader=new DynameicClassLoader(path);
-            Class classes= dynameicClassLoader.loadClass(classAllName);
-            return classes;
-        } else {
-            return null;
-        }
-    }
-*/
 
 
 }

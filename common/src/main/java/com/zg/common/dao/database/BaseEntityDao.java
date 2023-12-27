@@ -1,6 +1,5 @@
 package com.zg.common.dao.database;
 
-import com.github.pagehelper.PageInfo;
 import com.zg.common.annotation.AutoIncrease;
 import com.zg.common.bean.entity.MainModel;
 import com.zg.common.bean.entity.MetadataEntity;
@@ -12,7 +11,6 @@ import com.zg.common.util.reflect.DynamicClass;
 import com.zg.common.util.reflect.EntityUtils;
 import com.zg.common.util.reflect.ModelSQLUtils;
 import net.sf.jsqlparser.JSQLParserException;
-import org.apache.poi.ss.formula.functions.Log;
 import org.tinylog.Logger;
 
 import java.io.IOException;
@@ -21,7 +19,6 @@ import java.math.BigInteger;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by Administrator on 2018/11/27 0027.
@@ -32,7 +29,7 @@ public class BaseEntityDao extends BaseJDBCDao {
     public int insertTable(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         List list = new ArrayList();
         list.add(model);
-        int results[] = insertTables(list, model.getClass());
+        int[] results = insertTables(list, model.getClass());
         int result = 0;
         if (results != null && results.length > 0) {
             result = results[0];
@@ -41,17 +38,17 @@ public class BaseEntityDao extends BaseJDBCDao {
     }
 
     public Object insertAutoIncrease(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
-        Class clazz=model.getClass();
-        Field[] fields= clazz.getFields();
-        Field idField= Arrays.stream(fields).filter(field -> field.isAnnotationPresent(AutoIncrease.class)).findFirst().get();
-       if(insertTable(model)>0){
-           String sql = "select @@IDENTITY as id ";
-           List<Map> list = selectToMapList(sql);
-           Map<String, BigInteger> map = list.get(0);
-           Logger.info("id=" + map.get("id").intValue());
-           Integer id = Integer.valueOf(map.get("id").intValue());
-           idField.set(model,id);
-       }
+        Class clazz = model.getClass();
+        Field[] fields = clazz.getFields();
+        Field idField = Arrays.stream(fields).filter(field -> field.isAnnotationPresent(AutoIncrease.class)).findFirst().get();
+        if (insertTable(model) > 0) {
+            String sql = "select @@IDENTITY as id ";
+            List<Map> list = selectToMapList(sql);
+            Map<String, BigInteger> map = list.get(0);
+            Logger.info("id=" + map.get("id").intValue());
+            Integer id = map.get("id").intValue();
+            idField.set(model, id);
+        }
         return model;
     }
 
@@ -107,8 +104,7 @@ public class BaseEntityDao extends BaseJDBCDao {
     }
 
 
-
-    public  List select2Page(String sql, Class tClass, PageEntity page) throws Exception {
+    public List select2Page(String sql, Class tClass, PageEntity page) throws Exception {
         String countSql = null;
         if (sql != null) {
             countSql = "select count(1) as totalResultSize  from ( " + sql + " ) as num";
@@ -121,8 +117,7 @@ public class BaseEntityDao extends BaseJDBCDao {
         Integer startRows = (page.getCurrentPage() - 1) * page.getPageSize();
         /*  Integer endRows=(page.getCurrentPage())*page.getPageSize();*/
         sql = sql + " limit " + startRows + " , " + page.getPageSize();
-        List resultList= select(sql,tClass);
-        return resultList;
+        return select(sql, tClass);
     }
 
     public List execute(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException, JSQLParserException {
@@ -171,7 +166,6 @@ public class BaseEntityDao extends BaseJDBCDao {
         return operation(sql);
 
     }
-
 
 
 }

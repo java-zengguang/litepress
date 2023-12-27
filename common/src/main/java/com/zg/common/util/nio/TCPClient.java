@@ -18,7 +18,7 @@ public class TCPClient {
 
     public SocketChannel channel;
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String[] args) throws IOException {
         SocketChannel socketChannel = SocketChannel.open();
         socketChannel.connect(new InetSocketAddress("localhost", 9999));
         TCPClient tcpClient = new TCPClient();

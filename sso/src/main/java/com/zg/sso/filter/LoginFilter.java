@@ -17,9 +17,9 @@ public class LoginFilter implements Filter {
 
     LoginInte simpleLogin = new SimpleLogin();
 
-    private SSOOpthion ssoOpthion = (SSOOpthion) Config.getConfig("SSOOpthion");
+    private final SSOOpthion ssoOpthion = (SSOOpthion) Config.getConfig("SSOOpthion");
 
-    private SSOAdapter ssoAdapter = SSOAdapter.getInstanse(ssoOpthion, simpleLogin);
+    private final SSOAdapter ssoAdapter = SSOAdapter.getInstanse(ssoOpthion, simpleLogin);
 
 
     @Override

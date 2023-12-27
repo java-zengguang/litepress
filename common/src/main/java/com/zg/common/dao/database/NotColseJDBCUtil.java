@@ -20,7 +20,7 @@ import java.util.Map;
 
 
 public class NotColseJDBCUtil {
-    private String dataSource;
+    private final String dataSource;
 
 
     public NotColseJDBCUtil(String dataSource) {
@@ -29,7 +29,7 @@ public class NotColseJDBCUtil {
 
 
     private String getTableName(String sql) {
-        String stringArray[] = sql.split("\\s+");
+        String[] stringArray = sql.split("\\s+");
         for (int i = 0; i < stringArray.length; i++) {
             if ("from".equals(stringArray[i].toLowerCase().trim()) || "*from".equals(stringArray[i].toLowerCase().trim())) {
                 return stringArray[i + 1];
@@ -64,7 +64,7 @@ public class NotColseJDBCUtil {
     private int insertTable(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         List list = new ArrayList();
         list.add(model);
-        int results[] = insertTables(list, model.getClass());
+        int[] results = insertTables(list, model.getClass());
         int result = 0;
         if (results != null && results.length > 0) {
             result = results[0];
@@ -88,7 +88,7 @@ public class NotColseJDBCUtil {
     //执行批操作
     private int[] batchSql(List<String> sqlList) throws SQLException, ClassNotFoundException {
 
-        int result[] = new int[sqlList.size()];
+        int[] result = new int[sqlList.size()];
         for (int i = 0; i < sqlList.size(); i++) {
             String sql = sqlList.get(i);
             result[i] = operation(sql);
@@ -115,7 +115,7 @@ public class NotColseJDBCUtil {
             sql = sql.replace(";", "");
         }
 
-        int i[] = null;
+        int[] i = null;
         Statement stmt;
         Connection conn = NewDBPUtils.getConnection(dataSource);
 
@@ -166,9 +166,9 @@ public class NotColseJDBCUtil {
             for (int i = 1; i < columncount + 1; i++) {
                 String columnLabel = rsmd.getColumnLabel(i);
                 String columnType = rsmd.getColumnTypeName(i);
-                Integer columnScale= rsmd.getScale(i);
-                if(columnScale==-127){
-                    columnScale=6;
+                Integer columnScale = rsmd.getScale(i);
+                if (columnScale == -127) {
+                    columnScale = 6;
                 }
                 Object columnValue = rs.getObject(i);
                 MetadataEntity metadataEntity = new MetadataEntity();
@@ -176,7 +176,7 @@ public class NotColseJDBCUtil {
                 metadataEntity.tableName = tableName;
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
-                metadataEntity.columnScale=columnScale;
+                metadataEntity.columnScale = columnScale;
                 metadataEntity.objectValue = columnValue;
                 metadataEntity.dbType = optionDB.DBType;
                 if (pkColumnList.contains(columnLabel)) {
@@ -284,8 +284,7 @@ public class NotColseJDBCUtil {
     public List selectNoClose(String sql, Class modelClass) throws Exception {
         List list = selectToMapList(sql);
         // Map<String, String> tableInfoMap = tableInfo(sql);
-        List model_list = SerializeObjectUtils.setMember(list, modelClass);
-        return model_list;
+        return SerializeObjectUtils.setMember(list, modelClass);
 
     }
 

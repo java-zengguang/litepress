@@ -12,9 +12,9 @@ import java.net.Socket;
 
 public class SendFile implements Runnable {
 
-    private File file;
-    private String ip;
-    private int port;
+    private final File file;
+    private final String ip;
+    private final int port;
 
     public SendFile(File file, String ip, int port) {
         this.file = file;

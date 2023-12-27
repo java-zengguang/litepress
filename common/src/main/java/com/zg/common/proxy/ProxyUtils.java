@@ -3,11 +3,9 @@ package com.zg.common.proxy;
 import com.zg.common.error.SysException;
 import com.zg.common.handler.TransactionHandler;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
 
 /**
  * Created by Administrator on 2019/3/14 0014.
@@ -19,13 +17,13 @@ public class ProxyUtils {
         return Proxy.newProxyInstance(obj.getClass().getClassLoader(), obj.getClass().getInterfaces(), new TransactionHandler(obj));
     }
 
-    public static Object getRemotingProxy(Class interfaceClass,String providerName) {
+    public static Object getRemotingProxy(Class interfaceClass, String providerName) {
         Object targetObject = null;
         try {
             Class<InvocationHandler> remotingClass = (Class<InvocationHandler>) Class.forName("com.zg.direction.proxy.ConsumerHandler");
             InvocationHandler proxyObject = remotingClass.getDeclaredConstructor(String.class).newInstance(providerName);
-            Class[] interfaceArrays={interfaceClass};
-            targetObject = Proxy.newProxyInstance(remotingClass.getClassLoader(),interfaceArrays, proxyObject);
+            Class[] interfaceArrays = {interfaceClass};
+            targetObject = Proxy.newProxyInstance(remotingClass.getClassLoader(), interfaceArrays, proxyObject);
         } catch (ClassNotFoundException e) {
             throw new SysException("未找到驱动 com.zg.direction.proxy.ConsumerHandler 请确认是否引入com.zg.direction 模块" + e.getMessage());
         } catch (InvocationTargetException e) {
@@ -39,7 +37,6 @@ public class ProxyUtils {
         }
         return targetObject;
     }
-
 
 
 }

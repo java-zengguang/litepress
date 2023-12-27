@@ -133,8 +133,6 @@ public class IMServerHandle extends BaseServiceHandler<String> {
                     if (channelBean != null && channelBean.heartBeatID.equals(request.heartBeatID)) {
                         long expectTime = channelBean.time + TIMEOUT;
                         long actualTime = new Date().getTime();
-                   /* Logger.info("应到时间" + expectTime);
-                    Logger.info("实到时间" + actualTime);*/
                         if (expectTime > actualTime) {
                             channelBean.count = 3;
                         } else {

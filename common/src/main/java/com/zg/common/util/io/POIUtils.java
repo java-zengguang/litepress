@@ -113,6 +113,7 @@ public class POIUtils {
         return hssfWorkbook;
 
     }
+
     public static void writeXLSX(Map<String, List<Map>> map, File file) throws IOException {
         XSSFWorkbook hssfWorkbook = new XSSFWorkbook();
         for (String key : map.keySet()) {
@@ -122,7 +123,7 @@ public class POIUtils {
         hssfWorkbook.write(outputStream);
     }
 
-    public static void main(String args[]) throws SQLException, IOException, ClassNotFoundException {
+    public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException {
 
 
     }

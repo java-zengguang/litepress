@@ -4,6 +4,7 @@ import com.zg.mvc.entity.RequestParamEntity;
 import com.zg.mvc.entity.SimpleFileEntity;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class AnalysisTempFile {
@@ -59,13 +60,6 @@ public class AnalysisTempFile {
 
 
     public static void outputThread(long writerStart, long writerEnd, File inputFile, File targetFile) throws InterruptedException, IOException {
-/*        OutputFileThread ot = new OutputFileThread(inputFile, targetFile, writerStart, writerEnd - writerStart);
-        for (int i = 0; i < 5; i++) {
-            new Thread(ot).start();
-        }
-        while (ot.compareCount < 5) {
-            this.wait(10);
-        }*/
 
         int length = (int) (writerEnd - writerStart);
         byte[] bytes = new byte[length];
@@ -121,7 +115,7 @@ public class AnalysisTempFile {
             rafw.read(bytes);
             rafw.close();
             requestParamEntity.type = "param";
-            requestParamEntity.value = new String(bytes, "UTF-8");
+            requestParamEntity.value = new String(bytes, StandardCharsets.UTF_8);
         }
 
 

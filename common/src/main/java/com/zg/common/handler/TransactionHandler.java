@@ -1,7 +1,6 @@
 package com.zg.common.handler;
 
 import com.zg.common.annotation.Transaction;
-import org.tinylog.Logger;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -11,7 +10,7 @@ import java.lang.reflect.Method;
  * Created by Administrator on 2018/12/24 0024.
  */
 public class TransactionHandler implements InvocationHandler {
-    private Object target;
+    private final Object target;
 
 
     public TransactionHandler(Object target) {
@@ -42,7 +41,7 @@ public class TransactionHandler implements InvocationHandler {
                 commit();
             }
         } catch (InvocationTargetException e) {
-             throw  e.getCause();
+            throw e.getCause();
         } finally {
             release();
         }

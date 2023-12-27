@@ -28,7 +28,7 @@ public class CacheRegister {
 
 
     //使用CountDownLatch等待zk创建完成，在执行主线程
-    private static CountDownLatch countDownLatch = new CountDownLatch(1);
+    private static final CountDownLatch countDownLatch = new CountDownLatch(1);
 
     private CacheRegister() throws InterruptedException {
 
@@ -54,44 +54,38 @@ public class CacheRegister {
             Logger.error(e);
         }
         //添加错误监听器
-        treeCache.getUnhandledErrorListenable().addListener(new UnhandledErrorListener() {
-            public void unhandledError(String s, Throwable throwable) {
-                Logger.info(".错误原因：" + throwable.getMessage() + "\n==============\n");
-            }
-        });
+        treeCache.getUnhandledErrorListenable().addListener((s, throwable) -> Logger.info(".错误原因：" + throwable.getMessage() + "\n==============\n"));
 
         //节点变化的监Logger.info听器
-        treeCache.getListenable().addListener(new TreeCacheListener() {
-            public void childEvent(CuratorFramework curatorFramework, TreeCacheEvent treeCacheEvent) throws Exception {
+        treeCache.getListenable().addListener((curatorFramework, treeCacheEvent) -> {
 
-                if (treeCacheEvent.getType() == TreeCacheEvent.Type.INITIALIZED) {
-                    countDownLatch.countDown();
-                    Logger.info("初始化！");
+            if (treeCacheEvent.getType() == TreeCacheEvent.Type.INITIALIZED) {
+                countDownLatch.countDown();
+                Logger.info("初始化！");
+            }
+            if (treeCacheEvent.getType() == TreeCacheEvent.Type.CONNECTION_RECONNECTED) {
+                Logger.info("重新连接！");
+            }
+            if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_ADDED) {
+                ChildData childData = treeCacheEvent.getData();
+                Logger.info("创建！" + childData.getPath());
+                if (childData.getData() != null && childData.getData().length > 0) {
+                    String value = new String(childData.getData());
+                    cacheMap.put(childData.getPath(), value);
                 }
-                if (treeCacheEvent.getType() == TreeCacheEvent.Type.CONNECTION_RECONNECTED) {
-                    Logger.info("重新连接！");
+            }
+            if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_UPDATED) {
+                ChildData childData = treeCacheEvent.getData();
+                Logger.info("修改！" + childData.getPath());
+                if (childData.getData() != null && childData.getData().length > 0) {
+                    String value = new String(childData.getData());
+                    cacheMap.put(childData.getPath(), value);
                 }
-                if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_ADDED) {
-                    ChildData childData = treeCacheEvent.getData();
-                    Logger.info("创建！" + childData.getPath());
-                    if (childData.getData() != null && childData.getData().length > 0) {
-                        String value = new String(childData.getData());
-                        cacheMap.put(childData.getPath(), value);
-                    }
-                }
-                if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_UPDATED) {
-                    ChildData childData = treeCacheEvent.getData();
-                    Logger.info("修改！" + childData.getPath());
-                    if (childData.getData() != null && childData.getData().length > 0) {
-                        String value = new String(childData.getData());
-                        cacheMap.put(childData.getPath(), value);
-                    }
-                }
-                if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_REMOVED) {
-                    ChildData childData = treeCacheEvent.getData();
-                    Logger.info("删除！" + childData.getPath());
-                    cacheMap.remove(childData.getPath());
-                }
+            }
+            if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_REMOVED) {
+                ChildData childData = treeCacheEvent.getData();
+                Logger.info("删除！" + childData.getPath());
+                cacheMap.remove(childData.getPath());
             }
         });
         countDownLatch.await();
@@ -108,7 +102,7 @@ public class CacheRegister {
 
     }
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         System.setProperty("projectRootPath", "D:\\work\\project\\databases\\direction\\target\\classes\\");
         CacheRegister cacheRegister = CacheRegister.getInstance();
         cacheRegister.put("/2", "老铁");

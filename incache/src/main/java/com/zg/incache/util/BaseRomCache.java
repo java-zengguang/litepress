@@ -23,7 +23,7 @@ public abstract class BaseRomCache implements RomCacheInte {
 
     private String[] getValues(String valueS) {
 
-        String sub[] = valueS.split(":");
+        String[] sub = valueS.split(":");
         for (int i = 0; i < sub.length; i++) {
             sub[i] = sub[i].trim();
         }
@@ -33,7 +33,7 @@ public abstract class BaseRomCache implements RomCacheInte {
 
     public boolean updataList(String valueS, int index) throws IllegalArgumentException, IllegalAccessException, InstantiationException {
         String[] values = getValues(valueS);
-        Field fields[] = modelClass.getFields();
+        Field[] fields = modelClass.getFields();
         if (values.length == fields.length) {
             int i = 0;
             Object model = modelClass.newInstance();
@@ -136,10 +136,9 @@ public abstract class BaseRomCache implements RomCacheInte {
             Logger.error(e);
 
         }
-        Iterator it = num_list.iterator();
-        while (it.hasNext()) {
+        for (Object o : num_list) {
 
-            sub_list.add(modelList.get((int) it.next()));
+            sub_list.add(modelList.get((int) o));
         }
         return sub_list;
     }

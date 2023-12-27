@@ -26,8 +26,8 @@ public abstract class BaseService implements Runnable {
     private final int threadSize = 10;  //并发数量
     private NioEventLoopGroup bossGroup = null;
     private NioEventLoopGroup workerGroup = null;
-    private int port;
-    private BaseServiceHandler baseServiceHandler;
+    private final int port;
+    private final BaseServiceHandler baseServiceHandler;
 
     public BaseService(BaseServiceHandler<String> baseServiceHandler, int port) {
 
@@ -68,7 +68,6 @@ public abstract class BaseService implements Runnable {
                     pipe.addLast(baseServiceHandler);
                 }
             });
-
 
 
             startHeartbeat();

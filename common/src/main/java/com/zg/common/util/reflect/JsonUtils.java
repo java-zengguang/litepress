@@ -14,21 +14,17 @@ public class JsonUtils {
 
     public static Object jsonToObject(String json, Class classes) {
 
-        Object object = JSON.parseObject(json, classes);
-        return object;
+        return JSON.parseObject(json, classes);
     }
 
     public static Object jsonToObject(String json, TypeReference typeReference) {
 
-        Object object = JSON.parseObject(json, typeReference);
-        return object;
+        return JSON.parseObject(json, typeReference);
     }
 
     public static Map jsonToObject(String json) {
 
-        Map map = (Map) JSON.parse(json);
-
-        return map;
+        return (Map) JSON.parse(json);
     }
 
 
@@ -36,8 +32,8 @@ public class JsonUtils {
         return JSON.toJSONString(object);
     }
 
-    public static Object deepCopy(Object obj){
-       return JSONObject.parseObject(JSONObject.toJSONString(obj),obj.getClass());
+    public static Object deepCopy(Object obj) {
+        return JSONObject.parseObject(JSONObject.toJSONString(obj), obj.getClass());
     }
 
 }

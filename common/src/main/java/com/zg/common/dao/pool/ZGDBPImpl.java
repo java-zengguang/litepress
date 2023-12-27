@@ -12,7 +12,7 @@ import java.util.Map;
 public class ZGDBPImpl implements DataBaseInte {
 
     private final static ZGDBPImpl zGDBP = new ZGDBPImpl();
-    private static Map<String, ZGDBPDataSource> dataSourceMap = new HashMap<>();
+    private static final Map<String, ZGDBPDataSource> dataSourceMap = new HashMap<>();
 
     private ZGDBPImpl() {
 
@@ -26,9 +26,7 @@ public class ZGDBPImpl implements DataBaseInte {
         OptionDB optionDB = (OptionDB) Config.getConfig(dataOptionName);
 
 
-        ZGDBPDataSource cpds = ZGDBPDataSource.getInstance(optionDB);
-
-        return cpds;
+        return ZGDBPDataSource.getInstance(optionDB);
     }
 
 

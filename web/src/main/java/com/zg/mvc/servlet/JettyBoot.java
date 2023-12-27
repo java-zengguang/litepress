@@ -26,7 +26,7 @@ public class JettyBoot {
     public static void main(String[] args) {
 
 
-        System.setProperty("projectRootPath",CommonUtil.getModulePath(JettyBoot.class));
+        System.setProperty("projectRootPath", CommonUtil.getModulePath(JettyBoot.class));
         ScanAnnotation.scanModule(JettyBoot.class.getModule());
         JettyBoot jettyBoot = new JettyBoot();
         jettyBoot.doMain();
@@ -38,21 +38,6 @@ public class JettyBoot {
         try {
 
             //默认servlet
-/*
-            if (true) {
-                ServletContextHandler contextHandler = new ServletContextHandler();
-                contextHandler.setContextPath("/static");
-                contextHandler.setBaseResource(Resource.newResource(FileUtils.PATH+"static"));
-                DefaultServlet defaultServlet = new DefaultServlet();
-                ServletHolder defaultServletHolder = new ServletHolder("default", defaultServlet);
-                defaultServletHolder.setInitParameter("dirAllowed", "true");
-                // Use request pathInfo, don't calculate from contextPath
-                defaultServletHolder.setInitParameter("pathInfoOnly", "true");
-                contextHandler.addServlet(defaultServletHolder, "/static/*");
-                server.setHandler(contextHandler);
-
-            }
-*/
 
             if (true) {
                 ServletHandler servletHandler = new ServletHandler();

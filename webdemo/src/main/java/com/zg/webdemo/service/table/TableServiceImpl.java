@@ -47,7 +47,7 @@ public class TableServiceImpl implements TableService {
             return 0;
         }
         return 1;
-    }    private final Logger Logger = Logger.getLogger(this.getClass().getName());
+    }
 
     public List searchTableName(Table table) {
         List list = new ArrayList();
@@ -57,7 +57,7 @@ public class TableServiceImpl implements TableService {
             Logger.error(e);
         }
         return list;
-    }
+    }    private final Logger Logger = Logger.getLogger(this.getClass().getName());
 
     public List<Object> getTableDate(Table table) {
         HashMap map = new HashMap();
@@ -103,7 +103,6 @@ public class TableServiceImpl implements TableService {
 
 
     }
-
 
 
 

@@ -14,7 +14,4 @@ public abstract class BaseServiceHandler<T> extends SimpleChannelInboundHandler<
     @Override
     protected abstract void channelRead0(ChannelHandlerContext ctx, T msg) throws Exception;
 
-/*    public abstract void remove(MessgeReceivedListener messgeReceivedListener) ;
-
-    public abstract void addMessgeReceivedListener(MessgeReceivedListener messgeReceivedListener) ;*/
 }

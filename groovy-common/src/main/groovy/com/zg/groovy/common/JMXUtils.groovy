@@ -57,12 +57,12 @@ class JMXUtils {
           loadedClassCount:  ${metaClass.loadedClassCount}
           totalLoadedClassCount:  ${metaClass.totalLoadedClassCount}
           metaPropertyValues:  ${metaClass.metaPropertyValues}
-""");
+""")
 
         }
     }
 
     static void main(String[] args) {
-        getJVMRunTimeData();
+        getJVMRunTimeData()
     }
 }

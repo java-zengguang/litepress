@@ -1,8 +1,8 @@
 package com.zg.chain.common.factory;
 
-import com.zg.common.annotation.ScanAnnotation;
 import com.zg.chain.common.components.Component;
 import com.zg.chain.common.components.Components;
+import com.zg.common.annotation.ScanAnnotation;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -36,9 +36,7 @@ public class ComponentsFactory {
             }
         }
 
-        Component component = (Component) componentClass.newInstance();
-
-        return component;
+        return (Component) componentClass.newInstance();
     }
 
 

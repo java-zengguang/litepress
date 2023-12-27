@@ -36,7 +36,7 @@ import java.util.Set;
 public class ControllerAdapter {
 
     private static Set<String> keySet = null;
-    private static Map<String, Method> methodMap = new HashedMap();
+    private static final Map<String, Method> methodMap = new HashedMap();
     private static Map<String, Class> classMap = null;
     private static MVCOption mvcOption = null;
 
@@ -86,8 +86,7 @@ public class ControllerAdapter {
             return result;
         }
 
-        String viewString = (String) viewObject;
-        String[] stirngArray = viewString.split("::");
+        String[] stirngArray = viewObject.split("::");
         switch (stirngArray[0]) {
             case "forward": {
                 request.getRequestDispatcher(stirngArray[1]).forward(request, response);
@@ -130,30 +129,30 @@ public class ControllerAdapter {
         }
 
 
-        switch (((ViewObject) viewObject).operation) {
+        switch (viewObject.operation) {
             case "forward": {
-                String url = (String) ((ViewObject) viewObject).url;
+                String url = viewObject.url;
                 request.getRequestDispatcher(url).forward(request, response);
                 break;
             }
             case "redirect": {
-                String url = (String) ((ViewObject) viewObject).url;
+                String url = viewObject.url;
                 response.sendRedirect(url);
                 break;
             }
             case "staticURL": {
-                String url = (String) ((ViewObject) viewObject).url;
+                String url = viewObject.url;
                 response.sendRedirect(url);
                 break;
             }
             case "privateURL": {
-                String url = (String) ((ViewObject) viewObject).url;
+                String url = viewObject.url;
                 request.getRequestDispatcher(url).forward(request, response);
                 // response.sendRedirect(stirngArray[1]);
                 break;
             }
             case "json": {
-                String data = (String) ((ViewObject) viewObject).data;
+                String data = (String) viewObject.data;
                 String json = null;
                 try {
                     json = JsonUtils.objectToJson(data).toString();
@@ -177,12 +176,11 @@ public class ControllerAdapter {
 
     public static void resovleViewFile(File viewObject, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        File file = (File) viewObject;
         response.setContentType("application/force-download");
         response.setHeader("Content-Disposition",
-                "attachment;filename=" + file.getName());
+                "attachment;filename=" + viewObject.getName());
         OutputStream out = response.getOutputStream();
-        int size = IOUtils.inputFile(out, file);
+        int size = IOUtils.inputFile(out, viewObject);
         Logger.info(ControllerAdapter.classMap + "文件下载完成");
     }
 
@@ -200,10 +198,10 @@ public class ControllerAdapter {
     public static Object[] getParamter(HttpServletRequest request, HttpServletResponse response, Method method) throws IllegalAccessException, InstantiationException, ClassNotFoundException, IOException {
 
         int parameterCount = method.getParameterCount();
-        Parameter parameters[] = method.getParameters();
-        Type  paramGenericityTypes[] = method.getGenericParameterTypes();
-        Annotation annotationArrays[][] = method.getParameterAnnotations();
-        Object parameterValues[] = new Object[parameterCount];
+        Parameter[] parameters = method.getParameters();
+        Type[] paramGenericityTypes = method.getGenericParameterTypes();
+        Annotation[][] annotationArrays = method.getParameterAnnotations();
+        Object[] parameterValues = new Object[parameterCount];
         List<ParamEntity> paramEntityList = new ArrayList<>();
         for (int i = 0; i < parameterCount; i++) {
             Class paramentType = Class.forName(parameters[i].getType().getName());
@@ -211,7 +209,7 @@ public class ControllerAdapter {
             paramEntity.annotations = annotationArrays[i];
             paramEntity.paramName = parameters[i].getName();
             paramEntity.paramType = paramentType;
-            paramEntity.paramGenericityType=paramGenericityTypes[i];
+            paramEntity.paramGenericityType = paramGenericityTypes[i];
             paramEntity.paramObject = request.getParameter(paramEntity.paramName); //标准表单
             paramEntity.isJson = false;
             Annotation[] annotations = paramEntity.annotations;

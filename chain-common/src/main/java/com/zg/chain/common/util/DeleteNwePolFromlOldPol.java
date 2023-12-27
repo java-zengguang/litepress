@@ -43,7 +43,7 @@ public class DeleteNwePolFromlOldPol {
         return result;
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         DeleteNwePolFromlOldPol deleteNwePolFromlOldPol = new DeleteNwePolFromlOldPol();
         try {
             deleteNwePolFromlOldPol.doMain();
@@ -56,8 +56,7 @@ public class DeleteNwePolFromlOldPol {
         Set set1 = new HashSet<>(list1);
         Set set2 = new HashSet<>(list2);
         Sets.SetView intersectionSet = Sets.intersection(set1, set2);
-        List intersectionList = new ArrayList(intersectionSet);
-        return intersectionList;
+        return new ArrayList(intersectionSet);
     }
 
     private List retainAllByJDK8(List<String> newPolicy, List<String> oldPolicy) {

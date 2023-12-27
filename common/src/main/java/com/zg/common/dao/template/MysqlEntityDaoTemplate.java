@@ -70,7 +70,7 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
         metadataEntity.fieldType = configList.get(1);
         if (metadataEntity.objectValue != null) {
             if ("BigDecimal".equals(metadataEntity.fieldType)) { //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下
-                BigDecimal bigDecimal = BigDecimal.valueOf(Double.valueOf(""+metadataEntity.objectValue));
+                BigDecimal bigDecimal = BigDecimal.valueOf(Double.parseDouble("" + metadataEntity.objectValue));
                 bigDecimal = bigDecimal.setScale(metadataEntity.columnScale, RoundingMode.HALF_UP); //指定精度，避免科学计数法
                 metadataEntity.fieldValue = bigDecimal;
             }
@@ -81,7 +81,7 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 metadataEntity.columnValue = configList.get(2) + dateFormat.format(metadataEntity.objectValue) + configList.get(3);
             } else {
-                metadataEntity.columnValue = configList.get(2) + String.valueOf(metadataEntity.objectValue) + configList.get(3);
+                metadataEntity.columnValue = configList.get(2) + metadataEntity.objectValue + configList.get(3);
             }
         }
         return metadataEntity;
@@ -104,9 +104,9 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
                 }
             }
 
-            if ("BigDecimal".equals(metadataEntity.fieldType) &&  metadataEntity.objectValue instanceof BigDecimal) { //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下
+            if ("BigDecimal".equals(metadataEntity.fieldType) && metadataEntity.objectValue instanceof BigDecimal) { //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下
                 BigDecimal bigDecimal = (BigDecimal) metadataEntity.objectValue;
-                metadataEntity.columnValue=bigDecimal.toString();
+                metadataEntity.columnValue = bigDecimal.toString();
             }
             if (configList != null && configList.size() > 0) {
 
@@ -114,7 +114,7 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     metadataEntity.columnValue = configList.get(2) + dateFormat.format(metadataEntity.objectValue) + configList.get(3);
                 } else {
-                    metadataEntity.columnValue = configList.get(2) + String.valueOf(metadataEntity.objectValue) + configList.get(3);
+                    metadataEntity.columnValue = configList.get(2) + metadataEntity.objectValue + configList.get(3);
                 }
             }
         }

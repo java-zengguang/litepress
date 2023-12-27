@@ -17,16 +17,14 @@ public class LoginEntityDao extends BaseEntityDao {
     public List login(Map map) throws NoSuchFieldException, IllegalAccessException, SQLException, ClassNotFoundException {
         String sql = "select uuid from user_login where username='#{username}' and password='#{password}' ";
         sql = ModelSQLUtils.dynamicSQL(sql, map);
-        List list = selectToMapList(sql);
-        return list;
+        return selectToMapList(sql);
     }
 
     public int insertToken(Map map) throws SQLException, NoSuchFieldException, IllegalAccessException, ClassNotFoundException {
         // MongoDBUtils.insertOneMap("loginToken",new Document(map));
         String sql = "insert  into user_token (token,url,domain,rootPath,del_flag) value ('#{token}','#{url}','#{domain}','#{rootPath}','0')   ";
         sql = ModelSQLUtils.dynamicSQL(sql, map);
-        Integer x = operation(sql);
-        return x;
+        return operation(sql);
     }
 
 
@@ -34,8 +32,7 @@ public class LoginEntityDao extends BaseEntityDao {
         //List list= MongoDBUtils.getDocumentList("loginToken",map);
         String sql = "select * from user_token where  token='#{token}' and del_flag='#{del_flag}' ";
         sql = ModelSQLUtils.dynamicSQL(sql, map);
-        List list = selectToMapList(sql);
-        return list;
+        return selectToMapList(sql);
     }
 
     public int updateToken(Map map) {
@@ -84,8 +81,7 @@ public class LoginEntityDao extends BaseEntityDao {
 
     public List<Map> isLogin(String uuid, String token) throws SQLException, ClassNotFoundException {
         String sql = "select status from user_login where  uuid='" + uuid + "' and token_id='" + token + "' ";
-        List list = selectToMapList(sql);
-        return list;
+        return selectToMapList(sql);
     }
 
     public int updateLoginStatus(String uuid, String token, String key) throws SQLException, ClassNotFoundException {

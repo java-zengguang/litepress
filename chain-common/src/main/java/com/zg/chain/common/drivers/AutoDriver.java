@@ -1,7 +1,6 @@
 package com.zg.chain.common.drivers;
 
 
-
 import com.zg.chain.common.entity.BaseProcess;
 import com.zg.chain.common.entity.BaseProcessBatch;
 

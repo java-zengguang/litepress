@@ -1,6 +1,6 @@
 package com.zg.common.error;
 
-public class SysException extends RuntimeException{
+public class SysException extends RuntimeException {
     public SysException() {
     }
 

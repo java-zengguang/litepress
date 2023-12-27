@@ -21,16 +21,6 @@ import java.util.List;
 public class ProviderServiceHandler extends BaseServiceHandler<String> {
 
 
-/*    private Object[] getParamters(List<ParamterEntity> paramterEntityList) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        Object[] objects = new Object[paramterEntityList.size()];
-        for (int i = 0; i < paramterEntityList.size(); i++) {
-            ParamterEntity paramterEntity = paramterEntityList.get(i);
-            objects[i] = JsonUtils.jsonToObject(paramterEntity.paramterValue, Class.forName(paramterEntity.paramterType));
-
-        }
-        return objects;
-    }*/
-
     public Class[] getParamterTypes(List<String> paramterTypes) throws ClassNotFoundException {
         Class[] result = new Class[paramterTypes.size()];
         for (int i = 0; i < result.length; i++) {
@@ -62,13 +52,11 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
 
 
     private String serialize(Object object) {
-        String data = EntityUtils.serialize(object);
-        return data;
+        return EntityUtils.serialize(object);
     }
 
     private Object unSerialize(String str, Class classType) {
-        Object object = EntityUtils.unSerialize(str, classType);
-        return object;
+        return EntityUtils.unSerialize(str, classType);
     }
 
 
@@ -92,7 +80,7 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             Class classes = Class.forName(className);
             Method method = classes.getDeclaredMethod(methodName, paramterTypes);
             Type[] paramerTypes = method.getGenericParameterTypes();
-            Object paramters[] = getParamters(request.methodParamters, Arrays.asList(paramerTypes));
+            Object[] paramters = getParamters(request.methodParamters, Arrays.asList(paramerTypes));
             //方法体执行开始
             //zookeeper暂用
             String path = request.path;

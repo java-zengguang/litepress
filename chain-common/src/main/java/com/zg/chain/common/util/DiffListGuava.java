@@ -6,7 +6,6 @@ import com.zg.common.annotation.PrimaryKey;
 import org.tinylog.Logger;
 
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -152,16 +151,6 @@ public class DiffListGuava {
                 for (String fieldName : fieldNameList) {
                     Object fieldValueA = getFieldObj(fieldName);
                     Object fieldValueB = compareEntity.getFieldObj(fieldName);
-/*                    //特殊处理Bigdecimal 避免数字相同，位数不同导致的误判
-                    if (fieldValueA instanceof BigDecimal && fieldValueB instanceof BigDecimal) {
-                        if (((BigDecimal) fieldValueA).compareTo((BigDecimal) fieldValueB) != 0) {
-                            return false;
-                        }
-                    } else {
-                        if (!Objects.equals(fieldValueA, fieldValueB)) {
-                            return false;
-                        }
-                    }*/
                     if (!Objects.equals(fieldValueA, fieldValueB)) {
                         return false;
                     }
@@ -182,11 +171,6 @@ public class DiffListGuava {
             for (String fieldName : fieldNameList) {
                 try {
                     Object fieldValue = getFieldObj(fieldName);
-  /*                  if (fieldValue instanceof BigDecimal) {
-                        //bigdecimal 特殊处理，避免小数位数不同导致的对比偏差
-                    } else {
-                        hashCode = hashCode + Objects.hashCode(fieldValue);
-                    }*/
                     hashCode = hashCode + Objects.hashCode(fieldValue);
 
                 } catch (IllegalAccessException e) {
@@ -199,8 +183,6 @@ public class DiffListGuava {
 
 
     }
-
-
 
 
 }

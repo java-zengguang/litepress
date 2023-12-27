@@ -14,8 +14,8 @@ public class ColumnInfo {
 
     public String isNullAble;
 
-    public String   columnSize;//COLUMN_SIZE 字段长度
+    public String columnSize;//COLUMN_SIZE 字段长度
 
-    public String  decimalDigits; //DECIMAL_DIGITS 数字精度
+    public String decimalDigits; //DECIMAL_DIGITS 数字精度
     public String columnLine;  //用于创建表的字段行
 }

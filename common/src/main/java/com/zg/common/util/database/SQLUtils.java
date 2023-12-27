@@ -12,7 +12,7 @@ public class SQLUtils {
         List<String> sqlList = new ArrayList<>();
 
         if (sourceSQL.contains(";")) {
-            String str[] = sourceSQL.split(";");
+            String[] str = sourceSQL.split(";");
             for (String s : str) {
                 s = s.trim();
                 if (s != null && !"".equals(s)) {

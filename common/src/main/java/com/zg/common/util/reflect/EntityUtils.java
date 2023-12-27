@@ -21,7 +21,7 @@ public class EntityUtils {
 
     public static String dateFormat = "yyyy-MM-dd HH:mm:ss";
     public static SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-    private static OptionDB optionDB = (OptionDB) Config.getConfig("optionDB");
+    private static final OptionDB optionDB = (OptionDB) Config.getConfig("optionDB");
 
     public static void setDateFormat(String dateFormat) {
         EntityUtils.dateFormat = dateFormat;
@@ -82,7 +82,7 @@ public class EntityUtils {
 
 
     public static Object translateNull(Object o) throws IllegalArgumentException, IllegalAccessException {
-        Field fields[] = o.getClass().getFields();
+        Field[] fields = o.getClass().getFields();
         for (Field field : fields) {
             if (String.valueOf(field.get(o)).equals(""))
                 field.set(o, "null");
@@ -207,11 +207,7 @@ public class EntityUtils {
         if (type == Date.class) {
             return true;
         }
-        if (type == BigDecimal.class) {
-            return true;
-        }
-
-        return false;
+        return type == BigDecimal.class;
     }
 
 
@@ -226,10 +222,7 @@ public class EntityUtils {
     }
 
     public static boolean isMap(Class type) {
-        if ("Map".equals(type.getSimpleName())) {
-            return true;
-        }
-        return false;
+        return "Map".equals(type.getSimpleName());
     }
 
 
@@ -239,7 +232,7 @@ public class EntityUtils {
 
             if (term.contains(".")) {
 
-                String s[] = term.split("\\.");
+                String[] s = term.split("\\.");
 
                 Field f = o1.getClass().getField(s[0].trim());
                 fruit = toCompare(f.get(o1), f.get(o2), s[1]);
@@ -334,7 +327,7 @@ public class EntityUtils {
 
             if (term.contains(".")) {
 
-                String s[] = term.split("\\.");
+                String[] s = term.split("\\.");
                 Field f = o1.getClass().getField(s[0].trim());
                 Map map = new HashMap();
                 map.put(s[1], termMap.get(term));
@@ -350,7 +343,7 @@ public class EntityUtils {
 
 
                 if (type == int.class) {
-                    fruit = field.getInt(o1) - Integer.valueOf((String) termMap.get(term));
+                    fruit = field.getInt(o1) - Integer.parseInt((String) termMap.get(term));
                     if (fruit != 0) {
                         return fruit;
                     }
@@ -490,10 +483,10 @@ public class EntityUtils {
             for (Field field : fields) {
                 PrimaryKey primaryKey = field.getAnnotation(PrimaryKey.class);
                 if (primaryKey != null) {
-                    Object value=field.get(obj);
-                    if(value instanceof String){
+                    Object value = field.get(obj);
+                    if (value instanceof String) {
                         pkHashCode = pkHashCode + value;
-                    }else{
+                    } else {
                         pkHashCode = pkHashCode + Objects.hashCode(value);
                     }
 
@@ -654,7 +647,7 @@ public class EntityUtils {
                 if (field.get(object) == null || field.get(object).equals("")) {
                     value = "";
                 } else {
-                    value = "'" + String.valueOf(field.get(object)) + "'";
+                    value = "'" + field.get(object) + "'";
                 }
                 break;
             }
@@ -663,7 +656,7 @@ public class EntityUtils {
                 if (field.get(object) == null || field.get(object).equals("")) {
                     value = "";
                 } else {
-                    value = "'" + String.valueOf(field.get(object)) + "'";
+                    value = "'" + field.get(object) + "'";
                 }
                 break;
             }
@@ -672,7 +665,7 @@ public class EntityUtils {
                 if (field.get(object) == null) {
                     value = "";
                 } else {
-                    value = "'" + String.valueOf(field.get(object)) + "'";
+                    value = "'" + field.get(object) + "'";
                 }
                 break;
             }
@@ -720,21 +713,21 @@ public class EntityUtils {
         }
         switch (fieldType) {
             case "int": {
-                field.set(object, (Integer) object);
+                field.set(object, object);
                 break;
             }
             case "varchar": {
-                field.set(object, (String) object);
+                field.set(object, object);
                 break;
             }
 
             case "string": {
-                field.set(object, (String) value);
+                field.set(object, value);
                 break;
             }
 
             case "text": {
-                field.set(object, (String) value);
+                field.set(object, value);
                 break;
             }
 
@@ -763,7 +756,7 @@ public class EntityUtils {
 
 
             case "tinyint": {
-                field.set(object, (Integer) object);
+                field.set(object, object);
                 break;
             }
 
@@ -795,21 +788,21 @@ public class EntityUtils {
         }
         switch (fieldType) {
             case "int": {
-                field.set(object, (Integer) object);
+                field.set(object, object);
                 break;
             }
             case "varchar": {
-                field.set(object, (String) object);
+                field.set(object, object);
                 break;
             }
 
             case "string": {
-                field.set(object, (String) value);
+                field.set(object, value);
                 break;
             }
 
             case "text": {
-                field.set(object, (String) value);
+                field.set(object, value);
                 break;
             }
 
@@ -837,11 +830,11 @@ public class EntityUtils {
             }
 
             case "tinyint": {
-                field.set(object, (Integer) object);
+                field.set(object, object);
                 break;
             }
             case "char": {
-                field.set(object, (String) value);
+                field.set(object, value);
                 break;
             }
 
@@ -865,7 +858,7 @@ public class EntityUtils {
 
 
     public static void setFieldObject(Field field, Object object, Object value) throws IllegalAccessException, ParseException {
-        FieldTypeMode typeMode = (FieldTypeMode) object.getClass().getAnnotation(FieldTypeMode.class);
+        FieldTypeMode typeMode = object.getClass().getAnnotation(FieldTypeMode.class);
         if ("database".equals(typeMode.typeMode())) {
             setFieldSql(field, object, value);
         } else {

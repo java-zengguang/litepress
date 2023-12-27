@@ -9,8 +9,8 @@ import java.net.Socket;
 
 public class ReceiveFile implements Runnable {
 
-    private int port;
-    private File file;
+    private final int port;
+    private final File file;
 
     public ReceiveFile(int port, File file) {
         this.port = port;

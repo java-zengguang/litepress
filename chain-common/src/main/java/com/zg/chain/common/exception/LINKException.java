@@ -3,8 +3,8 @@ package com.zg.chain.common.exception;
 import com.zg.chain.common.components.BaseComponent;
 
 public class LINKException extends BaseCustomException {
-    private String message;
-    private Class<? extends BaseComponent> comparableClass;
+    private final String message;
+    private final Class<? extends BaseComponent> comparableClass;
 
     public LINKException(Class<? extends BaseComponent> comparableClass, String message) {
         super(2, message);

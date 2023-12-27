@@ -1,12 +1,12 @@
- module chain.common {
+module chain.common {
 
-    requires  common;
-    requires  org.tinylog.api;
-    requires  java.sql;
-    requires  guava;
-    requires  org.apache.groovy;
+    requires common;
+    requires org.tinylog.api;
+    requires java.sql;
+    requires guava;
+    requires org.apache.groovy;
 
-     exports com.zg.chain.common.factory;
+    exports com.zg.chain.common.factory;
     exports com.zg.chain.common;
     exports com.zg.chain.common.drivers;
     exports com.zg.chain.common.components;

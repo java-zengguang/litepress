@@ -12,14 +12,14 @@ public class SimpleControllerAdapter extends BaseControllerAdapter {
     private static ControllerAdapterInte controllerAdapterInte;
 
 
+    private SimpleControllerAdapter() {
+    }
+
     public synchronized static ControllerAdapterInte getInstance() {
         if (controllerAdapterInte == null) {
             controllerAdapterInte = new SimpleControllerAdapter();
         }
         return controllerAdapterInte;
-    }
-
-    private SimpleControllerAdapter() {
     }
 
     @Override

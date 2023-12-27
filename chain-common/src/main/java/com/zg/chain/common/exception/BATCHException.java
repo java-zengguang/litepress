@@ -4,7 +4,7 @@ import com.zg.chain.common.components.BaseBatchComponent;
 
 public class BATCHException extends BaseCustomException {
 
-    private Class<? extends BaseBatchComponent> comparableClass;
+    private final Class<? extends BaseBatchComponent> comparableClass;
 
     public BATCHException(Class<? extends BaseBatchComponent> comparableClass, String message) {
         super(1, message);

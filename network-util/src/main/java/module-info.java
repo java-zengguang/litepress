@@ -1,7 +1,7 @@
 module network.util {
-    requires  io.netty.all;
-    requires  java.logging;
-    requires  common;
+    requires io.netty.all;
+    requires java.logging;
+    requires common;
     exports com.zg.network.common.service;
     exports com.zg.network.common;
     exports com.zg.network.common.client;
@@ -9,5 +9,5 @@ module network.util {
     exports com.zg.network.common.fileservcie;
     exports com.zg.network.common.heartbeat;
 
-    requires  org.tinylog.api;
+    requires org.tinylog.api;
 }

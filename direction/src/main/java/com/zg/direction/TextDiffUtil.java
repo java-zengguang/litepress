@@ -12,7 +12,7 @@ import java.util.List;
 
 public class TextDiffUtil {
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String[] args) throws IOException {
         //原始文件
         List<String> original = Files.readAllLines(new File("D:\\Documents\\配置基线\\测试\\DevOps\\p380-nonvehicle-test\\nonveh-policy-int\\nonveh-genpolicy-int\\application.properties").toPath());
         //对比文件

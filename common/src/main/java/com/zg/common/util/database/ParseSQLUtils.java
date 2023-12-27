@@ -125,7 +125,7 @@ public class ParseSQLUtils {
     }
 
 
-    public static void main(String args[]) throws JSQLParserException {
+    public static void main(String[] args) throws JSQLParserException {
         String sql = "select (select *from prptmain where policyno=a.policyno),a.*from prpcmain a right join xx on eee=xxxd where policyno='123' ";
         List<String> tableNameList = parseSelectMainTable(sql);
         tableNameList.forEach(Logger::info);

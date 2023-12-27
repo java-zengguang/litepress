@@ -95,7 +95,7 @@ public class PageEntity extends MainModel {
         int maxNum_new;
         if (this.getTotalPageSize() <= maxDispalyCount) {
             for (maxNum_new = 1; maxNum_new <= this.getTotalPageSize(); ++maxNum_new) {
-                returnList.add(Integer.valueOf(maxNum_new));
+                returnList.add(maxNum_new);
             }
 
             return returnList;
@@ -106,15 +106,15 @@ public class PageEntity extends MainModel {
             int i;
             for (i = beforeCount; i > 0; --i) {
                 if (this.currentPage > i) {
-                    returnList.add(Integer.valueOf(this.currentPage - i));
+                    returnList.add(this.currentPage - i);
                     ++discnt;
                 }
             }
 
-            returnList.add(Integer.valueOf(this.currentPage));
+            returnList.add(this.currentPage);
 
             for (i = 1; i <= maxNum_new && this.currentPage + i <= this.getTotalPageSize() && discnt < maxDispalyCount; ++i) {
-                returnList.add(Integer.valueOf(this.currentPage + i));
+                returnList.add(this.currentPage + i);
                 ++discnt;
             }
 

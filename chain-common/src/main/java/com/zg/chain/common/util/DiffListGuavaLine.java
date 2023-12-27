@@ -6,7 +6,6 @@ import com.zg.common.annotation.PrimaryKey;
 import org.tinylog.Logger;
 
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -130,18 +129,6 @@ public class DiffListGuavaLine {
             CompareEntity compareEntity = (CompareEntity) o;
             try {
                 for (String fieldName : fieldNameList) {
-/*                    Object fieldValueA = getFieldObj(fieldName);
-                    Object fieldValueB = compareEntity.getFieldObj(fieldName);
-                    //特殊处理Bigdecimal 避免数字相同，位数不同导致的误判
-                    if (fieldValueA instanceof BigDecimal && fieldValueB instanceof BigDecimal) {
-                        if (((BigDecimal) fieldValueA).compareTo((BigDecimal) fieldValueB) != 0) {
-                            return false;
-                        }
-                    } else {
-                        if (!Objects.equals(fieldValueA, fieldValueB)) {
-                            return false;
-                        }
-                    }*/
                     if (!Objects.equals(getFieldObj(fieldName), compareEntity.getFieldObj(fieldName))) {
                         return false;
                     }
@@ -160,12 +147,6 @@ public class DiffListGuavaLine {
 
             for (String fieldName : fieldNameList) {
                 try {
-/*                    Object fieldValue = getFieldObj(fieldName);
-                    if (fieldValue instanceof BigDecimal) {
-                        //bigdecimal 特殊处理，避免小数位数不同导致的对比偏差
-                    } else {
-                        hashCode = hashCode + Objects.hashCode(fieldValue);
-                    }*/
                     hashCode = hashCode + Objects.hashCode(getFieldObj(fieldName));
                 } catch (IllegalAccessException e) {
                     Logger.error(e);
@@ -182,9 +163,7 @@ public class DiffListGuavaLine {
     class PKComparator implements Comparator {
         @Override
         public int compare(Object o1, Object o2) {
-            Object obj1 = o1;
-            Object obj2 = o2;
-            Field[] fields = obj1.getClass().getFields();
+            Field[] fields = o1.getClass().getFields();
             List<String> fieldNameList = new ArrayList<>();
             for (Field field : fields) {
                 PrimaryKey primaryKey = field.getAnnotation(PrimaryKey.class);
@@ -196,8 +175,8 @@ public class DiffListGuavaLine {
             int hashCode2 = 0;
             for (String fieldName : fieldNameList) {
                 try {
-                    hashCode1 = hashCode1 + Objects.hashCode(getFieldObj(fieldName, obj1));
-                    hashCode2 = hashCode2 + Objects.hashCode(getFieldObj(fieldName, obj2));
+                    hashCode1 = hashCode1 + Objects.hashCode(getFieldObj(fieldName, o1));
+                    hashCode2 = hashCode2 + Objects.hashCode(getFieldObj(fieldName, o2));
                 } catch (IllegalAccessException e) {
                     Logger.error(e);
                 }

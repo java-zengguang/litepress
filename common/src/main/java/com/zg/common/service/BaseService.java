@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class BaseService {
-    private static ThreadLocal<Map<String, Connection>> threadLocal = new ThreadLocal();
+    private static final ThreadLocal<Map<String, Connection>> threadLocal = new ThreadLocal();
 
 
     public synchronized Connection getConnection(String dataSource) throws SQLException, ClassNotFoundException {
@@ -50,10 +50,10 @@ public class BaseService {
     }
 
 
-    public synchronized  void release() throws SQLException, ClassNotFoundException {
+    public synchronized void release() throws SQLException, ClassNotFoundException {
         Map<String, Connection> dataSourceMap = threadLocal.get();
 
-        if(dataSourceMap!=null) {
+        if (dataSourceMap != null) {
             List<Map.Entry<String, Connection>> removeList = new ArrayList<>();
 
             for (Map.Entry<String, Connection> entry : dataSourceMap.entrySet()) {
@@ -68,7 +68,7 @@ public class BaseService {
     }
 
 
-    public synchronized   void commit() throws SQLException {
+    public synchronized void commit() throws SQLException {
         Map<String, Connection> dataSourceMap = threadLocal.get();
         if (dataSourceMap != null) {
             List<Connection> connectionList = dataSourceMap.values().stream().toList();

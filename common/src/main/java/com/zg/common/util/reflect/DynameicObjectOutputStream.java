@@ -22,7 +22,7 @@ public class DynameicObjectOutputStream extends ObjectInputStream {
         primClasses.put("void", void.class);
     }
 
-    private Class modelClass;
+    private final Class modelClass;
 
     public DynameicObjectOutputStream(InputStream in, Class modelClass) throws IOException {
         super(in);
@@ -36,7 +36,7 @@ public class DynameicObjectOutputStream extends ObjectInputStream {
             ClassLoader loader = modelClass.getClassLoader();
             return Class.forName(name, false, loader);
         } catch (ClassNotFoundException ex) {
-            Class cl = (Class) primClasses.get(name);
+            Class cl = primClasses.get(name);
             if (cl != null) {
                 return cl;
             } else {

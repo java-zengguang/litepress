@@ -21,7 +21,7 @@ public class WebLoginFilter implements Filter {
 
     LoginService loginService = new LoginService();
 
-    private SSOOpthion ssoOpthion = (SSOOpthion) Config.getConfig("SSOOpthion");
+    private final SSOOpthion ssoOpthion = (SSOOpthion) Config.getConfig("SSOOpthion");
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -63,7 +63,7 @@ public class WebLoginFilter implements Filter {
     /*       }*/
     private Map<String, String> getCookies(HttpServletRequest request) throws IOException {
         Map<String, String> resultMap = new HashMap<>();
-        Cookie readCookies[] = (request).getCookies();
+        Cookie[] readCookies = (request).getCookies();
 
         if (readCookies != null) {
             for (Cookie cookie : readCookies) {
@@ -89,8 +89,7 @@ public class WebLoginFilter implements Filter {
 
         String url = (request).getRequestURL().toString();
 
-        String newToken = loginService.registToken(url, ssoOpthion.domain, ssoOpthion.rootPath);
-        return newToken;
+        return loginService.registToken(url, ssoOpthion.domain, ssoOpthion.rootPath);
     }
 
     private void toLogin(HttpServletResponse response, String token) throws IOException {

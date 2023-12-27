@@ -17,7 +17,7 @@ import java.lang.reflect.Field;
  * Created by Administrator on 2019/2/14 0014.
  */
 public class ChangeURIFilter implements Filter {
-    private MVCOption mvcOption = (MVCOption) Config.getConfig("MVCOption");
+    private final MVCOption mvcOption = (MVCOption) Config.getConfig("MVCOption");
 
 
     @Override

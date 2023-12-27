@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -41,7 +42,7 @@ public class CommonUtil {
             path = classes.getProtectionDomain().getCodeSource().getLocation().getPath();
             File file = new File(path);
             path = file.getPath();
-            path = java.net.URLDecoder.decode(path, "UTF-8");
+            path = java.net.URLDecoder.decode(path, StandardCharsets.UTF_8);
             path = path + File.separator;
             Logger.info("---" + path);
         } catch (Exception e) {
@@ -61,7 +62,7 @@ public class CommonUtil {
             if (path.contains(".jar")) {
                 path = file.getParent();
             }
-            path = URLDecoder.decode(path, "UTF-8");
+            path = URLDecoder.decode(path, StandardCharsets.UTF_8);
             path = path + File.separator;
             Logger.info("---" + path);
         } catch (Exception var3) {
@@ -101,16 +102,14 @@ public class CommonUtil {
         // Logger.info("配置文件路径："+FileUtils.PATH + fileName);
         String path = getRootPath();
         Document doc = reader.read(new File(path + fileName));
-        Element root = doc.getRootElement();
-        return root;
+        return doc.getRootElement();
     }
 
     public static Element getRootElement(String rootPath, String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
         // Logger.info("配置文件路径："+FileUtils.PATH + fileName);
         Document doc = reader.read(new File(rootPath + fileName));
-        Element root = doc.getRootElement();
-        return root;
+        return doc.getRootElement();
     }
 
     public static List getClassFormPackage(String packageName, boolean isAnnotation, Class annotation) throws ClassNotFoundException {
@@ -162,7 +161,7 @@ public class CommonUtil {
                 if ("file".equals(protocol)) {
                     // System.err.println("file类型的扫描");
                     // 获取包的物理路径
-                    String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
+                    String filePath = URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8);
                     // 以文件的方式扫描整个包下的文件 并添加到集合中
                     findAndAddClassesInPackageByFile(packageName, filePath, recursive, classes);
                 } else if ("jar".equals(protocol)) {
@@ -243,12 +242,8 @@ public class CommonUtil {
             return;
         }
         // 如果存在 就获取包下的所有文件 包括目录
-        File[] dirfiles = dir.listFiles(new FileFilter() {
-            // 自定义过滤规则 如果可以循环(包含子目录) 或则是以.class结尾的文件(编译好的java类文件)
-            public boolean accept(File file) {
-                return (recursive && file.isDirectory()) || (file.getName().endsWith(".class"));
-            }
-        });
+        // 自定义过滤规则 如果可以循环(包含子目录) 或则是以.class结尾的文件(编译好的java类文件)
+        File[] dirfiles = dir.listFiles(file -> (recursive && file.isDirectory()) || (file.getName().endsWith(".class")));
         // 循环所有文件
         for (File file : dirfiles) {
             // 如果是目录 则继续扫描

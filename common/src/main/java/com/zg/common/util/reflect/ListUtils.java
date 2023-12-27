@@ -23,7 +23,7 @@ public class ListUtils {
 
     private static String[] getValues(String valueS) {
 
-        String sub[] = valueS.split(":");
+        String[] sub = valueS.split(":");
         for (int i = 0; i < sub.length; i++) {
             sub[i] = sub[i].trim();
         }
@@ -33,7 +33,7 @@ public class ListUtils {
 
     public static boolean updataList(String valueS, int index, Object model, List modelList) throws IllegalArgumentException, IllegalAccessException, InstantiationException {
         String[] values = getValues(valueS);
-        Field fields[] = model.getClass().getFields();
+        Field[] fields = model.getClass().getFields();
         if (values.length == fields.length) {
             int i = 0;
             model = model.getClass().newInstance();
@@ -131,10 +131,9 @@ public class ListUtils {
             Logger.error(e);
 
         }
-        Iterator it = num_list.iterator();
-        while (it.hasNext()) {
+        for (Object o : num_list) {
 
-            sub_list.add(modelList.get((int) it.next()));
+            sub_list.add(modelList.get((int) o));
         }
         return sub_list;
     }

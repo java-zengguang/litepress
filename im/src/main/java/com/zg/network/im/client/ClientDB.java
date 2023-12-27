@@ -36,13 +36,11 @@ public class ClientDB {
 
     public List select(String key, Class classes, String... terms) {
         List list = map.get(key);
-        List resultList = ListUtils.findModel(list, classes, terms);
-        return resultList;
+        return ListUtils.findModel(list, classes, terms);
     }
 
     public List select(String key) {
-        List list = map.get(key);
-        return list;
+        return map.get(key);
     }
 
     public Object selectOne(String key) {

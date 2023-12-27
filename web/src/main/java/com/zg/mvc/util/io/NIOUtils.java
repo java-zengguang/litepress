@@ -11,7 +11,7 @@ import java.nio.channels.FileChannel;
  */
 public class NIOUtils {
 
-    private static int size = 1024;
+    private static final int size = 1024;
 
     //使用nio读取raf
     public static int newReadFile(File file) throws IOException {
@@ -84,7 +84,7 @@ public class NIOUtils {
     }
 
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String[] args) throws IOException {
         File file = new File("F:\\1.txt");
         //newReadFile(file);
         newWriterFile(file);

@@ -11,7 +11,7 @@ import org.tinylog.Logger;
 import java.io.IOException;
 
 public class RenewalPostIntercept implements PostControllerIntercept {
-    private static MVCOption mvcOption = (MVCOption) Config.getConfig("MVCOption");
+    private static final MVCOption mvcOption = (MVCOption) Config.getConfig("MVCOption");
 
 
     @Override

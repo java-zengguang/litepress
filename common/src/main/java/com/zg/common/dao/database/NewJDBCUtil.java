@@ -12,7 +12,10 @@ import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
 import com.zg.common.util.database.ParseSQLUtils;
-import com.zg.common.util.reflect.*;
+import com.zg.common.util.reflect.DynameicSerializer;
+import com.zg.common.util.reflect.DynamicClass;
+import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.ModelSQLUtils;
 import net.sf.jsqlparser.JSQLParserException;
 import org.tinylog.Logger;
 
@@ -26,13 +29,12 @@ import java.util.*;
 
 
 public class NewJDBCUtil {
-    private String dataSource;
+    private final String dataSource;
 
 
     public NewJDBCUtil(String dataSource) {
         this.dataSource = dataSource;
     }
-
 
 
     //插入model_list ，未提交，未初始化连接
@@ -60,7 +62,7 @@ public class NewJDBCUtil {
     private int insertTable(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         List list = new ArrayList();
         list.add(model);
-        int results[] = insertTables(list, model.getClass());
+        int[] results = insertTables(list, model.getClass());
         int result = 0;
         if (results != null && results.length > 0) {
             result = results[0];
@@ -84,7 +86,7 @@ public class NewJDBCUtil {
     //执行批操作
     private int[] batchSql(List<String> sqlList) throws SQLException, ClassNotFoundException {
 
-        int result[] = new int[sqlList.size()];
+        int[] result = new int[sqlList.size()];
         for (int i = 0; i < sqlList.size(); i++) {
             String sql = sqlList.get(i);
             result[i] = operation(sql);
@@ -111,7 +113,7 @@ public class NewJDBCUtil {
             sql = sql.replace(";", "");
         }
 
-        int i[] = null;
+        int[] i = null;
         Statement stmt;
         Connection conn = NewDBPUtils.getConnection(dataSource);
 
@@ -171,7 +173,7 @@ public class NewJDBCUtil {
         }
 
         //合并主表
-        StringBuffer tableNameBuffer = new StringBuffer();
+        StringBuilder tableNameBuffer = new StringBuilder();
         tableNameList.forEach(tableNameBuffer::append);
         //获取数据
         List list = new ArrayList();
@@ -319,7 +321,7 @@ public class NewJDBCUtil {
             List<Map> list = selectToMapList(sql);
             Map<String, BigInteger> map = list.get(0);
             Logger.info("id=" + map.get("id").intValue());
-            Integer id = Integer.valueOf(map.get("id").intValue());
+            Integer id = map.get("id").intValue();
             idField.set(model, id);
         }
         return model;
@@ -391,13 +393,6 @@ public class NewJDBCUtil {
 
 
     //查询
-/*    public List select(String sql, Class modelClass) throws Exception {
-        List list = selectToMapList(sql);
-        // Map<String, String> tableInfoMap = tableInfo(sql);
-        List model_list = SerializeObjectUtils.setMember(list, modelClass);
-        return model_list;
-
-    }*/
 
     public List select(String sql, Class modelClass) throws Exception {
         List<List<MetadataEntity>> templeList = null;
@@ -676,7 +671,7 @@ public class NewJDBCUtil {
 
             OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
             EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
-            Long count = Long.valueOf(0);
+            Long count = 0L;
             Output output = null;
             while (rs.next()) {
                 if (count % fileSize == 0) {

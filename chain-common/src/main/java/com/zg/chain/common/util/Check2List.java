@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class Check2List {
-    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     public static List<Map> mergeList(List list1, List list2) throws IllegalAccessException {
         List<Map> list = new ArrayList<>();
@@ -43,7 +43,7 @@ public class Check2List {
 
     }
 
-    public static void main(String args[]) throws IllegalAccessException, NoSuchFieldException {
+    public static void main(String[] args) throws IllegalAccessException, NoSuchFieldException {
     }
 
     public static class WhereOperation {

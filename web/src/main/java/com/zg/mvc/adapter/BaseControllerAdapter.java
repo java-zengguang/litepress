@@ -30,14 +30,12 @@ import java.util.*;
 
 public abstract class BaseControllerAdapter implements ControllerAdapterInte {
 
+    public static List<PostControllerIntercept> postControllerIntercepts = new ArrayList<>();
+    public static List<PreControllerIntercept> preControllerIntercepts = new ArrayList<>();
     private static Set<String> keySet = null;
-    private static Map<String, Method> methodMap = new HashedMap();
+    private static final Map<String, Method> methodMap = new HashedMap();
     private static Map<String, Class> classMap = null;
     private static MVCOption mvcOption = null;
-
-    public static List<PostControllerIntercept> postControllerIntercepts = new ArrayList<>();
-
-    public static List<PreControllerIntercept> preControllerIntercepts = new ArrayList<>();
 
 
     public BaseControllerAdapter() {
@@ -74,10 +72,10 @@ public abstract class BaseControllerAdapter implements ControllerAdapterInte {
     public Object[] getParamter(HttpServletRequest request, HttpServletResponse response, Method method) throws IllegalAccessException, InstantiationException, ClassNotFoundException, IOException {
 
         int parameterCount = method.getParameterCount();
-        Parameter parameters[] = method.getParameters();
-        Type paramGenericityTypes[] = method.getGenericParameterTypes();
-        Annotation annotationArrays[][] = method.getParameterAnnotations();
-        Object parameterValues[] = new Object[parameterCount];
+        Parameter[] parameters = method.getParameters();
+        Type[] paramGenericityTypes = method.getGenericParameterTypes();
+        Annotation[][] annotationArrays = method.getParameterAnnotations();
+        Object[] parameterValues = new Object[parameterCount];
         List<ParamEntity> paramEntityList = new ArrayList<>();
         for (int i = 0; i < parameterCount; i++) {
             Class paramentType = Class.forName(parameters[i].getType().getName());

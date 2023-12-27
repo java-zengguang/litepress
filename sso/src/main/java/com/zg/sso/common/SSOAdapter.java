@@ -16,8 +16,8 @@ import java.util.Map;
 
 public class SSOAdapter {
     private static SSOAdapter ssoAdapter;
-    private SSOOpthion ssoOpthion;
-    private LoginInte loginService;
+    private final SSOOpthion ssoOpthion;
+    private final LoginInte loginService;
 
     private SSOAdapter(SSOOpthion ssoOpthion, LoginInte loginInte) {
         this.loginService = loginInte;
@@ -60,7 +60,7 @@ public class SSOAdapter {
 
     private Map<String, String> getCookies(HttpServletRequest request) throws IOException {
         Map<String, String> resultMap = new HashMap<>();
-        Cookie readCookies[] = (request).getCookies();
+        Cookie[] readCookies = (request).getCookies();
 
         if (readCookies != null) {
             for (Cookie cookie : readCookies) {
@@ -88,8 +88,7 @@ public class SSOAdapter {
         url = URLUtils.getURLEncoderString(url);
         Logger.info(url);
 
-        String newToken = loginService.registToken(url, ssoOpthion.domain, ssoOpthion.rootPath);
-        return newToken;
+        return loginService.registToken(url, ssoOpthion.domain, ssoOpthion.rootPath);
     }
 
     private void toLogin(HttpServletResponse response, String token) throws IOException {

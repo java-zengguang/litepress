@@ -39,7 +39,7 @@ public class TableMapper extends BaseDao {
         return operation(sql);
 
 
-    }    private final Logger Logger = Logger.getLogger(this.getClass().getName());
+    }
 
     public List getTableDataPage(Map map, PageEntity page) throws Exception {
         String sql = null;
@@ -50,7 +50,7 @@ public class TableMapper extends BaseDao {
         sql = TableUtil.addPageFromSql(sql, page);
         List list = selectToMapList(sql);
         return list;
-    }
+    }    private final Logger Logger = Logger.getLogger(this.getClass().getName());
 
     public List<Object> getTableData(HashMap map) throws NoSuchFieldException, IllegalAccessException, SQLException, ClassNotFoundException {
         String sql = null;
@@ -61,6 +61,8 @@ public class TableMapper extends BaseDao {
         List list = selectToMapList(sql);
         return list;
     }
+
+
 
 
 }

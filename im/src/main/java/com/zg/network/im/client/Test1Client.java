@@ -9,7 +9,7 @@ import java.util.Scanner;
  * Created by Administrator on 2019/2/22 0022.
  */
 public class Test1Client {
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
 
         ResolveCommand resolveCommand = new ResolveCommand();

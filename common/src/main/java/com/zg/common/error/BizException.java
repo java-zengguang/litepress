@@ -1,6 +1,6 @@
 package com.zg.common.error;
 
-public class BizException extends RuntimeException  {
+public class BizException extends RuntimeException {
     public BizException() {
     }
 

@@ -22,7 +22,7 @@ public class Config {
 
     public static CountDownLatch count = new CountDownLatch(ERROR_REPEAT);
 
-    private static synchronized void createConfigMap(String array[]) {
+    private static synchronized void createConfigMap(String[] array) {
         for (String beanName : array) {
             Object object = BeanFactory.createBean(beanName);
             if (object != null) {
@@ -37,7 +37,7 @@ public class Config {
             if (object == null) {
                 count.countDown();
                 Logger.info("初始化" + beanName);
-                String array[] = {beanName};
+                String[] array = {beanName};
                 createConfigMap(array);
                 object = getConfig(beanName);
             } else {

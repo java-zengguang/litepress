@@ -8,7 +8,7 @@ import java.lang.reflect.Proxy;
 
 public class TestCustmer {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         Class[] classes = new Class[1];
         classes[0] = LoginServiceInte.class;
         LoginServiceInte loginServiceInte = (LoginServiceInte) Proxy.newProxyInstance(LoginServiceInte.class.getClassLoader(), classes, new ConsumerHandler("/login"));

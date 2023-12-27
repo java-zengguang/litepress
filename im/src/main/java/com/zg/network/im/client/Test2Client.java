@@ -10,7 +10,7 @@ import java.util.Scanner;
  */
 public class Test2Client {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         ResolveCommand resolveCommand = new ResolveCommand();
         ZGMPBean request = new ZGMPBean("REQUEST");
