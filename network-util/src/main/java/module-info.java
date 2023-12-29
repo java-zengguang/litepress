@@ -8,6 +8,9 @@ module network.util {
     exports com.zg.network.bean;
     exports com.zg.network.common.fileservcie;
     exports com.zg.network.common.heartbeat;
+    exports com.zg.network.common.cache;
+    exports com.zg.network.entity;
 
     requires org.tinylog.api;
+    requires guava;
 }

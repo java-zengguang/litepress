@@ -1,9 +1,9 @@
 package com.zg.direction.entity;
 
-import com.zg.common.bean.entity.MainModel;
 
-public class DTPResponse extends MainModel {
-    public String id;
+import com.zg.network.entity.BaseTranslationProtocol;
+
+public class DTPResponse extends BaseTranslationProtocol {
     public boolean success;
     public String error;
     public Object resultData;   //返回值

@@ -2,6 +2,7 @@ package com.zg.network.common.service;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -16,10 +17,7 @@ import io.netty.handler.logging.LoggingHandler;
 import org.tinylog.Logger;
 
 
-/**
- * Created by Administrator on 2019/2/22 0022.
- */
-public abstract class BaseService implements Runnable {
+public  class BaseKeepService{
 
     private final StringDecoder DECODER = new StringDecoder();
     private final StringEncoder ENCODER = new StringEncoder();
@@ -27,17 +25,17 @@ public abstract class BaseService implements Runnable {
     private NioEventLoopGroup bossGroup = null;
     private NioEventLoopGroup workerGroup = null;
     private final int port;
-    private final BaseServiceHandler baseServiceHandler;
+    private final BaseKeepServiceHandler baseServiceHandler;
 
-    public BaseService(BaseServiceHandler<String> baseServiceHandler, int port) {
 
+    public BaseKeepService(BaseKeepServiceHandler baseServiceHandler, int port) {
         this.baseServiceHandler = baseServiceHandler;
         this.port = port;
+
     }
 
-    public abstract void startHeartbeat();
-
-    public void getConnectin() {
+    public void doMain(){
+        Logger.info("创建netty服务器");
 
         //boss线程监听端口，worker线程负责数据读写
         bossGroup = new NioEventLoopGroup(threadSize);
@@ -69,9 +67,6 @@ public abstract class BaseService implements Runnable {
                 }
             });
 
-
-            startHeartbeat();
-
             //绑定端口
             // Bind and start to accept incoming connections.
             ChannelFuture f = bootstrap.bind(port).sync();
@@ -92,14 +87,7 @@ public abstract class BaseService implements Runnable {
     }
 
 
-    @Override
-    public void run() {
-        if (port != 0) {
-            getConnectin();
-        } else {
-            Logger.info("没有定义端口");
-        }
-    }
+
 
 
 }

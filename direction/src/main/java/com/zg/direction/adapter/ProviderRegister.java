@@ -8,15 +8,14 @@ import com.zg.common.util.reflect.JsonUtils;
 import com.zg.direction.annotation.ProviderResovleAnnotation;
 import com.zg.direction.entity.ProviderConfig;
 import com.zg.direction.entity.ProviderEntity;
-import com.zg.direction.server.ProviderService;
 import com.zg.direction.server.ProviderServiceHandler;
+import com.zg.network.common.client.BaseKeepClient;
+import com.zg.network.common.service.BaseKeepService;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.api.UnhandledErrorListener;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.tinylog.Logger;
@@ -24,12 +23,14 @@ import org.tinylog.Logger;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 
 public class ProviderRegister {
 
     public static final Table<String, String, ProviderEntity> providerTable = HashBasedTable.create();
     private static ProviderRegister providerRegister = null;  //单例
     private static ProviderConfig providerConfig; //初始化配置
+
     private static Thread thread; //服务守护线程
     private static CuratorFramework zkClient = null;
 
@@ -95,6 +96,8 @@ public class ProviderRegister {
                 Logger.info("删除！" + childData.getPath());
                 ProviderEntity provider = (ProviderEntity) JsonUtils.jsonToObject(new String(childData.getData()), ProviderEntity.class);
                 providerTable.remove(provider.providerName, provider.path);
+                BaseKeepClient.close(provider.host, provider.port);
+
             }
         });
 
@@ -114,9 +117,15 @@ public class ProviderRegister {
 
     public void doServer() {
         //开启服务
-        ProviderService providerService = new ProviderService(new ProviderServiceHandler());
+
         if (thread == null) {
-            thread = new Thread(providerService);
+            thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    BaseKeepService providerService = new BaseKeepService(new ProviderServiceHandler(),providerConfig.DTPPort);
+                    providerService.doMain();
+                }
+            });
             thread.start();
         }
         Logger.info("启动服务：" + thread.getId() + "：" + thread.getState());

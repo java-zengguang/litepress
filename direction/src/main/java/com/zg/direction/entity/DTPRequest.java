@@ -1,12 +1,12 @@
 package com.zg.direction.entity;
 
 import com.zg.common.bean.entity.MainModel;
+import com.zg.network.entity.BaseTranslationProtocol;
 
 import java.util.List;
 import java.util.Map;
 
-public class DTPRequest extends MainModel {
-    public String id;
+public class DTPRequest extends BaseTranslationProtocol {
 
     public String providerName;
     public String path; //zookeeper对应path，服务端还要用

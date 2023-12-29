@@ -1,4 +1,4 @@
-package com.zg.direction;
+package com.zg.direction.test;
 
 import com.github.difflib.DiffUtils;
 import com.github.difflib.patch.AbstractDelta;

@@ -13,6 +13,7 @@ module common {
     exports com.zg.common.service;
     exports com.zg.common.util.database;
     exports com.zg.common.error;
+    exports com.zg.common.util.lock;
 
 
     requires org.apache.poi.poi;

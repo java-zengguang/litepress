@@ -3,6 +3,7 @@ package com.zg.network.im.login;
 import com.zg.login.inte.LoginServiceInte;
 import com.zg.network.bean.ZGMPBean;
 import com.zg.network.im.service.IMChannelGroups;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Map;
@@ -14,7 +15,7 @@ public class LoginManager {
     // private static LoginServiceInte loginService = LoginServiceProvider.getInstance();
     private static final LoginServiceInte loginService = LoginFactory.getLoginService();
 
-    public static synchronized Map login(ChannelHandlerContext ctx, ZGMPBean request) {
+    public static synchronized Map login(Channel channel, ZGMPBean request) {
         String username = request.username;
         String password = request.password;
         String token = loginService.registToken("", "", "");
@@ -22,7 +23,7 @@ public class LoginManager {
         String uuid = map.get("uuid");
         token = map.get("token");
         if (uuid != null) {
-            IMChannelGroups.put(uuid, token, ctx.channel());
+            IMChannelGroups.put(uuid, token, channel);
         }
         return map;
 

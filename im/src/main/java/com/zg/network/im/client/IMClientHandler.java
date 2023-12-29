@@ -7,10 +7,11 @@ import com.zg.common.util.url.GetServerRealPathUnit;
 import com.zg.incache.prestuctural.manager.CacheManager;
 import com.zg.network.bean.UserBean;
 import com.zg.network.bean.ZGMPBean;
-import com.zg.network.common.MessgeReceivedListener;
-import com.zg.network.common.client.BaseClientHandler;
+import com.zg.network.common.cache.BaseMessageCache;
+import com.zg.network.common.client.BaseKeepClientHandler;
 import com.zg.network.common.fileservcie.ReceiveFile;
 import com.zg.network.common.fileservcie.SendFile;
+import com.zg.network.entity.BaseTranslationProtocol;
 import com.zg.network.im.utils.AudioUtils;
 import io.netty.channel.ChannelHandlerContext;
 import org.tinylog.Logger;
@@ -24,119 +25,125 @@ import java.net.UnknownHostException;
  */
 
 
-public class IMClientHandler extends BaseClientHandler<String> {
+public class IMClientHandler extends BaseKeepClientHandler {
+    Class agreementClass;
+    public IMClientHandler(Class agreementClass) {
+
+        super(agreementClass);
+        this.agreementClass=agreementClass;
+    }
 
     //private ClientDB clientDB=new ClientDB();
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws UnknownHostException {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws InterruptedException {
+        Logger.info("Received message: " + msg);
         // Logger.info(" get msg >> " + msg);
 
-        ZGMPBean response = JSON.parseObject(msg, ZGMPBean.class);
+        try {
 
-        String methodType = response.methodType;
-        //判断是否是合法的请求
+            ZGMPBean response = JSON.parseObject((String) msg, ZGMPBean.class);
 
-        switch (methodType) {
+            String methodType = response.methodType;
+            //判断是否是合法的请求
 
-            case "LOGIN": {
+            switch (methodType) {
 
-                if (response.status < 0) {
-                    Logger.info(response.errorStr);
-                } else {
-                    UserBean user = new UserBean();
-                    user.uuid = response.uuid;
-                    user.token = response.token;
-                    // clientDB.insert("user",user);
-                    CacheManager.put("user", user, 30 * 60 * 1000);
-                    Logger.info(response.message);
+                case "LOGIN": {
+
+                    if (response.status < 0) {
+                        Logger.info(response.errorStr);
+                    } else {
+                        UserBean user = new UserBean();
+                        user.uuid = response.uuid;
+                        user.token = response.token;
+                        // clientDB.insert("user",user);
+                        CacheManager.put("user", user, 30 * 60 * 1000);
+                        Logger.info(response.message);
+                    }
+                    break;
+
                 }
-                break;
+                case "SEND": {
+                    AudioUtils.playAudioThread();
+                    Logger.info("message >> " + response.uuid + " : " + response.message);
+                    break;
+                }
 
+                case "LOGOUT": {
+                    Logger.info(response.message);
+                    break;
+                }
+
+                case "SYS": {
+                    Logger.info(response.message);
+                    break;
+                }
+
+                case "FILESERVICEREQUEST": {
+                    String fileName = new File(response.message).getName();
+                    String rootPath = GetServerRealPathUnit.getPath("file");
+                    Logger.info(response.uuid + " 发送来个文件" + fileName + "  存放在目录：" + rootPath + " 下");
+                    File file = new File(rootPath, fileName);
+                    Integer port = 9999;
+                    InetAddress localhost = InetAddress.getLocalHost();
+                    String ip = localhost.getHostAddress();
+                    ReceiveFile receiveFile = new ReceiveFile(port, file);
+                    Thread thread = new Thread(receiveFile);
+                    thread.start();
+                    response.methodType = "SEND";
+                    response.operationType = "FILESERVICEREADY";
+                    String uuid = response.targetUuid;
+                    response.targetUuid = response.uuid;
+                    response.uuid = uuid;
+                    String message = "";
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("ip", ip);
+                    jsonObject.put("port", port);
+                    jsonObject.put("filePath", response.message);
+                    message = JSON.toJSONString(jsonObject);
+                    response.message = message;
+                    String json = EntityUtils.serialize(response);
+                    ctx.writeAndFlush(json + "\r\n");
+                    break;
+                }
+
+                case "FILESERVICEREADY": {
+                    Logger.info("开始传输");
+                    JSONObject jsonObj = JSON.parseObject(response.message);
+                    File file = new File(jsonObj.getString("filePath"));
+                    SendFile sendFile = new SendFile(file, jsonObj.getString("ip"), jsonObj.getInteger("port"));
+                    Thread thread = new Thread(sendFile);
+                    thread.start();
+                    break;
+                }
+
+                case "HEARTBEAT": {
+                    //    Logger.info("message  :" + response.message);
+                    String json = null;
+                    ZGMPBean request = new ZGMPBean("REQUEST");
+                    request.methodType = "HEARTBEAT";
+                    //UserBean userBean=(UserBean) clientDB.selectOne("user");
+                    UserBean user = (UserBean) CacheManager.get("user");
+                    CacheManager.put("user", user, 30 * 60 * 1000);
+                    request.uuid = response.uuid;
+                    request.message = "维持心跳";
+                    request.heartBeatID = response.heartBeatID;
+                    json = EntityUtils.serialize(request);
+                    ctx.writeAndFlush(json + "\r\n");
+                    break;
+                }
+
+                default: {
+                    break;
+                }
             }
-            case "SEND": {
-                AudioUtils.playAudioThread();
-                Logger.info("message >> " + response.uuid + " : " + response.message);
-                break;
-            }
-
-            case "LOGOUT": {
-                Logger.info(response.message);
-                break;
-            }
-
-            case "SYS": {
-                Logger.info(response.message);
-                break;
-            }
-
-            case "FILESERVICEREQUEST": {
-                String fileName = new File(response.message).getName();
-                String rootPath = GetServerRealPathUnit.getPath("file");
-                Logger.info(response.uuid + " 发送来个文件" + fileName + "  存放在目录：" + rootPath + " 下");
-                File file = new File(rootPath, fileName);
-                Integer port = 9999;
-                InetAddress localhost = InetAddress.getLocalHost();
-                String ip = localhost.getHostAddress();
-                ReceiveFile receiveFile = new ReceiveFile(port, file);
-                Thread thread = new Thread(receiveFile);
-                thread.start();
-                response.methodType = "SEND";
-                response.operationType = "FILESERVICEREADY";
-                String uuid = response.targetUuid;
-                response.targetUuid = response.uuid;
-                response.uuid = uuid;
-                String message = "";
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("ip", ip);
-                jsonObject.put("port", port);
-                jsonObject.put("filePath", response.message);
-                message = JSON.toJSONString(jsonObject);
-                response.message = message;
-                String json = EntityUtils.serialize(response);
-                ctx.writeAndFlush(json + "\r\n");
-                break;
-            }
-
-            case "FILESERVICEREADY": {
-                Logger.info("开始传输");
-                JSONObject jsonObj = JSON.parseObject(response.message);
-                File file = new File(jsonObj.getString("filePath"));
-                SendFile sendFile = new SendFile(file, jsonObj.getString("ip"), jsonObj.getInteger("port"));
-                Thread thread = new Thread(sendFile);
-                thread.start();
-                break;
-            }
-
-            case "HEARTBEAT": {
-                //    Logger.info("message  :" + response.message);
-                String json = null;
-                ZGMPBean request = new ZGMPBean("REQUEST");
-                request.methodType = "HEARTBEAT";
-                //UserBean userBean=(UserBean) clientDB.selectOne("user");
-                UserBean user = (UserBean) CacheManager.get("user");
-                CacheManager.put("user", user, 30 * 60 * 1000);
-                request.uuid = response.uuid;
-                request.message = "维持心跳";
-                request.heartBeatID = response.heartBeatID;
-                json = EntityUtils.serialize(request);
-                ctx.writeAndFlush(json + "\r\n");
-                break;
-            }
-
-            default: {
-                break;
-            }
-
-
+            BaseTranslationProtocol baseTranslationProtocol = (BaseTranslationProtocol) EntityUtils.unSerialize((String) msg, agreementClass);
+            BaseMessageCache.dealResponse(baseTranslationProtocol);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
         }
 
-
     }
 
-    public void remove(MessgeReceivedListener messgeReceivedListener) {
-    }
-
-    public void addMessgeReceivedListener(MessgeReceivedListener messgeReceivedListener) {
-    }
 }

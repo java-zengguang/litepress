@@ -5,11 +5,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.zg.common.util.reflect.EntityUtils;
 import com.zg.direction.entity.DTPRequest;
 import com.zg.direction.entity.DTPResponse;
-import com.zg.network.common.service.BaseServiceHandler;
+import com.zg.network.common.service.BaseKeepServiceHandler;
+
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
+
 import org.tinylog.Logger;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.time.Duration;
@@ -18,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @ChannelHandler.Sharable
-public class ProviderServiceHandler extends BaseServiceHandler<String> {
+public class ProviderServiceHandler extends BaseKeepServiceHandler {
 
 
     public Class[] getParamterTypes(List<String> paramterTypes) throws ClassNotFoundException {
@@ -41,7 +44,7 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
         return result;
     }
 
-    private Object[] getParamters(List<Object> paramterValues, List<Type> paramterTypes) throws ClassNotFoundException {
+    private Object[] getParamters(List<Object> paramterValues, List<Type> paramterTypes)   {
         Object[] result = null;
         result = new Object[paramterTypes.size()];
         for (int i = 0; i < paramterTypes.size(); i++) {
@@ -60,8 +63,11 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
     }
 
 
+
+
+
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String msg) {
+    public void sendMsg(Channel channel, String msg) throws Exception {
 
         Logger.info("get msg >" + msg);
 
@@ -87,7 +93,12 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             String providerName = request.providerName;
             Logger.info("任务处理provider：" + path);
             LocalDateTime startTime = LocalDateTime.now();
-            Object result = method.invoke(classes.newInstance(), paramters);
+            Object result=null;
+            try {
+                result = method.invoke(classes.newInstance(), paramters);
+            }catch (InvocationTargetException e){
+                throw e.getCause();
+            }
             LocalDateTime endTime = LocalDateTime.now();
             Logger.info(path + "任务处理时长：" + Duration.between(startTime, endTime).toMillis());
             //zookeeper释放
@@ -96,7 +107,7 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
             response.resultData = result;
             response.resultType = request.resultType;
             response.resultDataType = request.resultDataType;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.error(e);
             response.success = false;
             response.resultData = null;
@@ -106,9 +117,6 @@ public class ProviderServiceHandler extends BaseServiceHandler<String> {
         }
         response.id = request.id;
         String responseJson = serialize(response);
-        ctx.writeAndFlush(responseJson + "\r\n");
-
+        channel.writeAndFlush(responseJson + "\r\n");
     }
-
-
 }

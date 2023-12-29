@@ -4,10 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.zg.common.util.reflect.EntityUtils;
 import com.zg.network.bean.ChannelBean;
 import com.zg.network.bean.ZGMPBean;
-import com.zg.network.common.service.BaseServiceHandler;
+import com.zg.network.common.service.BaseKeepServiceHandler;
+
 import com.zg.network.im.login.LoginManager;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
+
 import org.tinylog.Logger;
 
 import java.util.Date;
@@ -17,7 +18,7 @@ import java.util.Map;
 /**
  * Created by Administrator on 2019/2/22 0022.
  */
-public class IMServerHandle extends BaseServiceHandler<String> {
+public class IMServerHandle extends BaseKeepServiceHandler {
 
 
     /***
@@ -29,8 +30,10 @@ public class IMServerHandle extends BaseServiceHandler<String> {
     private final long TIMEOUT = 10 * 1000;
 
 
+
+
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String msg) {
+    public void sendMsg(Channel ctx, String msg) throws Exception {
         // Logger.info(" get msg >> " + msg);
         ZGMPBean request = (ZGMPBean) EntityUtils.unSerialize(msg, ZGMPBean.class);//把JSON数据进行反序列化
         ZGMPBean response = new ZGMPBean("RESPONSE");

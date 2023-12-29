@@ -1,4 +1,4 @@
-package com.zg.direction;
+package com.zg.direction.test;
 
 import com.zg.common.util.CommonUtil;
 import com.zg.direction.proxy.ConsumerHandler;

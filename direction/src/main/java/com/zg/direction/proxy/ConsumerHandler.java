@@ -2,7 +2,8 @@ package com.zg.direction.proxy;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.zg.direction.client.ConsumerClientUtil;
+
+import com.zg.direction.client.ConsumerKeepClientUtil;
 import com.zg.direction.entity.DTPRequest;
 import com.zg.direction.entity.DTPResponse;
 
@@ -15,14 +16,10 @@ import java.util.*;
 
 public class ConsumerHandler implements InvocationHandler {
 
-    private String synFlag = "0";  //0-同步 1-异步
 
     private final String providerName;
 
-    public ConsumerHandler(String providerName, String synFlag) {
-        this.synFlag = synFlag;
-        this.providerName = providerName;
-    }
+
 
     public ConsumerHandler(String providerName) {
         this.providerName = providerName;
@@ -94,11 +91,8 @@ public class ConsumerHandler implements InvocationHandler {
 
 
         DTPResponse response;
-        if ("0".equals(synFlag)) {
-            response = ConsumerClientUtil.addSynRequest(request.providerName, request);
-        } else {
-            response = ConsumerClientUtil.addASynRequest(request.providerName, request);
-        }
+        response = ConsumerKeepClientUtil.addSynRequest(request.providerName, request);
+
 
         Object result = null;
         if (!"".equals(response.resultType) && !"NULL".equals(response.resultType)) {

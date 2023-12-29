@@ -1,4 +1,4 @@
-package com.zg.direction;
+package com.zg.direction.test;
 
 import com.zg.direction.annotation.Provider;
 import org.tinylog.Logger;
