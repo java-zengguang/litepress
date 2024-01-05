@@ -85,14 +85,14 @@ public class DataBaseUtil {
     //查询数据库中的表名
     public static List<String> getTableNameList(String dataSource) throws SQLException, ClassNotFoundException {
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-        Connection conn = NewDBPUtils.getConnection(dataSource);
+        Connection conn = TransactionManager.getConnection(dataSource);
         DatabaseMetaData dbmd = conn.getMetaData();
         ResultSet rs = dbmd.getTables(optionDB.databaseName, optionDB.username.toUpperCase(), "%", new String[]{"TABLE"});
         List<String> tableNameList = new ArrayList<>();
         while (rs.next()) {
             tableNameList.add(rs.getString("TABLE_NAME"));
         }
-        NewDBPUtils.release(dataSource);
+        TransactionManager.release(dataSource);
         return tableNameList;
     }
 
@@ -100,7 +100,7 @@ public class DataBaseUtil {
     //查询数据库中的表结构
     public static List<TableInfo> getTableInfoList(String dataSource, String tableName) throws SQLException, ClassNotFoundException {
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-        Connection conn = NewDBPUtils.getConnection(dataSource);
+        Connection conn = TransactionManager.getConnection(dataSource);
         DatabaseMetaData dbmd = conn.getMetaData();
         ResultSet rs = dbmd.getTables(optionDB.databaseName, optionDB.username.toUpperCase(), "%" + tableName + "%", new String[]{"TABLE"});
         List<TableInfo> tableInfoList = new ArrayList<>();
@@ -118,13 +118,13 @@ public class DataBaseUtil {
             tableInfo.columnList = columnInfoList;
             tableInfoList.add(tableInfo);
         }
-        NewDBPUtils.release(dataSource);
+        TransactionManager.release(dataSource);
         return tableInfoList;
     }
 
 
     public static TableInfo getTableInfo(String dataSource, String tableName) throws SQLException, ClassNotFoundException {
-        Connection conn = NewDBPUtils.getConnection(dataSource);
+        Connection conn = TransactionManager.getConnection(dataSource);
         DatabaseMetaData dbmd = conn.getMetaData();
 
         TableInfo tableInfo = new TableInfo();
@@ -172,7 +172,7 @@ public class DataBaseUtil {
         }
         tableInfo.columnList = columnInfoList;
         tableInfo.pkColumnList = pkColumnList;
-        NewDBPUtils.release(dataSource);
+        TransactionManager.release(dataSource);
         return tableInfo;
     }
 

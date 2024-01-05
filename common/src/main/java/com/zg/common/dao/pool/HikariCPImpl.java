@@ -68,7 +68,7 @@ public class HikariCPImpl implements DataBaseInte {
         config.setMaxLifetime(1500000);
         config.setValidationTimeout(5000);
         config.setConnectionTestQuery("SELECT 1 from  dual");
-        config.setMaximumPoolSize(9);
+        config.setMaximumPoolSize(optionDB.maxPoolSize);
         config.setAutoCommit(false);
 
         return new HikariDataSource(config);

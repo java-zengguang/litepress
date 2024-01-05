@@ -70,7 +70,7 @@ public class DruidImpl implements DataBaseInte {
         properties.put("testWhileIdle", "true");
         properties.put("testOnBorrow", "false");
         properties.put("poolPreparedStatements", "false");
-        properties.put("maxActive", "30");
+        properties.put("maxActive", ""+optionDB.maxPoolSize);
         properties.put("maxWait", "10000");
         properties.put("removeAbandoned", "true");
         properties.put("removeAbandonedTimeout", "600");

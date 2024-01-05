@@ -6,7 +6,6 @@ import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
-import com.zg.common.service.BaseService;
 import com.zg.common.util.database.ParseSQLUtils;
 import com.zg.common.util.reflect.ModelSQLUtils;
 import net.sf.jsqlparser.JSQLParserException;
@@ -19,12 +18,12 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
-public class BaseJDBCDao extends BaseService {
+public class BaseJDBCDao {
     public String dataSource = "optionDB";
 
 
     public Connection getConnection() throws SQLException, ClassNotFoundException {
-        return getConnection(dataSource);
+        return TransactionManager.getConnection(dataSource);
     }
 
     //查询出列明，数据对应的list集合
@@ -67,7 +66,7 @@ public class BaseJDBCDao extends BaseService {
             tableName = splits[1];
         }
         //获取链接
-        Connection conn = NewDBPUtils.getConnection(dataSource);
+        Connection conn = TransactionManager.getConnection(dataSource);
 
         //获取组件
         List<String> pkColumnList = new ArrayList<>();
@@ -230,7 +229,7 @@ public class BaseJDBCDao extends BaseService {
 
         int[] i = null;
         Statement stmt;
-        Connection conn = NewDBPUtils.getConnection(dataSource);
+        Connection conn = TransactionManager.getConnection(dataSource);
 
         stmt = conn.createStatement();
         Logger.debug("--------------start batch-----------");

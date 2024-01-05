@@ -23,7 +23,6 @@ public class CacheRegister {
     private static final Map<String, String> cacheMap = new HashMap<>();
     private static CacheRegister cacheRegister = null;  //单例
     private static ProviderConfig providerConfig; //初始化配置
-    private static Thread thread; //服务守护线程
     private static CuratorFramework zkClient = null;
 
 

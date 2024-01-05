@@ -17,6 +17,13 @@ public abstract class BaseKeepServiceHandler extends ChannelInboundHandlerAdapte
         sendMsg(ctx.channel(), (String) msg);
     }
 
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        // 异常处理逻辑
+        cause.printStackTrace();
+        // 关闭Channel
+        ctx.close();
+    }
 
     public abstract void sendMsg(Channel channel, String msg) throws Exception;
 

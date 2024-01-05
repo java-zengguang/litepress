@@ -37,100 +37,6 @@ public class NewJDBCUtil {
     }
 
 
-    //插入model_list ，未提交，未初始化连接
-    private int[] insertTables(List modelList, Class modelClass, String tableName) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
-        int[] result = null;
-        Connection conn = NewDBPUtils.getConnection(dataSource);
-        Statement stmt = conn.createStatement();
-        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-        Logger.debug("-----------------start batch-----------");
-        for (Object model : modelList) {
-            String sql = ModelSQLUtils.insert(model, tableName, optionDB.DBType);
-            Logger.info(sql);
-
-            stmt.addBatch(sql);
-
-        }
-        Logger.debug("------------------end batch-------------");
-        result = stmt.executeBatch();
-        stmt.close();
-        return result;
-
-
-    }
-
-    private int insertTable(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
-        List list = new ArrayList();
-        list.add(model);
-        int[] results = insertTables(list, model.getClass());
-        int result = 0;
-        if (results != null && results.length > 0) {
-            result = results[0];
-        }
-
-        return result;
-    }
-
-
-    //执行增删改
-    private Integer operation(String sql) throws SQLException, ClassNotFoundException {
-        Logger.debug(sql);
-        Connection conn = NewDBPUtils.getConnection(dataSource);
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        int x = pstmt.executeUpdate();
-        pstmt.close();
-        return x;
-    }
-
-
-    //执行批操作
-    private int[] batchSql(List<String> sqlList) throws SQLException, ClassNotFoundException {
-
-        int[] result = new int[sqlList.size()];
-        for (int i = 0; i < sqlList.size(); i++) {
-            String sql = sqlList.get(i);
-            result[i] = operation(sql);
-        }
-
-        return result;
-    }
-
-
-    private void release() throws SQLException, ClassNotFoundException {
-        NewDBPUtils.release(dataSource);
-    }
-
-
-    private boolean commit() throws SQLException, ClassNotFoundException {
-        NewDBPUtils.commit(dataSource);
-        return true;
-    }
-
-    //执行批操作
-    private int[] batchOneSql(List<String> sqlList) throws SQLException, ClassNotFoundException {
-        //清洗脚本
-        for (String sql : sqlList) {
-            sql = sql.replace(";", "");
-        }
-
-        int[] i = null;
-        Statement stmt;
-        Connection conn = NewDBPUtils.getConnection(dataSource);
-
-        stmt = conn.createStatement();
-        Logger.info("--------------start batch-----------");
-        for (String sql : sqlList) {
-            Logger.info(sql);
-            stmt.addBatch(sql);
-        }
-        i = stmt.executeBatch();
-        Logger.info("--------------end batch-----------");
-        stmt.close();
-
-        return i;
-    }
-
-
     public String addPageFromSql(String sql, PageEntity page) throws Exception {
         String countSql = null;
         if (sql != null) {
@@ -144,6 +50,7 @@ public class NewJDBCUtil {
         Integer startRows = (page.getCurrentPage() - 1) * page.getPageSize();
         /*  Integer endRows=(page.getCurrentPage())*page.getPageSize();*/
         sql = sql + " limit " + startRows + " , " + page.getPageSize();
+
         return sql;
     }
 
@@ -156,11 +63,21 @@ public class NewJDBCUtil {
 
     private List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException, JSQLParserException {
         Logger.debug(sql);
-
-        //获取链接
-        Connection conn = NewDBPUtils.getConnection(dataSource);
-
         List<String> tableNameList = ParseSQLUtils.parseSelectMainTable(sql);
+        String[] array = tableNameList.toArray(new String[0]);
+        return select2TempleList(sql, array);
+
+    }
+
+
+    private List<List<MetadataEntity>> select2TempleList(String sql, String... tableNames) throws SQLException, ClassNotFoundException {
+        List list = new ArrayList();
+        //合并主表
+        StringBuilder tableNameBuffer = new StringBuilder();
+        List<String> tableNameList = Arrays.asList(tableNames);
+        tableNameList.forEach(tableNameBuffer::append);
+
+        Connection conn = TransactionManager.getConnection(dataSource);
         //获取组件
         List<String> pkColumnList = new ArrayList<>();
         DatabaseMetaData dmd = conn.getMetaData();
@@ -172,203 +89,168 @@ public class NewJDBCUtil {
             }
         }
 
-        //合并主表
-        StringBuilder tableNameBuffer = new StringBuilder();
-        tableNameList.forEach(tableNameBuffer::append);
         //获取数据
-        List list = new ArrayList();
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        ResultSet rs = pstmt.executeQuery();
-        ResultSetMetaData rsmd = rs.getMetaData();
-        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
-
-        int columncount = 0;
-        while (rs.next()) {
-            List<MetadataEntity> columnList = new ArrayList<>();
-            columncount = rsmd.getColumnCount();
-            for (int i = 1; i < columncount + 1; i++) {
-                String columnLabel = rsmd.getColumnLabel(i);
-                String columnType = rsmd.getColumnTypeName(i);
-                Integer columnScale = rsmd.getScale(i);
-                if (columnScale == -127) {
-                    columnScale = 6;
-                }
-                Object columnValue = rs.getObject(i);
-                MetadataEntity metadataEntity = new MetadataEntity();
-                metadataEntity.ownName = "";
-                metadataEntity.tableName = tableNameBuffer.toString();
-                metadataEntity.columnLabel = columnLabel;
-                metadataEntity.columnType = columnType;
-                metadataEntity.objectValue = columnValue;
-                metadataEntity.columnScale = columnScale;
-                metadataEntity.dbType = optionDB.DBType;
-                if (pkColumnList.contains(columnLabel)) {
-                    metadataEntity.isPK = "1";
-                } else {
-                    metadataEntity.isPK = "0";
-                }
-                if (rsmd.isAutoIncrement(i)) {
-                    metadataEntity.isAutoIncrease = "1";  //自增
-                    //  metadataEntity.isNotCommit="1"; //自增不提交
-                } else {
-                    metadataEntity.isAutoIncrease = "0";
-                    metadataEntity.isNotCommit = "0";  //不自增的列才提交
-                }
-                metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
-                columnList.add(metadataEntity);
-            }
-            list.add(columnList);
-        }
-        pstmt.close();
-        rs.close();
-
-        return list;
-    }
-
-    //查询出列明，数据对应的list集合
-    private List<List<MetadataEntity>> select2TempleList(String sql, String tableName) throws SQLException, ClassNotFoundException {
-        Logger.debug(sql);
-        tableName = tableName.trim().toUpperCase();
-        String ownName = "";
-        if (tableName.contains(".")) {
-            String[] splits = tableName.split("\\.");
-            ownName = splits[0];
-            tableName = splits[1];
-        }
-        //获取链接
-        Connection conn = NewDBPUtils.getConnection(dataSource);
-
-        //获取组件
-        List<String> pkColumnList = new ArrayList<>();
-        DatabaseMetaData dmd = conn.getMetaData();
-        ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
-        while (dmdrs.next()) {
-            String pkStr = dmdrs.getString("COLUMN_NAME");
-            pkColumnList.add(pkStr);
-        }
-        //获取数据
-        List list = new ArrayList();
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        ResultSet rs = pstmt.executeQuery();
-        ResultSetMetaData rsmd = rs.getMetaData();
-        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
-
-        int columncount = 0;
-        while (rs.next()) {
-            List<MetadataEntity> columnList = new ArrayList<>();
-            columncount = rsmd.getColumnCount();
-            for (int i = 1; i < columncount + 1; i++) {
-                String columnLabel = rsmd.getColumnLabel(i);
-                String columnType = rsmd.getColumnTypeName(i);
-                Integer columnScale = rsmd.getScale(i);
-                if (columnScale == -127) {
-                    columnScale = 6;
-                }
-                Object columnValue = rs.getObject(i);
-                MetadataEntity metadataEntity = new MetadataEntity();
-                metadataEntity.ownName = ownName;
-                metadataEntity.tableName = tableName;
-                metadataEntity.columnLabel = columnLabel;
-                metadataEntity.columnType = columnType;
-                metadataEntity.columnScale = columnScale;
-                metadataEntity.objectValue = columnValue;
-                metadataEntity.dbType = optionDB.DBType;
-                if (pkColumnList.contains(columnLabel)) {
-                    metadataEntity.isPK = "1";
-                } else {
-                    metadataEntity.isPK = "0";
-                }
-                if (rsmd.isAutoIncrement(i)) {
-                    metadataEntity.isAutoIncrease = "1";  //自增
-                    //  metadataEntity.isNotCommit="1"; //自增不提交
-                } else {
-                    metadataEntity.isAutoIncrease = "0";
-                    metadataEntity.isNotCommit = "0";  //不自增的列才提交
-                }
-                metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
-                columnList.add(metadataEntity);
-            }
-            list.add(columnList);
-        }
-        pstmt.close();
-        rs.close();
-
-        return list;
-    }
-
-    public int[] insertTables(List modelLIst, Class modelClass) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String tableName = EntityUtils.getTableNameFromModel(modelClass);
-        int[] result = new int[0];
         try {
-            result = insertTables(modelLIst, modelClass, tableName);
-            commit();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+            EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
+
+            int columncount = 0;
+            while (rs.next()) {
+                List<MetadataEntity> columnList = new ArrayList<>();
+                columncount = rsmd.getColumnCount();
+                for (int i = 1; i < columncount + 1; i++) {
+                    String columnLabel = rsmd.getColumnLabel(i);
+                    String columnType = rsmd.getColumnTypeName(i);
+                    Integer columnScale = rsmd.getScale(i);
+                    if (columnScale == -127) {
+                        columnScale = 6;
+                    }
+                    Object columnValue = rs.getObject(i);
+                    MetadataEntity metadataEntity = new MetadataEntity();
+                    metadataEntity.ownName = "";
+                    metadataEntity.tableName = tableNameBuffer.toString();
+                    metadataEntity.columnLabel = columnLabel;
+                    metadataEntity.columnType = columnType;
+                    metadataEntity.objectValue = columnValue;
+                    metadataEntity.columnScale = columnScale;
+                    metadataEntity.dbType = optionDB.DBType;
+                    if (pkColumnList.contains(columnLabel)) {
+                        metadataEntity.isPK = "1";
+                    } else {
+                        metadataEntity.isPK = "0";
+                    }
+                    if (rsmd.isAutoIncrement(i)) {
+                        metadataEntity.isAutoIncrease = "1";  //自增
+                        //  metadataEntity.isNotCommit="1"; //自增不提交
+                    } else {
+                        metadataEntity.isAutoIncrease = "0";
+                        metadataEntity.isNotCommit = "0";  //不自增的列才提交
+                    }
+                    metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
+                    columnList.add(metadataEntity);
+                }
+                list.add(columnList);
+            }
+            pstmt.close();
+            rs.close();
         } catch (Exception e) {
             throw e;
         } finally {
-            release();
+            TransactionManager.release(dataSource);
         }
-        return result;
+
+
+        return list;
     }
 
-    public Object insertAutoIncrease(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
-        Class clazz = model.getClass();
-        Field[] fields = clazz.getFields();
-        Field idField = Arrays.stream(fields).filter(field -> field.isAnnotationPresent(AutoIncrease.class)).findFirst().get();
-        if (insertTable(model) > 0) {
-            String sql = "select @@IDENTITY as id ";
-            List<Map> list = selectToMapList(sql);
-            Map<String, BigInteger> map = list.get(0);
-            Logger.info("id=" + map.get("id").intValue());
-            Integer id = map.get("id").intValue();
-            idField.set(model, id);
-        }
-        return model;
-    }
+//    //查询出列明，数据对应的list集合
+//    private List<List<MetadataEntity>> select2TempleList(String sql, String tableName) throws SQLException, ClassNotFoundException {
+//        Logger.debug(sql);
+//        tableName = tableName.trim().toUpperCase();
+//        String ownName = "";
+//        if (tableName.contains(".")) {
+//            String[] splits = tableName.split("\\.");
+//            ownName = splits[0];
+//            tableName = splits[1];
+//        }
+//        //获取链接
+//        Connection conn = TransactionManager.getConnection(dataSource);
+//        List list = new ArrayList();
+//        try {
+//            //获取组件
+//            List<String> pkColumnList = new ArrayList<>();
+//            DatabaseMetaData dmd = conn.getMetaData();
+//            ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
+//            while (dmdrs.next()) {
+//                String pkStr = dmdrs.getString("COLUMN_NAME");
+//                pkColumnList.add(pkStr);
+//            }
+//            //获取数据
+//
+//            PreparedStatement pstmt = conn.prepareStatement(sql);
+//            ResultSet rs = pstmt.executeQuery();
+//            ResultSetMetaData rsmd = rs.getMetaData();
+//            OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+//            EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
+//
+//            int columncount = 0;
+//            while (rs.next()) {
+//                List<MetadataEntity> columnList = new ArrayList<>();
+//                columncount = rsmd.getColumnCount();
+//                for (int i = 1; i < columncount + 1; i++) {
+//                    String columnLabel = rsmd.getColumnLabel(i);
+//                    String columnType = rsmd.getColumnTypeName(i);
+//                    Integer columnScale = rsmd.getScale(i);
+//                    if (columnScale == -127) {
+//                        columnScale = 6;
+//                    }
+//                    Object columnValue = rs.getObject(i);
+//                    MetadataEntity metadataEntity = new MetadataEntity();
+//                    metadataEntity.ownName = ownName;
+//                    metadataEntity.tableName = tableName;
+//                    metadataEntity.columnLabel = columnLabel;
+//                    metadataEntity.columnType = columnType;
+//                    metadataEntity.columnScale = columnScale;
+//                    metadataEntity.objectValue = columnValue;
+//                    metadataEntity.dbType = optionDB.DBType;
+//                    if (pkColumnList.contains(columnLabel)) {
+//                        metadataEntity.isPK = "1";
+//                    } else {
+//                        metadataEntity.isPK = "0";
+//                    }
+//                    if (rsmd.isAutoIncrement(i)) {
+//                        metadataEntity.isAutoIncrease = "1";  //自增
+//                        //  metadataEntity.isNotCommit="1"; //自增不提交
+//                    } else {
+//                        metadataEntity.isAutoIncrease = "0";
+//                        metadataEntity.isNotCommit = "0";  //不自增的列才提交
+//                    }
+//                    metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
+//                    columnList.add(metadataEntity);
+//                }
+//                list.add(columnList);
+//            }
+//            pstmt.close();
+//            rs.close();
+//        } catch (Exception e) {
+//            throw e;
+//        } finally {
+//            TransactionManager.release(dataSource);
+//        }
+//        return list;
+//    }
+
 
     //查询
     public List select(String sql) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException, JSQLParserException {
-        List<List<MetadataEntity>> templeList = null;
         List modelList = new ArrayList();
-        try {
-            templeList = select2TempleList(sql);
-            if (templeList != null && templeList.size() > 0) {
-                OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-                SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
-                Class modelClass = null;
-                if (templeList != null && templeList.size() > 0) {
-                    if (modelClass == null) {
-                        modelClass = DynamicClass.getDynamicModel(templeList.get(0));
-                    }
-                    for (List<MetadataEntity> columnList : templeList) {
-                        Object obj = modelClass.newInstance();
-                        for (MetadataEntity metadataEntity : columnList) {
-                            obj = simpleAssemble.assembling(metadataEntity, obj);
-                        }
-                        modelList.add(obj);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            release();
-        }
 
-        return modelList;
+        List<List<MetadataEntity>> templeList = select2TempleList(sql);
+
+
+        return transMetadata2Obj(templeList);
     }
 
 
     public List select(String sql, String tableName) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-        List<List<MetadataEntity>> templeList = null;
-        List modelList = new ArrayList();
-        try {
-            templeList = select2TempleList(sql, tableName);
 
+        List modelList = new ArrayList();
+
+        List<List<MetadataEntity>> templeList = select2TempleList(sql, tableName);
+
+
+        return transMetadata2Obj(templeList);
+    }
+
+
+    private List transMetadata2Obj(List<List<MetadataEntity>> templeList) throws InstantiationException, IllegalAccessException {
+        List modelList = new ArrayList();
+        if (templeList != null && templeList.size() > 0) {
             OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
             SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
-
             Class modelClass = null;
             if (templeList != null && templeList.size() > 0) {
                 if (modelClass == null) {
@@ -382,51 +264,24 @@ public class NewJDBCUtil {
                     modelList.add(obj);
                 }
             }
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            release();
         }
-
         return modelList;
     }
-
 
     //查询
 
     public List select(String sql, Class modelClass) throws Exception {
         List<List<MetadataEntity>> templeList = null;
-        List modelList = new ArrayList();
-        try {
 
-            String tableName = EntityUtils.getTableNameFromModel(modelClass);
+        String tableName = EntityUtils.getTableNameFromModel(modelClass);
 
-            if (tableName != null) {
-                templeList = select2TempleList(sql, tableName);
-            } else {
-                templeList = select2TempleList(sql);
-            }
-
-
-            OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-            SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
-            if (templeList != null && templeList.size() > 0) {
-                for (List<MetadataEntity> columnList : templeList) {
-                    Object obj = modelClass.newInstance();
-                    for (MetadataEntity metadataEntity : columnList) {
-                        obj = simpleAssemble.assembling(metadataEntity, obj);
-                    }
-                    modelList.add(obj);
-                }
-            }
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            release();
+        if (tableName != null) {
+            templeList = select2TempleList(sql, tableName);
+        } else {
+            templeList = select2TempleList(sql);
         }
 
-        return modelList;
-
+        return transMetadata2Obj(templeList);
     }
 
     //查询出列明，数据对应的list集合
@@ -436,7 +291,7 @@ public class NewJDBCUtil {
         Logger.debug(sql);
         List list = new ArrayList();
         try {
-            Connection conn = NewDBPUtils.getConnection(dataSource);
+            Connection conn = TransactionManager.getConnection(dataSource);
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -456,49 +311,11 @@ public class NewJDBCUtil {
             pstmt.close();
             rs.close();
         } catch (Exception e) {
-            Logger.error(e);
             throw e;
         } finally {
-            release();
+            TransactionManager.release(dataSource);
         }
         return list;
-    }
-
-    //执行批操作
-    public int[] batchSql(List<String> sqlList, Boolean model) throws SQLException, ClassNotFoundException {
-
-        int[] result = new int[0];
-        try {
-            if (!model) {
-                result = batchSql(sqlList);
-            } else {
-                result = batchOneSql(sqlList);
-            }
-            commit();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            release();
-        }
-        return result;
-    }
-
-    public int updateModel(Object object, String... terms) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
-        int result = 0;
-        try {
-            OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-            if (terms != null && terms.length > 0) {
-                String sql = ModelSQLUtils.update(optionDB.getDBType(), object, terms);
-                result = operation(sql);
-                commit();
-            }
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            release();
-        }
-
-        return result;
     }
 
 
@@ -506,8 +323,7 @@ public class NewJDBCUtil {
         List list = new ArrayList();
         try {
 
-
-            Connection conn = NewDBPUtils.getConnection(dataSource);
+            Connection conn = TransactionManager.getConnection(dataSource);
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs;
             rs = pstmt.executeQuery();
@@ -520,7 +336,7 @@ public class NewJDBCUtil {
         } catch (Exception e) {
             throw e;
         } finally {
-            release();
+            TransactionManager.release(dataSource);
         }
 
         return list;
@@ -530,9 +346,7 @@ public class NewJDBCUtil {
     public String selectOneValue(String sql) throws SQLException, ClassNotFoundException {
         String value = "";
         try {
-
-
-            Connection conn = NewDBPUtils.getConnection(dataSource);
+            Connection conn = TransactionManager.getConnection(dataSource);
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs;
             rs = pstmt.executeQuery();
@@ -545,7 +359,7 @@ public class NewJDBCUtil {
         } catch (Exception e) {
             throw e;
         } finally {
-            release();
+            TransactionManager.release(dataSource);
         }
 
         return value;
@@ -554,11 +368,11 @@ public class NewJDBCUtil {
 
     public Class selectStream(String sql, File tempFile) throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JSQLParserException {
         Class modelClass = null;
+
+        String tableName = ParseSQLUtils.parseSelectMainTable(sql).get(0);
+
+        Connection conn = TransactionManager.getConnection(dataSource);
         try {
-            String tableName = ParseSQLUtils.parseSelectMainTable(sql).get(0);
-
-            Connection conn = NewDBPUtils.getConnection(dataSource);
-
             //获取组件
             List<String> pkColumnList = new ArrayList<>();
             DatabaseMetaData dmd = conn.getMetaData();
@@ -632,7 +446,7 @@ public class NewJDBCUtil {
         } catch (Exception e) {
             throw e;
         } finally {
-            release();
+            TransactionManager.release(dataSource);
         }
 
         return modelClass;
@@ -641,15 +455,16 @@ public class NewJDBCUtil {
 
     public Class selectStream(String sql, String tableName, String tempFileDir, List<File> tempFileList, Integer fileSize) throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JSQLParserException {
         Class modelClass = null;
+
+        tableName = tableName.trim().toUpperCase();
+        String ownName = "";
+        if (tableName.contains(".")) {
+            String[] splits = tableName.split("\\.");
+            ownName = splits[0];
+            tableName = splits[1];
+        }
+        Connection conn = TransactionManager.getConnection(dataSource);
         try {
-            tableName = tableName.trim().toUpperCase();
-            String ownName = "";
-            if (tableName.contains(".")) {
-                String[] splits = tableName.split("\\.");
-                ownName = splits[0];
-                tableName = splits[1];
-            }
-            Connection conn = NewDBPUtils.getConnection(dataSource);
             //获取组件
             List<String> pkColumnList = new ArrayList<>();
             DatabaseMetaData dmd = conn.getMetaData();
@@ -740,11 +555,168 @@ public class NewJDBCUtil {
         } catch (Exception e) {
             throw e;
         } finally {
-            release();
+            TransactionManager.release(dataSource);
         }
 
         return modelClass;
     }
 
+
+    public int[] insertTables(List modelLIst, Class modelClass) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String tableName = EntityUtils.getTableNameFromModel(modelClass);
+        int[] result = new int[0];
+        result = insertTables(modelLIst, modelClass, tableName);
+
+        return result;
+    }
+
+    public Object insertAutoIncrease(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+        Class clazz = model.getClass();
+        Field[] fields = clazz.getFields();
+        Field idField = Arrays.stream(fields).filter(field -> field.isAnnotationPresent(AutoIncrease.class)).findFirst().get();
+        if (insertTable(model) > 0) {
+            String sql = "select @@IDENTITY as id ";
+            List<Map> list = selectToMapList(sql);
+            Map<String, BigInteger> map = list.get(0);
+            Logger.info("id=" + map.get("id").intValue());
+            Integer id = map.get("id").intValue();
+            idField.set(model, id);
+        }
+        return model;
+    }
+
+    //执行批操作
+    public int[] batchSql(List<String> sqlList, Boolean model) throws SQLException, ClassNotFoundException {
+
+        int[] result = new int[0];
+
+        if (!model) {
+            result = batchSql(sqlList);
+        } else {
+            result = batchOneSql(sqlList);
+        }
+
+        return result;
+    }
+
+    public int updateModel(Object object, String... terms) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+        int result = 0;
+
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        if (terms != null && terms.length > 0) {
+            String sql = ModelSQLUtils.update(optionDB.getDBType(), object, terms);
+            result = operation(sql);
+
+        }
+
+        return result;
+    }
+
+
+    //插入model_list ，未提交，未初始化连接
+    private int[] insertTables(List modelList, Class modelClass, String tableName) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+        int[] result = null;
+        Connection conn = TransactionManager.getConnection(dataSource);
+
+        try {
+            Statement stmt = conn.createStatement();
+            OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+            Logger.debug("-----------------start batch-----------");
+            for (Object model : modelList) {
+                String sql = ModelSQLUtils.insert(model, tableName, optionDB.DBType);
+                Logger.info(sql);
+
+                stmt.addBatch(sql);
+
+            }
+            Logger.debug("------------------end batch-------------");
+            result = stmt.executeBatch();
+            stmt.close();
+            TransactionManager.commit(dataSource);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            TransactionManager.release(dataSource);
+        }
+
+        return result;
+
+
+    }
+
+    private int insertTable(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+        List list = new ArrayList();
+        list.add(model);
+        int[] results = insertTables(list, model.getClass());
+        int result = 0;
+        if (results != null && results.length > 0) {
+            result = results[0];
+        }
+
+        return result;
+    }
+
+
+    //执行增删改
+    private Integer operation(String sql) throws SQLException, ClassNotFoundException {
+        Logger.debug(sql);
+        int x = 0;
+        Connection conn = TransactionManager.getConnection(dataSource);
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            x = pstmt.executeUpdate();
+            pstmt.close();
+            TransactionManager.commit(dataSource);
+        } catch (Exception e) {
+
+        } finally {
+            TransactionManager.release(dataSource);
+        }
+        return x;
+    }
+
+
+    //执行批操作
+    private int[] batchSql(List<String> sqlList) throws SQLException, ClassNotFoundException {
+
+        int[] result = new int[sqlList.size()];
+        for (int i = 0; i < sqlList.size(); i++) {
+            String sql = sqlList.get(i);
+            result[i] = operation(sql);
+        }
+
+        return result;
+    }
+
+
+    //执行批操作
+    private int[] batchOneSql(List<String> sqlList) throws SQLException, ClassNotFoundException {
+        //清洗脚本
+        for (String sql : sqlList) {
+            sql = sql.replace(";", "");
+        }
+
+        int[] i = null;
+        Statement stmt;
+        Connection conn = TransactionManager.getConnection(dataSource);
+        try {
+
+            stmt = conn.createStatement();
+            Logger.info("--------------start batch-----------");
+            for (String sql : sqlList) {
+                Logger.info(sql);
+                stmt.addBatch(sql);
+            }
+            i = stmt.executeBatch();
+            Logger.info("--------------end batch-----------");
+            stmt.close();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            TransactionManager.release(dataSource);
+        }
+
+        return i;
+    }
 
 }

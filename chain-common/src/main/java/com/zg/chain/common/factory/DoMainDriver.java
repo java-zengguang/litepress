@@ -57,7 +57,7 @@ public class DoMainDriver {
     public <T extends BaseProcessBatch<t>, t extends BaseProcess> List<T> doStart(Class<T> tClass, List<t> list) throws Exception {
         List<T> sinoSigSQLBatchEntities = doGroup(tClass, list);
         CountDownLatch cdl = new CountDownLatch(sinoSigSQLBatchEntities.size());
-        ExecutorService executor = Executors.newCachedThreadPool();
+        ExecutorService executor = Executors.newFixedThreadPool(2);
         sinoSigSQLBatchEntities.stream().forEach(sinoSigSQLBatchEntitie -> executor.execute(() -> {
             Logger.info("线程开始");
             doExecute(sinoSigSQLBatchEntitie);

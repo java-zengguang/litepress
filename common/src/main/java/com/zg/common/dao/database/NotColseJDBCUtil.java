@@ -42,7 +42,7 @@ public class NotColseJDBCUtil {
     //插入model_list ，未提交，未初始化连接
     private int[] insertTables(List modelList, Class modelClass, String tableName) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         int[] result = null;
-        Connection conn = NewDBPUtils.getConnection(dataSource);
+        Connection conn = TransactionManager.getConnection(dataSource);
         Statement stmt = conn.createStatement();
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         Logger.debug("-----------------start batch-----------");
@@ -77,7 +77,7 @@ public class NotColseJDBCUtil {
     //执行增删改
     private Integer operation(String sql) throws SQLException, ClassNotFoundException {
         Logger.debug(sql);
-        Connection conn = NewDBPUtils.getConnection(dataSource);
+        Connection conn = TransactionManager.getConnection(dataSource);
         PreparedStatement pstmt = conn.prepareStatement(sql);
         int x = pstmt.executeUpdate();
         pstmt.close();
@@ -99,12 +99,12 @@ public class NotColseJDBCUtil {
 
 
     private void release() throws SQLException, ClassNotFoundException {
-        NewDBPUtils.release(dataSource);
+        TransactionManager.release(dataSource);
     }
 
 
     private boolean commit() throws SQLException, ClassNotFoundException {
-        NewDBPUtils.commit(dataSource);
+        TransactionManager.commit(dataSource);
         return true;
     }
 
@@ -117,7 +117,7 @@ public class NotColseJDBCUtil {
 
         int[] i = null;
         Statement stmt;
-        Connection conn = NewDBPUtils.getConnection(dataSource);
+        Connection conn = TransactionManager.getConnection(dataSource);
 
         stmt = conn.createStatement();
         Logger.info("--------------start batch-----------");
@@ -143,7 +143,7 @@ public class NotColseJDBCUtil {
             tableName = splits[1];
         }
         //获取链接
-        Connection conn = NewDBPUtils.getConnection(dataSource);
+        Connection conn = TransactionManager.getConnection(dataSource);
         //获取组件
         List<String> pkColumnList = new ArrayList<>();
         DatabaseMetaData dmd = conn.getMetaData();
@@ -296,7 +296,7 @@ public class NotColseJDBCUtil {
         Logger.debug(sql);
         List list = new ArrayList();
         try {
-            Connection conn = NewDBPUtils.getConnection(dataSource);
+            Connection conn = TransactionManager.getConnection(dataSource);
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             ResultSetMetaData rsmd = rs.getMetaData();

@@ -20,7 +20,7 @@ public class AdapterServlet extends HttpServlet {
 
     ControllerAdapterInte simpleControllerAdapter = SimpleControllerAdapter.getInstance();
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws  IOException {
         UUID uuid = UUID.randomUUID();
         ThreadContext.put("threadID", uuid);
         request.setCharacterEncoding("UTF-8");//传值编码
@@ -31,7 +31,7 @@ public class AdapterServlet extends HttpServlet {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws  IOException {
         doPost(request, response);
     }
 }

@@ -13,22 +13,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by Administrator on 2018/12/17 0017.
+ * 数据库链接绑定线程，作为service层数据源事务管理的基础，统一获取数据库链接
  */
-public class NewDBPUtils {
+public class TransactionManager {
 
     private static final ThreadLocal<Map<String, Connection>> threadLocal = new ThreadLocal();
 
 
-    public static Connection getConnection(String dataSource) throws SQLException, ClassNotFoundException {
+    public static synchronized Connection getConnection(String dataSource) throws SQLException, ClassNotFoundException {
+        Logger.info("base服务层-链接获取-"+dataSource);
         Connection connection = null;
 
         Map<String, Connection> dataSourceMap = threadLocal.get();
 
         if (dataSourceMap == null) {
-            dataSourceMap = new HashMap<>();
+            dataSourceMap = new ConcurrentHashMap<>();
             threadLocal.set(dataSourceMap);
         }
 
@@ -54,39 +56,46 @@ public class NewDBPUtils {
     }
 
 
-    public static void release() throws SQLException, ClassNotFoundException {
+    public static synchronized void release() throws SQLException, ClassNotFoundException {
+        Logger.info("base服务层-链接释放-all");
         Map<String, Connection> dataSourceMap = threadLocal.get();
 
-        List<Map.Entry<String, Connection>> removeList = new ArrayList<>();
+        if(dataSourceMap!=null) {
+            List<Map.Entry<String, Connection>> removeList = new ArrayList<>();
 
-        for (Map.Entry<String, Connection> entry : dataSourceMap.entrySet()) {
-            removeList.add(entry);
-        }
-        for (Map.Entry<String, Connection> entry : removeList) {
-            entry.getValue().close();
-            dataSourceMap.remove(entry.getKey());
+            for (Map.Entry<String, Connection> entry : dataSourceMap.entrySet()) {
+                removeList.add(entry);
+            }
+            for (Map.Entry<String, Connection> entry : removeList) {
+                entry.getValue().close();
+                dataSourceMap.remove(entry.getKey());
+            }
         }
 
     }
 
 
-    public static void commit() throws SQLException {
+    public static synchronized void commit() throws SQLException {
+        Logger.info("base服务层-事务提交-all");
         Map<String, Connection> dataSourceMap = threadLocal.get();
-        List<Connection> connectionList = dataSourceMap.values().stream().toList();
-        for (Connection conn : connectionList) {
-            try {
-                if (!conn.getAutoCommit()) {
-                    conn.commit();
+        if(dataSourceMap!=null) {
+            List<Connection> connectionList = dataSourceMap.values().stream().toList();
+            for (Connection conn : connectionList) {
+                try {
+                    if (!conn.getAutoCommit()) {
+                        conn.commit();
+                    }
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    Logger.error(e);
+                    conn.rollback();
                 }
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                Logger.error(e);
-                conn.rollback();
             }
         }
     }
 
-    public static boolean commit(String dataSource) throws SQLException, ClassNotFoundException {
+    public static synchronized boolean commit(String dataSource) throws SQLException, ClassNotFoundException {
+        Logger.info("base服务层-事务提交-"+dataSource);
         Connection conn = getConnection(dataSource);
         try {
             if (!conn.getAutoCommit()) {
@@ -102,7 +111,8 @@ public class NewDBPUtils {
         return true;
     }
 
-    public static void release(String dataSource) throws SQLException, ClassNotFoundException {
+    public static synchronized void release(String dataSource) throws SQLException, ClassNotFoundException {
+        Logger.info("base服务层-链接释放-"+dataSource);
         Connection conn = getConnection(dataSource);
         conn.close();
         Map<String, Connection> dataSourceMap = threadLocal.get();

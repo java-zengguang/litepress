@@ -16,6 +16,14 @@ public class BaseKeepClientHandler extends ChannelInboundHandlerAdapter {
         this.agreementClass = agreementClass;
     }
 
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        // 异常处理逻辑
+        cause.printStackTrace();
+        // 关闭Channel
+        ctx.close();
+    }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws InterruptedException {
         Logger.info("返回请求 message: " + msg);

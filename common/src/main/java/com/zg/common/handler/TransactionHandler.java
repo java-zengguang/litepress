@@ -1,10 +1,12 @@
 package com.zg.common.handler;
 
 import com.zg.common.annotation.Transaction;
+import com.zg.common.dao.database.TransactionManager;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.SQLException;
 
 /**
  * Created by Administrator on 2018/12/24 0024.
@@ -18,16 +20,13 @@ public class TransactionHandler implements InvocationHandler {
 
     }
 
-    public void commit() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class clazz = target.getClass().getSuperclass();
-        Method method = clazz.getMethod("commit");
-        method.invoke(target);
+    public void commit() throws  InvocationTargetException,  SQLException {
+
+        TransactionManager.commit();
     }
 
-    public void release() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class clazz = target.getClass().getSuperclass();
-        Method method = clazz.getMethod("release");
-        method.invoke(target);
+    public void release() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, SQLException, ClassNotFoundException {
+        TransactionManager.release();
     }
 
     @Override
