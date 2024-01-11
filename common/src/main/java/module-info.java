@@ -33,6 +33,7 @@ module common {
     requires com.fasterxml.jackson.databind;
     requires jsqlparser;
     requires pagehelper;
+    requires io.reactivex.rxjava3;
 
 
 }
