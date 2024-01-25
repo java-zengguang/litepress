@@ -246,12 +246,15 @@ public class NewJDBCUtil {
     }
 
 
-    private List transMetadata2Obj(List<List<MetadataEntity>> templeList) throws InstantiationException, IllegalAccessException {
+    private List transMetadata2Obj(List<List<MetadataEntity>> transMetadata2Obj) throws InstantiationException, IllegalAccessException {
+        return transMetadata2Obj(transMetadata2Obj,null);
+    }
+
+    private List transMetadata2Obj(List<List<MetadataEntity>> templeList,Class modelClass) throws InstantiationException, IllegalAccessException {
         List modelList = new ArrayList();
         if (templeList != null && templeList.size() > 0) {
             OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
             SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
-            Class modelClass = null;
             if (templeList != null && templeList.size() > 0) {
                 if (modelClass == null) {
                     modelClass = DynamicClass.getDynamicModel(templeList.get(0));
@@ -281,7 +284,7 @@ public class NewJDBCUtil {
             templeList = select2TempleList(sql);
         }
 
-        return transMetadata2Obj(templeList);
+        return transMetadata2Obj(templeList,modelClass);
     }
 
     //查询出列明，数据对应的list集合

@@ -2,6 +2,7 @@ package com.zg.common.dao.pool;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariPoolMXBean;
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.init.Config;
 import org.tinylog.Logger;
@@ -44,6 +45,8 @@ public class HikariCPImpl implements DataBaseInte {
                 dataSource = createDataSourece(dataSourceName);
                 dataSourceMap.put(dataSourceName, dataSource);
             }
+            HikariPoolMXBean pool = ((HikariDataSource) dataSource).getHikariPoolMXBean();
+            Logger.info("当前活动连接数：" + pool.getActiveConnections() + " 当前空闲连接数：" + pool.getIdleConnections() + " 当前总连接数：" + pool.getTotalConnections() + " 当前等待获取连接的线程数：" + pool.getThreadsAwaitingConnection());
             connection = dataSource.getConnection();
         } catch (Exception e) {
             Logger.error(e);
@@ -69,8 +72,9 @@ public class HikariCPImpl implements DataBaseInte {
         config.setValidationTimeout(5000);
         config.setConnectionTestQuery("SELECT 1 from  dual");
         config.setMaximumPoolSize(optionDB.maxPoolSize);
+        config.setMinimumIdle(1);
         config.setAutoCommit(false);
-
+        config.setIdleTimeout(600000);
         return new HikariDataSource(config);
     }
 

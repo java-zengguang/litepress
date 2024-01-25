@@ -12,4 +12,8 @@ module network.util {
 
     requires org.tinylog.api;
     requires guava;
+    requires io.netty.transport;
+    requires io.netty.codec;
+    requires io.netty.common;
+    requires io.netty.handler;
 }
