@@ -693,7 +693,7 @@ public class NewJDBCUtil {
 
 
     //执行批操作
-    private int[] batchOneSql(List<String> sqlList) throws SQLException, ClassNotFoundException {
+    public int[] batchOneSql(List<String> sqlList) throws SQLException, ClassNotFoundException {
         //清洗脚本
         for (String sql : sqlList) {
             sql = sql.replace(";", "");
@@ -713,8 +713,9 @@ public class NewJDBCUtil {
             i = stmt.executeBatch();
             Logger.info("--------------end batch-----------");
             stmt.close();
+            TransactionManager.commit(dataSource);
         } catch (Exception e) {
-            throw e;
+            Logger.info(e);
         } finally {
             TransactionManager.release(dataSource);
         }
