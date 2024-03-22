@@ -14,6 +14,7 @@ module common {
     exports com.zg.common.util.database;
     exports com.zg.common.error;
     exports com.zg.common.util.lock;
+    exports com.zg.common.bean.handle;
 
 
     requires org.apache.poi.poi;

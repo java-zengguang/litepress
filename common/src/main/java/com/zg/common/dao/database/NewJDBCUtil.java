@@ -671,7 +671,7 @@ public class NewJDBCUtil {
             pstmt.close();
             TransactionManager.commit(dataSource);
         } catch (Exception e) {
-
+            throw e;
         } finally {
             TransactionManager.release(dataSource);
         }
@@ -715,7 +715,7 @@ public class NewJDBCUtil {
             stmt.close();
             TransactionManager.commit(dataSource);
         } catch (Exception e) {
-            Logger.info(e);
+           throw e;
         } finally {
             TransactionManager.release(dataSource);
         }

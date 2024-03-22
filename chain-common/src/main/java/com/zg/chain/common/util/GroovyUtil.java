@@ -60,7 +60,7 @@ public class GroovyUtil {
     }
 
 
-    public static Object dealFieldObj(Object obj, String shell) throws CompilationFailedException, IOException, IllegalAccessException, NoSuchFieldException {
+    public static Object dealFieldObj(Object obj, String shell) throws Exception {
         Binding binding = new Binding();
         Class classes = obj.getClass();
         Field[] fields = classes.getFields();
@@ -68,10 +68,7 @@ public class GroovyUtil {
             binding.setVariable(field.getName(), field.get(obj));//将对象值绑定groovy脚本，后面用来解析
         }
         GroovyShell groovyShell = new GroovyShell(binding);
-
         return groovyShell.evaluate(shell);
-
-
     }
 
 }

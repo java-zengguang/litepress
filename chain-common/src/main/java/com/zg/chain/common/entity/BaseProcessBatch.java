@@ -13,7 +13,7 @@ public class BaseProcessBatch<T extends BaseProcess> {
     @NotCommitField
     public String systemflag; //系统标识  new-non-auto 非车新一代   old-non-auto  老非车  platform  平台
     @NotCommitField
-    public String functionFlag;  //  execute 执行   check 检查  rollback 回滚
+    public String functionflag;  //  execute 执行   check 检查  rollback 回滚
     @NotCommitField
     public String executebatchno;
     @NotCommitField

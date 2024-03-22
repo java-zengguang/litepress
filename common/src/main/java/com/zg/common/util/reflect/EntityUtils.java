@@ -2,6 +2,7 @@ package com.zg.common.util.reflect;
 
 import com.zg.common.annotation.*;
 import com.zg.common.bean.entity.OptionDB;
+import com.zg.common.bean.handle.TransHandler;
 import com.zg.common.dao.database.DataBaseUtil;
 import com.zg.common.init.Config;
 import org.tinylog.Logger;
@@ -918,6 +919,15 @@ public class EntityUtils {
             return value;
         }
 
+    }
+
+
+    public static List trans2MapList(List dataList, TransHandler transHandler) {
+        List list = new ArrayList<>();
+        dataList.forEach(x -> {
+            list.add(transHandler.trans(x));
+        });
+        return list;
     }
 
 

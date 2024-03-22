@@ -42,7 +42,7 @@ public class DoMainDriver {
                     T sinoSigSQLBatchEntity = classType.newInstance();
                     sinoSigSQLBatchEntity.executebatchno = batchNo;
                     sinoSigSQLBatchEntity.systemflag = systemFlag;
-                    sinoSigSQLBatchEntity.functionFlag = functionFlag;
+                    sinoSigSQLBatchEntity.functionflag = functionFlag;
                     sinoSigSQLBatchEntity.executeList = functionFlagMap.get(functionFlag);
                     resultList.add(sinoSigSQLBatchEntity);  //返回结果
                 }
@@ -76,7 +76,7 @@ public class DoMainDriver {
 
         AutoDriver autoDriver = null;
         try {
-            autoDriver = driverFactory.getDriver(baseProcessBatch.systemflag, baseProcessBatch.functionFlag);
+            autoDriver = driverFactory.getDriver(baseProcessBatch.systemflag, baseProcessBatch.functionflag);
             baseProcessBatch = autoDriver.doExecute(baseProcessBatch);
         } catch (Exception e) {
             Logger.error(e);

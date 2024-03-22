@@ -76,9 +76,8 @@ public class BeanFactory {
                         if (property.attributeValue("type") != null) {
                             String value = property.getStringValue();
                             //对密码做个加密
-                            if ("password".equals(name)) {
+                            if ("password".equals(name) && property.attributeValue("encryption") == null) {
                                 value = PassWordUtil.decrypt(value);
-
                             }
                             EntityUtils.setField(field, o, value);
                         }
