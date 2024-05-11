@@ -2,7 +2,7 @@ package com.zg.common.bean.factory;
 
 import com.zg.common.password.PassWordUtil;
 import com.zg.common.util.CommonUtil;
-import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.TransEntityTypeUtils;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.tinylog.Logger;
@@ -31,7 +31,8 @@ public class BeanFactory {
                         Field field = Class.forName(beanClassName).getField(name);
                         field.setAccessible(true);
                         if (property.attributeValue("type") != null) {
-                            EntityUtils.setField(field, o, property.getStringValue());
+                           Object value= TransEntityTypeUtils.translateType(property.getStringValue(), field.getType().getSimpleName());
+                           field.set(o,value);
                         }
                         if (property.attributeValue("ref") != null) {
                             field.set(o, BeanFactory.createBean(rootPath, property.attributeValue("ref")));
@@ -79,8 +80,7 @@ public class BeanFactory {
                             if ("password".equals(name) && property.attributeValue("encryption") == null) {
                                 value = PassWordUtil.decrypt(value);
                             }
-                            EntityUtils.setField(field, o, value);
-                        }
+                            field.set(o,TransEntityTypeUtils.translateType(value, field.getType().getSimpleName()));                        }
                         if (property.attributeValue("ref") != null) {
                             field.set(o, BeanFactory.createBean(property.attributeValue("ref")));
                         }

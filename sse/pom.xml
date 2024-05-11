@@ -1,33 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
-
-
-
     <parent>
         <groupId>com.zg.database</groupId>
         <artifactId>parent</artifactId>
         <version>${revision}</version>
     </parent>
-    <artifactId>web</artifactId>
+    <artifactId>sse</artifactId>
     <packaging>jar</packaging>
 
     <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <jetty.version>11.0.11</jetty.version>
-
     </properties>
 
     <dependencies>
-
-
         <dependency>
             <groupId>com.zg.database</groupId>
             <artifactId>common</artifactId>
             <version>${revision}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -44,40 +40,18 @@
             <version>${jetty.version}</version>
             <artifactId>jetty-servlets</artifactId>
         </dependency>
-
-
         <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>13.0</version>
-            <scope>compile</scope>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <version>2.31</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
-            <groupId>com.zg.database</groupId>
-            <artifactId>incache</artifactId>
-            <version>${revision}</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>22.0</version>
         </dependency>
-
-        <!--        <dependency>
-                    <groupId>org.cacheonix</groupId>
-                    <artifactId>cacheonix-core</artifactId>
-                    <version>2.3.1</version>
-                </dependency>-->
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-ext-jdk16</artifactId>
-            <version>1.45</version>
-        </dependency>
-
-
-
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>3.10.1</version>
-        </dependency>
-        <!--jstl标签依赖的jar包end -->
     </dependencies>
 
 </project>

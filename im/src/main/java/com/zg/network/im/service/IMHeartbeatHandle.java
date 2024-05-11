@@ -1,6 +1,7 @@
 package com.zg.network.im.service;
 
-import com.zg.common.util.reflect.EntityUtils;
+
+import com.zg.common.util.reflect.JsonUtils;
 import com.zg.network.bean.ChannelBean;
 import com.zg.network.bean.ZGMPBean;
 import com.zg.network.common.heartbeat.BaseHeartbeatHandle;
@@ -52,7 +53,7 @@ public class IMHeartbeatHandle extends BaseHeartbeatHandle {
                     response.methodType = "HEARTBEAT";
                     response.heartBeatID = channelBean.heartBeatID;
                     response.sendTime = new Date().getTime();
-                    json = EntityUtils.serialize(response);
+                    json = JsonUtils.objectToJsonString(response);
                     channel.writeAndFlush(json + "\r\n");
                     channelBean.time = new Date().getTime();
                     channelBean.count--;

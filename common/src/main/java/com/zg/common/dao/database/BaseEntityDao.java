@@ -7,8 +7,8 @@ import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.bean.entity.PageEntity;
 import com.zg.common.dao.assemble.SimpleAssemble;
 import com.zg.common.init.Config;
+import com.zg.common.util.reflect.DBUtils;
 import com.zg.common.util.reflect.DynamicClass;
-import com.zg.common.util.reflect.EntityUtils;
 import com.zg.common.util.reflect.ModelSQLUtils;
 import net.sf.jsqlparser.JSQLParserException;
 import org.tinylog.Logger;
@@ -53,7 +53,7 @@ public class BaseEntityDao extends BaseJDBCDao {
     }
 
     public int[] insertTables(List modelLIst, Class modelClass) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
-        String tableName = EntityUtils.getTableNameFromModel(modelClass);
+        String tableName = DBUtils.getTableNameFromModel(modelClass);
         return insertTables(modelLIst, modelClass, tableName);
     }
 
@@ -82,7 +82,7 @@ public class BaseEntityDao extends BaseJDBCDao {
     //查询
     public List select(String sql, Class modelClass) throws Exception {
         List<List<MetadataEntity>> templeList = null;
-        String tableName = EntityUtils.getTableNameFromModel(modelClass);
+        String tableName = DBUtils.getTableNameFromModel(modelClass);
         if (tableName != null) {
             templeList = select2TempleList(sql, tableName);
         } else {

@@ -1,7 +1,8 @@
 package com.zg.mvc.analysis;
 
 import com.alibaba.fastjson.JSON;
-import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.SerializeObjectUtils;
+import com.zg.common.util.reflect.TransEntityTypeUtils;
 import com.zg.mvc.annotation.controller.ParamEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,8 +41,8 @@ public class SimpleRequestAnalysis extends BaseRequestAnalysis {
             if (HttpServletResponse.class.isAssignableFrom(paramEntity.paramType)) {
                 return paramEntity.paramObject;
             }
-            if (EntityUtils.isPrimitive(paramEntity.paramType)) {
-                obj = EntityUtils.translateType((String) paramEntity.paramObject, paramEntity.paramType);
+            if (SerializeObjectUtils.isPrimitive(paramEntity.paramType)) {
+                obj = TransEntityTypeUtils.translateType((String) paramEntity.paramObject, paramEntity.paramType);
                 return obj;
             }
         } catch (Exception e) {

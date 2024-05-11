@@ -2,7 +2,7 @@ package com.zg.network.common.client;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.JsonUtils;
 import com.zg.network.common.cache.BaseMessageCache;
 import com.zg.network.entity.BaseRequest;
 import io.netty.bootstrap.Bootstrap;
@@ -68,7 +68,7 @@ public class BaseKeepClient {
     }
 
     public void sendRequest(BaseRequest request) throws   InterruptedException {
-        String json = EntityUtils.serialize(request.message);
+        String json = JsonUtils.objectToJsonString(request.message);
         Future<Channel> future = channelPool.acquire().await();
         if(future.isSuccess()){
             Channel channel=future.getNow();

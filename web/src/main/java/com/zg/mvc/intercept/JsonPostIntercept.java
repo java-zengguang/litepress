@@ -10,14 +10,14 @@ import java.io.IOException;
 public class JsonPostIntercept implements PostControllerIntercept {
     @Override
     public Object doInvoke(HttpServletRequest request, HttpServletResponse response, Object args) throws IOException {
-        String result = "";
+
         if (args instanceof MainModel) {
             if (args != null) {
                 response.setHeader("content-type", "application/json");
                 response.setCharacterEncoding("UTF-8");
-                result = JsonUtils.objectToJsonString(args);
+                return JsonUtils.objectToJsonString(args);
             }
         }
-        return result;
+        return args;
     }
 }

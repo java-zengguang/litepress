@@ -14,5 +14,6 @@ open module direction {
     requires curator.recipes;
     requires io.github.javadiffutils;
     requires org.tinylog.api;
+    requires io.netty.transport;
 
 }

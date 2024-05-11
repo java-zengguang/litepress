@@ -6,10 +6,7 @@ import com.zg.mvc.analysis.SimpleRequestAnalysis;
 import com.zg.mvc.annotation.controller.ParamEntity;
 import com.zg.mvc.annotation.controller.RequestBody;
 import com.zg.mvc.entity.MVCOption;
-import com.zg.mvc.intercept.FilePostIntercept;
-import com.zg.mvc.intercept.JsonPostIntercept;
-import com.zg.mvc.intercept.PostControllerIntercept;
-import com.zg.mvc.intercept.PreControllerIntercept;
+import com.zg.mvc.intercept.*;
 import com.zg.mvc.util.ResolveAnnotation;
 import com.zg.mvc.util.io.ResovleUploadThread;
 import jakarta.servlet.ServletException;
@@ -160,6 +157,7 @@ public abstract class BaseControllerAdapter implements ControllerAdapterInte {
             Object obj = routeRequest(request, response);
             obj = postIntercept(request, response, obj);
             analysisResponse(request, response, obj);
+
         } catch (Exception e) {
             Logger.error(e);
         }
@@ -170,13 +168,15 @@ public abstract class BaseControllerAdapter implements ControllerAdapterInte {
     public void analysisResponse(HttpServletRequest request, HttpServletResponse response, Object resultObj) throws IOException, ServletException {
         //处理返回参数
 
-        if (resultObj instanceof String) {
+        if (resultObj != null && resultObj instanceof String) {
             PrintWriter out = response.getWriter();
             out.print(resultObj);
             out.flush();
             out.close();
             return;
         }
+
+
     }
 
 }

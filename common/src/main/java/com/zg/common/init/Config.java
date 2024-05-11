@@ -1,7 +1,7 @@
 package com.zg.common.init;
 
 import com.zg.common.bean.factory.BeanFactory;
-import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.TransEntityTypeUtils;
 import org.tinylog.Logger;
 
 import java.io.IOException;
@@ -71,7 +71,7 @@ public class Config {
             String name = field.getName();
             String value = properties.getProperty(name);
             if (value != null) {
-                Object objValue = EntityUtils.translateType(value, field.getType());
+                Object objValue = TransEntityTypeUtils.translateType(value, field.getType());
                 field.set(obj, objValue);
             }
 

@@ -2,7 +2,7 @@ package com.zg.network.im.client;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.JsonUtils;
 import com.zg.common.util.url.GetServerRealPathUnit;
 import com.zg.incache.prestuctural.manager.CacheManager;
 import com.zg.network.bean.UserBean;
@@ -103,7 +103,7 @@ public class IMClientHandler extends BaseKeepClientHandler {
                     jsonObject.put("filePath", response.message);
                     message = JSON.toJSONString(jsonObject);
                     response.message = message;
-                    String json = EntityUtils.serialize(response);
+                    String json = JsonUtils.objectToJsonString(response);
                     ctx.writeAndFlush(json + "\r\n");
                     break;
                 }
@@ -129,7 +129,7 @@ public class IMClientHandler extends BaseKeepClientHandler {
                     request.uuid = response.uuid;
                     request.message = "维持心跳";
                     request.heartBeatID = response.heartBeatID;
-                    json = EntityUtils.serialize(request);
+                    json = JsonUtils.objectToJsonString(request);
                     ctx.writeAndFlush(json + "\r\n");
                     break;
                 }
@@ -138,7 +138,7 @@ public class IMClientHandler extends BaseKeepClientHandler {
                     break;
                 }
             }
-            BaseTranslationProtocol baseTranslationProtocol = (BaseTranslationProtocol) EntityUtils.unSerialize((String) msg, agreementClass);
+            BaseTranslationProtocol baseTranslationProtocol = (BaseTranslationProtocol) JsonUtils.jsonToObject((String) msg, agreementClass);
             BaseMessageCache.dealResponse(baseTranslationProtocol);
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);

@@ -14,13 +14,10 @@ import java.util.stream.Collectors;
 public class ModelSQLUtils {
 
 
-    public static void fillSql(Object models) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
-
-    }
 
 
     public static String insert(Object model, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
-        String tableName = EntityUtils.getTableNameFromModel(model.getClass());
+        String tableName = DBUtils.getTableNameFromModel(model.getClass());
         return insert(model, tableName, dbType);
     }
 
@@ -128,7 +125,7 @@ public class ModelSQLUtils {
         }
         String sql;
         String condition = " ";
-        String tableName = EntityUtils.getTableNameFromModel(model.getClass());
+        String tableName = DBUtils.getTableNameFromModel(model.getClass());
         List<String> memberList = new ArrayList();
         List<String> valuesList = new ArrayList();
         Assemble assemble = new SimpleAssemble(dbType);
@@ -180,7 +177,7 @@ public class ModelSQLUtils {
     public static String updateByPK(Object model, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
         String sql;
         String condition = " ";
-        String tableName = EntityUtils.getTableNameFromModel(model.getClass());
+        String tableName = DBUtils.getTableNameFromModel(model.getClass());
         List<String> memberList = new ArrayList();
         List<String> valuesList = new ArrayList();
         Assemble assemble = new SimpleAssemble(dbType);
@@ -234,7 +231,7 @@ public class ModelSQLUtils {
     public static String updateByPK(Object newModel, Object oldModel, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
         String sql;
         String condition = " ";
-        String tableName = EntityUtils.getTableNameFromModel(newModel.getClass());
+        String tableName = DBUtils.getTableNameFromModel(newModel.getClass());
         List<String> memberList = new ArrayList();
         List<String> valuesList = new ArrayList();
         Assemble assemble = new SimpleAssemble(dbType);
@@ -279,7 +276,7 @@ public class ModelSQLUtils {
         for (String term : terms) {
             condition = condition + " and " + term;
         }
-        String tableName = EntityUtils.getTableNameFromModel(model.getClass());
+        String tableName = DBUtils.getTableNameFromModel(model.getClass());
         List<String> memberList = new ArrayList();
         List<String> valuesList = new ArrayList();
         Assemble assemble = new SimpleAssemble(dbType);
@@ -337,79 +334,10 @@ public class ModelSQLUtils {
     }
 
 
-    public static List replaceListSql(List source, List target, String dbType) throws Exception {
-
-        List deleteList = new ArrayList();
-        for (Object o : target) {
-            o = EntityUtils.translateNull(o);
-        }
-        for (Object o : source) {
-            o = EntityUtils.translateNull(o);
-        }
-
-        for (Object o : target) {
-            if (!EntityUtils.contains(o, source)) {
-                deleteList.add(o);
-            }
-        }
-        List addList = new ArrayList();
-        for (Object o : source) {
-            if (!EntityUtils.contains(o, target)) {
-                addList.add(o);
-            }
-        }
-        List<String> sqlList = new ArrayList<String>();
-        for (Object o : deleteList) {
-            String sql = ModelSQLUtils.delete(o, dbType);
-            sqlList.add(sql);
-        }
-        for (Object o : addList) {
-            String sql = ModelSQLUtils.insert(o, dbType);
-            sqlList.add(sql);
-        }
-
-        Logger.info("SQLList   " + sqlList);
-
-        return sqlList;
 
 
-    }
 
-    private static boolean isTrue(String string, Object object) {
-        return true;
-    }
 
-    private static synchronized String resovleSQL(String sql, String key, Object object) throws NoSuchFieldException, IllegalAccessException {
 
-        if (sql.contains(key + "{")) {
-            String bracket = sql.substring(sql.indexOf(key + "{") + key.length() + 1, sql.indexOf("}", sql.indexOf(key + "{")));
-            if ("$if".equals(key)) {
-                if (isTrue(bracket, object)) {
-                    sql = sql.replace("$if{" + bracket + "}", bracket);
-                } else {
-                    sql = sql.replace("$if{" + bracket + "}", "");
-                }
-            } else if ("#".equals(key)) {
-                if (object instanceof Map) {
-                    Map<String, String> map = (Map) object;
-                    sql = sql.replace("#{" + bracket + "}", map.get(bracket.trim()));
-                } else {
-                    Field field = object.getClass().getField(bracket.trim());
-                    sql = sql.replace("#{" + bracket + "}", EntityUtils.getFieldObject(field, object));
-                }
-            }
-            return sql = resovleSQL(sql, key, object);   //递归执行
-        } else {
-            return sql;
-        }
-
-    }
-
-    public static String dynamicSQL(String sql, Object object) throws NoSuchFieldException, IllegalAccessException {
-        sql = resovleSQL(sql, "#", object);
-        sql = resovleSQL(sql, "$if", object);
-
-        return sql;
-    }
 
 }

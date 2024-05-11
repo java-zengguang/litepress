@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.eclipse.jetty.servlets.EventSource;
 import org.tinylog.ThreadContext;
 
 import java.io.IOException;
@@ -20,11 +21,13 @@ public class AdapterServlet extends HttpServlet {
 
     ControllerAdapterInte simpleControllerAdapter = SimpleControllerAdapter.getInstance();
 
+
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws  IOException {
         UUID uuid = UUID.randomUUID();
         ThreadContext.put("threadID", uuid);
-        request.setCharacterEncoding("UTF-8");//传值编码
-        response.setContentType("text/html;charset=UTF-8");//设置传输编码
+       // request.setCharacterEncoding("UTF-8");//传值编码
+       // response.setContentType("text/html;charset=UTF-8");//设置传输编码
         //ControllerAdapter.resovleRequest(request, response);
 
         simpleControllerAdapter.doMain(request, response);
@@ -34,4 +37,6 @@ public class AdapterServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws  IOException {
         doPost(request, response);
     }
+
+
 }

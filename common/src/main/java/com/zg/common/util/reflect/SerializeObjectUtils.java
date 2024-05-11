@@ -2,8 +2,10 @@ package com.zg.common.util.reflect;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +24,33 @@ public class SerializeObjectUtils implements Cloneable, Serializable {
     }
 
 
+    public static boolean isPrimitive(Field field) {
+        Class type = field.getType();
+        return isPrimitive(type);
+    }
+
+    public static boolean isPrimitive(Class type) {
+        // Class type = object.getClass();
+        if (type.isPrimitive()) {
+            return true;
+        }
+        if (type == Integer.class) {
+            return true;
+        }
+        if (type == Boolean.class) {
+            return true;
+        }
+        if (type == String.class) {
+            return true;
+        }
+        if (type == Date.class) {
+            return true;
+        }
+        return type == BigDecimal.class;
+    }
+
+
+
     //映射实体类
     public static List setMember(List<Map> list, Class modelClass) throws IllegalArgumentException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
 
@@ -34,7 +63,7 @@ public class SerializeObjectUtils implements Cloneable, Serializable {
 
             for (Field f : model_fields) {
 
-                if (EntityUtils.isPrimitive(f)) {
+                if (isPrimitive(f)) {
                     f.setAccessible(true);
                     if (map.get(f.getName()) != null) {
                         //   f.set(Model, map.get(f.getName()));
@@ -49,7 +78,7 @@ public class SerializeObjectUtils implements Cloneable, Serializable {
 
                 }
 
-                if (EntityUtils.isPrimitive(f)) {
+                if (isPrimitive(f)) {
                     f.setAccessible(true);
                     if (map.get(f.getName().toUpperCase()) != null) {
                         // f.set(model, map.get(f.getName()));
@@ -80,6 +109,11 @@ public class SerializeObjectUtils implements Cloneable, Serializable {
         return ois.readObject();
 
     }
+
+
+
+
+
 
 
 }

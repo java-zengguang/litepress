@@ -15,24 +15,19 @@
         <module>direction</module>
         <module>incache</module>
         <module>network-util</module>
-        <module>im</module>
-        <module>sso</module>
-        <module>login-provider</module>
+
         <module>groovy-common</module>
         <module>chain-common</module>
         <module>event-common</module>
+        <module>sse</module>
 
-        <!--        <module>webdemo</module>
-                <module>webiodemo</module>
-                <module>scala</module>
-                <module>admin</module>-->
     </modules>
 
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
-        <revision>1.0.7</revision>
+        <revision>1.0.8</revision>
     </properties>
 
 

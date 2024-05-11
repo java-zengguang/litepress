@@ -6,8 +6,9 @@ import com.zg.common.dao.assemble.SimpleAssemble;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
+import com.zg.common.util.reflect.DBUtils;
 import com.zg.common.util.reflect.DynamicClass;
-import com.zg.common.util.reflect.EntityUtils;
+
 import com.zg.common.util.reflect.ModelSQLUtils;
 import com.zg.common.util.reflect.SerializeObjectUtils;
 import org.tinylog.Logger;
@@ -204,7 +205,7 @@ public class NotColseJDBCUtil {
     }
 
     private int[] insertTables(List modelLIst, Class modelClass) throws SQLException, ClassNotFoundException {
-        String tableName = EntityUtils.getTableNameFromModel(modelClass);
+        String tableName = DBUtils.getTableNameFromModel(modelClass);
         int[] result = new int[0];
         try {
             result = insertTables(modelLIst, modelClass, tableName);

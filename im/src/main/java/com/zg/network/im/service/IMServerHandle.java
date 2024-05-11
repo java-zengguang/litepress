@@ -1,7 +1,8 @@
 package com.zg.network.im.service;
 
 import com.alibaba.fastjson.JSON;
-import com.zg.common.util.reflect.EntityUtils;
+
+import com.zg.common.util.reflect.JsonUtils;
 import com.zg.network.bean.ChannelBean;
 import com.zg.network.bean.ZGMPBean;
 import com.zg.network.common.service.BaseKeepServiceHandler;
@@ -35,7 +36,7 @@ public class IMServerHandle extends BaseKeepServiceHandler {
     @Override
     public void sendMsg(Channel ctx, String msg) throws Exception {
         // Logger.info(" get msg >> " + msg);
-        ZGMPBean request = (ZGMPBean) EntityUtils.unSerialize(msg, ZGMPBean.class);//把JSON数据进行反序列化
+        ZGMPBean request = (ZGMPBean) JsonUtils.jsonToObject(msg, ZGMPBean.class);//把JSON数据进行反序列化
         ZGMPBean response = new ZGMPBean("RESPONSE");
         response.sendTime = System.currentTimeMillis();
         request.sendTime = System.currentTimeMillis();
@@ -43,7 +44,7 @@ public class IMServerHandle extends BaseKeepServiceHandler {
         if (request == null) {
             response.status = -1;
             response.errorStr = "Request error";
-            String json = EntityUtils.serialize(response);
+            String json = JsonUtils.objectToJsonString(response);
             ctx.writeAndFlush(json);
             return;
         }
@@ -83,7 +84,7 @@ public class IMServerHandle extends BaseKeepServiceHandler {
                             if (request.operationType != null && !"".equals(request.operationType)) {
                                 request.methodType = request.operationType;
                             }
-                            String json = EntityUtils.serialize(request);
+                            String json = JsonUtils.objectToJsonString(request);
                             channel.writeAndFlush(json + "\r\n");  //转发数据
                         }
                         response.message = "Send ok";
@@ -99,13 +100,13 @@ public class IMServerHandle extends BaseKeepServiceHandler {
                             if (request.operationType != null && !"".equals(request.operationType)) {
                                 request.methodType = request.operationType;
                             }
-                            String json = EntityUtils.serialize(request);
+                            String json = JsonUtils.objectToJsonString(request);
                             channel.writeAndFlush(json + "\r\n");  //转发数据
                             response.message = "Send ok";
                         }
                     }
                     response.methodType = "SYS";
-                    String resonseJson = EntityUtils.serialize(response);
+                    String resonseJson = JsonUtils.objectToJsonString(response);
                     ctx.writeAndFlush(resonseJson + "\r\n");
                     break;
                 }
@@ -124,7 +125,7 @@ public class IMServerHandle extends BaseKeepServiceHandler {
                         response.errorStr = "Logout error";
 
                     }
-                    String json = EntityUtils.serialize(response);
+                    String json = JsonUtils.objectToJsonString(response);
                     ctx.writeAndFlush(json + "\r\n");
                     break;
                 }
@@ -163,7 +164,7 @@ public class IMServerHandle extends BaseKeepServiceHandler {
                 default: {
                     response.errorStr = "Status error";
                     response.status = -1; //状态码
-                    String json = EntityUtils.serialize(response);
+                    String json = JsonUtils.objectToJsonString(response);
                     ctx.writeAndFlush(json + "\r\n");
                     break;
                 }

@@ -155,7 +155,63 @@ public class DataBaseUtil {
             } else {
                 columnInfo.isPK = "0";
             }
-            String columnLine = columnInfo.columnName + "  " + columnInfo.columnType;
+            String columnLine ="`"+ columnInfo.columnName +"`"+ "  " + columnInfo.columnType;
+
+            if (!Arrays.asList("DATE", "ENUM", "TIME", "DATETIME", "BOOL", "BOOLEAN", "TEXT", "BLOB").contains(columnInfo.columnType) && !("NUMBER".equals(columnInfo.columnType) && "-127".equals(columnInfo.decimalDigits) && "0".equals(columnInfo.columnSize))) {
+                columnLine = columnLine + "(" + columnInfo.columnSize;
+                if (columnInfo.decimalDigits != null) {
+                    columnLine = columnLine + "," + columnInfo.decimalDigits;
+                }
+                columnLine = columnLine + ") ";
+            }
+            if ("NO".equals(columnInfo.isNullAble)) {
+                columnLine = columnLine + " not null ";
+            }
+            columnInfo.columnLine = columnLine;
+            columnInfoList.add(columnInfo);
+        }
+        tableInfo.columnList = columnInfoList;
+        tableInfo.pkColumnList = pkColumnList;
+        TransactionManager.release(dataSource);
+        return tableInfo;
+    }
+
+
+    public static TableInfo getUserTableInfo(String dataSource, String tableName) throws SQLException, ClassNotFoundException {
+        Connection conn = TransactionManager.getConnection(dataSource);
+        DatabaseMetaData dbmd = conn.getMetaData();
+        String currentUser = dbmd.getUserName();
+
+        TableInfo tableInfo = new TableInfo();
+        tableInfo.tableName = tableName;
+
+        //获取组件
+        Set<String> pkSet = new HashSet<>();
+        List<ColumnInfo> pkColumnList = new ArrayList<>();
+        DatabaseMetaData dmd = conn.getMetaData();
+
+        ResultSet dmdrs = dmd.getPrimaryKeys(null, currentUser, tableName.toUpperCase());
+        while (dmdrs.next()) {
+            ColumnInfo columnInfo = new ColumnInfo();
+            columnInfo.columnName = dmdrs.getString("COLUMN_NAME");
+            pkColumnList.add(columnInfo);
+            pkSet.add(columnInfo.columnName);
+        }
+        ResultSet rs = dbmd.getColumns(null, currentUser, tableName.toUpperCase(), "%");
+        List<ColumnInfo> columnInfoList = new ArrayList<>();
+        while (rs.next()) {
+            ColumnInfo columnInfo = new ColumnInfo();
+            columnInfo.columnName = rs.getString("COLUMN_NAME");
+            columnInfo.columnType = rs.getString("TYPE_NAME");
+            columnInfo.isNullAble = rs.getString("IS_NULLABLE");
+            columnInfo.columnSize = rs.getString("COLUMN_SIZE");
+            columnInfo.decimalDigits = rs.getString("DECIMAL_DIGITS");
+            if (pkSet.contains(columnInfo.columnName)) {
+                columnInfo.isPK = "1";
+            } else {
+                columnInfo.isPK = "0";
+            }
+            String columnLine ="`"+ columnInfo.columnName +"`"+ "  " + columnInfo.columnType;
 
             if (!Arrays.asList("DATE", "ENUM", "TIME", "DATETIME", "BOOL", "BOOLEAN", "TEXT", "BLOB").contains(columnInfo.columnType) && !("NUMBER".equals(columnInfo.columnType) && "-127".equals(columnInfo.decimalDigits) && "0".equals(columnInfo.columnSize))) {
                 columnLine = columnLine + "(" + columnInfo.columnSize;

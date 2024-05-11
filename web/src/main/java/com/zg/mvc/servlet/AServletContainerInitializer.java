@@ -16,11 +16,15 @@ public class AServletContainerInitializer implements ServletContainerInitializer
     @Override
     public void onStartup(Set<Class<?>> set, ServletContext servletContext) throws ServletException {
 
-        if (true) {
-            Logger.info("加载servlet");
-            ServletRegistration.Dynamic servletDynamic = servletContext.addServlet("AdapterServlet", new AdapterServlet());
-            servletDynamic.addMapping("/");
 
-        }
+        Logger.info("加载servlet");
+
+        ServletRegistration.Dynamic servletDynamic = servletContext.addServlet("AdapterServlet", new AdapterServlet());
+        servletDynamic.addMapping("/");
+
+
+        ServletRegistration.Dynamic sourceServlet = servletContext.addServlet("AEventSourceServlet", new AdapterServlet());
+        servletDynamic.addMapping("/sse");
+
     }
 }

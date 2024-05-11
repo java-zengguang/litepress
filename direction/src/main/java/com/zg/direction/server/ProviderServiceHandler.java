@@ -2,7 +2,7 @@ package com.zg.direction.server;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.JsonUtils;
 import com.zg.direction.entity.DTPRequest;
 import com.zg.direction.entity.DTPResponse;
 import com.zg.network.common.service.BaseKeepServiceHandler;
@@ -55,11 +55,11 @@ public class ProviderServiceHandler extends BaseKeepServiceHandler {
 
 
     private String serialize(Object object) {
-        return EntityUtils.serialize(object);
+       return JsonUtils.objectToJsonString(object);
     }
 
     private Object unSerialize(String str, Class classType) {
-        return EntityUtils.unSerialize(str, classType);
+        return JsonUtils.jsonToObject(str, classType);
     }
 
 

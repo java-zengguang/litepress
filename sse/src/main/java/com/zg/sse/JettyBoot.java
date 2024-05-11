@@ -1,17 +1,15 @@
-package com.zg.mvc.servlet;
+package com.zg.sse;
 
 import com.zg.common.annotation.ScanAnnotation;
 import com.zg.common.util.CommonUtil;
+import com.zg.sse.servlet.AEventSourceServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.server.session.DefaultSessionIdManager;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.eclipse.jetty.util.resource.Resource;
 import org.tinylog.Logger;
 
 
@@ -49,7 +47,9 @@ public class JettyBoot {
 
             if (true) {
                 ServletHandler servletHandler = new ServletHandler();
-                servletHandler.addServletWithMapping(AdapterServlet.class, "/");
+                servletHandler.addServletWithMapping(AEventSourceServlet.class,"/sse");
+
+
                 //过滤
                 if (true) {
                     CrossOriginFilter crossOriginFilter = new CrossOriginFilter();
@@ -69,19 +69,9 @@ public class JettyBoot {
 
                     servletHandler.addFilter(filterHolder, filterMapping);
                 }
-                server.insertHandler(servletHandler);
-            }
 
-            if (true) {
-                ResourceHandler resourceHandler = new ResourceHandler();
-                String path = CommonUtil.getRootPath();
-                if (System.getProperty("projectRootPath") != null) {
-                    path = System.getProperty("projectRootPath");
-                }
-                resourceHandler.setBaseResource(Resource.newResource(path + "static"));
-                resourceHandler.setPathInfoOnly(true);
-                resourceHandler.setDirAllowed(true);
-                server.insertHandler(resourceHandler);
+                server.insertHandler(servletHandler);
+
             }
 
 

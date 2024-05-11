@@ -7,4 +7,5 @@ module im {
     requires common;
 
     requires org.tinylog.api;
+    requires io.netty.transport;
 }

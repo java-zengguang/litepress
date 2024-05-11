@@ -6,7 +6,8 @@ import com.zg.common.annotation.PrimaryKey;
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
-import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.DBUtils;
+
 import org.tinylog.Logger;
 
 import java.lang.reflect.Field;
@@ -41,7 +42,7 @@ public abstract class BaseAssemble implements Assemble {
     public List<MetadataEntity> analysis(Object obj) throws IllegalAccessException, InstantiationException {
         List<MetadataEntity> metadataEntityList = new ArrayList<>();
         Class classes = obj.getClass();
-        String tableName = EntityUtils.getTableNameFromModel(classes);
+        String tableName = DBUtils.getTableNameFromModel(classes);
         String entityName = classes.getSimpleName();
         Field[] fields = classes.getFields();
         EntityDaoTemplate simpleEntityDaoTemplate = EntityDaoTemplateFactory.getTemplate(dbType);

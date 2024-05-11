@@ -35,7 +35,7 @@ public class EntityUtils {
 
         if (value != null && !"null".equals(value) && !"".equals(value)) {
             if (value instanceof String) {
-                value = translateType((String) value, fieldType);
+                value = TransEntityTypeUtils.translateType((String) value, fieldType);
             }
             if ("String".equals(fieldType)) {
                 value = value.toString();
@@ -82,64 +82,8 @@ public class EntityUtils {
     }
 
 
-    public static Object translateNull(Object o) throws IllegalArgumentException, IllegalAccessException {
-        Field[] fields = o.getClass().getFields();
-        for (Field field : fields) {
-            if (String.valueOf(field.get(o)).equals(""))
-                field.set(o, "null");
-        }
-        return o;
-    }
 
 
-    public static Object translateType(String value, Class type) {
-        String fieldType = type.getSimpleName();
-        return translateType(value, fieldType);
-    }
-
-    private static Object translateType(String value, String fieldType) {
-
-        Object object = null;
-
-        switch (fieldType) {
-            case "int": {
-                object = Integer.valueOf(value);
-                break;
-            }
-            case "Integer": {
-                object = Integer.valueOf(value);
-                break;
-            }
-            case "String": {
-                object = value;
-                break;
-            }
-            case "long": {
-                object = Long.valueOf(value);
-                break;
-            }
-            case "BigDecimal": {
-                object = new BigDecimal(value);
-                break;
-            }
-            case "boolean": {
-                object = Boolean.valueOf(value);
-                break;
-            }
-            case "Date": {
-
-                object = sdf.format(value);
-                break;
-            }
-            default: {
-
-                object = value;
-                break;
-            }
-
-        }
-        return object;
-    }
 
 
     //将数据库类型转化为Java类型
@@ -181,35 +125,6 @@ public class EntityUtils {
         return s;
     }
 
-
-    public static boolean isPrimitive(Field field) {
-        Class type = field.getType();
-        return isPrimitive(type);
-    }
-
-    public static boolean isPrimitive(Object object) {
-        return isPrimitive(object.getClass());
-    }
-
-    public static boolean isPrimitive(Class type) {
-        // Class type = object.getClass();
-        if (type.isPrimitive()) {
-            return true;
-        }
-        if (type == Integer.class) {
-            return true;
-        }
-        if (type == Boolean.class) {
-            return true;
-        }
-        if (type == String.class) {
-            return true;
-        }
-        if (type == Date.class) {
-            return true;
-        }
-        return type == BigDecimal.class;
-    }
 
 
     public static boolean isMap(Field field) {
@@ -407,18 +322,7 @@ public class EntityUtils {
     }
 
 
-    public static String getTableNameFromModel(Class modelClass) {
-        Model model = (Model) modelClass.getAnnotation(Model.class);
-        String tableName = null;
-        if (model != null) {
-            tableName = model.tableName();
-            if (tableName == null || tableName.equals("")) {
-                tableName = modelClass.getSimpleName();
-            }
-        }
 
-        return tableName;
-    }
 
 
     public static List<String> getNoCommitFields(Class modelClass) {
@@ -551,19 +455,6 @@ public class EntityUtils {
     }
 
 
-    public static String serialize(Object object) {
-
-
-        return JsonUtils.objectToJsonString(object);
-
-    }
-
-    public static Object unSerialize(String str, Class classType) {
-        Object value = null;
-        value = JsonUtils.jsonToObject(str, classType);
-        return value;
-    }
-
 
     private static String getFieldOrcale(Field field, Object object) throws IllegalArgumentException, IllegalAccessException {
         String value = null;
@@ -611,7 +502,7 @@ public class EntityUtils {
         String value = null;
         String fieldType = null;
         Map<String, String> tableInfo = null;
-        String tableName = EntityUtils.getTableNameFromModel(object.getClass());
+        String tableName = DBUtils.getTableNameFromModel(object.getClass());
         tableInfo = DataBaseUtil.getTableInfo(tableName);
 
         if (tableInfo != null) {
@@ -695,7 +586,7 @@ public class EntityUtils {
 
         Map<String, String> tableInfo = null;
 
-        String tableName = EntityUtils.getTableNameFromModel(object.getClass());
+        String tableName = DBUtils.getTableNameFromModel(object.getClass());
         tableInfo = DataBaseUtil.getTableInfo(tableName);
 
         String fieldType = null;
@@ -770,7 +661,7 @@ public class EntityUtils {
 
         Map<String, String> tableInfo = null;
 
-        String tableName = EntityUtils.getTableNameFromModel(object.getClass());
+        String tableName = DBUtils.getTableNameFromModel(object.getClass());
         tableInfo = DataBaseUtil.getTableInfo(tableName);
 
         String fieldType = null;

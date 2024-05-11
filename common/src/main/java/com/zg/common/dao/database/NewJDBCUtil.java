@@ -12,10 +12,7 @@ import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
 import com.zg.common.util.database.ParseSQLUtils;
-import com.zg.common.util.reflect.DynameicSerializer;
-import com.zg.common.util.reflect.DynamicClass;
-import com.zg.common.util.reflect.EntityUtils;
-import com.zg.common.util.reflect.ModelSQLUtils;
+import com.zg.common.util.reflect.*;
 import net.sf.jsqlparser.JSQLParserException;
 import org.tinylog.Logger;
 
@@ -276,7 +273,7 @@ public class NewJDBCUtil {
     public List select(String sql, Class modelClass) throws Exception {
         List<List<MetadataEntity>> templeList = null;
 
-        String tableName = EntityUtils.getTableNameFromModel(modelClass);
+        String tableName = DBUtils.getTableNameFromModel(modelClass);
 
         if (tableName != null) {
             templeList = select2TempleList(sql, tableName);
@@ -566,7 +563,7 @@ public class NewJDBCUtil {
 
 
     public int[] insertTables(List modelLIst, Class modelClass) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String tableName = EntityUtils.getTableNameFromModel(modelClass);
+        String tableName = DBUtils.getTableNameFromModel(modelClass);
         int[] result = new int[0];
         result = insertTables(modelLIst, modelClass, tableName);
 
