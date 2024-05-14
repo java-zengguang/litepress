@@ -15,7 +15,6 @@
         <module>direction</module>
         <module>incache</module>
         <module>network-util</module>
-
         <module>groovy-common</module>
         <module>chain-common</module>
         <module>event-common</module>
