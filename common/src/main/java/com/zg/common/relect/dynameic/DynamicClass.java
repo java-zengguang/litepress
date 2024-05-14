@@ -1,4 +1,4 @@
-package com.zg.common.util.reflect;
+package com.zg.common.relect.dynameic;
 
 
 import com.zg.common.bean.entity.MetadataEntity;

@@ -1,7 +1,9 @@
 package com.zg.chain.common.util;
 
 
-import com.zg.common.util.reflect.EntityUtils;
+
+import com.zg.common.util.reflect.EntityListUtils;
+import com.zg.common.util.reflect.TransEntityTypeUtils;
 import org.tinylog.Logger;
 
 import java.util.Collection;
@@ -18,8 +20,8 @@ public class DiffEntityMap {
     public Map deffEntityMap(Collection newCol, Collection oldCol) throws IllegalAccessException {
 
 
-        Map<String, Object> newDataMap = EntityUtils.transToPKMap(newCol);
-        Map<String, Object> oldDataMap = EntityUtils.transToPKMap(oldCol);
+        Map<String, Object> newDataMap = EntityListUtils.transToPKMap(newCol);
+        Map<String, Object> oldDataMap = EntityListUtils.transToPKMap(oldCol);
         Map<Object, Object> updateMap = new HashMap<>(); //新老数据对
 
         Set<Map.Entry<String, Object>> entrySet = oldDataMap.entrySet();

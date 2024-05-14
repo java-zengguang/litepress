@@ -1,8 +1,13 @@
 package com.zg.common.util.reflect;
 
+import com.zg.common.annotation.AutoIncrease;
+import com.zg.common.annotation.PrimaryKey;
+import com.zg.common.bean.handle.TransHandler;
+
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class TransEntityTypeUtils {
     public static String dateFormat = "yyyy-MM-dd HH:mm:ss";
@@ -56,6 +61,25 @@ public class TransEntityTypeUtils {
         return object;
     }
 
+    public static boolean isPrimitive(Class type) {
+        // Class type = object.getClass();
+        if (type.isPrimitive()) {
+            return true;
+        }
+        if (type == Integer.class) {
+            return true;
+        }
+        if (type == Boolean.class) {
+            return true;
+        }
+        if (type == String.class) {
+            return true;
+        }
+        if (type == Date.class) {
+            return true;
+        }
+        return type == BigDecimal.class;
+    }
 
     public static Object translateNull(Object o) throws IllegalArgumentException, IllegalAccessException {
         Field[] fields = o.getClass().getFields();
@@ -65,6 +89,8 @@ public class TransEntityTypeUtils {
         }
         return o;
     }
+
+
 
 
 }

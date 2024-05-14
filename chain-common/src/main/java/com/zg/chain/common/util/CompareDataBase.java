@@ -2,7 +2,7 @@
 package com.zg.sqlcheck.common.util;
 
 import com.zg.common.proxy.ProxyUtils;
-import com.zg.common.util.io.POIUtils;
+import com.zg.io.poi.POIUtils;
 
 import com.zg.sqlcheck.model.entity.DatabaseTableStructureEntity;
 import com.zg.sqlcheck.common.service.DatabaseTableStrcutureService;

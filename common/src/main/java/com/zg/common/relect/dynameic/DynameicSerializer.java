@@ -3,7 +3,7 @@
 // (powered by FernFlower decompiler)
 //
 
-package com.zg.common.util.reflect;
+package com.zg.common.relect.dynameic;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoException;

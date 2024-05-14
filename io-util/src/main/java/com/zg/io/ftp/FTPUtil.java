@@ -1,4 +1,4 @@
-package com.zg.common.util.io;
+package com.zg.io.ftp;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;

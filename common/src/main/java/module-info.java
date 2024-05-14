@@ -3,7 +3,7 @@ module common {
     exports com.zg.common.bean.entity;
     exports com.zg.common.util;
     exports com.zg.common.init;
-    exports com.zg.common.util.io;
+
     exports com.zg.common.bean.factory;
     exports com.zg.common.annotation;
     exports com.zg.common.dao.database;
@@ -15,17 +15,16 @@ module common {
     exports com.zg.common.error;
     exports com.zg.common.util.lock;
     exports com.zg.common.bean.handle;
+    exports com.zg.common.relect.dynameic;
 
 
-    requires org.apache.poi.poi;
-    requires org.apache.poi.ooxml;
     requires commons.collections;
     requires java.sql;
     requires dom4j;
     requires fastjson;
     requires java.compiler;
     requires cglib;
-    requires org.apache.commons.net;
+
     requires com.esotericsoftware.kryo;
     requires druid;
     requires java.naming;

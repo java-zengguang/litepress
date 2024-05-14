@@ -11,6 +11,8 @@ import com.zg.common.dao.assemble.SimpleAssemble;
 import com.zg.common.dao.template.EntityDaoTemplate;
 import com.zg.common.dao.template.EntityDaoTemplateFactory;
 import com.zg.common.init.Config;
+import com.zg.common.relect.dynameic.DynameicSerializer;
+import com.zg.common.relect.dynameic.DynamicClass;
 import com.zg.common.util.database.ParseSQLUtils;
 import com.zg.common.util.reflect.*;
 import net.sf.jsqlparser.JSQLParserException;
@@ -28,11 +30,25 @@ import java.util.*;
 public class NewJDBCUtil {
     private final String dataSource;
 
+    private final boolean autoClose;
+
+
+
 
     public NewJDBCUtil(String dataSource) {
         this.dataSource = dataSource;
+        this.autoClose=true;
     }
 
+    public NewJDBCUtil(String dataSource,boolean autoClose) {
+        this.dataSource = dataSource;
+        this.autoClose=autoClose;
+    }
+
+    public void  manualCommitClose() throws SQLException, ClassNotFoundException {
+        TransactionManager.commit();
+        TransactionManager.release(dataSource);
+    }
 
     public String addPageFromSql(String sql, PageEntity page) throws Exception {
         String countSql = null;
@@ -136,89 +152,15 @@ public class NewJDBCUtil {
         } catch (Exception e) {
             throw e;
         } finally {
-            TransactionManager.release(dataSource);
+            if(autoClose) {
+                TransactionManager.release(dataSource);
+            }
         }
 
 
         return list;
     }
 
-//    //查询出列明，数据对应的list集合
-//    private List<List<MetadataEntity>> select2TempleList(String sql, String tableName) throws SQLException, ClassNotFoundException {
-//        Logger.debug(sql);
-//        tableName = tableName.trim().toUpperCase();
-//        String ownName = "";
-//        if (tableName.contains(".")) {
-//            String[] splits = tableName.split("\\.");
-//            ownName = splits[0];
-//            tableName = splits[1];
-//        }
-//        //获取链接
-//        Connection conn = TransactionManager.getConnection(dataSource);
-//        List list = new ArrayList();
-//        try {
-//            //获取组件
-//            List<String> pkColumnList = new ArrayList<>();
-//            DatabaseMetaData dmd = conn.getMetaData();
-//            ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
-//            while (dmdrs.next()) {
-//                String pkStr = dmdrs.getString("COLUMN_NAME");
-//                pkColumnList.add(pkStr);
-//            }
-//            //获取数据
-//
-//            PreparedStatement pstmt = conn.prepareStatement(sql);
-//            ResultSet rs = pstmt.executeQuery();
-//            ResultSetMetaData rsmd = rs.getMetaData();
-//            OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-//            EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
-//
-//            int columncount = 0;
-//            while (rs.next()) {
-//                List<MetadataEntity> columnList = new ArrayList<>();
-//                columncount = rsmd.getColumnCount();
-//                for (int i = 1; i < columncount + 1; i++) {
-//                    String columnLabel = rsmd.getColumnLabel(i);
-//                    String columnType = rsmd.getColumnTypeName(i);
-//                    Integer columnScale = rsmd.getScale(i);
-//                    if (columnScale == -127) {
-//                        columnScale = 6;
-//                    }
-//                    Object columnValue = rs.getObject(i);
-//                    MetadataEntity metadataEntity = new MetadataEntity();
-//                    metadataEntity.ownName = ownName;
-//                    metadataEntity.tableName = tableName;
-//                    metadataEntity.columnLabel = columnLabel;
-//                    metadataEntity.columnType = columnType;
-//                    metadataEntity.columnScale = columnScale;
-//                    metadataEntity.objectValue = columnValue;
-//                    metadataEntity.dbType = optionDB.DBType;
-//                    if (pkColumnList.contains(columnLabel)) {
-//                        metadataEntity.isPK = "1";
-//                    } else {
-//                        metadataEntity.isPK = "0";
-//                    }
-//                    if (rsmd.isAutoIncrement(i)) {
-//                        metadataEntity.isAutoIncrease = "1";  //自增
-//                        //  metadataEntity.isNotCommit="1"; //自增不提交
-//                    } else {
-//                        metadataEntity.isAutoIncrease = "0";
-//                        metadataEntity.isNotCommit = "0";  //不自增的列才提交
-//                    }
-//                    metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
-//                    columnList.add(metadataEntity);
-//                }
-//                list.add(columnList);
-//            }
-//            pstmt.close();
-//            rs.close();
-//        } catch (Exception e) {
-//            throw e;
-//        } finally {
-//            TransactionManager.release(dataSource);
-//        }
-//        return list;
-//    }
 
 
     //查询
@@ -313,7 +255,9 @@ public class NewJDBCUtil {
         } catch (Exception e) {
             throw e;
         } finally {
-            TransactionManager.release(dataSource);
+            if(autoClose) {
+                TransactionManager.release(dataSource);
+            }
         }
         return list;
     }
@@ -336,7 +280,9 @@ public class NewJDBCUtil {
         } catch (Exception e) {
             throw e;
         } finally {
-            TransactionManager.release(dataSource);
+            if(autoClose) {
+                TransactionManager.release(dataSource);
+            }
         }
 
         return list;
@@ -359,7 +305,9 @@ public class NewJDBCUtil {
         } catch (Exception e) {
             throw e;
         } finally {
-            TransactionManager.release(dataSource);
+            if(autoClose) {
+                TransactionManager.release(dataSource);
+            }
         }
 
         return value;
@@ -446,7 +394,9 @@ public class NewJDBCUtil {
         } catch (Exception e) {
             throw e;
         } finally {
-            TransactionManager.release(dataSource);
+            if(autoClose) {
+                TransactionManager.release(dataSource);
+            }
         }
 
         return modelClass;
@@ -555,7 +505,9 @@ public class NewJDBCUtil {
         } catch (Exception e) {
             throw e;
         } finally {
-            TransactionManager.release(dataSource);
+            if(autoClose) {
+                TransactionManager.release(dataSource);
+            }
         }
 
         return modelClass;
@@ -636,7 +588,9 @@ public class NewJDBCUtil {
         } catch (Exception e) {
             throw e;
         } finally {
-            TransactionManager.release(dataSource);
+            if(autoClose) {
+                TransactionManager.release(dataSource);
+            }
         }
 
         return result;
@@ -670,7 +624,9 @@ public class NewJDBCUtil {
         } catch (Exception e) {
             throw e;
         } finally {
-            TransactionManager.release(dataSource);
+            if(autoClose) {
+                TransactionManager.release(dataSource);
+            }
         }
         return x;
     }
@@ -714,7 +670,9 @@ public class NewJDBCUtil {
         } catch (Exception e) {
            throw e;
         } finally {
-            TransactionManager.release(dataSource);
+            if(autoClose) {
+                TransactionManager.release(dataSource);
+            }
         }
 
         return i;

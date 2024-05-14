@@ -8,7 +8,7 @@ import com.zg.common.bean.entity.PageEntity;
 import com.zg.common.dao.assemble.SimpleAssemble;
 import com.zg.common.init.Config;
 import com.zg.common.util.reflect.DBUtils;
-import com.zg.common.util.reflect.DynamicClass;
+import com.zg.common.relect.dynameic.DynamicClass;
 import com.zg.common.util.reflect.ModelSQLUtils;
 import net.sf.jsqlparser.JSQLParserException;
 import org.tinylog.Logger;
