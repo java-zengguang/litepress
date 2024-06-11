@@ -1,6 +1,8 @@
 package com.zg.chain.common.drivers;
 
+import com.zg.chain.common.components.BaseComponent;
 import com.zg.chain.common.components.Component;
+import com.zg.chain.common.entity.BaseProcess;
 import com.zg.chain.common.entity.BaseProcessBatch;
 import com.zg.chain.common.factory.ComponentsFactory;
 
@@ -35,6 +37,24 @@ public abstract class BaseAutoDriver implements AutoDriver {
 
         return baseProcessBatch;
     }
+
+
+    @Override
+    public BaseProcess doExecute(BaseProcess baseProcess) throws Exception {
+
+        List<String> linkClassesList = getCalssLine();
+        for (String classeName : linkClassesList) {
+            Component component = componentsFactory.getComponent(classeName, systemFlag, functionFlag, initParam.get(classeName), beanMap);
+            if(component instanceof BaseComponent){
+                BaseComponent baseComponent= (BaseComponent) component;
+                baseProcess = baseComponent.doExecuteProcess(baseProcess);
+            }
+
+        }
+
+        return baseProcess;
+    }
+
 
     @Override
     public Map<String, Map<String, Object>> getLineInitParam() {

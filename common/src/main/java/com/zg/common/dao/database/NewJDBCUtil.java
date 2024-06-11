@@ -201,7 +201,10 @@ public class NewJDBCUtil {
                 for (List<MetadataEntity> columnList : templeList) {
                     Object obj = modelClass.newInstance();
                     for (MetadataEntity metadataEntity : columnList) {
-                        obj = simpleAssemble.assembling(metadataEntity, obj);
+                        if(metadataEntity!=null){
+                            obj = simpleAssemble.assembling(metadataEntity, obj);
+                        }
+
                     }
                     modelList.add(obj);
                 }

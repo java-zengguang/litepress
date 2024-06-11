@@ -13,4 +13,5 @@ public interface AutoDriver {
     Map<String, Map<String, Object>> getLineInitParam();
 
     <T extends BaseProcessBatch, t extends BaseProcess> T doExecute(T baseProcessBatch) throws Exception;
+     BaseProcess doExecute(BaseProcess baseProcess) throws Exception;
 }
