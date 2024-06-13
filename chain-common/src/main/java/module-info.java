@@ -5,7 +5,6 @@ module chain.common {
     requires java.sql;
     requires guava;
     requires org.apache.groovy;
-    requires jdk.incubator.foreign;
 
 
     exports com.zg.chain.common.factory;

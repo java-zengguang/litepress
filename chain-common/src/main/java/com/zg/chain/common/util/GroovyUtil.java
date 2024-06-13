@@ -7,7 +7,7 @@ import org.codehaus.groovy.control.CompilationFailedException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +49,7 @@ public class GroovyUtil {
                 //处理精度问题
                 if (fieldValue instanceof BigDecimal && value instanceof BigDecimal) {
                     int scale = ((BigDecimal) fieldValue).precision();
-                    ((BigDecimal) value).setScale(scale, RoundingMode.HALF_UP);  //使用四舍五入
+                    ((BigDecimal) value).setScale(scale, BigDecimal.ROUND_HALF_UP);  //使用四舍五入
                 }
                 field.set(obj, value);  //将脚本执行后的值放到对象中
                 groovyShell.setVariable(field.getName(), value); //按顺序滚动计算
