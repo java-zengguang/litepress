@@ -4,6 +4,7 @@ import com.zg.common.annotation.AutoIncrease;
 import com.zg.common.annotation.PrimaryKey;
 import com.zg.common.bean.handle.TransHandler;
 
+import java.io.*;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -12,6 +13,19 @@ import java.util.*;
 public class EntityListUtils {
 
 
+    public static <T extends Serializable> List<T> deepClone(List<T> originalList) {
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(originalList);
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            return (List<T>) objectInputStream.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
 
