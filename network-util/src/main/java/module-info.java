@@ -11,7 +11,7 @@ module network.util {
     exports com.zg.network.entity;
 
     requires org.tinylog.api;
-    requires guava;
+    requires com.google.common;
     requires io.netty.transport;
     requires io.netty.codec;
     requires io.netty.common;

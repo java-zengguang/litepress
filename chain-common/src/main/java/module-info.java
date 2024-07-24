@@ -3,7 +3,7 @@ module chain.common {
     requires common;
     requires org.tinylog.api;
     requires java.sql;
-    requires guava;
+    requires com.google.common;
     requires org.apache.groovy;
     requires jdk.incubator.foreign;
 

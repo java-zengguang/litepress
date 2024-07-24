@@ -8,7 +8,7 @@ open module direction {
     requires fastjson;
     requires io.netty.all;
     requires zookeeper;
-    requires guava;
+    requires com.google.common;
     requires curator.client;
     requires curator.framework;
     requires curator.recipes;

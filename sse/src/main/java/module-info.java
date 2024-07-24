@@ -6,7 +6,7 @@
     requires org.eclipse.jetty.servlets;
     requires org.tinylog.api;
     requires common;
-    requires guava;
+     requires com.google.common;
     requires org.eclipse.jetty.server;
     requires org.eclipse.jetty.servlet;
 }
