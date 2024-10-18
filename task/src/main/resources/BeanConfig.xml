@@ -2,15 +2,7 @@
 <beans>
 
 
-    <!--    <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
-            <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
-            <property name="maxPoolSize" type="int">10</property>
-            <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
-            <property name="username" type="java.lang.String">root</property>
-            <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
-            <property name="DBType" type="java.lang.String">MYSQL</property>
 
-        </bean>-->
 
     <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:mysql://10.7.128.226:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
@@ -19,19 +11,8 @@
         <property name="username" type="java.lang.String">sunshine</property>
         <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
         <property name="DBType" type="java.lang.String">MYSQL</property>
-        <property name="DBPType" type="java.lang.String">HikariCP</property>
+        <property name="DBPType" type="java.lang.String">Druid</property>
     </bean>
-    <!--
-
-        <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
-            <property name="url" type="java.lang.String">jdbc:h2:D:/test/web/db/data_mould;MODE=Mysql;FILE_LOCK=SOCKET</property>
-            <property name="maxPoolSize" type="int">10</property>
-            <property name="driver" type="java.lang.String">org.h2.Driver</property>
-            <property name="username" type="java.lang.String">sa</property>
-            <property name="password" type="java.lang.String"></property>
-            <property name="DBType" type="java.lang.String">H2</property>
-        </bean>
-    -->
 
     <bean id="int_portal_ob" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oceanbase://10.8.192.56:2883/</property>
@@ -41,6 +22,7 @@
         <property name="password" type="java.lang.String">QAerUDN#VlrQ1pX0_</property>
         <property name="DBType" type="java.lang.String">ORACLE</property>
         <property name="DBPType" type="java.lang.String">HikariCP</property>
+
     </bean>
 
     <bean id="uat_portal_ob" class="com.zg.common.bean.entity.OptionDB">
@@ -94,15 +76,7 @@
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
-    <!--    <bean id="testDB" class="com.zg.common.bean.entity.OptionDB">
-            <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
-            <property name="maxPoolSize" type="int">10</property>
-            <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
-            <property name="username" type="java.lang.String">root</property>
-            <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
-            <property name="DBType" type="java.lang.String">MYSQL</property>
-            <property name="DBPType" type="java.lang.String">HikariCP</property>
-        </bean>-->
+
 
     <bean id="dev_new-non-auto_nvpoldb" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvpoldev</property>
@@ -148,7 +122,6 @@
 
     <bean id="int_new-non-auto_nvpoldb" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvpolint</property>
-        <property name="databaseName" type="java.lang.String">nvpolint</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
         <property name="username" type="java.lang.String">nvpolicy</property>
@@ -157,6 +130,10 @@
         </property>
         <property name="DBType" type="java.lang.String">ORACLE</property>
         <property name="DBPType" type="java.lang.String">HikariCP</property>
+        <property name="resourcesURL" type="java.lang.String">190 1438 10.7.129.89 null nvpoluat 产线非车新一代uat保单库 null
+            oracle PRIMARY
+        </property>
+        <property name="resourcesUser" type="java.lang.String">nvpolicy</property>
     </bean>
 
     <bean id="int_new-non-auto_nvprodb" class="com.zg.common.bean.entity.OptionDB">
@@ -169,7 +146,16 @@
         </property>
         <property name="DBType" type="java.lang.String">ORACLE</property>
         <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
 
+    <bean id="int_new-non-auto_nvprodb_OB" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oceanbase://10.7.135.253:2883/</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">nvproposal@nvpolint#obsundb2</property>
+        <property name="password" type="java.lang.String">nvproposal</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
     <bean id="int_new-non-auto_nvenddb" class="com.zg.common.bean.entity.OptionDB">
@@ -190,11 +176,10 @@
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
         <property name="username" type="java.lang.String">nvpolicy</property>
-        <property name="password" type="java.lang.String">
-            6E9D7C22309AC2E9E5F49CAEB104201A4975CC2A4A8DDCB847D483709160BD9B
-        </property>
+        <property name="password" type="java.lang.String">6E9D7C22309AC2E9E5F49CAEB104201A4975CC2A4A8DDCB847D483709160BD9B</property>
         <property name="DBType" type="java.lang.String">ORACLE</property>
         <property name="DBPType" type="java.lang.String">HikariCP</property>
+
     </bean>
 
     <bean id="uat_new-non-auto_nvpoldb" class="com.zg.common.bean.entity.OptionDB">
@@ -205,6 +190,11 @@
         <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
         <property name="DBType" type="java.lang.String">ORACLE</property>
         <property name="DBPType" type="java.lang.String">HikariCP</property>
+        <property name="resourcesURL" type="java.lang.String">190 1438 10.7.129.89 null nvpoluat 产线非车新一代uat保单库 null
+            oracle PRIMARY
+        </property>
+        <property name="resourcesUser" type="java.lang.String">nvpolicy</property>
+        <property name="owner" type="java.lang.String">NVPOLICY</property>
     </bean>
 
     <bean id="uat_new-non-auto_nvprodb" class="com.zg.common.bean.entity.OptionDB">
@@ -234,6 +224,39 @@
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
         <property name="username" type="java.lang.String">nvpolicy</property>
         <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+
+    <bean id="uat_new-reins_reinsdb" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.15:1521/reinsdb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">reinsuat_new</property>
+        <property name="password" type="java.lang.String">reinsuat_new</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+
+    <bean id="uat_new-reins_reinsdb_OB" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oceanbase://10.8.192.135:2883/</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">REINS@reinsdb#obsundb2</property>
+        <property name="password" type="java.lang.String">0S%6JcdywstO2#</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+
+    <bean id="uat_new-reins_reinsdb_sunshine_OB" class="com.zg.common.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oceanbase://10.8.192.135:2883/</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">sunshine@reinsdb#obsundb2</property>
+        <property name="password" type="java.lang.String">8Y_9P1zqezzY0_</property>
         <property name="DBType" type="java.lang.String">ORACLE</property>
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
@@ -301,11 +324,11 @@
     </bean>
 
     <bean id="dev_old-non-auto_pcore" class="com.zg.common.bean.entity.OptionDB">
-        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.28:1521/pcoreuat</property>
+        <property name="url" type="java.lang.String">jdbc:oceanbase://10.7.135.253/</property>
         <property name="maxPoolSize" type="int">10</property>
-        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
-        <property name="username" type="java.lang.String">basecode</property>
-        <property name="password" type="java.lang.String">FAD990C25C3A41B76AE734065EFC754B</property>
+        <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">basecode@pcoreuat</property>
+        <property name="password" type="java.lang.String">basecode</property>
         <property name="DBType" type="java.lang.String">ORACLE</property>
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
@@ -424,6 +447,16 @@
 
 
 
+    <bean id="SynDataTiming" class="com.zg.task.entity.JobTriggerEntity">
+        <property name="name" type="java.lang.String">SynSunInTiming</property>
+        <property name="group" type="java.lang.String">1</property>
+        <property name="startAt" type="java.lang.String">2022-01-01</property>
+        <property name="cron" type="java.lang.String">0 */10 * * * ?</property>
+        <property name="className" type="java.lang.String">com.zg.datachange.common.SynDataTask</property>
+        <property name="description" type="java.lang.String">自动增量同步汇总</property>
+
+    </bean>
+
 
     <bean id="optionMGDB" class="com.zg.common.bean.entity.OptionMGDB">
         <property name="ip" type="java.lang.String">localhost</property>
@@ -434,13 +467,83 @@
     </bean>
 
 
+    <bean id="insertRocketMQCustomer" class="com.zg.check.model.entity.RocketConfig">
+        <property name="group" type="java.lang.String">syn_insert_customer</property>
+        <property name="namesrvAddr" type="java.lang.String">10.7.128.187:9876;10.7.128.187:9877</property>
+        <property name="accessKey" type="java.lang.String">rocketmq2</property>
+        <property name="secretKey" type="java.lang.String">12345678</property>
+    </bean>
+    <bean id="updateRocketMQCustomer" class="com.zg.check.model.entity.RocketConfig">
+        <property name="group" type="java.lang.String">syn_update_customer</property>
+        <property name="namesrvAddr" type="java.lang.String">10.7.128.187:9876;10.7.128.187:9877</property>
+        <property name="accessKey" type="java.lang.String">rocketmq2</property>
+        <property name="secretKey" type="java.lang.String">12345678</property>
+    </bean>
+
+
+    <bean id="insertRocketMQProducer" class="com.zg.check.model.entity.RocketConfig">
+        <property name="group" type="java.lang.String">syn_insert_producer</property>
+        <property name="namesrvAddr" type="java.lang.String">10.7.128.187:9876;10.7.128.188:9876</property>
+        <property name="accessKey" type="java.lang.String">rocketmq2</property>
+        <property name="secretKey" type="java.lang.String">12345678</property>
+    </bean>
+
+
+    <bean id="updateRocketMQProducer" class="com.zg.check.model.entity.RocketConfig">
+        <property name="group" type="java.lang.String">syn_update_producer</property>
+        <property name="namesrvAddr" type="java.lang.String">10.7.128.187:9876;10.7.128.187:9877</property>
+        <property name="accessKey" type="java.lang.String">rocketmq2</property>
+        <property name="secretKey" type="java.lang.String">12345678</property>
+    </bean>
+
+    <bean id="SqlCheckMsgBus" class="com.zg.check.model.entity.RocketConfig">
+        <property name="group" type="java.lang.String">SYN_DATE_BASE_MSG</property>
+        <property name="topic" type="java.lang.String">SQL_CHECK_MSG</property>
+        <property name="namesrvAddr" type="java.lang.String">10.7.128.187:9876;10.7.128.188:9876</property>
+        <property name="accessKey" type="java.lang.String">rocketmq2</property>
+        <property name="secretKey" type="java.lang.String">12345678</property>
+    </bean>
+
+
+
+    <bean id="insertDataMsgBus" class="com.zg.check.model.entity.RocketConfig">
+        <property name="group" type="java.lang.String">SYN_DATA_INSERT_BUS_SYN-APP_1</property>
+        <property name="topic" type="java.lang.String">SYN_DATA_INSERT_BUS</property>
+        <property name="namesrvAddr" type="java.lang.String">10.7.128.187:9876;10.7.128.188:9876</property>
+        <property name="accessKey" type="java.lang.String">rocketmq2</property>
+        <property name="secretKey" type="java.lang.String">12345678</property>
+    </bean>
+
+    <bean id="updateDataMsgBus" class="com.zg.check.model.entity.RocketConfig">
+        <property name="group" type="java.lang.String">SYN_DATA_UPDATE_BUS_SYN-APP_1</property>
+        <property name="topic" type="java.lang.String">SYN_DATA_UPDATE_BUS</property>
+        <property name="namesrvAddr" type="java.lang.String">10.7.128.187:9876;10.7.128.188:9876</property>
+        <property name="accessKey" type="java.lang.String">rocketmq2</property>
+        <property name="secretKey" type="java.lang.String">12345678</property>
+    </bean>
+
+    <bean id="dataSourceConfig" class="com.zg.datachange.app.entity.DataSourceConfig">
+        <property name="dataSourceListStr" type="java.lang.String">uat_new-non-auto_nvpoldb</property>
+    </bean>
+
     <bean id="MVCOption" class="com.zg.mvc.entity.MVCOption">
         <property name="controllerPackage" type="java.lang.String">com.zg.datachange.app.controller</property>
         <property name="controllerSuffix" type="java.lang.String">.do</property>
         <property name="upLoadPackage" type="java.lang.String">com.zg.datachange.app.controller</property>
         <property name="upLoadSuffix" type="java.lang.String">.file</property>
         <property name="temporaryFilePath" type="java.lang.String">D:\\test\\ExecuteV3.0-java17-INT\\</property>
-        <property name="powerLevel" type="java.lang.String">1</property>
+        <property name="powerLevel" type="java.lang.String">0</property>
+    </bean>
+
+    <bean id="AuthConfig" class="com.zg.mvc.entity.AuthConfig">
+        <property name="perturbation" type="java.lang.String">qowxiaewfiasd123</property>
+    </bean>
+
+    <bean id="dbaConfigEntity" class="com.zg.datachange.app.entity.DBAConfigEntity">
+        <property name="secret" type="java.lang.String">0711917AE5CB1DD5910634288E674F09</property>
+        <property name="tokenUrl" type="java.lang.String">http://10.7.132.23:8080/getPToken</property>
+        <property name="upLoadUrl" type="java.lang.String">http://10.7.132.23:8080/VueUpload</property>
+        <property name="submitUrl" type="java.lang.String">http://10.7.132.23:8080/VueSaveBianji</property>
     </bean>
 
 

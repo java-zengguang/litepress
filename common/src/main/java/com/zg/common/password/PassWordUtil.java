@@ -17,8 +17,9 @@ public class PassWordUtil {
     public static void main(String[] args) {
         EncryptUtil encryptUtil = EncryptUtil.getInstance();
 
+        Logger.info("     Gcddb12345_  " + encryptUtil.AESencode("Gcddb12345_", "hello"));
 
-        Logger.info(" V23##*#QxGDkcmUJ      " + encryptUtil.AESencode("V23##*#QxGDkcmUJ", "hello"));
+        Logger.info("       " + encryptUtil.AESencode("V23##*#QxGDkcmUJ", "hello"));
         Logger.info("Zst_phq123#      " + encryptUtil.AESencode("Zst_phq123#", "hello"));
         Logger.info("Zg_phq123#      " + encryptUtil.AESencode("Zg_phq123#", "hello"));
         Logger.info("Cvb_rTJRB7!w0oWV      " + encryptUtil.AESencode("Cvb_rTJRB7!w0oWV", "hello"));

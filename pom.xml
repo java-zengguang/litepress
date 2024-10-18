@@ -20,6 +20,7 @@
         <module>event-common</module>
         <module>sse</module>
         <module>io-util</module>
+        <module>task</module>
 
     </modules>
 
@@ -33,12 +34,11 @@
     <dependencies>
 
         <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.4</version>
-            <classifier>jdk15</classifier>
-
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.1</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.tinylog</groupId>

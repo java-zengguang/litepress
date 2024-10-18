@@ -393,37 +393,6 @@
     </bean>
 
 
-    <bean id="CreateSVNDirTask" class="com.zg.common.bean.entity.JobEntity">
-        <property name="name" type="java.lang.String">CreateSVNDirTask</property>
-        <property name="group" type="java.lang.String">1</property>
-        <property name="description" type="java.lang.String">自动创建svn目录</property>
-        <property name="className" type="java.lang.String">com.zg.task.CreateSVNDirTask</property>
-    </bean>
-
-    <bean id="CreateSVNDirTiming" class="com.zg.common.bean.entity.JobTriggerEntity">
-        <property name="jobEntity" ref="CreateSVNDirTask"></property>
-        <property name="name" type="java.lang.String">CreateSVNDirTiming</property>
-        <property name="group" type="java.lang.String">1</property>
-        <property name="startAt" type="java.lang.String">2022-01-01</property>
-        <property name="cron" type="java.lang.String">0 40 9 * * ?</property>
-    </bean>
-
-
-    <bean id="SQLExcuteTask" class="com.zg.common.bean.entity.JobEntity">
-        <property name="name" type="java.lang.String">SQLExcuteTask</property>
-        <property name="group" type="java.lang.String">1</property>
-        <property name="description" type="java.lang.String">当日uat脚本自动执行</property>
-        <property name="className" type="java.lang.String">com.zg.task.SQLExcuteTask</property>
-    </bean>
-
-    <bean id="SQLExcuteTaskTiming" class="com.zg.common.bean.entity.JobTriggerEntity">
-        <property name="jobEntity" ref="SQLExcuteTask"></property>
-        <property name="name" type="java.lang.String">SQLExcuteTaskTiming</property>
-        <property name="group" type="java.lang.String">1</property>
-        <property name="startAt" type="java.lang.String">2022-01-01</property>
-        <property name="cron" type="java.lang.String">0 30 17 * * ?</property>
-    </bean>
-
 
     <bean id="optionMGDB" class="com.zg.common.bean.entity.OptionMGDB">
         <property name="ip" type="java.lang.String">localhost</property>

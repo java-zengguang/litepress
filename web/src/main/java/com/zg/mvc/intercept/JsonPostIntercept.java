@@ -1,6 +1,7 @@
 package com.zg.mvc.intercept;
 
 import com.zg.common.bean.entity.MainModel;
+import com.zg.common.util.reflect.JsonUtil;
 import com.zg.common.util.reflect.JsonUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +17,7 @@ public class JsonPostIntercept implements PostControllerIntercept {
             if (args instanceof MainModel || args instanceof Collection<?> || args instanceof Map<?,?>) {
                 response.setHeader("content-type", "application/json");
                 response.setCharacterEncoding("UTF-8");
-                return JsonUtils.objectToJsonString(args);
+                return JsonUtil.obj2String(args);
             }
         }
         return args;
