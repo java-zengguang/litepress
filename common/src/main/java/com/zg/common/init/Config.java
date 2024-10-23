@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
@@ -18,9 +19,11 @@ import java.util.concurrent.CountDownLatch;
  */
 public class Config {
     public static final int ERROR_REPEAT = 3;
-    public static Map configMap = new ConcurrentHashMap();
-
+    public static final Map configMap = new ConcurrentHashMap();
     public static CountDownLatch count = new CountDownLatch(ERROR_REPEAT);
+
+
+
 
     private static synchronized void createConfigMap(String[] array) {
         for (String beanName : array) {

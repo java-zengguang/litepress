@@ -43,7 +43,12 @@
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
             <version>3.8.0</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.api}</version>
         </dependency>
 
     </dependencies>

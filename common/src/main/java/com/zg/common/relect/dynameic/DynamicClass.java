@@ -2,7 +2,7 @@ package com.zg.common.relect.dynameic;
 
 
 import com.zg.common.bean.entity.MetadataEntity;
-import com.zg.common.util.CommonUtil;
+import com.zg.common.init.Evn;
 import org.tinylog.Logger;
 
 import javax.tools.*;
@@ -106,7 +106,7 @@ public class DynamicClass {
         ClassJavaFileManager classJavaFileManager = new ClassJavaFileManager(standardFileManager);
         StringObject stringObject = new StringObject(new URI(name + ".java"), JavaFileObject.Kind.SOURCE, javaCode);
         List<String> options = new ArrayList<String>();
-        String path = CommonUtil.getThisPath(CommonUtil.class) + "";
+        String path = Evn.getModulePath();
         Logger.info(DynamicClass.class + "====calss生成路径" + path);
         options.addAll(Arrays.asList("-d", path, "--limit-modules", "java.base,java.logging"));
         JavaCompiler.CompilationTask task = compiler.getTask(null, classJavaFileManager, null, options, null, Arrays.asList(stringObject));

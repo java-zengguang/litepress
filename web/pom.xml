@@ -22,6 +22,7 @@
     <dependencies>
 
 
+
         <dependency>
             <groupId>com.zg.database</groupId>
             <artifactId>common</artifactId>
@@ -33,16 +34,34 @@
             <groupId>org.eclipse.jetty</groupId>
             <version>${jetty.version}</version>
             <artifactId>jetty-server</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <version>${jetty.version}</version>
             <artifactId>jetty-servlet</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <version>${jetty.version}</version>
             <artifactId>jetty-servlets</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 
@@ -75,6 +94,12 @@
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>3.10.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.api}</version>
         </dependency>
         <!--jstl标签依赖的jar包end -->
     </dependencies>

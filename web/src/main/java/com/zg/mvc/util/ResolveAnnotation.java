@@ -1,6 +1,6 @@
 package com.zg.mvc.util;
 
-import com.zg.common.annotation.ScanAnnotation;
+import com.zg.common.init.AnnotationCache;
 import com.zg.mvc.annotation.controller.Controller;
 import com.zg.mvc.annotation.controller.ResultMapping;
 import org.apache.commons.collections.map.HashedMap;
@@ -15,16 +15,13 @@ import java.util.Set;
 public class ResolveAnnotation {
 
 
-    public static Map<String, Class> resovleController(String packageName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        return resovleController(packageName, "");
-    }
 
-    public static Map<String, Class> resovleController(String packageName, String rootURL) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public static Map<String, Class> resovleController( String rootURL) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         if (rootURL == null) {
             rootURL = "";
         }
         Map<String, Class> resultMap = new HashedMap();
-        Set<Class<?>> classList = ScanAnnotation.getClassFromAnn(Controller.class);
+        Set<Class<?>> classList = AnnotationCache.get(Controller.class);
         for (Class classes : classList) {
             Controller controller = (Controller) classes.getAnnotation(Controller.class);
             if (controller != null) {

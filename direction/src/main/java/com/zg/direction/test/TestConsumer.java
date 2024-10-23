@@ -1,6 +1,6 @@
 package com.zg.direction.test;
 
-import com.zg.common.util.CommonUtil;
+import com.zg.common.init.Evn;
 import com.zg.direction.proxy.ConsumerHandler;
 import org.tinylog.Logger;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 public class TestConsumer {
 
     public static void main(String[] args) {
-        String rootPath = CommonUtil.getThisPath(TestConsumer.class);
+        String rootPath = Evn.getModulePath();
         System.setProperty("projectRootPath", rootPath);
 
         Class[] classes = new Class[1];

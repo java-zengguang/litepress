@@ -48,7 +48,7 @@ public class ControllerAdapter {
 
         try {
             mvcOption = (MVCOption) Config.getConfig("MVCOption");
-            classMap = ResolveAnnotation.resovleController(mvcOption.controllerPackage);
+            classMap = ResolveAnnotation.resovleController(mvcOption.projectRoot);
             keySet = classMap.keySet();
             for (String parentURI : keySet) {
                 methodMap.putAll(ResolveAnnotation.resovleResultMap(parentURI, classMap.get(parentURI)));

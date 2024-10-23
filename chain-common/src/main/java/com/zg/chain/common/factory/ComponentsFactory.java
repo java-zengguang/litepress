@@ -2,7 +2,7 @@ package com.zg.chain.common.factory;
 
 import com.zg.chain.common.components.Component;
 import com.zg.chain.common.components.Components;
-import com.zg.common.annotation.ScanAnnotation;
+import com.zg.common.init.AnnotationCache;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class ComponentsFactory {
 
         Class componentClass = componentClassMap.get(name);
         if (componentClass == null) {
-            Set<Class<?>> classList = ScanAnnotation.getClassFromAnn(Components.class);
+            Set<Class<?>> classList = AnnotationCache.get(Components.class);
             for (Class classes : classList) {
                 Components components = (Components) classes.getAnnotation(Components.class);
                 if (components != null && components.equals(components.name())) {
@@ -45,7 +45,7 @@ public class ComponentsFactory {
 
         Class componentClass = componentClassMap.get(name);
         if (componentClass == null) {
-            Set<Class<?>> classList = ScanAnnotation.getClassFromAnn(Components.class);
+            Set<Class<?>> classList = AnnotationCache.get(Components.class);
             for (Class classes : classList) {
                 Components components = (Components) classes.getAnnotation(Components.class);
                 if (components != null && name.equals(components.name())) {

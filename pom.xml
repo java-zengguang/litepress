@@ -26,9 +26,10 @@
 
 
     <properties>
+        <slf4j.api>2.0.13</slf4j.api>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>17</java.version>
-        <revision>1.0.8</revision>
+        <java.version>21</java.version>
+        <revision>1.0.9.g</revision>
     </properties>
 
     <dependencies>
@@ -50,12 +51,7 @@
             <artifactId>tinylog-impl</artifactId>
             <version>2.6.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.tinylog/slf4j-tinylog -->
-        <dependency>
-            <groupId>org.tinylog</groupId>
-            <artifactId>slf4j-tinylog</artifactId>
-            <version>2.6.1</version>
-        </dependency>
+
     </dependencies>
 
     <build>
@@ -107,7 +103,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>

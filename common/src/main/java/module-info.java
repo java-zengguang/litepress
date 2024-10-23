@@ -33,6 +33,9 @@ module common {
     requires com.fasterxml.jackson.databind;
     requires jsqlparser;
     requires pagehelper;
+    requires zip4j;
+    requires org.graalvm.nativeimage;
+    requires org.reflections;
 
 
 }

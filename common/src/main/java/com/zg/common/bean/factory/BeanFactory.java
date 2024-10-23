@@ -1,7 +1,7 @@
 package com.zg.common.bean.factory;
 
+import com.zg.common.init.Evn;
 import com.zg.common.password.PassWordUtil;
-import com.zg.common.util.CommonUtil;
 import com.zg.common.util.reflect.TransEntityTypeUtils;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -12,55 +12,13 @@ import java.lang.reflect.*;
 
 public class BeanFactory {
 
-    public static Object createBean(String rootPath, String id) {
-        Object o = null;
-        Element root;
-        try {
-            root = CommonUtil.getRootElement(rootPath, "BeanConfig.xml");
-
-            for (Object beanO : root.elements("bean")) {
-                Element bean = (Element) beanO;
-                String beanName = bean.attributeValue("id");
-
-                if (beanName.equals(id)) {
-                    String beanClassName = bean.attributeValue("class");
-                    o = Class.forName(beanClassName).newInstance();
-                    for (Object propertyO : bean.elements("property")) {
-                        Element property = (Element) propertyO;
-                        String name = property.attributeValue("name");
-                        Field field = Class.forName(beanClassName).getField(name);
-                        field.setAccessible(true);
-                        if (property.attributeValue("type") != null) {
-                           Object value= TransEntityTypeUtils.translateType(property.getStringValue(), field.getType().getSimpleName());
-                           field.set(o,value);
-                        }
-                        if (property.attributeValue("ref") != null) {
-                            field.set(o, BeanFactory.createBean(rootPath, property.attributeValue("ref")));
-                        }
-                    }
-                }//
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            Logger.error(e);
-        }
-
-        try {
-            o = createProxy(o);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            Logger.error(e);
-        }
-        return o;
-
-    }
 
 
     public static Object createBean(String id) {
         Object o = null;
         Element root;
         try {
-            root = CommonUtil.getRootElement("BeanConfig.xml");
+            root = Evn.getRootElement();
 
             for (Object beanO : root.elements("bean")) {
                 Element bean = (Element) beanO;
@@ -106,7 +64,7 @@ public class BeanFactory {
     public static Object createProxy(Object target) throws NoSuchMethodException, SecurityException, ClassNotFoundException, DocumentException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
         String pName = target.getClass().getPackage().getName();
-        Element root = CommonUtil.getRootElement("BeanConfig.xml");
+        Element root = Evn.getRootElement();
         for (Object proxyO : root.elements("proxy")) {
             Element proxy = (Element) proxyO;
             String className = proxy.attributeValue("handler");

@@ -2,7 +2,7 @@ package com.zg.chain.common.factory;
 
 import com.zg.chain.common.drivers.AutoDriver;
 import com.zg.chain.common.drivers.Driver;
-import com.zg.common.annotation.ScanAnnotation;
+import com.zg.common.init.AnnotationCache;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ public class DriverFactory {
         AutoDriver autoDriver;
         autoDriver = driverMap.get(systemFlag + ":" + functionFlag);
         if (autoDriver == null) {
-            Set<Class<?>> classList = ScanAnnotation.getClassFromAnn(Driver.class);
+            Set<Class<?>> classList = AnnotationCache.get(Driver.class);
             for (Class classes : classList) {
                 Driver driver = (Driver) classes.getAnnotation(Driver.class);
                 if (driver != null && systemFlag.equals(driver.systemFlag()) && functionFlag.equals(driver.functionFlag())) {

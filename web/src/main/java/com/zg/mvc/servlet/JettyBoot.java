@@ -1,7 +1,6 @@
 package com.zg.mvc.servlet;
 
-import com.zg.common.annotation.ScanAnnotation;
-import com.zg.common.util.CommonUtil;
+import com.zg.common.init.Evn;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -13,6 +12,8 @@ import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.resource.Resource;
 import org.tinylog.Logger;
+
+import java.util.Set;
 
 
 public class JettyBoot {
@@ -28,8 +29,8 @@ public class JettyBoot {
     public static void main(String[] args) {
 
 
-        System.setProperty("projectRootPath", CommonUtil.getModulePath(JettyBoot.class));
-        ScanAnnotation.scanModule(JettyBoot.class.getModule());
+        System.setProperty("projectRootPath", Evn.getModulePath());
+
         JettyBoot jettyBoot = new JettyBoot();
         jettyBoot.doMain();
     }
@@ -74,7 +75,7 @@ public class JettyBoot {
 
             if (true) {
                 ResourceHandler resourceHandler = new ResourceHandler();
-                String path = CommonUtil.getRootPath();
+                String path = Evn.getRootPath();;
                 if (System.getProperty("projectRootPath") != null) {
                     path = System.getProperty("projectRootPath");
                 }

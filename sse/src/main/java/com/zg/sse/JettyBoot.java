@@ -1,7 +1,6 @@
 package com.zg.sse;
 
-import com.zg.common.annotation.ScanAnnotation;
-import com.zg.common.util.CommonUtil;
+import com.zg.common.init.Evn;
 import com.zg.sse.servlet.AEventSourceServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -11,6 +10,8 @@ import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.tinylog.Logger;
+
+import java.util.Set;
 
 
 public class JettyBoot {
@@ -26,8 +27,7 @@ public class JettyBoot {
     public static void main(String[] args) {
 
 
-        System.setProperty("projectRootPath", CommonUtil.getModulePath(JettyBoot.class));
-        ScanAnnotation.scanModule(JettyBoot.class.getModule());
+        System.setProperty("projectRootPath", Evn.getModulePath());
         JettyBoot jettyBoot = new JettyBoot();
         jettyBoot.doMain();
     }

@@ -1,7 +1,7 @@
 package com.zg.direction.register;
 
 import com.zg.common.init.Config;
-import com.zg.common.util.CommonUtil;
+import com.zg.common.init.Evn;
 import com.zg.direction.entity.ZooKeeperConfig;
 import com.zg.direction.util.IpConfig;
 import org.apache.zookeeper.server.ServerCnxnFactory;
@@ -28,7 +28,7 @@ public class ZookeeperBoot implements Runnable {
     }
 
     public static void main(String[] args) throws Exception {
-        String rootPath = CommonUtil.getThisPath(ZookeeperBoot.class);
+        String rootPath = Evn.getModulePath();
         System.setProperty("projectRootPath", rootPath);
         ZookeeperBoot zookeeperBoot = new ZookeeperBoot("");
         zookeeperBoot.run();

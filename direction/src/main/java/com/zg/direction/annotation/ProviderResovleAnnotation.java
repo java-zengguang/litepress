@@ -45,8 +45,7 @@ public class ProviderResovleAnnotation extends BaseResolveAnnotation {
     }
 
     public Map<String, Object> getProviders() throws ClassNotFoundException, IllegalAccessException, InstantiationException, UnknownHostException {
-
-        return getAnnotationClass(providerConfig.packages, Provider.class);
+        return getAnnotationClass( Provider.class);
     }
 
 
