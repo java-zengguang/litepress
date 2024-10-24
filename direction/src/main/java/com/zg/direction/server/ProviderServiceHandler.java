@@ -1,8 +1,8 @@
 package com.zg.direction.server;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.zg.common.util.reflect.JsonUtils;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.zg.common.util.reflect.JsonUtil;
 import com.zg.direction.entity.DTPRequest;
 import com.zg.direction.entity.DTPResponse;
 import com.zg.network.common.service.BaseKeepServiceHandler;
@@ -36,10 +36,8 @@ public class ProviderServiceHandler extends BaseKeepServiceHandler {
 
     public Object analysisObject(Type type, Object value) {
         Object result = value;
-        if (value instanceof JSONObject) {
-            result = ((JSONObject) value).toJavaObject(type);
-        } else if (value instanceof JSONArray) {
-            result = ((JSONArray) value).toJavaObject(type);
+        if (value instanceof JsonNode) {
+            result = JsonUtil.string2Obj(JsonUtil.obj2String(value),type);
         }
         return result;
     }
@@ -55,11 +53,11 @@ public class ProviderServiceHandler extends BaseKeepServiceHandler {
 
 
     private String serialize(Object object) {
-       return JsonUtils.objectToJsonString(object);
+       return JsonUtil.obj2String(object);
     }
 
     private Object unSerialize(String str, Class classType) {
-        return JsonUtils.jsonToObject(str, classType);
+        return JsonUtil.string2Obj(str, classType);
     }
 
 
@@ -104,7 +102,7 @@ public class ProviderServiceHandler extends BaseKeepServiceHandler {
             //zookeeper释放
             //方法体执行结束
             response.success = true;
-            response.resultData = result;
+            response.resultData =result;
             response.resultType = request.resultType;
             response.resultDataType = request.resultDataType;
         } catch (Throwable e) {

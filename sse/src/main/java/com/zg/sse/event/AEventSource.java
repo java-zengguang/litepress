@@ -1,7 +1,7 @@
 package com.zg.sse.event;
 
 
-import com.zg.common.util.reflect.JsonUtils;
+import com.zg.common.util.reflect.JsonUtil;
 import org.eclipse.jetty.servlets.EventSource;
 import org.tinylog.Logger;
 
@@ -40,7 +40,7 @@ public class AEventSource implements EventSource {
     @Override
     public void onOpen(Emitter emitter) throws IOException {
         this.emitter = emitter;
-        emitter.data(JsonUtils.objectToJsonString( Map.of("groupId", groupId, "clientId", clientId)));
+        emitter.data(JsonUtil.obj2String( Map.of("groupId", groupId, "clientId", clientId)));
         // 打开连接时的处理逻辑
         Logger.info("创建事件资源"+id);
 

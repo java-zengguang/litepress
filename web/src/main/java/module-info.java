@@ -5,7 +5,6 @@ open module web {
     requires org.eclipse.jetty.servlets;
     requires java.jwt;
     requires bcprov.ext.jdk16;
-    requires fastjson;
     requires org.tinylog.api;
     requires com.fasterxml.jackson.databind;
     exports com.zg.mvc.servlet;

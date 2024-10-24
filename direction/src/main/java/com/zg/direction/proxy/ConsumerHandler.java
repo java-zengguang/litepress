@@ -1,11 +1,13 @@
 package com.zg.direction.proxy;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.zg.common.util.reflect.JsonUtil;
 import com.zg.direction.client.ConsumerKeepClientUtil;
 import com.zg.direction.entity.DTPRequest;
 import com.zg.direction.entity.DTPResponse;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -18,7 +20,6 @@ public class ConsumerHandler implements InvocationHandler {
 
 
     private final String providerName;
-
 
 
     public ConsumerHandler(String providerName) {
@@ -44,17 +45,6 @@ public class ConsumerHandler implements InvocationHandler {
             map.put("DataType", type.getTypeName());
         }
         return map;
-    }
-
-    public Object analysisObject(Type type, Object value) {
-        Object result = null;
-        result = value;
-        if (value instanceof JSONObject) {
-            result = ((JSONObject) value).toJavaObject(type);
-        } else if (value instanceof JSONArray) {
-            result = ((JSONArray) value).toJavaObject(type);
-        }
-        return result;
     }
 
 
@@ -96,10 +86,12 @@ public class ConsumerHandler implements InvocationHandler {
 
         Object result = null;
         if (!"".equals(response.resultType) && !"NULL".equals(response.resultType)) {
-            result = response.resultData;
-        }
-        if (result != null) {
-            result = analysisObject(method.getGenericReturnType(), result);
+            Object resultData = response.resultData;
+            if(resultData instanceof JsonNode || resultData instanceof Map<?,?> || resultData instanceof List<?>) {
+                result = JsonUtil.string2Obj(JsonUtil.obj2String(resultData), method.getGenericReturnType());
+            }else{
+                result=resultData;
+            }
         }
 
         return result;

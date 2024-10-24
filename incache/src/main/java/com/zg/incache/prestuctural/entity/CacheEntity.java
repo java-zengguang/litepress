@@ -1,6 +1,9 @@
 package com.zg.incache.prestuctural.entity;
 
-import com.alibaba.fastjson.JSONObject;
+
+
+import com.zg.common.util.reflect.JsonUtil;
+import jakarta.json.JsonObject;
 
 import java.util.UUID;
 
@@ -9,16 +12,12 @@ public class CacheEntity {
     public long timeStamp = System.currentTimeMillis();
     public long validMillisecond;
     public Class aClass;
-    public Object jsonObject;
+    public String jsonObject;
 
-    public CacheEntity(JSONObject jsonObject, Class aClass, long validMillisecond) {
-        this.jsonObject = jsonObject;
-        this.aClass = aClass;
-        this.validMillisecond = validMillisecond;
-    }
+
 
     public CacheEntity(Object object, long validMillisecond) {
-        jsonObject = JSONObject.toJSON(object);
+        jsonObject = JsonUtil.obj2String(object);
         this.aClass = object.getClass();
         this.validMillisecond = validMillisecond;
     }
@@ -49,12 +48,9 @@ public class CacheEntity {
     }
 
     public Object getJsonObject() {
-        return jsonObject;
+        return JsonUtil.string2Obj(jsonObject,aClass);
     }
 
-    public void setJsonObject(JSONObject jsonObject) {
-        this.jsonObject = jsonObject;
-    }
 
     public Class getaClass() {
         return aClass;

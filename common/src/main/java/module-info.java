@@ -21,7 +21,6 @@ module common {
     requires commons.collections;
     requires java.sql;
     requires dom4j;
-    requires fastjson;
     requires java.compiler;
     requires cglib;
 

@@ -5,9 +5,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.tinylog.Logger;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
@@ -35,6 +37,10 @@ public class JsonUtil {
         dateFormat.setLenient(true);
         dateFormat.setTimeZone(zone);
         objectMapper.setDateFormat(dateFormat);
+
+        //忽略未知字段
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
     }
 
 
@@ -65,6 +71,19 @@ public class JsonUtil {
             }
         });
     }
+
+    public static Object string2Obj(String str, Type type) {
+        if (str == null || "".equals(str) || type == null) {
+            return null;
+        }
+        try {
+            JavaType javaType = TypeFactory.defaultInstance().constructType(type);
+            return objectMapper.readValue(str, javaType);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 
     /**
      * 字符串转换为自定义对象
@@ -106,6 +125,10 @@ public class JsonUtil {
             Logger.info(e.getMessage());
             return null;
         }
+    }
+
+    public  static Object deepCopy( Object obj){
+       return string2Obj(obj2String(obj),obj.getClass());
     }
 
     /**

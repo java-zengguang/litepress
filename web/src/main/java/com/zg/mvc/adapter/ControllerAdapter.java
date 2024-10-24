@@ -1,7 +1,7 @@
 package com.zg.mvc.adapter;
 
 import com.zg.common.init.Config;
-import com.zg.common.util.reflect.JsonUtils;
+import com.zg.common.util.reflect.JsonUtil;
 import com.zg.mvc.analysis.RequestAnalysis;
 import com.zg.mvc.analysis.SimpleRequestAnalysis;
 import com.zg.mvc.annotation.controller.ParamEntity;
@@ -74,7 +74,7 @@ public class ControllerAdapter {
         if (viewObject != null) {
             response.setHeader("content-type", "application/json");
             response.setCharacterEncoding("UTF-8");
-            result = JsonUtils.objectToJsonString(viewObject);
+            result = JsonUtil.obj2String(viewObject);
         }
 
         return result;
@@ -153,12 +153,7 @@ public class ControllerAdapter {
             }
             case "json": {
                 String data = (String) viewObject.data;
-                String json = null;
-                try {
-                    json = JsonUtils.objectToJson(data).toString();
-                } catch (IllegalAccessException e) {
-                    Logger.error("json转化错误", e);
-                }
+                String  json = JsonUtil.obj2String(data);
                 response.setHeader("content-type", "application/json");
                 response.setCharacterEncoding("UTF-8");
                 result = json;

@@ -4,7 +4,8 @@ package com.zg.direction.adapter;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.zg.common.init.Config;
-import com.zg.common.util.reflect.JsonUtils;
+
+import com.zg.common.util.reflect.JsonUtil;
 import com.zg.direction.annotation.ProviderResovleAnnotation;
 import com.zg.direction.entity.ProviderConfig;
 import com.zg.direction.entity.ProviderEntity;
@@ -78,7 +79,7 @@ public class ProviderRegister {
                 ChildData childData = treeCacheEvent.getData();
                 Logger.info("创建！" + childData.getPath());
                 if (childData.getData() != null && childData.getData().length > 0) {
-                    ProviderEntity provider = (ProviderEntity) JsonUtils.jsonToObject(new String(childData.getData()), ProviderEntity.class);
+                    ProviderEntity provider = (ProviderEntity) JsonUtil.string2Obj(new String(childData.getData()), ProviderEntity.class);
                     providerTable.put(provider.providerName, provider.path, provider);
                     Logger.info("data:" + provider);
                 }
@@ -87,14 +88,14 @@ public class ProviderRegister {
                 ChildData childData = treeCacheEvent.getData();
                 Logger.info("修改！" + childData.getPath());
                 if (childData.getData() != null && childData.getData().length > 0) {
-                    ProviderEntity provider = (ProviderEntity) JsonUtils.jsonToObject(new String(childData.getData()), ProviderEntity.class);
+                    ProviderEntity provider = (ProviderEntity) JsonUtil.string2Obj(new String(childData.getData()), ProviderEntity.class);
                     providerTable.put(provider.providerName, provider.path, provider);
                 }
             }
             if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_REMOVED) {
                 ChildData childData = treeCacheEvent.getData();
                 Logger.info("删除！" + childData.getPath());
-                ProviderEntity provider = (ProviderEntity) JsonUtils.jsonToObject(new String(childData.getData()), ProviderEntity.class);
+                ProviderEntity provider = (ProviderEntity) JsonUtil.string2Obj(new String(childData.getData()), ProviderEntity.class);
                 providerTable.remove(provider.providerName, provider.path);
                 BaseKeepClient.close(provider.host, provider.port);
 
@@ -204,7 +205,7 @@ public class ProviderRegister {
         providerEntity.priority = 0;
         providerEntity.times = 0L;
         providerEntity.providerName = providerName;
-        String value = JsonUtils.objectToJson(providerEntity).toString();
+        String value = JsonUtil.obj2String(providerEntity).toString();
         createNode(childPath, value);//创建子节点
         Logger.info("success create znode: " + providerEntity.path);
     }
@@ -223,7 +224,7 @@ public class ProviderRegister {
     private ProviderEntity findProviderByPath(String path) throws Exception {
         //去远程获取
         String data = new String(zkClient.getData().forPath(path));
-        ProviderEntity provider = (ProviderEntity) JsonUtils.jsonToObject(data, ProviderEntity.class);
+        ProviderEntity provider = (ProviderEntity) JsonUtil.string2Obj(data, ProviderEntity.class);
         providerTable.put(provider.providerName, provider.path, provider);
         return provider;
     }

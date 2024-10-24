@@ -1,6 +1,5 @@
 package com.zg.incache.prestuctural.manager;
 
-import com.alibaba.fastjson.JSON;
 import com.zg.incache.prestuctural.entity.CacheEntity;
 
 import java.util.*;
@@ -47,11 +46,7 @@ public class CacheManager {
         if (cacheEntity != null) {
             Object json = cacheEntity.getJsonObject();
             if (json != null) {
-                if (json instanceof JSON) {
-                    return JSON.toJavaObject((JSON) json, cacheEntity.getaClass());
-                } else {
-                    return json;
-                }
+                return json;
             } else {
                 return null;
             }

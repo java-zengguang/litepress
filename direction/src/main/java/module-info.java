@@ -5,7 +5,6 @@ open module direction {
     exports com.zg.direction.register;
     requires common;
     requires network.util;
-    requires fastjson;
     requires io.netty.all;
     requires zookeeper;
     requires com.google.common;
@@ -15,5 +14,7 @@ open module direction {
     requires io.github.javadiffutils;
     requires org.tinylog.api;
     requires io.netty.transport;
+    requires jakarta.json;
+    requires com.fasterxml.jackson.databind;
 
 }
