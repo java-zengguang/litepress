@@ -160,6 +160,9 @@ public abstract class BaseControllerAdapter implements ControllerAdapterInte {
 
         } catch (Exception e) {
             Logger.error(e);
+            if(e instanceof InvocationTargetException){
+                Logger.error(((InvocationTargetException) e).getTargetException());
+            }
         }
 
     }

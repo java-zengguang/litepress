@@ -21,6 +21,7 @@
         <module>sse</module>
         <module>io-util</module>
         <module>task</module>
+        <module>event-driver</module>
 
     </modules>
 

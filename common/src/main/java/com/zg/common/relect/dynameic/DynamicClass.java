@@ -3,6 +3,7 @@ package com.zg.common.relect.dynameic;
 
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.init.Evn;
+import com.zg.common.util.CommonUtil;
 import org.tinylog.Logger;
 
 import javax.tools.*;
@@ -106,9 +107,9 @@ public class DynamicClass {
         ClassJavaFileManager classJavaFileManager = new ClassJavaFileManager(standardFileManager);
         StringObject stringObject = new StringObject(new URI(name + ".java"), JavaFileObject.Kind.SOURCE, javaCode);
         List<String> options = new ArrayList<String>();
-        String path = Evn.getModulePath();
+        String path = CommonUtil.getThisPath(DynamicClass.class);
         Logger.info(DynamicClass.class + "====calss生成路径" + path);
-        options.addAll(Arrays.asList("-d", path, "--limit-modules", "java.base,java.logging"));
+        options.addAll(Arrays.asList("-d", path,"--module-path",path, "--limit-modules", "java.base,java.logging"));
         JavaCompiler.CompilationTask task = compiler.getTask(null, classJavaFileManager, null, options, null, Arrays.asList(stringObject));
         if (task.call()) {
             ClassJavaFileObject javaFileObject = classJavaFileManager.getClassJavaFileObject();
@@ -195,6 +196,20 @@ public class DynamicClass {
         }
     }
 
+
+    public static void main(String[] args) throws MalformedURLException, FileNotFoundException, URISyntaxException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        Evn.setModulePath("/home/zengguang/IdeaProjects/databases/common/target/classes/");
+        getDynamicModel("XX", """
+                package com.zg.common.bean.entity;                
+                
+                
+                public class XX extends MainModel{
+                    public static void main(String args[]){
+                
+                    }
+                }
+                """.toString());
+    }
 
 }
 
