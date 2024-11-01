@@ -32,7 +32,7 @@ public class SimpleRequestAnalysis extends BaseRequestAnalysis {
                     sb.append(line);
                 }
                 value = sb.toString();
-                obj = JsonUtil.string2Obj(value, (Class<?>) paramEntity.paramGenericityType);
+                obj = JsonUtil.string2Obj(value, paramEntity.paramGenericityType);
                 return obj;
             }
             if (HttpServletRequest.class.isAssignableFrom(paramEntity.paramType)) {

@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,7 +37,7 @@ public class TransactionManager {
 
         if (connection == null) {
             OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-            if (optionDB.getDBPType() == null || "".equals(optionDB.getDBPType())) {
+            if (optionDB.getDbptype() == null || "".equals(optionDB.getDbptype())) {
                 Logger.info("使用JDBC链接");
                 Class.forName(optionDB.driver);
                 connection = DriverManager.getConnection(optionDB.url, optionDB.username, optionDB.password);

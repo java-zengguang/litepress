@@ -108,7 +108,7 @@ public class NewJDBCUtil {
             ResultSet rs = pstmt.executeQuery();
             ResultSetMetaData rsmd = rs.getMetaData();
             OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-            EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
+            EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.dbtype);
 
             int columncount = 0;
             while (rs.next()) {
@@ -129,7 +129,7 @@ public class NewJDBCUtil {
                     metadataEntity.columnType = columnType;
                     metadataEntity.objectValue = columnValue;
                     metadataEntity.columnScale = columnScale;
-                    metadataEntity.dbType = optionDB.DBType;
+                    metadataEntity.dbType = optionDB.dbtype;
                     if (pkColumnList.contains(columnLabel)) {
                         metadataEntity.isPK = "1";
                     } else {
@@ -193,7 +193,7 @@ public class NewJDBCUtil {
         List modelList = new ArrayList();
         if (templeList != null && templeList.size() > 0) {
             OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-            SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
+            SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.dbtype);
             if (templeList != null && templeList.size() > 0) {
                 if (modelClass == null) {
                     modelClass = DynamicClass.getDynamicModel(templeList.get(0));
@@ -345,7 +345,7 @@ public class NewJDBCUtil {
             Kryo kryo = new Kryo();
 
             OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-            EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
+            EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.dbtype);
             while (rs.next()) {
                 List<MetadataEntity> columnList = new ArrayList<>();
                 columncount = rsmd.getColumnCount();
@@ -363,7 +363,7 @@ public class NewJDBCUtil {
                     metadataEntity.columnType = columnType;
                     metadataEntity.objectValue = columnValue;
                     metadataEntity.columnScale = columnScale;
-                    metadataEntity.dbType = optionDB.DBType;
+                    metadataEntity.dbType = optionDB.dbtype;
                     if (pkColumnList.contains(columnLabel)) {
                         metadataEntity.isPK = "1";
                     } else {
@@ -379,7 +379,7 @@ public class NewJDBCUtil {
                     metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
                     columnList.add(metadataEntity);
                 }
-                SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
+                SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.dbtype);
                 if (modelClass == null) {
                     modelClass = DynamicClass.getDynamicModel(columnList);
                     kryo.register(modelClass, new DynameicSerializer(modelClass));
@@ -438,7 +438,7 @@ public class NewJDBCUtil {
             Kryo kryo = new Kryo();
 
             OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-            EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
+            EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.dbtype);
             Long count = 0L;
             Output output = null;
             while (rs.next()) {
@@ -469,7 +469,7 @@ public class NewJDBCUtil {
                     metadataEntity.columnType = columnType;
                     metadataEntity.objectValue = columnValue;
                     metadataEntity.columnScale = columnScale;
-                    metadataEntity.dbType = optionDB.DBType;
+                    metadataEntity.dbType = optionDB.dbtype;
                     if (pkColumnList.contains(columnLabel)) {
                         metadataEntity.isPK = "1";
                     } else {
@@ -486,7 +486,7 @@ public class NewJDBCUtil {
                     columnList.add(metadataEntity);
 
                 }
-                SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
+                SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.dbtype);
                 if (modelClass == null) {
                     modelClass = DynamicClass.getDynamicModel(columnList);
                     kryo.register(modelClass, new DynameicSerializer(modelClass));
@@ -559,7 +559,7 @@ public class NewJDBCUtil {
 
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         if (terms != null && terms.length > 0) {
-            String sql = ModelSQLUtils.update(optionDB.getDBType(), object, terms);
+            String sql = ModelSQLUtils.update(optionDB.getDbtype(), object, terms);
             result = operation(sql);
 
         }
@@ -578,7 +578,7 @@ public class NewJDBCUtil {
             OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
             Logger.debug("-----------------start batch-----------");
             for (Object model : modelList) {
-                String sql = ModelSQLUtils.insert(model, tableName, optionDB.DBType);
+                String sql = ModelSQLUtils.insert(model, tableName, optionDB.dbtype);
                 Logger.info(sql);
 
                 stmt.addBatch(sql);

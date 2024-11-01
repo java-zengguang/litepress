@@ -31,16 +31,16 @@ public class PoolConnectionFactory extends BaseConnectionFactory {
         DataBaseInte databasePool = null;
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
 
-        if ("ZGDBP".equals(optionDB.getDBPType())) {
+        if ("ZGDBP".equals(optionDB.getDbptype())) {
             Logger.info("使用ZGDBP链接");
             databasePool = ZGDBPImpl.getInstance();
-        } else if ("Druid".equals(optionDB.getDBPType())) {
+        } else if ("Druid".equals(optionDB.getDbptype())) {
             databasePool = DruidImpl.getInstance();
             Logger.info("使用Druid链接");
-        } else if ("HikariCP".equals(optionDB.getDBPType())) {
+        } else if ("HikariCP".equals(optionDB.getDbptype())) {
             databasePool = HikariCPImpl.getInstance();
             Logger.info("HikariCP");
-        } else if (optionDB.getDBPType() == null || "".equals(optionDB.getDBPType())) {
+        } else if (optionDB.getDbptype() == null || "".equals(optionDB.getDbptype())) {
             Logger.info("未使用链接池");
         } else {
             Logger.info("未找到对应链接池");

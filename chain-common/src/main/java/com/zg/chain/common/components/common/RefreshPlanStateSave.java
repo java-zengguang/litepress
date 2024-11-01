@@ -22,11 +22,11 @@ public class RefreshPlanStateSave extends BaseCommonComponent {
         List<String> sqlList = new ArrayList<>();
         OptionDB optionDB = (OptionDB) Config.getConfig("optionDB");
         if ("0".equals(baseProcess.executestate)) {
-            String sql = ModelSQLUtils.insert(baseProcess, optionDB.DBType);
+            String sql = ModelSQLUtils.insert(baseProcess, optionDB.dbtype);
             sqlList.add(sql);
 
         } else {
-            String sql = ModelSQLUtils.updateByPK(baseProcess, optionDB.DBType);
+            String sql = ModelSQLUtils.updateByPK(baseProcess, optionDB.dbtype);
             sqlList.add(sql);
 
         }

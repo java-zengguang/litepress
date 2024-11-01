@@ -62,7 +62,7 @@ public class BaseEntityDao extends BaseJDBCDao {
     public List select(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException, JSQLParserException {
         List<List<MetadataEntity>> templeList = select2TempleList(sql);
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-        SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
+        SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.dbtype);
         List modelList = new ArrayList();
         Class modelClass = null;
         if (templeList != null && templeList.size() > 0) {
@@ -90,7 +90,7 @@ public class BaseEntityDao extends BaseJDBCDao {
         }
 
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-        SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
+        SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.dbtype);
         List modelList = new ArrayList();
         for (List<MetadataEntity> columnList : templeList) {
             Object obj = modelClass.newInstance();
@@ -140,7 +140,7 @@ public class BaseEntityDao extends BaseJDBCDao {
         int result = 0;
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         if (terms != null && terms.length > 0) {
-            String sql = ModelSQLUtils.update(optionDB.DBType, object, terms);
+            String sql = ModelSQLUtils.update(optionDB.dbtype, object, terms);
             result = operation(sql);
         }
         return result;

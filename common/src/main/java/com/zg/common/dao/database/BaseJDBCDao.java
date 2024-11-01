@@ -82,7 +82,7 @@ public class BaseJDBCDao {
         ResultSet rs = pstmt.executeQuery();
         ResultSetMetaData rsmd = rs.getMetaData();
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
+        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.dbtype);
 
         int columncount = 0;
         while (rs.next()) {
@@ -103,7 +103,7 @@ public class BaseJDBCDao {
                 metadataEntity.columnType = columnType;
                 metadataEntity.columnScale = columnScale;
                 metadataEntity.objectValue = columnValue;
-                metadataEntity.dbType = optionDB.DBType;
+                metadataEntity.dbType = optionDB.dbtype;
                 if (pkColumnList.contains(columnLabel)) {
                     metadataEntity.isPK = "1";
                 } else {
@@ -153,7 +153,7 @@ public class BaseJDBCDao {
         ResultSet rs = pstmt.executeQuery();
         ResultSetMetaData rsmd = rs.getMetaData();
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.DBType);
+        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.dbtype);
         int columncount = 0;
         while (rs.next()) {
             List<MetadataEntity> columnList = new ArrayList<>();
@@ -174,7 +174,7 @@ public class BaseJDBCDao {
                 metadataEntity.columnType = columnType;
                 metadataEntity.columnScale = columnScale;
                 metadataEntity.objectValue = columnValue;
-                metadataEntity.dbType = optionDB.DBType;
+                metadataEntity.dbType = optionDB.dbtype;
                 if (pkColumnList.contains(columnName)) {
                     metadataEntity.isPK = "1";
                 } else {
@@ -280,7 +280,7 @@ public class BaseJDBCDao {
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         for (Object model : modelList) {
 
-            String sql = ModelSQLUtils.insert(model, tableName, optionDB.DBType);
+            String sql = ModelSQLUtils.insert(model, tableName, optionDB.dbtype);
             stmt.addBatch(sql);
 
         }

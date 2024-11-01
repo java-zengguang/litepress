@@ -9,9 +9,17 @@ public class EntityDaoTemplateFactory {
         if ("ORACLE".equals(dbType)) {
             entityDaoTemplate = new OracleEntityDaoTemplate();
         }
-
         if ("H2".equals(dbType)) {
             entityDaoTemplate = new H2EntityDaoTemplate();
+        }
+        if ("OB".equals(dbType)) {
+            entityDaoTemplate = new OracleEntityDaoTemplate();
+        }
+        if ("OB-MYSQL".equals(dbType)) {
+            entityDaoTemplate = new MysqlEntityDaoTemplate();
+        }
+        if ("OB-ORACLE".equals(dbType)) {
+            entityDaoTemplate = new MysqlEntityDaoTemplate();
         }
         return entityDaoTemplate;
     }
