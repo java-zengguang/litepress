@@ -35,6 +35,7 @@ module common {
     requires zip4j;
     requires org.graalvm.nativeimage;
     requires org.reflections;
+    requires net.bytebuddy;
 
 
 }

@@ -1,17 +1,17 @@
 open module event.driver {
     requires io.netty.all;
     requires rocketmq.client;
-    requires org.tinylog.api;
     requires rocketmq.remoting;
     requires rocketmq.acl;
     requires rocketmq.common;
-    requires java.base;
-    requires java.sql;
     requires fastjson;
     requires commons.lang3;
     requires ssdb4j;
     requires commons.pool2;
     requires com.google.common;
+    requires org.zeromq.jeromq;
+    requires common;
+    requires org.tinylog.api;
 
     exports com.zg.event.driver.event;
     exports com.zg.event.driver.subsriber;

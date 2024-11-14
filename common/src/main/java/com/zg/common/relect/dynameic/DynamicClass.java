@@ -3,6 +3,7 @@ package com.zg.common.relect.dynameic;
 
 import com.zg.common.bean.entity.MetadataEntity;
 import com.zg.common.init.Evn;
+import com.zg.common.relect.bytebuddy.DynamicClassGenerator;
 import com.zg.common.util.CommonUtil;
 import org.tinylog.Logger;
 
@@ -17,6 +18,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 
 public class DynamicClass {
@@ -72,7 +74,7 @@ public class DynamicClass {
     }
 
     public static Class getDynamicModel(List<MetadataEntity> columnList) {
-        Class model = null;
+/*        Class model = null;
         if (columnList != null && columnList.size() > 0) {
 
             List importList = Arrays.asList("com.zg.common.bean.entity.MainModel",
@@ -84,8 +86,9 @@ public class DynamicClass {
                 tableName = columnList.get(0).ownName + "." + tableName;
             }
             model = DynamicClass.getDynamicModel(importList, entityName, tableName, columnList, null, "MainModel");
-        }
-        return model;
+        }*/
+
+        return DynamicClassGenerator.getDynamicModel(columnList);
     }
 
     public static Class getDynamicModel(List<String> referenceList, String className, String tableName, List<MetadataEntity> columnList, List<String> interfaceList, String parentClass) {
@@ -120,6 +123,8 @@ public class DynamicClass {
         }
         return null;
     }
+
+
 
     static class ClassJavaFileManager extends ForwardingJavaFileManager {
 

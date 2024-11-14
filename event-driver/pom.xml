@@ -42,6 +42,27 @@
             <artifactId>netty-all</artifactId>
             <version>4.1.94.Final</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.12.3</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-api</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.30</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zg.database</groupId>
+            <artifactId>common</artifactId>
+            <version>${revision}</version>
+        </dependency>
         <!-- ssdb -->
         <dependency>
             <groupId>org.nutz</groupId>
@@ -62,6 +83,14 @@
             <artifactId>redisson</artifactId>
             <version>3.14.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.zeromq</groupId>
+            <artifactId>jeromq</artifactId>
+            <version>0.6.0</version>
+        </dependency>
+
+
     </dependencies>
 
 

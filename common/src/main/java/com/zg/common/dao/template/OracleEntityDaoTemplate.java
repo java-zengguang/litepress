@@ -60,7 +60,7 @@ public class OracleEntityDaoTemplate extends BaseEntityDaoTemplate {
         metadataEntity.fieldType = configList.get(1);
         if (metadataEntity.objectValue != null) {
             if ("BigDecimal".equals(metadataEntity.fieldType)) { //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下
-                BigDecimal bigDecimal = BigDecimal.valueOf(Double.parseDouble("" + metadataEntity.objectValue));
+                BigDecimal bigDecimal = BigDecimal.valueOf(Double.parseDouble("" + metadataEntity.objectValue)); //对于改数平台场景需要，保留尾部0
                 bigDecimal = bigDecimal.setScale(metadataEntity.columnScale, RoundingMode.HALF_UP); //指定精度，避免科学计数法
                 metadataEntity.fieldValue = bigDecimal;
                 metadataEntity.columnValue = bigDecimal.toString();
