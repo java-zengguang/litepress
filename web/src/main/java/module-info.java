@@ -1,12 +1,12 @@
 open module web {
-    requires common;
-    requires commons.collections;
-    requires org.eclipse.jetty.servlet;
-    requires org.eclipse.jetty.servlets;
     requires java.jwt;
     requires bcprov.ext.jdk16;
+    requires sse;
+    requires org.eclipse.jetty.servlet;
+    requires org.eclipse.jetty.servlets;
+    requires common;
     requires org.tinylog.api;
-    requires com.fasterxml.jackson.databind;
+    requires commons.collections;
     exports com.zg.mvc.servlet;
     exports com.zg.mvc.adapter;
     exports com.zg.mvc.annotation.autowired;

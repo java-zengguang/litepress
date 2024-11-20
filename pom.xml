@@ -17,11 +17,11 @@
         <module>network-util</module>
         <module>groovy-common</module>
         <module>chain-common</module>
-        <module>event-common</module>
+        <module>event-driver</module>
         <module>sse</module>
         <module>io-util</module>
         <module>task</module>
-        <module>event-driver</module>
+        <module>router</module>
 
     </modules>
 

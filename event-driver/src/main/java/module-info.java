@@ -10,8 +10,10 @@ open module event.driver {
     requires commons.pool2;
     requires com.google.common;
     requires org.zeromq.jeromq;
+    requires router;
     requires common;
     requires org.tinylog.api;
+    requires commons.logging;
 
     exports com.zg.event.driver.event;
     exports com.zg.event.driver.subsriber;

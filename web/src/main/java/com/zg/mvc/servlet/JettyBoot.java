@@ -1,6 +1,7 @@
 package com.zg.mvc.servlet;
 
 import com.zg.common.init.Evn;
+import com.zg.sse.servlet.AEventSourceServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -48,9 +49,13 @@ public class JettyBoot {
             // 将Session Manager设置到Jetty服务器中
             server.setHandler(sessionHandler);
 
+
             if (true) {
                 ServletHandler servletHandler = new ServletHandler();
                 servletHandler.addServletWithMapping(AdapterServlet.class, "/");
+                servletHandler.addServletWithMapping(AEventSourceServlet.class,"/sse");
+
+
                 //过滤
                 if (true) {
                     CrossOriginFilter crossOriginFilter = new CrossOriginFilter();
@@ -72,6 +77,8 @@ public class JettyBoot {
                 }
                 server.insertHandler(servletHandler);
             }
+
+
 
             if (true) {
                 ResourceHandler resourceHandler = new ResourceHandler();

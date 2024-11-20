@@ -90,6 +90,17 @@
             <version>0.6.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.zg.database</groupId>
+            <artifactId>router</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zg.database</groupId>
+            <artifactId>router</artifactId>
+            <version>1.0.9.g</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

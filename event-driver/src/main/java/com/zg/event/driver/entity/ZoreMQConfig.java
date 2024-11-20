@@ -2,8 +2,8 @@ package com.zg.event.driver.entity;
 
 public class ZoreMQConfig {
     public String port;
+    public String registerURL;
 
-    public ZoreMQConfig(String port) {
-        this.port = port;
-    }
+
+
 }
