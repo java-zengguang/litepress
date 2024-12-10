@@ -14,6 +14,7 @@ open module event.driver {
     requires common;
     requires org.tinylog.api;
     requires commons.logging;
+    requires reaction;
 
     exports com.zg.event.driver.event;
     exports com.zg.event.driver.subsriber;

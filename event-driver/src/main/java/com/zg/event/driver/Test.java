@@ -1,6 +1,7 @@
 package com.zg.event.driver;
 
 
+import com.zg.database.react.semaphore.impl.LocalSemaphoreManager;
 import com.zg.event.driver.bus.RocketMQBus;
 import com.zg.event.driver.en.EventStage;
 import com.zg.event.driver.entity.RocketConfig;
@@ -82,6 +83,7 @@ public class Test {
         eventStateManager.addEventTransitionRule("say", EventStage.SUCCESSFUL.name(),eventTransitionRule1);
 
         messageBus.setEventStateManager(eventStateManager);
+        messageBus.setSemaphoreManager(new LocalSemaphoreManager());
         messageBus.init();
 
         System.out.println("暂停消费");

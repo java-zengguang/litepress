@@ -1,5 +1,6 @@
 package com.zg.event.driver.event;
 
+import com.zg.event.driver.en.EventStage;
 import com.zg.event.driver.en.ProcessState;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -17,8 +18,7 @@ public class BaseEvent {
 
     public String processState;  //流程状态  默认 0-初始化  1-正常完成  2-流程进行中  3-异常终止
 
-
-    public String eventStage;  //事件节点 init-初始化（排队中）   successful-成功  failure-失败   progress-进行中  retry-重试
+    public String eventStage;  //事件节点 init-初始化  publish-发布  successful-成功  failure-失败   progress-进行中  retry-重试
 
     public String businessNo;
 
@@ -42,14 +42,16 @@ public class BaseEvent {
     public BaseEvent() {
     }
 
+
     public BaseEvent(String eventType, String message) {
         this.eventType = eventType;
         this.message = message;
         this.businessNo = UUID.randomUUID().toString();
-        this.eventID = eventType + "_" + businessNo;
+        this.eventID = UUID.randomUUID().toString();
+        this.eventStage= EventStage.INIT.name();
         this.processStage ="0";
         this.processState= ProcessState.INIT.name();
-        this.processID="EVENT_TRACE_"+ DateFormatUtils.format(new Date(),"yyyyMM");
+        this.processID=UUID.randomUUID().toString();
 
     }
 
@@ -57,11 +59,11 @@ public class BaseEvent {
         this.eventType = eventType;
         this.message = message;
         this.businessNo = businessNo;
-        this.eventID = eventType + "_" + businessNo;
+        this.eventID = UUID.randomUUID().toString();
+        this.eventStage= EventStage.INIT.name();
         this.processStage ="0";
         this.processState= ProcessState.INIT.name();
-        this.processID="EVENT_TRACE_"+ DateFormatUtils.format(new Date(),"yyyyMM");
-
+        this.processID=UUID.randomUUID().toString();
     }
 
 
@@ -69,11 +71,18 @@ public class BaseEvent {
         this.eventType = eventType;
         this.message = message;
         this.businessNo = businessNo;
-        this.eventID = eventType + "_" + businessNo;
+        this.eventID = UUID.randomUUID().toString();
+        this.eventStage= EventStage.INIT.name();
         this.processStage = processStage;
         this.processState= ProcessState.INIT.name();
-        this.processID="EVENT_TRACE_"+ DateFormatUtils.format(new Date(),"yyyyMM");
+        this.processID=UUID.randomUUID().toString();
+    }
 
+    public BaseEvent nextBaseEvent(String eventType){
+        this.eventType=eventType;
+        this.eventID = UUID.randomUUID().toString();
+        this.eventStage= EventStage.INIT.name();
+        return this;
     }
 
 

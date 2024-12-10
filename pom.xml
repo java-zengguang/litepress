@@ -22,6 +22,8 @@
         <module>io-util</module>
         <module>task</module>
         <module>router</module>
+        <module>deep</module>
+        <module>reaction</module>
 
     </modules>
 

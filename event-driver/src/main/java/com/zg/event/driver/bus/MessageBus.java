@@ -2,6 +2,7 @@ package com.zg.event.driver.bus;
 
 
 
+import com.zg.database.react.semaphore.SemaphoreManager;
 import com.zg.event.driver.event.BaseEvent;
 import com.zg.event.driver.event.manager.EventStateManager;
 import com.zg.event.driver.event.rule.EventTransitionRule;
@@ -22,6 +23,8 @@ public interface MessageBus {
 
 
     void setEventStateManager(EventStateManager eventStateManager);
+
+    void setSemaphoreManager(SemaphoreManager semaphoreManager);
 
     void subscriber(String eventType, String eventStage, EventListener listener, EventTransitionRule eventTransitionRule) throws MQClientException, InterruptedException;
 

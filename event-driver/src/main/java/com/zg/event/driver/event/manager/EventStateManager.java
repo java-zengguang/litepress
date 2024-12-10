@@ -14,7 +14,4 @@ public interface EventStateManager {
 
     Set<EventTransitionRule> getEventTransitionRule(String stage, BaseEvent baseEvent);
 
-
-
-
 }

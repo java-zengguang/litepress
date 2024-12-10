@@ -23,6 +23,9 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
         configArrayList = new ArrayList<List<String>>() {
 
             {
+
+
+                add(Arrays.asList("BIGINT", "Long", "", ""));
                 add(Arrays.asList("DECIMAL", "BigDecimal", "", ""));
                 add(Arrays.asList("DOUBLE", "BigDecimal", "", ""));
                 add(Arrays.asList("INTEGER", "Integer", "", ""));

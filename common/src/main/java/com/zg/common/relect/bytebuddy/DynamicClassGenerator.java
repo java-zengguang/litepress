@@ -35,6 +35,7 @@ public class DynamicClassGenerator {
         primClasses.put("void", void.class);
         primClasses.put("String", String.class);
         primClasses.put("Integer", Integer.class);
+        primClasses.put("Long", Long.class);
         primClasses.put("BigDecimal", BigDecimal.class);
         primClasses.put("Double", Double.class);
         primClasses.put("Date", Date.class);

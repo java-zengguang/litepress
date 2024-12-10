@@ -95,12 +95,13 @@
             <artifactId>router</artifactId>
             <version>${revision}</version>
         </dependency>
+
         <dependency>
             <groupId>com.zg.database</groupId>
-            <artifactId>router</artifactId>
-            <version>1.0.9.g</version>
-            <scope>compile</scope>
+            <artifactId>reaction</artifactId>
+            <version>${revision}</version>
         </dependency>
+
 
     </dependencies>
 
