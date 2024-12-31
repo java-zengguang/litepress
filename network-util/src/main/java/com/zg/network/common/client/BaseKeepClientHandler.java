@@ -26,7 +26,7 @@ public class BaseKeepClientHandler extends ChannelInboundHandlerAdapter {
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws InterruptedException {
-        Logger.info("返回请求 message: " + msg);
+        Logger.debug("返回请求 message: " + msg);
         BaseTranslationProtocol baseTranslationProtocol = (BaseTranslationProtocol) JsonUtil.string2Obj((String) msg, agreementClass);
         BaseMessageCache.dealResponse(baseTranslationProtocol);
     }

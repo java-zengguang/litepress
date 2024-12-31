@@ -6,9 +6,12 @@ import org.nutz.ssdb4j.spi.SSDB;
 
 public class SSDBSemaphoreManager implements SemaphoreManager {
     private SSDB ssdb;
+    private final Integer expiryTime;
 
-    public SSDBSemaphoreManager(SSDB ssdb) {
+
+    public SSDBSemaphoreManager(SSDB ssdb,Integer expiryTime) {
         this.ssdb = ssdb;
+        this.expiryTime=expiryTime;
     }
 
     @Override
@@ -27,7 +30,7 @@ public class SSDBSemaphoreManager implements SemaphoreManager {
 
     @Override
     public void setSemaphore(String semaphoreKey, Integer semaphoreValue) {
-        ssdb.set(semaphoreKey, semaphoreValue);
+        ssdb.setx(semaphoreKey, semaphoreValue,expiryTime);
     }
 
     @Override

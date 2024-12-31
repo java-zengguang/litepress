@@ -120,7 +120,7 @@ public class ScanPackages {
             initClasses(pack);
         }
         for(String className:classNames){
-            System.out.println(className);
+            Logger.info(className);
             try {
                 classes.add(Class.forName(className));
             } catch (ClassNotFoundException e) {

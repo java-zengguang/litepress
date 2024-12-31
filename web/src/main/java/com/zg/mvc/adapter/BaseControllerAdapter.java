@@ -249,13 +249,15 @@ public abstract class BaseControllerAdapter implements ControllerAdapterInte {
                 return;
             }
             Method method = router(request);
-            //异步请求走异步方式
-            if (method.isAnnotationPresent(AsyncMethod.class)) {
-                asynRequest(method, request, response);
-            } else {
-                synRequest(method, request, response);
-            }
+            if(method!=null) {
+                //异步请求走异步方式
+                if (method.isAnnotationPresent(AsyncMethod.class)) {
+                    asynRequest(method, request, response);
+                } else {
+                    synRequest(method, request, response);
+                }
 
+            }
         } catch (Exception e) {
             Logger.error(e);
             if (e instanceof InvocationTargetException) {

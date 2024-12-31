@@ -126,29 +126,7 @@ public abstract class BaseRocketMQBus extends BaseMessageBus implements RocketMQ
 
     }
 
-/*    //执行事件流转规则
-    public void doEventTransitionRules(String stage, BaseEvent baseEvent) throws StateTransitinException {
-        if (eventStateManager != null) {
-            baseEvent.eventStage = stage;
-            Set<EventTransitionRule> eventTransitionRuleSet = eventStateManager.getEventTransitionRule(stage, baseEvent);
-           if(eventTransitionRuleSet!=null && eventTransitionRuleSet.size()>0) {
-               for (EventTransitionRule eventTransitionRule : eventTransitionRuleSet) {
-                   eventTransitionRule.doTransitionState(baseEvent);
-                   eventTransitionRule.doAction(baseEvent);
-                   try {
-                       String nextEvent = eventTransitionRule.getNextEvent();
-                       if (nextEvent != null) {
-                           baseEvent.nextBaseEvent(nextEvent);
-                           publish(baseEvent);
-                       }
-                   }catch (Exception e){
-                       new StateTransitinException(baseEvent.eventID+"事件流中断，事件发送异常",e);
-                   }
-               }
-           }
-        }
 
-    }*/
 
     @Override
     public void suspendCustomer() {

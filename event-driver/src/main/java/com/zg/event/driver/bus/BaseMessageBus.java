@@ -32,8 +32,11 @@ public abstract class BaseMessageBus implements MessageBus {
         processBefore(baseEvent);
         try {
             eventListener.dealEvent(baseEvent);
+            baseEvent.eventStage=EventStage.SUCCESSFUL.name();
+
         } catch (Exception e) {
             Logger.error("事件处理异常", e);
+            baseEvent.eventStage=EventStage.FAILURE.name();
             baseEvent.errorMessage = e.getMessage();
             baseEvent.processState = ProcessState.FAILURE.name();  //遇到异常将流程修改为异常终止
         }
@@ -55,7 +58,7 @@ public abstract class BaseMessageBus implements MessageBus {
     //执行事件流转规则
     private void doEventTransitionRules(String stage, BaseEvent baseEvent) throws StateTransitinException {
         if (eventStateManager != null) {
-            baseEvent.eventStage = stage;
+         //   baseEvent.eventStage = stage;
             Set<EventTransitionRule> eventTransitionRuleSet = eventStateManager.getEventTransitionRule(stage, baseEvent);
             if (eventTransitionRuleSet != null && eventTransitionRuleSet.size() > 0) {
                 for (EventTransitionRule eventTransitionRule : eventTransitionRuleSet) {

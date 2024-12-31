@@ -1,7 +1,7 @@
-package com.zg.database.react.reaction;
+package com.zg.database.react.selector;
 
 import com.zg.database.react.deal.DealHandler;
 
-public interface Reaction {
+public interface Selector {
     void register(DealHandler dealHandler,Integer semaphoreValue);
 }

@@ -13,7 +13,7 @@ public abstract class BaseKeepServiceHandler extends ChannelInboundHandlerAdapte
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        Logger.info("收到请求："+msg);
+        Logger.debug("收到请求："+msg);
         sendMsg(ctx.channel(), (String) msg);
     }
 

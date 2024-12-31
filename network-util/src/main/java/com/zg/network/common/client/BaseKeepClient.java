@@ -56,7 +56,7 @@ public class BaseKeepClient {
 
             @Override
             public void channelCreated(Channel ch) {
-                Logger.info("Channel create.");
+                Logger.debug("Channel create.");
                 // 初始化处理器
                 ChannelPipeline pipe = ch.pipeline();
                 pipe.addLast(new DelimiterBasedFrameDecoder(1000 * 1000 * 1024, Delimiters.lineDelimiter()));
@@ -73,14 +73,14 @@ public class BaseKeepClient {
         if(future.isSuccess()){
             Channel channel=future.getNow();
             channel.writeAndFlush(json + "\r\n");
-            Logger.info("发送请求："+json);
+            Logger.debug("发送请求："+json);
             BaseMessageCache.addWaitingRequest(request);
             channelPool.release(channel);
         }
 
     }
     public void close() {
-        Logger.info("close  client: " +host+":"+port);
+        Logger.debug("close  client: " +host+":"+port);
         //优雅的关闭工作线程
         workerGroup.shutdownGracefully();
         clientTable.remove(host, port);

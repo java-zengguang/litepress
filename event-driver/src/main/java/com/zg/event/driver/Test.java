@@ -86,7 +86,7 @@ public class Test {
         messageBus.setSemaphoreManager(new LocalSemaphoreManager());
         messageBus.init();
 
-        System.out.println("暂停消费");
+        Logger.info("暂停消费");
         messageBus.suspendCustomer();
         Thread.sleep(10000);
 
@@ -94,7 +94,7 @@ public class Test {
         messageBus.publish(new BaseEvent("say", "006", "hello"));
         messageBus.publish(new BaseEvent("say", "007", "hello1"));
         messageBus.publish(new BaseEvent("say", "008", "hello2"));
-        System.out.println("开始消费");
+        Logger.info("开始消费");
         messageBus.resumeCustomer();
 
     }

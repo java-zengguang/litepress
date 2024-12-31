@@ -63,30 +63,30 @@ public class ProviderRegister {
             Logger.error(e);
         }
         //添加错误监听器
-        treeCache.getUnhandledErrorListenable().addListener((s, throwable) -> Logger.info(".错误原因：" + throwable.getMessage() + "\n==============\n"));
+        treeCache.getUnhandledErrorListenable().addListener((s, throwable) -> Logger.debug(".错误原因：" + throwable.getMessage() + "\n==============\n"));
 
-        //节点变化的监Logger.info听器
+        //节点变化的监Logger.debug听器
         treeCache.getListenable().addListener((curatorFramework, treeCacheEvent) -> {
 
             if (treeCacheEvent.getType() == TreeCacheEvent.Type.INITIALIZED) {
                 countDownLatch.countDown();
-                Logger.info("初始化！");
+                Logger.debug("初始化！");
             }
             if (treeCacheEvent.getType() == TreeCacheEvent.Type.CONNECTION_RECONNECTED) {
-                Logger.info("重新连接！");
+                Logger.debug("重新连接！");
             }
             if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_ADDED) {
                 ChildData childData = treeCacheEvent.getData();
-                Logger.info("创建！" + childData.getPath());
+                Logger.debug("创建！" + childData.getPath());
                 if (childData.getData() != null && childData.getData().length > 0) {
                     ProviderEntity provider = (ProviderEntity) JsonUtil.string2Obj(new String(childData.getData()), ProviderEntity.class);
                     providerTable.put(provider.providerName, provider.path, provider);
-                    Logger.info("data:" + provider);
+                    Logger.debug("data:" + provider);
                 }
             }
             if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_UPDATED) {
                 ChildData childData = treeCacheEvent.getData();
-                Logger.info("修改！" + childData.getPath());
+                Logger.debug("修改！" + childData.getPath());
                 if (childData.getData() != null && childData.getData().length > 0) {
                     ProviderEntity provider = (ProviderEntity) JsonUtil.string2Obj(new String(childData.getData()), ProviderEntity.class);
                     providerTable.put(provider.providerName, provider.path, provider);
@@ -94,7 +94,7 @@ public class ProviderRegister {
             }
             if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_REMOVED) {
                 ChildData childData = treeCacheEvent.getData();
-                Logger.info("删除！" + childData.getPath());
+                Logger.debug("删除！" + childData.getPath());
                 ProviderEntity provider = (ProviderEntity) JsonUtil.string2Obj(new String(childData.getData()), ProviderEntity.class);
                 providerTable.remove(provider.providerName, provider.path);
                 BaseKeepClient.close(provider.host, provider.port);
@@ -129,7 +129,7 @@ public class ProviderRegister {
             });
             thread.start();
         }
-        Logger.info("启动服务：" + thread.getId() + "：" + thread.getState());
+        Logger.debug("启动服务：" + thread.getId() + "：" + thread.getState());
     }
 
     private Map<String, Object> loadProvider() {
@@ -158,7 +158,7 @@ public class ProviderRegister {
             String childPath = key + "/" + (new Date()).getTime();
             //  zookeeperUtil.createNode(path, value);
             createChildNode(key, childPath, providerEntity);
-            Logger.info("服务注册：" + childPath);
+            Logger.debug("服务注册：" + childPath);
 
         }
         //  Thread.sleep(Integer.MAX_VALUE);
@@ -194,7 +194,7 @@ public class ProviderRegister {
 
     private void createNode(String path, String value) throws Exception {
         zkClient.create().creatingParentContainersIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path, value.getBytes());
-        Logger.info("success create znode: " + path);
+        Logger.debug("success create znode: " + path);
     }
 
     //创建节点需要同步操作
@@ -207,7 +207,7 @@ public class ProviderRegister {
         providerEntity.providerName = providerName;
         String value = JsonUtil.obj2String(providerEntity).toString();
         createNode(childPath, value);//创建子节点
-        Logger.info("success create znode: " + providerEntity.path);
+        Logger.debug("success create znode: " + providerEntity.path);
     }
 
 

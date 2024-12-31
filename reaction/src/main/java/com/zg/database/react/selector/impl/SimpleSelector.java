@@ -1,14 +1,14 @@
-package com.zg.database.react.reaction.impl;
+package com.zg.database.react.selector.impl;
 
 import com.zg.database.react.deal.DealHandler;
-import com.zg.database.react.reaction.Reaction;
+import com.zg.database.react.selector.Selector;
 import com.zg.database.react.semaphore.SemaphoreManager;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class SimpleReaction implements Reaction {
+public class SimpleSelector implements Selector {
 
     private final List<DealHandler> semaphoreList = new LinkedList<>();
     private final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
@@ -17,7 +17,7 @@ public class SimpleReaction implements Reaction {
     private Long checkTime;
 
 
-    public SimpleReaction(Long checkTime, SemaphoreManager semaphoreManager) {
+    public SimpleSelector(Long checkTime, SemaphoreManager semaphoreManager) {
         this.checkTime = checkTime;
         this.semaphoreManager=semaphoreManager;
         init();
@@ -39,6 +39,7 @@ public class SimpleReaction implements Reaction {
             executor.submit(x.getDeal());
         });
     }
+
 
     private void init() {
         scheduler.scheduleAtFixedRate(() -> {

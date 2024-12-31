@@ -19,9 +19,9 @@ public class BaseRequest {
     public void block() {
         lock.lock();
         try {
-            Logger.info("阻塞请求"+id);
+            Logger.debug("阻塞请求"+id);
             condition.await(5,TimeUnit.SECONDS); // 线程进入阻塞状态
-            Logger.info("释放请求"+id);
+            Logger.debug("释放请求"+id);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {

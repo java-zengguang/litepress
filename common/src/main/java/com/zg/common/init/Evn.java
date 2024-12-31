@@ -4,6 +4,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.tinylog.Logger;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -68,7 +69,7 @@ public class Evn {
             document = reader.read(inputStream);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("读取配置文件失败");
+            Logger.info("读取配置文件失败");
         } finally {
             inputStream.close();
         }

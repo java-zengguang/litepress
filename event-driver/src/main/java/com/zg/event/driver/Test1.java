@@ -27,7 +27,7 @@ public class Test1 {
         messageBus.subscriber("tag1", new BaseEventListener() {
             @Override
             public void callBack(String eventMessage) throws Exception {
-                System.out.println(eventMessage);
+                Logger.info(eventMessage);
             }
         });
         messageBus.init();

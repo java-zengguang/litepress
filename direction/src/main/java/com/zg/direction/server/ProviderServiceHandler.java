@@ -19,6 +19,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @ChannelHandler.Sharable
 public class ProviderServiceHandler extends BaseKeepServiceHandler {
@@ -36,7 +37,7 @@ public class ProviderServiceHandler extends BaseKeepServiceHandler {
 
     public Object analysisObject(Type type, Object value) {
         Object result = value;
-        if (value instanceof JsonNode) {
+        if (value instanceof JsonNode || value instanceof Map<?,?>) {
             result = JsonUtil.string2Obj(JsonUtil.obj2String(value),type);
         }
         return result;
@@ -67,7 +68,7 @@ public class ProviderServiceHandler extends BaseKeepServiceHandler {
     @Override
     public void sendMsg(Channel channel, String msg) throws Exception {
 
-        Logger.info("get msg >" + msg);
+        Logger.debug("get msg >" + msg);
 
         DTPRequest request = null;
         DTPResponse response = new DTPResponse();
@@ -89,7 +90,7 @@ public class ProviderServiceHandler extends BaseKeepServiceHandler {
             //zookeeper暂用
             String path = request.path;
             String providerName = request.providerName;
-            Logger.info("任务处理provider：" + path);
+            Logger.debug("任务处理provider：" + path);
             LocalDateTime startTime = LocalDateTime.now();
             Object result=null;
             try {
@@ -98,7 +99,7 @@ public class ProviderServiceHandler extends BaseKeepServiceHandler {
                 throw e.getCause();
             }
             LocalDateTime endTime = LocalDateTime.now();
-            Logger.info(path + "任务处理时长：" + Duration.between(startTime, endTime).toMillis());
+            Logger.debug(path + "任务处理时长：" + Duration.between(startTime, endTime).toMillis());
             //zookeeper释放
             //方法体执行结束
             response.success = true;

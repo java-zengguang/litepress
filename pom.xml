@@ -25,6 +25,7 @@
         <module>deep</module>
         <module>reaction</module>
 
+        <module>ml</module>
     </modules>
 
 

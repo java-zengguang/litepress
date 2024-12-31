@@ -1,5 +1,7 @@
 package com.zg.chain.common.util;
 
+import org.tinylog.Logger;
+
 import java.io.*;
 import java.util.*;
 
@@ -140,7 +142,7 @@ public class ExternalSortExample {
             int currentValue = Integer.parseInt(line);
 
             if (currentValue < previousValue) {
-                System.out.println("文件未被正确排序！");
+                Logger.info("文件未被正确排序！");
                 return;
             }
 
@@ -148,6 +150,6 @@ public class ExternalSortExample {
         }
 
         reader.close();
-        System.out.println("文件已被正确排序！");
+        Logger.info("文件已被正确排序！");
     }
 }

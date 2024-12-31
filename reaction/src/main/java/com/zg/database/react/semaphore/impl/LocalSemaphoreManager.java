@@ -7,7 +7,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class LocalSemaphoreManager implements SemaphoreManager {
-    public final static Map<String, AtomicInteger> semaphoreMap = new HashMap<>();
+    private final static Map<String, AtomicInteger> semaphoreMap = new HashMap<>();
+
 
     @Override
     public void decrementSemaphore(String semaphoreKey) {
