@@ -26,6 +26,8 @@
         <module>reaction</module>
 
         <module>ml</module>
+        <module>nlp</module>
+        <module>batch</module>
     </modules>
 
 
