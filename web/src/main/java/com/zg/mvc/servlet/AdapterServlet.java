@@ -1,14 +1,11 @@
 package com.zg.mvc.servlet;
 
-import com.zg.mvc.adapter.ControllerAdapterInte;
-import com.zg.mvc.adapter.SimpleControllerAdapter;
+
 import com.zg.mvc.web.adapter.HttpServletControllerAdapter;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.eclipse.jetty.servlets.EventSource;
 import org.tinylog.ThreadContext;
 
 import java.io.IOException;

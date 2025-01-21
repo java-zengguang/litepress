@@ -156,7 +156,7 @@ public abstract class BaseControllerAdapter implements ControllerAdapterInte {
             obj = postIntercept(request, response, obj);
             //处理返回参数
             String resultObj = "";
-            if (obj != null && obj instanceof String) {
+            if (obj instanceof String) {
                 resultObj = (String) obj;
             }
             PrintWriter out = response.getWriter();
@@ -166,7 +166,7 @@ public abstract class BaseControllerAdapter implements ControllerAdapterInte {
     }
 
     public void asynRequest(Method method, HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, InterruptedException, InvocationTargetException, IllegalAccessException, InstantiationException, ServletException {
-        Class clazz = method.getDeclaringClass();
+        Class<?> clazz = method.getDeclaringClass();
         final AsyncContext asyncContext = request.startAsync();
         int timeOut = method.getAnnotation(AsyncMethod.class).timeOut();
         asyncContext.setTimeout(timeOut);  // 6秒超时
@@ -179,7 +179,7 @@ public abstract class BaseControllerAdapter implements ControllerAdapterInte {
             }
 
             @Override
-            public void onStartAsync(AsyncEvent event) throws IOException {
+            public void onStartAsync(AsyncEvent event)   {
                 Logger.info("使用异步请求！！");
                 // 不需要实现
             }
@@ -192,7 +192,7 @@ public abstract class BaseControllerAdapter implements ControllerAdapterInte {
             }
 
             @Override
-            public void onComplete(AsyncEvent event) throws IOException {
+            public void onComplete(AsyncEvent event)   {
                 // 不需要实现
                 Logger.info("使用异步请求完成！！");
             }

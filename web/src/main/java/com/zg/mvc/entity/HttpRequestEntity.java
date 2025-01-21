@@ -1,9 +1,6 @@
 package com.zg.mvc.entity;
 
 import com.zg.common.bean.entity.MainModel;
-
-import java.io.File;
-import java.io.InputStream;
 import java.util.*;
 
 public class HttpRequestEntity extends MainModel {

@@ -2,11 +2,13 @@ package com.zg.mvc.entity;
 
 
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class CookieEntity implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public String name;
@@ -38,9 +40,9 @@ public class CookieEntity implements Serializable {
 
         try {
             // Name=Value pair, URL encoding the value
-            cookieBuilder.append(URLEncoder.encode(name, StandardCharsets.UTF_8.toString()))
+            cookieBuilder.append(URLEncoder.encode(name, StandardCharsets.UTF_8))
                     .append("=")
-                    .append(URLEncoder.encode(value, StandardCharsets.UTF_8.toString()));
+                    .append(URLEncoder.encode(value, StandardCharsets.UTF_8));
 
             appendIfNotNull(cookieBuilder, "Domain", domain);
             appendIfNotNull(cookieBuilder, "Path", path);

@@ -2,7 +2,6 @@ package com.zg.network.common.service;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -25,14 +24,14 @@ public  class BaseKeepService{
     private NioEventLoopGroup bossGroup = null;
     private NioEventLoopGroup workerGroup = null;
     private final int port;
-    private ChannelInitializer channelInitializer;
+    private final ChannelInitializer channelInitializer;
 
 
     public BaseKeepService(BaseKeepServiceHandler baseServiceHandler, int port) {
         this.port = port;
         this.channelInitializer=new ChannelInitializer<SocketChannel>() {
             @Override
-            protected void initChannel(SocketChannel socketChannel) throws Exception {
+            protected void initChannel(SocketChannel socketChannel)   {
                 //获取管道
                 ChannelPipeline pipe = socketChannel.pipeline();
 
