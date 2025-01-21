@@ -2,6 +2,7 @@ package com.zg.mvc.servlet;
 
 import com.zg.mvc.adapter.ControllerAdapterInte;
 import com.zg.mvc.adapter.SimpleControllerAdapter;
+import com.zg.mvc.web.adapter.HttpServletControllerAdapter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @WebServlet(name = "AdapterServlet", urlPatterns = "/")
 public class AdapterServlet extends HttpServlet {
 
-    ControllerAdapterInte simpleControllerAdapter = SimpleControllerAdapter.getInstance();
+    HttpServletControllerAdapter simpleControllerAdapter = HttpServletControllerAdapter.getInstance();
 
 
 
@@ -30,7 +31,11 @@ public class AdapterServlet extends HttpServlet {
        // response.setContentType("text/html;charset=UTF-8");//设置传输编码
         //ControllerAdapter.resovleRequest(request, response);
 
-        simpleControllerAdapter.doMain(request, response);
+        try {
+            simpleControllerAdapter.dealHttpRequest(request, response);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
     }
 

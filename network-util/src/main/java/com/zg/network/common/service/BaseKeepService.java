@@ -25,11 +25,33 @@ public  class BaseKeepService{
     private NioEventLoopGroup bossGroup = null;
     private NioEventLoopGroup workerGroup = null;
     private final int port;
-    private final BaseKeepServiceHandler baseServiceHandler;
+    private ChannelInitializer channelInitializer;
 
 
     public BaseKeepService(BaseKeepServiceHandler baseServiceHandler, int port) {
-        this.baseServiceHandler = baseServiceHandler;
+        this.port = port;
+        this.channelInitializer=new ChannelInitializer<SocketChannel>() {
+            @Override
+            protected void initChannel(SocketChannel socketChannel) throws Exception {
+                //获取管道
+                ChannelPipeline pipe = socketChannel.pipeline();
+
+                // Add the text line codec combination first,
+                pipe.addLast(new DelimiterBasedFrameDecoder(1000 * 1000 * 1024, Delimiters.lineDelimiter()));
+                // the encoder and decoder are static as these are sharable
+                //字符串编码器
+                pipe.addLast(DECODER);
+                //字符串解码器
+                pipe.addLast(ENCODER);
+                //业务处理类
+                pipe.addLast(baseServiceHandler);
+            }
+        };
+
+    }
+
+    public BaseKeepService(ChannelInitializer channelInitializer, int port) {
+        this.channelInitializer = channelInitializer;
         this.port = port;
 
     }
@@ -49,23 +71,7 @@ public  class BaseKeepService{
             bootstrap.channel(NioServerSocketChannel.class);
             bootstrap.handler(new LoggingHandler(LogLevel.INFO));
             //设置管道工厂
-            bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                protected void initChannel(SocketChannel socketChannel) throws Exception {
-                    //获取管道
-                    ChannelPipeline pipe = socketChannel.pipeline();
-
-                    // Add the text line codec combination first,
-                    pipe.addLast(new DelimiterBasedFrameDecoder(1000 * 1000 * 1024, Delimiters.lineDelimiter()));
-                    // the encoder and decoder are static as these are sharable
-                    //字符串编码器
-                    pipe.addLast(DECODER);
-                    //字符串解码器
-                    pipe.addLast(ENCODER);
-                    //业务处理类
-                    pipe.addLast(baseServiceHandler);
-                }
-            });
+            bootstrap.childHandler(channelInitializer);
 
             //绑定端口
             // Bind and start to accept incoming connections.
@@ -79,6 +85,7 @@ public  class BaseKeepService{
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             Logger.error(e);
+            Thread.currentThread().interrupt();
         } finally {
             //优雅退出，释放线程池资源
             bossGroup.shutdownGracefully();

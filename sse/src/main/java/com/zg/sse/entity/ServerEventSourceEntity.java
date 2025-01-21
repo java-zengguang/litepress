@@ -13,4 +13,8 @@ public class ServerEventSourceEntity {
         this.eventType = eventType;
         this.data = data;
     }
+
+    public String getData(){
+        return "data: "+data+"\r\n";
+    }
 }

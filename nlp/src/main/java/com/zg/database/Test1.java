@@ -50,7 +50,7 @@ public class Test1 {
 
         return sum.div(tokens.size());
     }
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)   {
         // 加载FastText模型
 
         List<String> tokens =  tokenizeChineseText("告警对象：URL响应时效告警");

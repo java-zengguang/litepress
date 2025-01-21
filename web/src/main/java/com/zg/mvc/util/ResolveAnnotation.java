@@ -16,11 +16,11 @@ public class ResolveAnnotation {
 
 
 
-    public static Map<String, Class> resovleController( String rootURL) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public static Map<String, Class<?>> resovleController( String rootURL) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         if (rootURL == null) {
             rootURL = "";
         }
-        Map<String, Class> resultMap = new HashedMap();
+        Map<String, Class<?>> resultMap = new HashedMap();
         Set<Class<?>> classList = AnnotationCache.get(Controller.class);
         for (Class classes : classList) {
             Controller controller = (Controller) classes.getAnnotation(Controller.class);

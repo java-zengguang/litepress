@@ -8,10 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.tinylog.Logger;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+
 
 
 public class SimpleRequestAnalysis extends BaseRequestAnalysis {
@@ -19,20 +16,10 @@ public class SimpleRequestAnalysis extends BaseRequestAnalysis {
 
     @Override
     public Object extractParam(ParamEntity paramEntity) {
-        Object obj = null;
+        Object obj;
         try {
             if (paramEntity.isJson) {
-
-                String value = "";
-                BufferedReader reader = null;
-                StringBuilder sb = new StringBuilder();
-                reader = new BufferedReader(new InputStreamReader((InputStream) paramEntity.paramObject, StandardCharsets.UTF_8));
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
-                }
-                value = sb.toString();
-                obj = JsonUtil.string2Obj(value, paramEntity.paramGenericityType);
+                obj = JsonUtil.string2Obj((String) paramEntity.paramObject, paramEntity.paramGenericityType);
                 return obj;
             }
             if (HttpServletRequest.class.isAssignableFrom(paramEntity.paramType)) {

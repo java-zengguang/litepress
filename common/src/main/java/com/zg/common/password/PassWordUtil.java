@@ -17,6 +17,9 @@ public class PassWordUtil {
     public static void main(String[] args) {
         EncryptUtil encryptUtil = EncryptUtil.getInstance();
 
+
+        Logger.info("     xbKot#CLMV4mLE  " + encryptUtil.AESencode("xbKot#CLMV4mLE", "hello"));
+
         Logger.info("     Gcddb12345_  " + encryptUtil.AESencode("Gcddb12345_", "hello"));
 
         Logger.info("       " + encryptUtil.AESencode("V23##*#QxGDkcmUJ", "hello"));

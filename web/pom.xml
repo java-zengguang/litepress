@@ -22,10 +22,21 @@
     <dependencies>
 
 
+        <dependency>
+            <groupId>com.zg.database</groupId>
+            <artifactId>network-util</artifactId>
+            <version>${revision}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.zg.database</groupId>
             <artifactId>common</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zg.database</groupId>
+            <artifactId>event-driver</artifactId>
             <version>${revision}</version>
         </dependency>
 
