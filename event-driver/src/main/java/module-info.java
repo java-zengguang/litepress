@@ -4,8 +4,6 @@ open module event.driver {
     requires rocketmq.remoting;
     requires rocketmq.acl;
     requires rocketmq.common;
-    requires fastjson;
-    requires commons.lang3;
     requires ssdb4j;
     requires commons.pool2;
     requires com.google.common;

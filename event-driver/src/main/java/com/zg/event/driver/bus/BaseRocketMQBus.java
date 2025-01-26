@@ -1,14 +1,12 @@
 package com.zg.event.driver.bus;
 
 
-import com.alibaba.fastjson.JSON;
+import com.zg.common.util.reflect.JsonUtil;
 import com.zg.event.driver.client.RocketMQFactory;
-import com.zg.event.driver.en.EventStage;
-import com.zg.event.driver.en.ProcessState;
+
 
 import com.zg.event.driver.entity.RocketConfig;
 import com.zg.event.driver.event.BaseEvent;
-import com.zg.event.driver.event.rule.EventTransitionRule;
 import com.zg.event.driver.exception.StateTransitinException;
 import com.zg.event.driver.subsriber.EventListener;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -27,6 +25,7 @@ import org.tinylog.Logger;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -74,7 +73,7 @@ public abstract class BaseRocketMQBus extends BaseMessageBus implements RocketMQ
         if (eventListener != null) {
             try {
                 if ("EVENT".equals(message.getProperty("ProtocolType"))) {   //老版本消息不带这个属性，用于区分协议是直接message还是有event封装
-                    BaseEvent baseEvent = JSON.parseObject(message.getBody(), BaseEvent.class);
+                    BaseEvent baseEvent = JsonUtil.string2Obj(Arrays.toString(message.getBody()), BaseEvent.class);
                     doInvokeEventListener(eventListener, baseEvent);
                 } else {
                     try {
@@ -93,7 +92,7 @@ public abstract class BaseRocketMQBus extends BaseMessageBus implements RocketMQ
 
     private Message trans2Message(BaseEvent baseEvent) {
         Logger.info("消息发送    " + baseEvent.eventType + "" + baseEvent.message);
-        Message message = new Message(rocketConfig.topic, baseEvent.eventType, baseEvent.eventID, JSON.toJSONString(baseEvent).getBytes(StandardCharsets.UTF_8));
+        Message message = new Message(rocketConfig.topic, baseEvent.eventType, baseEvent.eventID, JsonUtil.obj2String(baseEvent).getBytes(StandardCharsets.UTF_8));
         message.putUserProperty("ProtocolType", "EVENT");
         return message;
     }

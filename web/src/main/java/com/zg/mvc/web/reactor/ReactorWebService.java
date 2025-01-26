@@ -12,7 +12,7 @@ public class ReactorWebService extends BaseKeepService {
             @Override
             protected void initChannel(Channel ch)  {
                 ch.pipeline().addLast(new HttpServerCodec()); // (5)
-                ch.pipeline().addLast(new HttpObjectAggregator(65536)); // (6)
+                ch.pipeline().addLast(new HttpObjectAggregator(500*1024*1024)); // (6)
                 ch.pipeline().addLast(new SimpleHttpRequestHandler()); // (7)
             }
         }, port);
