@@ -6,7 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 
 //利用事件总线绑定sse事件
-public interface SSEHandler {
+public interface SSEManager {
 
     void sendSSE(SSEDto sseDto);
 

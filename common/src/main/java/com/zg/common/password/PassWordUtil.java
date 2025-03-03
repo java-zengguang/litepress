@@ -25,12 +25,14 @@ public class PassWordUtil {
         Logger.info("       " + encryptUtil.AESencode("V23##*#QxGDkcmUJ", "hello"));
         Logger.info("Zst_phq123#      " + encryptUtil.AESencode("Zst_phq123#", "hello"));
         Logger.info("Zg_phq123#      " + encryptUtil.AESencode("Zg_phq123#", "hello"));
+        Logger.info("ADld#3rQ      " + encryptUtil.AESencode("ADld#3rQ", "hello"));
+
         Logger.info("Cvb_rTJRB7!w0oWV      " + encryptUtil.AESencode("Cvb_rTJRB7!w0oWV", "hello"));
         Logger.info("iDZT_7td      " + encryptUtil.AESencode("iDZT_7td", "hello"));
         Logger.info("QAerUDN#VlrQ1pX0_      " + encryptUtil.AESencode("QAerUDN#VlrQ1pX0_", "hello"));
 
         Logger.info("HvgaE#7ML_      " + encryptUtil.AESdecode("3CE6B72634FF4536552C0DD08D24DB1A", "hello"));
-        Logger.info("2BDAE539E49032E33997AE4270C55539      " + encryptUtil.AESdecode("2BDAE539E49032E33997AE4270C55539", "hello"));
+        Logger.info("1449820864936D6E26FAFF20D0DF8E00      " + encryptUtil.AESdecode("1449820864936D6E26FAFF20D0DF8E00", "hello"));
         Logger.info("2F541CBF36E75CF263D15EE74CAF2BD6      " + encryptUtil.AESdecode("2F541CBF36E75CF263D15EE74CAF2BD6", "hello"));
 
         Logger.info("1449820864936D6E26FAFF20D0DF8E00     " + encryptUtil.AESdecode("1449820864936D6E26FAFF20D0DF8E00", "hello"));

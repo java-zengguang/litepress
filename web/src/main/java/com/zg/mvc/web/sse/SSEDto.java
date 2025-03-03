@@ -5,8 +5,9 @@ import com.zg.common.bean.entity.MainModel;
 public class SSEDto extends MainModel {
     public String clientId;  //客户端ID
     public String event;
-    public String id;
+    public Integer id;
     public String data;
+    public String flag;  //keep-保持  stop-终止
 
 
     public String toSseFormat() {
@@ -16,7 +17,7 @@ public class SSEDto extends MainModel {
             sb.append("event: ").append(this.event).append("\n");
         }
 
-        if (this.id != null && !this.id.isEmpty()) {
+        if (this.id != null) {
             sb.append("id: ").append(this.id).append("\n");
         }
 

@@ -87,7 +87,11 @@ public class DataBaseUtil {
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         Connection conn = TransactionManager.getConnection(dataSource);
         DatabaseMetaData dbmd = conn.getMetaData();
-        ResultSet rs = dbmd.getTables(optionDB.databaseName, optionDB.username.toUpperCase(), "%", new String[]{"TABLE"});
+        String userName = optionDB.username.toUpperCase();
+        if (userName.contains("@")) {
+            userName = Optional.ofNullable(userName).map(s -> s.split("@")[0]).orElse(userName);
+        }
+        ResultSet rs = dbmd.getTables(optionDB.databaseName, userName, "%", new String[]{"TABLE"});
         List<String> tableNameList = new ArrayList<>();
         while (rs.next()) {
             tableNameList.add(rs.getString("TABLE_NAME"));
@@ -102,7 +106,11 @@ public class DataBaseUtil {
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         Connection conn = TransactionManager.getConnection(dataSource);
         DatabaseMetaData dbmd = conn.getMetaData();
-        ResultSet rs = dbmd.getTables(optionDB.databaseName, optionDB.username.toUpperCase(), "%" + tableName + "%", new String[]{"TABLE"});
+        String userName = optionDB.username.toUpperCase();
+        if (userName.contains("@")) {
+            userName = Optional.ofNullable(userName).map(s -> s.split("@")[0]).orElse(userName);
+        }
+        ResultSet rs = dbmd.getTables(optionDB.databaseName, userName, "%" + tableName + "%", new String[]{"TABLE"});
         List<TableInfo> tableInfoList = new ArrayList<>();
         while (rs.next()) {
             TableInfo tableInfo = new TableInfo();
@@ -155,7 +163,7 @@ public class DataBaseUtil {
             } else {
                 columnInfo.isPK = "0";
             }
-            String columnLine ="`"+ columnInfo.columnName +"`"+ "  " + columnInfo.columnType;
+            String columnLine = "`" + columnInfo.columnName + "`" + "  " + columnInfo.columnType;
 
             if (!Arrays.asList("DATE", "ENUM", "TIME", "DATETIME", "BOOL", "BOOLEAN", "TEXT", "BLOB").contains(columnInfo.columnType) && !("NUMBER".equals(columnInfo.columnType) && "-127".equals(columnInfo.decimalDigits) && "0".equals(columnInfo.columnSize))) {
                 columnLine = columnLine + "(" + columnInfo.columnSize;
@@ -211,7 +219,7 @@ public class DataBaseUtil {
             } else {
                 columnInfo.isPK = "0";
             }
-            String columnLine ="`"+ columnInfo.columnName +"`"+ "  " + columnInfo.columnType;
+            String columnLine = "`" + columnInfo.columnName + "`" + "  " + columnInfo.columnType;
 
             if (!Arrays.asList("DATE", "ENUM", "TIME", "DATETIME", "BOOL", "BOOLEAN", "TEXT", "BLOB").contains(columnInfo.columnType) && !("NUMBER".equals(columnInfo.columnType) && "-127".equals(columnInfo.decimalDigits) && "0".equals(columnInfo.columnSize))) {
                 columnLine = columnLine + "(" + columnInfo.columnSize;

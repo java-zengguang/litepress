@@ -73,7 +73,7 @@ public abstract class BaseRocketMQBus extends BaseMessageBus implements RocketMQ
         if (eventListener != null) {
             try {
                 if ("EVENT".equals(message.getProperty("ProtocolType"))) {   //老版本消息不带这个属性，用于区分协议是直接message还是有event封装
-                    BaseEvent baseEvent = JsonUtil.string2Obj(Arrays.toString(message.getBody()), BaseEvent.class);
+                    BaseEvent baseEvent = JsonUtil.string2Obj(new String(message.getBody()), BaseEvent.class);
                     doInvokeEventListener(eventListener, baseEvent);
                 } else {
                     try {

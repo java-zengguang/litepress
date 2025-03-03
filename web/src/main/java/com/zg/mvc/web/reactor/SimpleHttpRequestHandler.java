@@ -6,8 +6,8 @@ import com.zg.mvc.entity.HttpRequestEntity;
 import com.zg.mvc.entity.HttpResponseEntity;
 import com.zg.mvc.enums.SceneType;
 import com.zg.mvc.web.adapter.HttpNettyControllerAdapter;
-import com.zg.mvc.web.sse.SSE2NettyHandler;
-import com.zg.mvc.web.sse.SSEHandler;
+import com.zg.mvc.web.sse.SSE2NettyManager;
+import com.zg.mvc.web.sse.SSEManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -26,49 +26,12 @@ import org.tinylog.Logger;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
 
 // 自定义请求处理器
 public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     public static final List<String> ssePaths = List.of("/sse");
     private final HttpNettyControllerAdapter controllerAdapter = HttpNettyControllerAdapter.getInstance();
-
-
-    public FullHttpResponse transFullHttpResponse(HttpResponseEntity responseEntity)   {
-        // 创建 HTTP 响应
-        FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.valueOf(responseEntity.statusCode));
-        if (responseEntity.headers != null && !responseEntity.headers.isEmpty()) {
-            responseEntity.headers.forEach((key, values) -> {
-                if (values != null && !values.isEmpty()) {
-                    values.forEach(value -> response.headers().add(key, value));
-                }
-            });
-        }
-        if (responseEntity.cookies != null && !responseEntity.cookies.isEmpty()) {
-            responseEntity.cookies.forEach(cookieEntity -> response.headers().add(HttpHeaderNames.SET_COOKIE, cookieEntity.toCookieString().trim()));
-
-        }
-
-
-        //转换json和文件
-        if (responseEntity.result instanceof Serializable || responseEntity.result instanceof Collection<?> || responseEntity.result instanceof Map<?, ?>) {
-            responseEntity.result = JsonUtil.obj2String(responseEntity.result);
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
-        }
-        if (responseEntity.result instanceof String) {
-            ByteBuf buffer = Unpooled.copiedBuffer(responseEntity.result.toString().getBytes());
-            response.content().writeBytes(buffer);
-        }
-        if (responseEntity.result instanceof File file) {
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/force-download");
-            response.headers().set("Content-Disposition", "attachment;filename=" + file.getName());
-            // 设置 Content-Type 和 Content-Length
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream");
-            response.headers().set(HttpHeaderNames.CONTENT_LENGTH, file.length());
-        }
-
-
-        return response;
-    }
 
 
     public Map<String, List<String>> getHeaders(FullHttpRequest request) {
@@ -109,7 +72,7 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
         return cookies;
     }
 
-    public HttpRequestEntity transHttpRequestEntity(FullHttpRequest request)  {
+    public HttpRequestEntity transHttpRequestEntity(FullHttpRequest request) {
         String requestURI = request.uri();
         HttpRequestEntity httpRequestEntity = new HttpRequestEntity();
         httpRequestEntity.url = requestURI;
@@ -177,11 +140,11 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
     }
 
 
-    private void dealSSE(ChannelHandlerContext ctx, HttpRequestEntity httpRequestEntity)   {
+    private void dealSSE(ChannelHandlerContext ctx, HttpRequestEntity httpRequestEntity) {
         String groupId = (String) httpRequestEntity.paramMap.get("groupId");
         String clientId = (String) httpRequestEntity.paramMap.get("clientId");
-        SSEHandler sseHandler = SSE2NettyHandler.getInstance();
-        sseHandler.createSSE(ctx, groupId);
+        SSEManager sseManager = SSE2NettyManager.getInstance();
+        sseManager.createSSE(ctx, groupId);
         Logger.info("创建SSE链接  groupId: " + groupId + " clientId:" + clientId);
     }
 
@@ -189,22 +152,14 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
         // 处理接收到的 HTTP 请求
         HttpResponseEntity responseEntity = controllerAdapter.dealHttpRequest(httpRequestEntity);
 
-        // 构建 HTTP 响应头
-        FullHttpResponse response = transFullHttpResponse(responseEntity);
-
-        // 如果结果是一个文件，则设置适当的头部信息并发送文件
-        if (responseEntity.result instanceof File file) {
-            // 创建 DefaultFileRegion 对象来流式传输文件
-            ctx.write(response); // 先写入响应头
-            ctx.write(new DefaultFileRegion(file, 0, file.length())); // 再写入文件内容
-            ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT)
-                    .addListener(ChannelFutureListener.CLOSE); // 确保所有数据发送完毕后关闭连接
+        if (responseEntity.result instanceof BlockingQueue) {
+            HttpResponseHandler httpResponseHandler = new StreamHttpResponseHandler();
+            httpResponseHandler.dealHttpResponse(ctx, responseEntity);
         } else {
-            // 对于非文件响应，直接发送整个响应
-            ctx.writeAndFlush(response)
-                    .addListener(ChannelFutureListener.CLOSE); // 确保所有数据发送完毕后关闭连接
+            HttpResponseHandler httpResponseHandler = new SimpleHttpResponseHandler();
+            httpResponseHandler.dealHttpResponse(ctx, responseEntity);
         }
-        Logger.info("返回请求");
+
     }
 
     @Override

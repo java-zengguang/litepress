@@ -14,20 +14,20 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class SSE2NettyHandler extends BaseSSEHandler implements SSEHandler {
+public class SSE2NettyManager extends BaseSSEManager implements SSEManager {
     private static final ConcurrentHashMap<String, ChannelHandlerContext> userChannels = new ConcurrentHashMap<>();   //客户端ID与链接上下文缓存
     private static final ConcurrentHashMap<ChannelHandlerContext, AtomicInteger> heartbeatTimeMap = new ConcurrentHashMap<>();  //心跳次数
     private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-    private static SSE2NettyHandler sseHandle = null;
+    private static SSE2NettyManager sseHandle = null;
 
-    public static SSE2NettyHandler getInstance() {
+    public static SSE2NettyManager getInstance() {
         if (sseHandle == null) {
-            sseHandle = new SSE2NettyHandler();
+            sseHandle = new SSE2NettyManager();
         }
         return sseHandle;
     }
 
-    private SSE2NettyHandler() {
+    private SSE2NettyManager() {
         try {
             init();
         } catch (InterruptedException | MQClientException e) {
