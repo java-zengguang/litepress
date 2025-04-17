@@ -50,8 +50,8 @@ public class BaseBistributedZeroMQBus extends BaseMessageBus implements  Message
             routerEntity.host = ip;
             routerEntity.port = Integer.parseInt(zoreMQConfig.port);
             routerEntity.path = eventType;
-            routerEntity.clientVersion = new Date().getTime() + "";
-            routerEntity.serviceType = "event";
+            routerEntity.version = new Date().getTime() + "";
+            routerEntity.routerType = "event";
             routerRegister.putRouter(routerEntity);
         } catch (Exception e) {
             Logger.error(e, "注册失败");
@@ -61,8 +61,8 @@ public class BaseBistributedZeroMQBus extends BaseMessageBus implements  Message
         return subscriber;
     }
 
-    private ZMQ.Socket getPublisher(String eventType) {
-        RouterEntity router = routerRegister.getRouter("event", eventType);
+    private ZMQ.Socket getPublisher(String eventType) throws InterruptedException {
+        RouterEntity router = routerRegister.getRouter(eventType);
         if (router != null) {
             String address = "tcp://" + router.host + ":" + zoreMQConfig.port;
             ZMQ.Socket publisher = publisherMap.get(address);
@@ -82,6 +82,8 @@ public class BaseBistributedZeroMQBus extends BaseMessageBus implements  Message
         this.zoreMQConfig = zoreMQConfig;
         context = ZMQ.context(1);
         RouterRegisterConfig routerRegisterConfig = new RouterRegisterConfig();
+        routerRegisterConfig.namespace="/event";
+        routerRegisterConfig.routerType="event";
         routerRegisterConfig.registerURL = zoreMQConfig.registerURL;
         routerRegister = RouterRegister.getInstance(routerRegisterConfig);
 

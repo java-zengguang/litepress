@@ -33,7 +33,7 @@ public class JsonUtil {
         TimeZone.setDefault(zone);
         // 指定时区
         objectMapper.setTimeZone(zone);
-        DateFormat dateFormat = new SimpleDateFormat("yyy-MM-dd hh:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
         dateFormat.setLenient(true);
         dateFormat.setTimeZone(zone);
         objectMapper.setDateFormat(dateFormat);

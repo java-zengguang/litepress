@@ -16,6 +16,7 @@ import org.tinylog.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
@@ -103,9 +104,13 @@ public abstract class BaseControllerAdapter implements ControllerAdapter {
         try {
             httpResponseEntity.result = method.invoke(method.getDeclaringClass().newInstance(), methodParamValues.toArray());
         } catch (Exception e) {
-            Logger.error(e, "系统错误，参数不匹配！");
+            if(e instanceof InvocationTargetException){
+                Logger.error(((InvocationTargetException) e).getTargetException(), "系统内部错误！");
+            }else{
+                Logger.error(e, "系统内部错误！");
+            }
             httpResponseEntity.statusCode = 500;
-            httpResponseEntity.result = "系统错误，参数不匹配！";
+            httpResponseEntity.result = "系统错误！";
         }
         //执行后置拦截
         for (HttpInterceptor interceptor : postHttpInterceptors) {
