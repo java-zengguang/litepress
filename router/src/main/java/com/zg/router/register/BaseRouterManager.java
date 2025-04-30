@@ -1,6 +1,5 @@
 package com.zg.router.register;
 
-
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.zg.common.error.BizException;
@@ -16,24 +15,22 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.tinylog.Logger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class RouterRegister<T> {
-
-
-    private static Map<String, RouterRegister> registerMap = new HashMap<>();
-    private  Set<RouterEntity> serviceSet=new HashSet<>();
+public abstract class BaseRouterManager implements ServiceManager {
+    private final static Map<RouterEntity,RouterService> routerServiceMap=new HashMap<>();
     private Table<String, String, RouterEntity> routeTable = HashBasedTable.create();  //name version  RouterEntity
     private String registerURL;
     private String namespace;
     private String routerType;
     private CuratorFramework curatorFramework;
 
-    private RouterRegister(String registerURL, String namespace, String routerType) throws Exception {
+    public BaseRouterManager(String registerURL, String namespace, String routerType) throws Exception {
         this.registerURL = registerURL;
         this.namespace = namespace;
         this.routerType = routerType;
@@ -41,15 +38,7 @@ public class RouterRegister<T> {
 
     }
 
-    //这里开始提供API访问
-    public static synchronized RouterRegister getInstance(RouterRegisterConfig registerConfig) throws Exception {
-        RouterRegister register = registerMap.get(registerConfig.toString());
-        if (register == null) {
-            register = new RouterRegister(registerConfig.registerURL, registerConfig.namespace, registerConfig.routerType);
-            registerMap.put(registerConfig.toString(), register);
-        }
-        return register;
-    }
+
 
 
     private CuratorFramework getZkClient(String routerType) throws Exception {
@@ -77,13 +66,15 @@ public class RouterRegister<T> {
                 }
                 if (treeCacheEvent.getType() == TreeCacheEvent.Type.CONNECTION_RECONNECTED) {
                     Logger.info("重新连接！");
-                    serviceSet.forEach((router)->{
+                    routerServiceMap.forEach((router,routerService)->{
                         try {
-                            this.putRouter(router);
+                            this.restart(router);
+                            Logger.info(router.name+"重新启动成功！");
                         } catch (Exception e) {
-                            Logger.info(router.name+"重新注册失败！");
+                            Logger.info(router.name+"重新启动失败！");
                         }
                     });
+
                 }
                 if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_ADDED) {
                     ChildData childData = treeCacheEvent.getData();
@@ -109,11 +100,7 @@ public class RouterRegister<T> {
                 if (treeCacheEvent.getType() == TreeCacheEvent.Type.NODE_REMOVED) {
                     ChildData childData = treeCacheEvent.getData();
                     Logger.info("删除！" + childData.getPath());
-/*                    RouterEntity router = JsonUtil.string2Obj(new String(childData.getData()), RouterEntity.class);
-                    clientListener.close(router);
-                    routeTable.remove(namespace, childData.getPath());*/
 
-                    //   routeTable.remove(namespace, childData.getPath());
                     if (childData.getData() != null && childData.getData().length > 0) {
                         RouterEntity router = JsonUtil.string2Obj(new String(childData.getData()), RouterEntity.class);
                         if (childData.getPath().equals("/" + router.routerType + router.path + "/" + router.version)) {
@@ -150,7 +137,7 @@ public class RouterRegister<T> {
     }
 
 
-    public void putRouter(RouterEntity router) throws Exception {
+    private void putRouter(RouterEntity router) throws Exception {
         if (!routerType.equals(router.routerType)) {
             throw new BizException("写入类型错误");
         }
@@ -160,12 +147,31 @@ public class RouterRegister<T> {
                     .creatingParentContainersIfNeeded()
                     .withMode(CreateMode.EPHEMERAL)
                     .forPath(path, JsonUtil.obj2String(router).getBytes());
-            serviceSet.add(router);
         } else {
             Logger.info("节点已存在: " + path);
         }
     }
 
+
+
+    @Override
+    public RouterEntity start(RouterService routerService) throws Exception {
+        RouterEntity routerEntity= routerService.start();
+        routerServiceMap.put(routerEntity,routerService);
+        putRouter(routerEntity);
+        return routerEntity;
+    }
+
+    @Override
+    public void close(RouterEntity router) {
+       RouterService routerService=  routerServiceMap.remove(router);
+       routerService.close();
+    }
+
+    @Override
+    public void restart(RouterEntity router) throws Exception {
+        putRouter(router);
+    }
 
     public RouterEntity getRouter(String name) {
         return routeTable.row(name).values().stream().findAny().get();
