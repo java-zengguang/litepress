@@ -1,10 +1,15 @@
 package com.zg.direction.entity;
 
-import com.zg.bean.entity.MainModel;
+import com.zg.common.bean.entity.MainModel;
+import com.zg.network.entity.BaseTranslationProtocol;
 
 import java.util.List;
+import java.util.Map;
 
-public class DTPRequest extends MainModel {
+public class DTPRequest extends BaseTranslationProtocol {
+
+    public String providerName;
+    public String path; //zookeeper对应path，服务端还要用
 
     public String uuid;
 
@@ -14,11 +19,17 @@ public class DTPRequest extends MainModel {
 
     public String methodName;
 
-    public String methodType;
+    public String resultType;
 
-    public List<String> methodParamters;
+    public String resultDataType;
+
+    public List<Object> methodParamters;
 
     public List<String> methodParamterTypes;
+
+    public List<String> methodParamterDataTypes;
+
+    public List<Map<String, String>> methodParamterDataTypeMapList;
 
     public DTPRequest() {
     }
@@ -56,19 +67,19 @@ public class DTPRequest extends MainModel {
         this.methodName = methodName;
     }
 
-    public String getMethodType() {
-        return methodType;
+    public String getResultType() {
+        return resultType;
     }
 
-    public void setMethodType(String methodType) {
-        this.methodType = methodType;
+    public void setResultType(String resultType) {
+        this.resultType = resultType;
     }
 
-    public List<String> getMethodParamters() {
+    public List<Object> getMethodParamters() {
         return methodParamters;
     }
 
-    public void setMethodParamters(List<String> methodParamters) {
+    public void setMethodParamters(List<Object> methodParamters) {
         this.methodParamters = methodParamters;
     }
 
@@ -78,5 +89,21 @@ public class DTPRequest extends MainModel {
 
     public void setMethodParamterTypes(List<String> methodParamterTypes) {
         this.methodParamterTypes = methodParamterTypes;
+    }
+
+    public String getResultDataType() {
+        return resultDataType;
+    }
+
+    public void setResultDataType(String resultDataType) {
+        this.resultDataType = resultDataType;
+    }
+
+    public List<String> getMethodParamterDataTypes() {
+        return methodParamterDataTypes;
+    }
+
+    public void setMethodParamterDataTypes(List<String> methodParamterDataTypes) {
+        this.methodParamterDataTypes = methodParamterDataTypes;
     }
 }

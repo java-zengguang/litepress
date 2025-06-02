@@ -1,6 +1,6 @@
 package com.zg.mvc.entity;
 
-import com.zg.bean.entity.MainModel;
+import com.zg.common.bean.entity.MainModel;
 
 public class ViewObject extends MainModel {
 
