@@ -7,8 +7,8 @@
 
 
     <parent>
-        <groupId>com.zg.database</groupId>
-        <artifactId>parent</artifactId>
+        <groupId>com.zg.litepress</groupId>
+        <artifactId>litepress</artifactId>
         <version>${revision}</version>
     </parent>
     <artifactId>web</artifactId>
@@ -23,20 +23,20 @@
 
 
         <dependency>
-            <groupId>com.zg.database</groupId>
-            <artifactId>network-util</artifactId>
+            <groupId>com.zg.litepress</groupId>
+            <artifactId>network</artifactId>
             <version>${revision}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.zg.database</groupId>
-            <artifactId>common</artifactId>
+            <groupId>com.zg.litepress</groupId>
+            <artifactId>core</artifactId>
             <version>${revision}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.zg.database</groupId>
-            <artifactId>event-driver</artifactId>
+            <groupId>com.zg.litepress</groupId>
+            <artifactId>event</artifactId>
             <version>${revision}</version>
         </dependency>
 
@@ -83,7 +83,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.zg.database</groupId>
+            <groupId>com.zg.litepress</groupId>
             <artifactId>incache</artifactId>
             <version>${revision}</version>
         </dependency>
@@ -112,11 +112,7 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.api}</version>
         </dependency>
-        <dependency>
-            <groupId>com.zg.database</groupId>
-            <artifactId>sse</artifactId>
-            <version>${revision}</version>
-        </dependency>
+
         <!--jstl标签依赖的jar包end -->
     </dependencies>
 

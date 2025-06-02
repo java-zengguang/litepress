@@ -3,31 +3,25 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.zg.database</groupId>
-    <artifactId>parent</artifactId>
+    <groupId>com.zg.litepress</groupId>
+    <artifactId>litepress</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>
 
 
     <modules>
-        <module>common</module>
+        <module>core</module>
         <module>web</module>
         <module>direction</module>
         <module>incache</module>
-        <module>network-util</module>
-        <module>groovy-common</module>
-        <module>chain-common</module>
-        <module>event-driver</module>
-        <module>sse</module>
-        <module>io-util</module>
+        <module>network</module>
+        <module>chain</module>
+        <module>event</module>
         <module>task</module>
         <module>router</module>
-        <module>deep</module>
         <module>reaction</module>
-
         <module>ml</module>
-        <module>nlp</module>
-        <module>batch</module>
+        <module>db</module>
     </modules>
 
 
@@ -35,7 +29,7 @@
         <slf4j.api>2.0.13</slf4j.api>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
-        <revision>1.0.9.g</revision>
+        <revision>0.0.1</revision>
     </properties>
 
     <dependencies>

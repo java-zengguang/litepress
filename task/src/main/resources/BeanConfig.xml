@@ -4,7 +4,7 @@
 
 
 
-    <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="optionDB" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:mysql://10.7.128.226:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
@@ -14,7 +14,7 @@
         <property name="DBPType" type="java.lang.String">Druid</property>
     </bean>
 
-    <bean id="int_portal_ob" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="int_portal_ob" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oceanbase://10.8.192.56:2883/</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
@@ -25,7 +25,7 @@
 
     </bean>
 
-    <bean id="uat_portal_ob" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="uat_portal_ob" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oceanbase://10.8.192.56:2883/</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
@@ -35,7 +35,7 @@
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
-    <bean id="stage_portal_ob" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="stage_portal_ob" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oceanbase://10.8.192.56:2883/</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
@@ -45,7 +45,7 @@
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
-    <bean id="int_portal_h2" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="int_portal_h2" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:h2:~/test;MODE=Oracle</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">org.h2.Driver</property>
@@ -55,7 +55,7 @@
     </bean>
 
 
-    <bean id="uat_check_util" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="uat_check_util" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:mysql://10.7.128.226:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
@@ -66,7 +66,7 @@
     </bean>
 
 
-    <bean id="dev_check_util" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="dev_check_util" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
@@ -78,7 +78,7 @@
 
 
 
-    <bean id="dev_new-non-auto_nvpoldb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="dev_new-non-auto_nvpoldb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvpoldev</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -88,7 +88,7 @@
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
-    <bean id="dev_new-non-auto_nvprodb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="dev_new-non-auto_nvprodb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvprodev</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -98,7 +98,7 @@
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
-    <bean id="dev_new-non-auto_nvenddb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="dev_new-non-auto_nvenddb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvprodev</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -109,7 +109,7 @@
     </bean>
 
 
-    <bean id="dev_new-non-auto_nvsundb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="dev_new-non-auto_nvsundb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvsundev</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -120,7 +120,7 @@
     </bean>
 
 
-    <bean id="int_new-non-auto_nvpoldb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="int_new-non-auto_nvpoldb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvpolint</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -136,7 +136,7 @@
         <property name="resourcesUser" type="java.lang.String">nvpolicy</property>
     </bean>
 
-    <bean id="int_new-non-auto_nvprodb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="int_new-non-auto_nvprodb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvproint</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -148,7 +148,7 @@
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
-    <bean id="int_new-non-auto_nvprodb_OB" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="int_new-non-auto_nvprodb_OB" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oceanbase://10.7.135.253:2883/</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
@@ -158,7 +158,7 @@
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
-    <bean id="int_new-non-auto_nvenddb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="int_new-non-auto_nvenddb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvproint</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -171,7 +171,7 @@
     </bean>
 
 
-    <bean id="int_new-non-auto_nvsundb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="int_new-non-auto_nvsundb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvsunint</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -182,7 +182,7 @@
 
     </bean>
 
-    <bean id="uat_new-non-auto_nvpoldb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="uat_new-non-auto_nvpoldb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvpoluat</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -197,7 +197,7 @@
         <property name="owner" type="java.lang.String">NVPOLICY</property>
     </bean>
 
-    <bean id="uat_new-non-auto_nvprodb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="uat_new-non-auto_nvprodb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvprouat</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -207,7 +207,7 @@
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
-    <bean id="uat_new-non-auto_nvenddb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="uat_new-non-auto_nvenddb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvprouat</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -218,7 +218,7 @@
     </bean>
 
 
-    <bean id="uat_new-non-auto_nvsundb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="uat_new-non-auto_nvsundb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvsunuat</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -229,7 +229,7 @@
     </bean>
 
 
-    <bean id="uat_new-reins_reinsdb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="uat_new-reins_reinsdb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.15:1521/reinsdb</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -240,7 +240,7 @@
     </bean>
 
 
-    <bean id="uat_new-reins_reinsdb_OB" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="uat_new-reins_reinsdb_OB" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oceanbase://10.8.192.135:2883/</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
@@ -251,7 +251,7 @@
     </bean>
 
 
-    <bean id="uat_new-reins_reinsdb_sunshine_OB" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="uat_new-reins_reinsdb_sunshine_OB" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oceanbase://10.8.192.135:2883/</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
@@ -261,7 +261,7 @@
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
-    <bean id="stage_new-non-auto_nvpoldb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="stage_new-non-auto_nvpoldb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvpolsta</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -271,7 +271,7 @@
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
-    <bean id="stage_new-non-auto_nvprodb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="stage_new-non-auto_nvprodb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprosta</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -281,7 +281,7 @@
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
-    <bean id="stage_new-non-auto_nvenddb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="stage_new-non-auto_nvenddb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprosta</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -292,7 +292,7 @@
     </bean>
 
 
-    <bean id="stage_new-non-auto_nvsundb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="stage_new-non-auto_nvsundb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvsunsta</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -303,7 +303,7 @@
     </bean>
 
 
-    <bean id="dev_old-non-auto_sundb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="dev_old-non-auto_sundb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.29:1521/stagedb</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -313,7 +313,7 @@
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
-    <bean id="dev_old-non-auto_sundb1" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="dev_old-non-auto_sundb1" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.29:1521/stagedb</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -323,7 +323,7 @@
         <property name="DBPType" type="java.lang.String">HikariCP</property>
     </bean>
 
-    <bean id="dev_old-non-auto_pcore" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="dev_old-non-auto_pcore" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oceanbase://10.7.135.253/</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
@@ -334,7 +334,7 @@
     </bean>
 
 
-    <bean id="test" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="test" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:h2:mem:test;MODE=Oracle</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">org.h2.Driver</property>
@@ -343,7 +343,7 @@
         <property name="DBType" type="java.lang.String">H2</property>
     </bean>
 
-    <bean id="test1" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="test1" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:h2:mem:test1;MODE=Oracle</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">org.h2.Driver</property>
@@ -352,7 +352,7 @@
         <property name="DBType" type="java.lang.String">H2</property>
     </bean>
 
-    <bean id="data_mould" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="data_mould" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:h2:~/data_mould;MODE=Mysql</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">org.h2.Driver</property>
@@ -360,7 +360,7 @@
         <property name="password" type="java.lang.String"></property>
         <property name="DBType" type="java.lang.String">H2</property>
     </bean>
-    <bean id="dev_platform_platform" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="dev_platform_platform" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.30:1521/platuat</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -371,7 +371,7 @@
     </bean>
 
 
-    <bean id="pro_new-non-auto_nvprodb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="pro_new-non-auto_nvprodb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.3.93:1521/nvprodb</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -380,7 +380,7 @@
         <property name="DBType" type="java.lang.String">ORACLE</property>
     </bean>
 
-    <bean id="pro_new-non-auto_nvenddb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="pro_new-non-auto_nvenddb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.3.93:1521/nvenddb</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -389,7 +389,7 @@
         <property name="DBType" type="java.lang.String">ORACLE</property>
     </bean>
 
-    <bean id="pro_new-non-auto_nvpoldb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="pro_new-non-auto_nvpoldb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.3.77:1521/nvpoldb</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -398,7 +398,7 @@
         <property name="DBType" type="java.lang.String">ORACLE</property>
     </bean>
 
-    <bean id="pro_old-non-auto_pcore" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="pro_old-non-auto_pcore" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.1.78:1521/pcore</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -407,7 +407,7 @@
         <property name="DBType" type="java.lang.String">ORACLE</property>
     </bean>
 
-    <bean id="pro_old-non-auto_sunsplit" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="pro_old-non-auto_sunsplit" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.1.29:1521/sunsplit</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -416,7 +416,7 @@
         <property name="DBType" type="java.lang.String">ORACLE</property>
     </bean>
 
-    <bean id="pro_old-non-auto_sundb" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="pro_old-non-auto_sundb" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.1.73:1521/sundb</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
@@ -426,7 +426,7 @@
     </bean>
 
 
-    <bean id="dev_sunuser_sunuser" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="dev_sunuser_sunuser" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:mysql://10.200.124.65:3306/sunuser?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=false</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
@@ -436,7 +436,7 @@
 
     </bean>
 
-    <bean id="dev_sundb_sun" class="com.zg.common.bean.entity.OptionDB">
+    <bean id="dev_sundb_sun" class="com.zg.litepress.core.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:mysql://10.7.129.2:3306/sundb?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
@@ -447,7 +447,7 @@
 
 
 
-    <bean id="SynDataTiming" class="com.zg.task.entity.JobTriggerEntity">
+    <bean id="SynDataTiming" class="com.zg.litepress.task.entity.JobTriggerEntity">
         <property name="name" type="java.lang.String">SynSunInTiming</property>
         <property name="group" type="java.lang.String">1</property>
         <property name="startAt" type="java.lang.String">2022-01-01</property>
@@ -458,7 +458,7 @@
     </bean>
 
 
-    <bean id="optionMGDB" class="com.zg.common.bean.entity.OptionMGDB">
+    <bean id="optionMGDB" class="com.zg.litepress.core.bean.entity.OptionMGDB">
         <property name="ip" type="java.lang.String">localhost</property>
         <property name="port" type="java.lang.String">27017</property>
         <property name="database" type="java.lang.String">admin</property>
@@ -526,7 +526,7 @@
         <property name="dataSourceListStr" type="java.lang.String">uat_new-non-auto_nvpoldb</property>
     </bean>
 
-    <bean id="MVCOption" class="com.zg.mvc.entity.MVCOption">
+    <bean id="MVCOption" class="entity.com.zg.litepress.web.MVCOption">
         <property name="controllerPackage" type="java.lang.String">com.zg.datachange.app.controller</property>
         <property name="controllerSuffix" type="java.lang.String">.do</property>
         <property name="upLoadPackage" type="java.lang.String">com.zg.datachange.app.controller</property>
@@ -535,7 +535,7 @@
         <property name="powerLevel" type="java.lang.String">0</property>
     </bean>
 
-    <bean id="AuthConfig" class="com.zg.mvc.entity.AuthConfig">
+    <bean id="AuthConfig" class="entity.com.zg.litepress.web.AuthConfig">
         <property name="perturbation" type="java.lang.String">qowxiaewfiasd123</property>
     </bean>
 
@@ -547,7 +547,7 @@
     </bean>
 
 
-    <bean id="providerConfig" class="com.zg.direction.entity.ProviderConfig">
+    <bean id="providerConfig" class="entity.com.zg.litepress.direction.ProviderConfig">
         <property name="registerURL" type="java.lang.String">10.7.128.188:2181</property>
         <property name="packages" type="java.lang.String">com.zg.sqlcheck</property>
         <property name="DTPHost" type="java.lang.String">10.65.211.110</property>
@@ -555,7 +555,7 @@
     </bean>
 
 
-    <bean id="zooKeeperConfig" class="com.zg.direction.entity.ZooKeeperConfig">
+    <bean id="zooKeeperConfig" class="entity.com.zg.litepress.direction.ZooKeeperConfig">
         <property name="tickTime" type="java.lang.String">2000</property>
         <property name="dataDir" type="java.lang.String">/tmp/zookeeper/data</property>
         <property name="clientPort" type="java.lang.String">2181</property>
@@ -563,7 +563,7 @@
         <property name="syncLimit" type="java.lang.String">5</property>
     </bean>
 
-    <bean id="initConfig" class="com.zg.common.bean.entity.InitEntity">
+    <bean id="initConfig" class="com.zg.litepress.core.bean.entity.InitEntity">
         <property name="packageType" type="java.lang.String">jar</property>
     </bean>
 

@@ -1,5 +1,5 @@
-module router {
-    requires common;
+module litepress.router {
+    requires litepress.core;
     requires curator.client;
     requires curator.framework;
     requires org.tinylog.api;
@@ -7,6 +7,6 @@ module router {
     requires curator.recipes;
     requires com.google.common;
 
-    exports com.zg.router.entity;
-    exports com.zg.router.register;
+    exports com.zg.litepress.router.entity;
+    exports com.zg.litepress.router.register;
 }

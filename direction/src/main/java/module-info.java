@@ -1,10 +1,10 @@
-open module direction {
-    exports com.zg.direction.annotation;
-    exports com.zg.direction.proxy;
-    exports com.zg.direction.adapter;
-    exports com.zg.direction.register;
-    requires common;
-    requires network.util;
+open module litepress.direction {
+    exports com.zg.litepress.direction.annotation;
+    exports com.zg.litepress.direction.proxy;
+    exports com.zg.litepress.direction.adapter;
+    exports com.zg.litepress.direction.register;
+    requires litepress.core;
+    requires litepress.network;
     requires io.netty.all;
     requires zookeeper;
     requires com.google.common;

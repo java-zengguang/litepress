@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+
+    <!--    <bean id="optionDB" class="com.zg.litepress.core.bean.entity.OptionDB">
+            <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+            <property name="maxPoolSize" type="int">10</property>
+            <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+            <property name="username" type="java.lang.String">root</property>
+            <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
+            <property name="DBType" type="java.lang.String">MYSQL</property>
+
+        </bean>-->
+
+    <bean id="optionDB" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:mysql://10.7.128.226:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">sunshine</property>
+        <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
+        <property name="DBType" type="java.lang.String">MYSQL</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+    <!--
+
+        <bean id="optionDB" class="com.zg.litepress.core.bean.entity.OptionDB">
+            <property name="url" type="java.lang.String">jdbc:h2:D:/test/web/db/data_mould;MODE=Mysql;FILE_LOCK=SOCKET</property>
+            <property name="maxPoolSize" type="int">10</property>
+            <property name="driver" type="java.lang.String">org.h2.Driver</property>
+            <property name="username" type="java.lang.String">sa</property>
+            <property name="password" type="java.lang.String"></property>
+            <property name="DBType" type="java.lang.String">H2</property>
+        </bean>
+    -->
+
+    <bean id="int_portal_ob" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oceanbase://10.8.192.56:2883/</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">nvportal_int@nvprodev</property>
+        <property name="password" type="java.lang.String">QAerUDN#VlrQ1pX0_</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="uat_portal_ob" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oceanbase://10.8.192.56:2883/</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">nvportal_uat@nvprodev</property>
+        <property name="password" type="java.lang.String">QAerUDN#VlrQ1pX0_</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="stage_portal_ob" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oceanbase://10.8.192.56:2883/</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.oceanbase.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">nvportal_stage@nvprodev</property>
+        <property name="password" type="java.lang.String">QAerUDN#VlrQ1pX0_</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="int_portal_h2" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:h2:~/test;MODE=Oracle</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">org.h2.Driver</property>
+        <property name="username" type="java.lang.String">sa</property>
+        <property name="password" type="java.lang.String"></property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+    </bean>
+
+
+    <bean id="uat_check_util" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:mysql://10.7.128.226:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">sunshine</property>
+        <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
+        <property name="DBType" type="java.lang.String">MYSQL</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+
+    <bean id="dev_check_util" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">sunshine</property>
+        <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
+        <property name="DBType" type="java.lang.String">MYSQL</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <!--    <bean id="testDB" class="com.zg.litepress.core.bean.entity.OptionDB">
+            <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+            <property name="maxPoolSize" type="int">10</property>
+            <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+            <property name="username" type="java.lang.String">root</property>
+            <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
+            <property name="DBType" type="java.lang.String">MYSQL</property>
+            <property name="DBPType" type="java.lang.String">HikariCP</property>
+        </bean>-->
+
+    <bean id="dev_new-non-auto_nvpoldb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvpoldev</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="dev_new-non-auto_nvprodb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvprodev</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvproposal</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="dev_new-non-auto_nvenddb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvprodev</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvendorsement</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+
+    <bean id="dev_new-non-auto_nvsundb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvsundev</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+
+    <bean id="int_new-non-auto_nvpoldb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvpolint</property>
+        <property name="databaseName" type="java.lang.String">nvpolint</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">
+            6E9D7C22309AC2E9E5F49CAEB104201A4975CC2A4A8DDCB847D483709160BD9B
+        </property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="int_new-non-auto_nvprodb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvproint</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvproposal</property>
+        <property name="password" type="java.lang.String">
+            7D888B9E4F93023EA91FAB12DFB5DBAD4975CC2A4A8DDCB847D483709160BD9B
+        </property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+
+    </bean>
+
+    <bean id="int_new-non-auto_nvenddb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvproint</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvendorsement</property>
+        <property name="password" type="java.lang.String">
+            10C53E5CB536E8D7CA417F78521754AC4975CC2A4A8DDCB847D483709160BD9B
+        </property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+
+    <bean id="int_new-non-auto_nvsundb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.88:1521/nvsunint</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">
+            6E9D7C22309AC2E9E5F49CAEB104201A4975CC2A4A8DDCB847D483709160BD9B
+        </property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="uat_new-non-auto_nvpoldb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvpoluat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="uat_new-non-auto_nvprodb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvprouat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvproposal</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="uat_new-non-auto_nvenddb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvprouat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvendorsement</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+
+    <bean id="uat_new-non-auto_nvsundb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.89:1521/nvsunuat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="stage_new-non-auto_nvpoldb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvpolsta</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="stage_new-non-auto_nvprodb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprosta</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvproposal</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="stage_new-non-auto_nvenddb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvprosta</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvendorsement</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+
+    <bean id="stage_new-non-auto_nvsundb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.96:1521/nvsunsta</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">nvpolicy</property>
+        <property name="password" type="java.lang.String">3CE6B72634FF4536552C0DD08D24DB1A</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+
+    <bean id="dev_old-non-auto_sundb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.29:1521/stagedb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">stageapp</property>
+        <property name="password" type="java.lang.String">EACF39B10E9F3E3B056E8B01821A6B34</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="dev_old-non-auto_sundb1" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.29:1521/stagedb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">sinosoft</property>
+        <property name="password" type="java.lang.String">4CB439D8D096AF4C6D8E3859DD21970B</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+    <bean id="dev_old-non-auto_pcore" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.199.28:1521/pcoreuat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">basecode</property>
+        <property name="password" type="java.lang.String">FAD990C25C3A41B76AE734065EFC754B</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+
+    <bean id="test" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:h2:mem:test;MODE=Oracle</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">org.h2.Driver</property>
+        <property name="username" type="java.lang.String">su</property>
+        <property name="password" type="java.lang.String"></property>
+        <property name="DBType" type="java.lang.String">H2</property>
+    </bean>
+
+    <bean id="test1" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:h2:mem:test1;MODE=Oracle</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">org.h2.Driver</property>
+        <property name="username" type="java.lang.String">su</property>
+        <property name="password" type="java.lang.String"></property>
+        <property name="DBType" type="java.lang.String">H2</property>
+    </bean>
+
+    <bean id="data_mould" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:h2:~/data_mould;MODE=Mysql</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">org.h2.Driver</property>
+        <property name="username" type="java.lang.String">sa</property>
+        <property name="password" type="java.lang.String"></property>
+        <property name="DBType" type="java.lang.String">H2</property>
+    </bean>
+    <bean id="dev_platform_platform" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.30:1521/platuat</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">basecode</property>
+        <property name="password" type="java.lang.String">FAD990C25C3A41B76AE734065EFC754B</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+        <property name="DBPType" type="java.lang.String">HikariCP</property>
+    </bean>
+
+
+    <bean id="pro_new-non-auto_nvprodb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.3.93:1521/nvprodb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">zengguang_phq</property>
+        <property name="password" type="java.lang.String">1449820864936D6E26FAFF20D0DF8E00</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+    </bean>
+
+    <bean id="pro_new-non-auto_nvenddb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.3.93:1521/nvenddb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">zengguang_phq</property>
+        <property name="password" type="java.lang.String">1449820864936D6E26FAFF20D0DF8E00</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+    </bean>
+
+    <bean id="pro_new-non-auto_nvpoldb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.3.77:1521/nvpoldb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">zengguang_phq</property>
+        <property name="password" type="java.lang.String">1449820864936D6E26FAFF20D0DF8E00</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+    </bean>
+
+    <bean id="pro_old-non-auto_pcore" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.1.78:1521/pcore</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">zengguang_phq</property>
+        <property name="password" type="java.lang.String">2F541CBF36E75CF263D15EE74CAF2BD6</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+    </bean>
+
+    <bean id="pro_old-non-auto_sunsplit" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.1.29:1521/sunsplit</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">zengguang_phq</property>
+        <property name="password" type="java.lang.String">2F541CBF36E75CF263D15EE74CAF2BD6</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+    </bean>
+
+    <bean id="pro_old-non-auto_sundb" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.8.1.73:1521/sundb</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">oracle.jdbc.driver.OracleDriver</property>
+        <property name="username" type="java.lang.String">zengguang_phq</property>
+        <property name="password" type="java.lang.String">2F541CBF36E75CF263D15EE74CAF2BD6</property>
+        <property name="DBType" type="java.lang.String">ORACLE</property>
+    </bean>
+
+
+    <bean id="dev_sunuser_sunuser" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:mysql://10.200.124.65:3306/sunuser?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=false</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">appuser</property>
+        <property name="password" type="java.lang.String">3GaHIKC_U5ym%6nxkD</property>
+        <property name="DBType" type="java.lang.String">MYSQL</property>
+
+    </bean>
+
+    <bean id="dev_sundb_sun" class="com.zg.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">jdbc:mysql://10.7.129.2:3306/sundb?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+        <property name="maxPoolSize" type="int">10</property>
+        <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+        <property name="username" type="java.lang.String">sunuser</property>
+        <property name="password" type="java.lang.String">92B655C0A1D44AE8211FBE63DF7D2381</property>
+        <property name="DBType" type="java.lang.String">MYSQL</property>
+    </bean>
+
+
+
+
+    <bean id="optionMGDB" class="com.zg.litepress.core.bean.entity.OptionMGDB">
+        <property name="ip" type="java.lang.String">localhost</property>
+        <property name="port" type="java.lang.String">27017</property>
+        <property name="database" type="java.lang.String">admin</property>
+        <property name="username" type="java.lang.String">adminUser</property>
+        <property name="password" type="java.lang.String">adminPass</property>
+    </bean>
+
+
+    <bean id="MVCOption" class="entity.com.zg.litepress.web.MVCOption">
+        <property name="controllerPackage" type="java.lang.String">com.zg.datachange.app.controller</property>
+        <property name="controllerSuffix" type="java.lang.String">.do</property>
+        <property name="upLoadPackage" type="java.lang.String">com.zg.datachange.app.controller</property>
+        <property name="upLoadSuffix" type="java.lang.String">.file</property>
+        <property name="temporaryFilePath" type="java.lang.String">D:\\test\\ExecuteV3.0-java17-INT\\</property>
+        <property name="powerLevel" type="java.lang.String">1</property>
+    </bean>
+
+
+    <bean id="providerConfig" class="entity.com.zg.litepress.direction.ProviderConfig">
+        <property name="registerURL" type="java.lang.String">10.7.128.188:2181</property>
+        <property name="packages" type="java.lang.String">com.zg.sqlcheck</property>
+        <property name="DTPHost" type="java.lang.String">10.65.211.110</property>
+        <property name="DTPPort" type="java.lang.String">10003</property>
+    </bean>
+
+
+    <bean id="zooKeeperConfig" class="entity.com.zg.litepress.direction.ZooKeeperConfig">
+        <property name="tickTime" type="java.lang.String">2000</property>
+        <property name="dataDir" type="java.lang.String">/tmp/zookeeper/data</property>
+        <property name="clientPort" type="java.lang.String">2181</property>
+        <property name="initLimit" type="java.lang.String">10</property>
+        <property name="syncLimit" type="java.lang.String">5</property>
+    </bean>
+
+    <bean id="initConfig" class="com.zg.litepress.core.bean.entity.InitEntity">
+        <property name="packageType" type="java.lang.String">jar</property>
+    </bean>
+
+
+</beans>

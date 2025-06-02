@@ -1,9 +1,9 @@
-module task {
-    requires common;
+module litepress.task {
+    requires litepress.core;
     requires org.tinylog.api;
     requires quartz;
     requires druid;
-    exports com.zg.task;
-    exports com.zg.task.base;
-    exports com.zg.task.entity;
+    exports com.zg.litepress.task;
+    exports com.zg.litepress.task.base;
+    exports com.zg.litepress.task.entity;
 }

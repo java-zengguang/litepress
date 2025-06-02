@@ -1,8 +1,8 @@
-module reaction {
-    requires common;
+module litepress.reaction {
+    requires litepress.core;
     requires ssdb4j;
     requires org.tinylog.api;
-    exports com.zg.database.react.semaphore;
-    exports com.zg.database.react.semaphore.impl;
+    exports com.zg.litepress.react.semaphore;
+    exports com.zg.litepress.react.semaphore.impl;
 
 }

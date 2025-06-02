@@ -3,8 +3,8 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>parent</artifactId>
-        <groupId>com.zg.database</groupId>
+        <artifactId>litepress</artifactId>
+        <groupId>com.zg.litepress</groupId>
         <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -12,8 +12,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.zg.database</groupId>
-            <artifactId>common</artifactId>
+            <groupId>com.zg.litepress</groupId>
+            <artifactId>core</artifactId>
             <version>${revision}</version>
         </dependency>
 

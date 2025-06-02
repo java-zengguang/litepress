@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.zg.litepress</groupId>
+        <artifactId>litepress</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <groupId>com.zg.litepress</groupId>
+    <artifactId>network</artifactId>
+    <packaging>jar</packaging>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.zg.litepress</groupId>
+            <artifactId>core</artifactId>
+            <version>${revision}</version>
+            <type>jar</type>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.94.Final</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.2.1-jre</version>
+        </dependency>
+
+    </dependencies>
+
+</project>

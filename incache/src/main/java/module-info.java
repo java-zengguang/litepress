@@ -1,6 +1,6 @@
-module incache {
-    exports com.zg.incache.prestuctural.manager;
-    requires common;
+module litepress.incache {
+    exports com.zg.litepress.incache.prestuctural.manager;
+    requires litepress.core;
     requires commons.collections;
     requires java.sql;
     requires org.mongodb.bson;

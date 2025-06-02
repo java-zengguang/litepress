@@ -5,25 +5,25 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.zg.database</groupId>
-        <artifactId>parent</artifactId>
+        <groupId>com.zg.litepress</groupId>
+        <artifactId>litepress</artifactId>
         <version>${revision}</version>
     </parent>
-    <groupId>com.zg.database</groupId>
+    <groupId>com.zg.litepress</groupId>
     <artifactId>direction</artifactId>
 
     <dependencies>
 
 
         <dependency>
-            <groupId>com.zg.database</groupId>
-            <artifactId>common</artifactId>
+            <groupId>com.zg.litepress</groupId>
+            <artifactId>core</artifactId>
             <version>${revision}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.zg.database</groupId>
-            <artifactId>network-util</artifactId>
+            <groupId>com.zg.litepress</groupId>
+            <artifactId>network</artifactId>
             <version>${revision}</version>
         </dependency>
 
