@@ -1,13 +1,16 @@
 package com.zg.direction.entity;
 
-import com.zg.bean.entity.MainModel;
 
-public class DTPResponse extends MainModel {
+import com.zg.network.entity.BaseTranslationProtocol;
+
+public class DTPResponse extends BaseTranslationProtocol {
     public boolean success;
     public String error;
-    public String resultData;
-    public String resultType;
+    public Object resultData;   //返回值
+    public String resultType;  //返回值类型
+    public String resultDataType;  //返回值数据类型
 
+    public ProviderEntity providerEntity;
 
     public DTPResponse() {
     }
@@ -28,20 +31,27 @@ public class DTPResponse extends MainModel {
         this.error = error;
     }
 
-
-    public String getResultData() {
-        return resultData;
-    }
-
-    public void setResultData(String resultData) {
-        this.resultData = resultData;
-    }
-
     public String getResultType() {
         return resultType;
     }
 
     public void setResultType(String resultType) {
         this.resultType = resultType;
+    }
+
+    public String getResultDataType() {
+        return resultDataType;
+    }
+
+    public void setResultDataType(String resultDataType) {
+        this.resultDataType = resultDataType;
+    }
+
+    public ProviderEntity getProviderEntity() {
+        return providerEntity;
+    }
+
+    public void setProviderEntity(ProviderEntity providerEntity) {
+        this.providerEntity = providerEntity;
     }
 }

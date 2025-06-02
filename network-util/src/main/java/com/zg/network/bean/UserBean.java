@@ -1,6 +1,6 @@
 package com.zg.network.bean;
 
-import com.zg.bean.entity.MainModel;
+import com.zg.common.bean.entity.MainModel;
 
 /**
  * Created by Administrator on 2019/2/28 0028.

@@ -1,11 +1,11 @@
 package com.zg.network.bean;
 
+import com.zg.network.entity.BaseRequest;
+
 import java.io.Serializable;
 
-/**
- * Created by Administrator on 2019/2/25 0025.
- */
-public class ZGMPBean implements Serializable, Cloneable {
+
+public class ZGMPBean   implements Serializable, Cloneable {
     public String token;
     public String username;
     public String password;

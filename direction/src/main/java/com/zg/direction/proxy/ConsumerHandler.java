@@ -1,84 +1,99 @@
 package com.zg.direction.proxy;
 
-import com.zg.direction.client.ConsumerClient;
-import com.zg.direction.client.ConsumerClientHandler;
-import com.zg.direction.entity.DTPRequest;
-import com.zg.direction.entity.ProviderConfig;
-import com.zg.direction.entity.ProviderEntity;
-import com.zg.direction.register.ZookeeperUtil;
-import com.zg.init.Config;
-import com.zg.util.reflect.JsonUtils;
-import org.apache.zookeeper.KeeperException;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.zg.common.util.reflect.JsonUtil;
+import com.zg.direction.client.ConsumerKeepClientUtil;
+import com.zg.direction.entity.DTPRequest;
+import com.zg.direction.entity.DTPResponse;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
+
 
 public class ConsumerHandler implements InvocationHandler {
 
 
-    private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
+    private final String providerName;
 
-    private String providerName;
-
-    private String host;
-
-    private int port;
-
-    private String className;
 
     public ConsumerHandler(String providerName) {
         this.providerName = providerName;
-        try {
-            getClassName();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (KeeperException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
     }
 
-    private void getClassName() throws IOException, KeeperException, InterruptedException, InstantiationException, IllegalAccessException {
-        ZookeeperUtil zookeeperUtil = new ZookeeperUtil(providerConfig.registerURL);
-        String json = zookeeperUtil.findNode(providerName);
-        ProviderEntity providerEntity = (ProviderEntity) JsonUtils.jsonToObject(json, ProviderEntity.class);
-        this.host = providerEntity.host;
-        this.port = providerEntity.port;
-        this.className = providerEntity.className;
+    Map<String, String> analysisType(Type type) {
+        Map map = new HashMap();
+        if (type instanceof ParameterizedType) {   //处理集合类泛型
+            String typeName = type.getTypeName();
+            if (typeName.contains("<")) {
+                map.put("Type", typeName.substring(0, typeName.indexOf("<")));
+            } else {
+                map.put("Type", typeName);
+            }
+            if (typeName.contains("<")) {
+                map.put("DataType", typeName.substring(typeName.indexOf("<") + 1, typeName.lastIndexOf(">")));
+            } else {
+                map.put("DataType", typeName);
+            }
+        } else {
+            map.put("Type", type.getTypeName());
+            map.put("DataType", type.getTypeName());
+        }
+        return map;
     }
 
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
+        UUID uuid = UUID.randomUUID();//使用唯一请求标识
         DTPRequest request = new DTPRequest();
-        request.className = className;
+        request.id = uuid.toString();
         request.methodName = method.getName();
-        request.methodType = method.getReturnType().getName();
+        Map<String, String> returnDataMap = analysisType(method.getGenericReturnType());
+        request.resultType = returnDataMap.get("Type");
+        request.resultDataType = returnDataMap.get("DataType");
+        request.providerName = providerName;
+
         List methodParamters = new ArrayList<>();
         List<String> methodParamterTypes = new ArrayList<>();
-        for (Object arg : args) {
+        List<String> methodParamterDataTypes = new ArrayList<>();
+        List<Map<String, String>> methodParamterDataTypeMap = new ArrayList<>();
+        Type[] paramerTypes = method.getGenericParameterTypes();
 
-            Class classes = arg.getClass();
+        for (int i = 0; i < paramerTypes.length; i++) {
+            Object arg = args[i];
             methodParamters.add(arg);
-            methodParamterTypes.add(classes.getName());
+            Map<String, String> methodParamDataMap = analysisType(paramerTypes[i]);
+            methodParamterTypes.add(methodParamDataMap.get("Type"));
+            methodParamterDataTypes.add(methodParamDataMap.get("DataType"));
+            methodParamterDataTypeMap.add(methodParamDataMap);
         }
+
         request.methodParamterTypes = methodParamterTypes;
         request.methodParamters = methodParamters;
-        ConsumerClientHandler consumerClientHandler = new ConsumerClientHandler();
-        ConsumerClient consumerClient = new ConsumerClient(consumerClientHandler, host, port);
-        consumerClient.addRequest(request);
-        Thread thread = new Thread(consumerClient);
-        thread.start();
-        Object result = consumerClientHandler.getResult();
+        request.methodParamterDataTypes = methodParamterDataTypes;
+        request.methodParamterDataTypeMapList = methodParamterDataTypeMap;
+
+
+        DTPResponse response;
+        response = ConsumerKeepClientUtil.addSynRequest(request.providerName, request);
+
+
+        Object result = null;
+        if (!"".equals(response.resultType) && !"NULL".equals(response.resultType)) {
+            Object resultData = response.resultData;
+            if(resultData instanceof JsonNode || resultData instanceof Map<?,?> || resultData instanceof List<?>) {
+                result = JsonUtil.string2Obj(JsonUtil.obj2String(resultData), method.getGenericReturnType());
+            }else{
+                result=resultData;
+            }
+        }
+
         return result;
     }
 }
