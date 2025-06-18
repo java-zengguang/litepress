@@ -22,6 +22,7 @@
         <module>reaction</module>
         <module>ml</module>
         <module>db</module>
+        <module>boot</module>
     </modules>
 
 
@@ -31,6 +32,15 @@
         <java.version>21</java.version>
         <revision>0.0.1</revision>
     </properties>
+
+
+    <distributionManagement>
+        <repository>
+            <id>spismaven</id>
+            <name>nonveh maven</name>
+            <url>http://10.7.42.42:9081/repository/SPIS-maven/</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
 
