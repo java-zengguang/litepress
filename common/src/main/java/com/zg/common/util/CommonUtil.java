@@ -4,14 +4,13 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.io.*;
 import java.net.JarURLConnection;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -20,41 +19,57 @@ import java.util.jar.JarFile;
  * Created by Administrator on 2018/11/27 0027.
  */
 public class CommonUtil {
-    public static final String PATH;
-    private static final Logger logger = LoggerFactory.getLogger(CommonUtil.class.getName());
 
-    static {
+
+    public static String getRootPath() {
         //获取项目的相对路径
         String path = "";
 
-        try {
-
-            if (CommonUtil.class.getResource("/") != null) {
-                path = CommonUtil.class.getResource("/").toURI().getPath();
-                File file=new File(path);
-                path=file.getPath();
-                path = java.net.URLDecoder.decode(path, "UTF-8");
-                path = path + "\\";
-                logger.info("---" + path);
-            } else {
-                path = CommonUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-                File file = new File(path);
-                path = file.getParent();
-                path = java.net.URLDecoder.decode(path, "UTF-8");
-                path = path + "\\";
-
-                logger.info("===" + path);
-            }
-
-
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        Logger.info("projectRootPath=" + System.getProperty("projectRootPath"));
+        if (System.getProperty("projectRootPath") != null) {
+            path = System.getProperty("projectRootPath");
+        } else {
+            path = System.getProperty("user.dir") + File.separator;
         }
 
+        return path;
+    }
 
-        PATH = path;
+
+    public static String getThisPath(Class classes) {
+        String path = "";
+        try {
+            path = classes.getProtectionDomain().getCodeSource().getLocation().getPath();
+            File file = new File(path);
+            path = file.getPath();
+            path = java.net.URLDecoder.decode(path, StandardCharsets.UTF_8);
+            path = path + File.separator;
+            Logger.info("---" + path);
+        } catch (Exception e) {
+            Logger.error(e);
+        }
+
+        return path;
+    }
+
+    public static String getModulePath(Class classes) {
+        String path = "";
+
+        try {
+            path = classes.getProtectionDomain().getCodeSource().getLocation().getPath();
+            File file = new File(path);
+            path = file.getPath();
+            if (path.contains(".jar")) {
+                path = file.getParent();
+            }
+            path = URLDecoder.decode(path, StandardCharsets.UTF_8);
+            path = path + File.separator;
+            Logger.info("---" + path);
+        } catch (Exception var3) {
+            var3.printStackTrace();
+        }
+
+        return path;
     }
 
     //读取文件,并把文件信息放入到Properties 容器中
@@ -66,14 +81,14 @@ public class CommonUtil {
             ps.load(in);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Logger.error(e);
                 }
             }
         }
@@ -84,18 +99,17 @@ public class CommonUtil {
 
     public static Element getRootElement(String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
-        // logger.info("配置文件路径："+FileUtils.PATH + fileName);
-        Document doc = reader.read(new File(CommonUtil.PATH + fileName));
-        Element root = doc.getRootElement();
-        return root;
+        // Logger.info("配置文件路径："+FileUtils.PATH + fileName);
+        String path = getRootPath();
+        Document doc = reader.read(new File(path + fileName));
+        return doc.getRootElement();
     }
 
     public static Element getRootElement(String rootPath, String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
-        // logger.info("配置文件路径："+FileUtils.PATH + fileName);
+        // Logger.info("配置文件路径："+FileUtils.PATH + fileName);
         Document doc = reader.read(new File(rootPath + fileName));
-        Element root = doc.getRootElement();
-        return root;
+        return doc.getRootElement();
     }
 
     public static List getClassFormPackage(String packageName, boolean isAnnotation, Class annotation) throws ClassNotFoundException {
@@ -117,6 +131,7 @@ public class CommonUtil {
         classList.addAll(classSet);
         return classList;
     }
+
     /**
      * 从包package中获取所有的Class
      *
@@ -146,7 +161,7 @@ public class CommonUtil {
                 if ("file".equals(protocol)) {
                     // System.err.println("file类型的扫描");
                     // 获取包的物理路径
-                    String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
+                    String filePath = URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8);
                     // 以文件的方式扫描整个包下的文件 并添加到集合中
                     findAndAddClassesInPackageByFile(packageName, filePath, recursive, classes);
                 } else if ("jar".equals(protocol)) {
@@ -190,7 +205,7 @@ public class CommonUtil {
                                             // log
                                             // .error("添加用户自定义视图类错误
                                             // 找不到此类的.class文件");
-                                            e.printStackTrace();
+                                            Logger.error(e);
                                         }
                                     }
                                 }
@@ -198,12 +213,12 @@ public class CommonUtil {
                         }
                     } catch (IOException e) {
                         // log.error("在扫描用户定义视图时从jar包获取文件出错");
-                        e.printStackTrace();
+                        Logger.error(e);
                     }
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         return classes;
@@ -227,12 +242,8 @@ public class CommonUtil {
             return;
         }
         // 如果存在 就获取包下的所有文件 包括目录
-        File[] dirfiles = dir.listFiles(new FileFilter() {
-            // 自定义过滤规则 如果可以循环(包含子目录) 或则是以.class结尾的文件(编译好的java类文件)
-            public boolean accept(File file) {
-                return (recursive && file.isDirectory()) || (file.getName().endsWith(".class"));
-            }
-        });
+        // 自定义过滤规则 如果可以循环(包含子目录) 或则是以.class结尾的文件(编译好的java类文件)
+        File[] dirfiles = dir.listFiles(file -> (recursive && file.isDirectory()) || (file.getName().endsWith(".class")));
         // 循环所有文件
         for (File file : dirfiles) {
             // 如果是目录 则继续扫描
@@ -251,7 +262,7 @@ public class CommonUtil {
                             Thread.currentThread().getContextClassLoader().loadClass(packageName + '.' + className));
                 } catch (ClassNotFoundException e) {
                     // log.error("添加用户自定义视图类错误 找不到此类的.class文件");
-                    e.printStackTrace();
+                    Logger.error(e);
                 }
             }
         }

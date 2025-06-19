@@ -30,12 +30,11 @@
 
 
     <bean id="providerConfig" class="com.zg.direction.entity.ProviderConfig">
-        <property name="registerURL" type="java.lang.String">10.65.211.110:2181</property>
+        <property name="registerURL" type="java.lang.String">10.7.135.122:2181</property>
         <property name="packages" type="java.lang.String">com.zg.direction</property>
         <property name="DTPHost" type="java.lang.String">10.65.211.110</property>
         <property name="DTPPort" type="java.lang.String">10002</property>
     </bean>
-
 
 
     <bean id="zooKeeperConfig" class="com.zg.direction.entity.ZooKeeperConfig">

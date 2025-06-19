@@ -189,7 +189,7 @@ public abstract class ResourceUtils {
         con.setUseCaches(con.getClass().getSimpleName().startsWith("JNLP"));
     }
 
-    public static void main(String args[]) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException {
 
     }
 

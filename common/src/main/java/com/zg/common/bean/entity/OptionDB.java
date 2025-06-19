@@ -2,6 +2,7 @@ package com.zg.common.bean.entity;
 
 public class OptionDB extends MainModel {
     public String dataSourceName;
+    public String databaseName = null;
     public String url = null;
     public int maxPoolSize = 5;
     public String driver = null;
@@ -9,6 +10,12 @@ public class OptionDB extends MainModel {
     public String password = null;
     public String DBType = null;
     public String DBPType = null;
+
+    public String owner;
+
+    public String resourcesURL;
+
+    public String resourcesUser;
 
     public OptionDB() {
     }

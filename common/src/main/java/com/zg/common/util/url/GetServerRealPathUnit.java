@@ -13,8 +13,7 @@ public class GetServerRealPathUnit {
             if (!path.exists()) path = new File("");
             upload = new File(path.getAbsolutePath(), subdirectory);
             if (!upload.exists()) upload.mkdirs();
-            String realPath = upload + "/";
-            return realPath;
+            return upload + "/";
         } catch (FileNotFoundException e) {
             throw new RuntimeException("路径错误");
         }
