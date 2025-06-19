@@ -14,14 +14,24 @@
 
 
     <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
-        <property name="url" type="java.lang.String">jdbc:mysql://10.65.211.110:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+        <property name="url" type="java.lang.String">jdbc:mysql://10.7.128.226:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
-        <property name="username" type="java.lang.String">root</property>
+        <property name="username" type="java.lang.String">sunshine</property>
         <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
         <property name="DBType" type="java.lang.String">MYSQL</property>
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
+    <!--
+        <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
+            <property name="url" type="java.lang.String">jdbc:mysql://10.65.211.110:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+            <property name="maxPoolSize" type="int">10</property>
+            <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+            <property name="username" type="java.lang.String">root</property>
+            <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
+            <property name="DBType" type="java.lang.String">MYSQL</property>
+            <property name="DBPType" type="java.lang.String">C3p0</property>
+        </bean>-->
 
     <!--    <bean id="testDB" class="com.zg.common.bean.entity.OptionDB">
             <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
@@ -32,6 +42,7 @@
             <property name="DBType" type="java.lang.String">MYSQL</property>
             <property name="DBPType" type="java.lang.String">C3p0</property>
         </bean>-->
+
 
     <bean id="dev_new-non-auto_nvpolicy" class="com.zg.common.bean.entity.OptionDB">
         <property name="url" type="java.lang.String">jdbc:oracle:thin:@10.7.129.85:1521/nvpoldev</property>
@@ -382,37 +393,6 @@
     </bean>
 
 
-    <bean id="CreateSVNDirTask" class="com.zg.common.bean.entity.JobEntity">
-        <property name="name" type="java.lang.String">CreateSVNDirTask</property>
-        <property name="group" type="java.lang.String">1</property>
-        <property name="description" type="java.lang.String">自动创建svn目录</property>
-        <property name="className" type="java.lang.String">com.zg.task.CreateSVNDirTask</property>
-    </bean>
-
-    <bean id="CreateSVNDirTiming" class="com.zg.common.bean.entity.JobTriggerEntity">
-        <property name="jobEntity" ref="CreateSVNDirTask"></property>
-        <property name="name" type="java.lang.String">CreateSVNDirTiming</property>
-        <property name="group" type="java.lang.String">1</property>
-        <property name="startAt" type="java.lang.String">2022-01-01</property>
-        <property name="cron" type="java.lang.String">0 40 9 * * ?</property>
-    </bean>
-
-
-    <bean id="SQLExcuteTask" class="com.zg.common.bean.entity.JobEntity">
-        <property name="name" type="java.lang.String">SQLExcuteTask</property>
-        <property name="group" type="java.lang.String">1</property>
-        <property name="description" type="java.lang.String">当日uat脚本自动执行</property>
-        <property name="className" type="java.lang.String">com.zg.task.SQLExcuteTask</property>
-    </bean>
-
-    <bean id="SQLExcuteTaskTiming" class="com.zg.common.bean.entity.JobTriggerEntity">
-        <property name="jobEntity" ref="SQLExcuteTask"></property>
-        <property name="name" type="java.lang.String">SQLExcuteTaskTiming</property>
-        <property name="group" type="java.lang.String">1</property>
-        <property name="startAt" type="java.lang.String">2022-01-01</property>
-        <property name="cron" type="java.lang.String">0 30 17 * * ?</property>
-    </bean>
-
 
     <bean id="optionMGDB" class="com.zg.common.bean.entity.OptionMGDB">
         <property name="ip" type="java.lang.String">localhost</property>
@@ -433,6 +413,7 @@
 
     <bean id="initConfig" class="com.zg.common.bean.entity.InitEntity">
         <property name="packageType" type="java.lang.String">jar</property>
+        <property name="appID" type="java.lang.String">common</property>
     </bean>
 
     <bean id="tableMapper" class="com.zg.webdemo.dao.TableMapper">

@@ -1,10 +1,13 @@
 package com.zg.common.bean.entity;
 
+import com.zg.common.annotation.Model;
+
 import java.util.Date;
 
 /**
  * Created by Administrator on 2018/11/29 0029.
  */
+@Model
 public class Test extends MainModel {
     public int id;
     public String name;
