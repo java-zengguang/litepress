@@ -2,15 +2,18 @@ package com.zg.common.dao.factory;
 
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.pool.DataBaseInte;
+import com.zg.common.dao.pool.DruidImpl;
+import com.zg.common.dao.pool.HikariCPImpl;
 import com.zg.common.dao.pool.ZGDBPImpl;
 import com.zg.common.init.Config;
-import org.apache.log4j.Logger;
+import org.tinylog.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class PoolConnectionFactory extends BaseConnectionFactory {
-    private static Logger logger = Logger.getLogger(ConnectionFactory.class);
+
+
     private static PoolConnectionFactory poolConnectionFactory;
 
     private PoolConnectionFactory() {
@@ -29,17 +32,25 @@ public class PoolConnectionFactory extends BaseConnectionFactory {
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
 
         if ("ZGDBP".equals(optionDB.getDBPType())) {
+            Logger.info("使用ZGDBP链接");
             databasePool = ZGDBPImpl.getInstance();
+        } else if ("Druid".equals(optionDB.getDBPType())) {
+            databasePool = DruidImpl.getInstance();
+            Logger.info("使用Druid链接");
+        } else if ("HikariCP".equals(optionDB.getDBPType())) {
+            databasePool = HikariCPImpl.getInstance();
+            Logger.info("HikariCP");
         } else if (optionDB.getDBPType() == null || "".equals(optionDB.getDBPType())) {
-            logger.info("未使用链接池");
+            Logger.info("未使用链接池");
         } else {
-            logger.info("未找到对应链接池");
+            Logger.info("未找到对应链接池");
         }
         return databasePool;
     }
 
     @Override
     public Connection createConnection(String dataSourceName) throws ClassNotFoundException, SQLException {
+
         DataBaseInte dataBaseInte = createDataBasePool(dataSourceName);
         return dataBaseInte.getConnection(dataSourceName);
 

@@ -2,9 +2,10 @@ package com.zg.common.bean.factory;
 
 import com.zg.common.password.PassWordUtil;
 import com.zg.common.util.CommonUtil;
-import com.zg.common.util.reflect.EntityUtils;
+import com.zg.common.util.reflect.TransEntityTypeUtils;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import org.tinylog.Logger;
 
 import java.lang.reflect.*;
 
@@ -30,24 +31,25 @@ public class BeanFactory {
                         Field field = Class.forName(beanClassName).getField(name);
                         field.setAccessible(true);
                         if (property.attributeValue("type") != null) {
-                            EntityUtils.setField(field, o, property.getStringValue());
+                           Object value= TransEntityTypeUtils.translateType(property.getStringValue(), field.getType().getSimpleName());
+                           field.set(o,value);
                         }
                         if (property.attributeValue("ref") != null) {
-                            field.set(o, BeanFactory.createBean(property.attributeValue("ref")));
+                            field.set(o, BeanFactory.createBean(rootPath, property.attributeValue("ref")));
                         }
                     }
                 }//
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         try {
             o = createProxy(o);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         }
         return o;
 
@@ -75,12 +77,10 @@ public class BeanFactory {
                         if (property.attributeValue("type") != null) {
                             String value = property.getStringValue();
                             //对密码做个加密
-                            if ("password".equals(name)) {
+                            if ("password".equals(name) && property.attributeValue("encryption") == null) {
                                 value = PassWordUtil.decrypt(value);
-
                             }
-                            EntityUtils.setField(field, o, value);
-                        }
+                            field.set(o,TransEntityTypeUtils.translateType(value, field.getType().getSimpleName()));                        }
                         if (property.attributeValue("ref") != null) {
                             field.set(o, BeanFactory.createBean(property.attributeValue("ref")));
                         }
@@ -89,14 +89,14 @@ public class BeanFactory {
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         try {
             o = createProxy(o);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e);
         }
         return o;
 

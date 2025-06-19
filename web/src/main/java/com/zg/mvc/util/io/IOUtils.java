@@ -8,7 +8,7 @@ import java.io.*;
 public class IOUtils {
 
 
-    private static int size = 64 * 1024;
+    private static final int size = 64 * 1024;
 
 
     public static int createFile(File file) throws IOException {
@@ -72,105 +72,6 @@ public class IOUtils {
     }
 
 
-
-
-
-
-    /*public static void extractFile(File temporaryFile,File targetFile) throws IOException {
-
-        createFile(targetFile);
-        RandomAccessFile raf=new RandomAccessFile(temporaryFile,"r");
-        //InputStreamReader isr=new InputStreamReader(new FileInputStream(temporaryFile));
-        //BufferedReader br=new BufferedReader(isr);
-        BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(targetFile));
-        int count=0;
-        int startOrEnd=0;  //1  start   0 end
-        int writerFlag=0;  //1 准备写  0 不写  2准备 写
-        int oneLine=0;    //1 online  0 no
-        int typeFlag=0;   //0 不写  ，1  写文件 ，2 写表单
-        String line="";
-        int startPoint=0;
-        int endPoint=0;
-        byte[] b=null;
-        while (raf.getFilePointer()<raf.length()) {
-
-            if((raf.readByte())=='\r' && (raf.readByte())=='\n' ){
-
-                endPoint=(int)raf.getFilePointer();
-                if(writerFlag>1){
-                    writerFlag--;
-                }else{
-                    raf.seek(startPoint);   //将指针放回去
-                    b=new byte[endPoint-startPoint];
-                    raf.read(b,0,endPoint-startPoint);   //读取
-                    line=new String(b);
-                    oneLine=1;  //获得完整一行
-                }
-
-                startPoint=endPoint;
-            }else{
-                oneLine=0;  //不是完整一行
-                //writerFlag=0;  //重置可写标志
-                //typeFlag=0;   //重置类型标志
-                line="";
-            }
-            if (oneLine==1 && line.contains("-----------------------------")) {   //分隔标记
-                count++;
-                if(count%2==1){
-                   startOrEnd=1;   //表单开始
-                }else{
-                    startOrEnd=0;   //表单结束
-                    writerFlag=0;   //关闭可写
-                }
-            }
-
-            if(oneLine==1 &&  line.contains("Content-Disposition: form-data") && line.contains("filename=")){
-                typeFlag=1;
-                writerFlag=3;    //到达读写位置，准备写
-                continue;
-            }
-
-
-            if (oneLine==1 &&  startOrEnd==1 && writerFlag==1) {
-                switch (typeFlag) {
-                    case 0: {
-                        break;
-                    }
-                    case 1: {
-                        logger.info(line);
-                        bos.write(b);
-                        break;
-                    }
-                    case 2: {
-                        break;
-                    }
-                }
-            }
-
-            if(  startOrEnd==1 && writerFlag==0){
-                switch (typeFlag) {
-                    case 0: {
-                        break;
-                    }
-                    case 1: {
-                        bos.flush();
-                        bos.close();
-                        logger.info("关闭流");
-                        break;
-                    }
-                    case 2: {
-                       // typeFlag=0;
-                        break;
-                    }
-                }
-            }
-        }
-
-        raf.close();
-    }
-*/
-
-
 }
 
 /*
@@ -187,10 +88,10 @@ public class IOUtils {
                     String name = item.getFieldName();
                     String value = item.getString("UTF-8");
                     //value = new String(value.getBytes("iso8859-1"),"UTF-8");
-                    logger.info(name + "=" + value);
+                    Logger.info(name + "=" + value);
                 }else{
                     String filename = item.getName();
-                    logger.info(filename);
+                    Logger.info(filename);
                     if(filename==null || filename.trim().equals("")){
                         continue;
                     }

@@ -2,6 +2,7 @@ package com.zg.common.dao.pool;
 
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.init.Config;
+import org.tinylog.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -11,7 +12,7 @@ import java.util.Map;
 public class ZGDBPImpl implements DataBaseInte {
 
     private final static ZGDBPImpl zGDBP = new ZGDBPImpl();
-    private static Map<String, ZGDBPDataSource> dataSourceMap = new HashMap<>();
+    private static final Map<String, ZGDBPDataSource> dataSourceMap = new HashMap<>();
 
     private ZGDBPImpl() {
 
@@ -25,9 +26,7 @@ public class ZGDBPImpl implements DataBaseInte {
         OptionDB optionDB = (OptionDB) Config.getConfig(dataOptionName);
 
 
-        ZGDBPDataSource cpds = ZGDBPDataSource.getInstance(optionDB);
-
-        return cpds;
+        return ZGDBPDataSource.getInstance(optionDB);
     }
 
 
@@ -58,7 +57,7 @@ public class ZGDBPImpl implements DataBaseInte {
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return connection;
     }

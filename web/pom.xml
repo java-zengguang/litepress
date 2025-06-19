@@ -4,71 +4,78 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.zg.mvc</groupId>
-    <artifactId>web</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+
+
     <parent>
         <groupId>com.zg.database</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
+    <artifactId>web</artifactId>
+    <packaging>jar</packaging>
 
+    <properties>
+        <jetty.version>11.0.11</jetty.version>
+
+    </properties>
 
     <dependencies>
 
+
         <dependency>
             <groupId>com.zg.database</groupId>
-            <artifactId>util</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <type>jar</type>
+            <artifactId>common</artifactId>
+            <version>${revision}</version>
         </dependency>
-
-<!--        &lt;!&ndash; servlet依赖的jar包start &ndash;&gt;
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-
-
-        &lt;!&ndash; servlet依赖的jar包start &ndash;&gt;
-        &lt;!&ndash; jsp依赖jar包start &ndash;&gt;
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>javax.servlet.jsp-api</artifactId>
-            <version>2.3.1</version>
-        </dependency>
-        &lt;!&ndash; jsp依赖jar包end &ndash;&gt;
-        &lt;!&ndash;jstl标签依赖的jar包start &ndash;&gt;
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>-->
-
-        <!--    分頁助手-->
-
-
 
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <version>9.4.14.v20181114</version>
+            <version>${jetty.version}</version>
             <artifactId>jetty-server</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <version>9.4.14.v20181114</version>
+            <version>${jetty.version}</version>
             <artifactId>jetty-servlet</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <version>9.4.14.v20181114</version>
+            <version>${jetty.version}</version>
             <artifactId>jetty-servlets</artifactId>
         </dependency>
 
 
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zg.database</groupId>
+            <artifactId>incache</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!--        <dependency>
+                    <groupId>org.cacheonix</groupId>
+                    <artifactId>cacheonix-core</artifactId>
+                    <version>2.3.1</version>
+                </dependency>-->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-ext-jdk16</artifactId>
+            <version>1.45</version>
+        </dependency>
+
+
+
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.10.1</version>
+        </dependency>
         <!--jstl标签依赖的jar包end -->
     </dependencies>
 

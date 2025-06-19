@@ -1,6 +1,7 @@
 package com.zg.network.common.heartbeat;
 
 import com.zg.network.bean.ChannelBean;
+import org.tinylog.Logger;
 
 import java.util.Date;
 import java.util.Map;
@@ -46,7 +47,7 @@ public abstract class BaseHeartbeatHandle implements Runnable {
                 sendHeartbeat();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
     }
 }

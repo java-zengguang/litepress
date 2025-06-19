@@ -1,19 +1,24 @@
 package com.zg.common.dao.database;
 
+import com.zg.common.annotation.AutoIncrease;
 import com.zg.common.bean.entity.MainModel;
 import com.zg.common.bean.entity.MetadataEntity;
+import com.zg.common.bean.entity.OptionDB;
+import com.zg.common.bean.entity.PageEntity;
 import com.zg.common.dao.assemble.SimpleAssemble;
+import com.zg.common.init.Config;
+import com.zg.common.util.reflect.DBUtils;
+import com.zg.common.relect.dynameic.DynamicClass;
 import com.zg.common.util.reflect.ModelSQLUtils;
-import com.zg.common.util.reflect.DynamicClass;
-import com.zg.common.util.reflect.EntityUtils;
+import net.sf.jsqlparser.JSQLParserException;
+import org.tinylog.Logger;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Administrator on 2018/11/27 0027.
@@ -24,7 +29,7 @@ public class BaseEntityDao extends BaseJDBCDao {
     public int insertTable(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         List list = new ArrayList();
         list.add(model);
-        int results[] = insertTables(list, model.getClass());
+        int[] results = insertTables(list, model.getClass());
         int result = 0;
         if (results != null && results.length > 0) {
             result = results[0];
@@ -32,20 +37,36 @@ public class BaseEntityDao extends BaseJDBCDao {
         return result;
     }
 
+    public Object insertAutoIncrease(Object model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+        Class clazz = model.getClass();
+        Field[] fields = clazz.getFields();
+        Field idField = Arrays.stream(fields).filter(field -> field.isAnnotationPresent(AutoIncrease.class)).findFirst().get();
+        if (insertTable(model) > 0) {
+            String sql = "select @@IDENTITY as id ";
+            List<Map> list = selectToMapList(sql);
+            Map<String, BigInteger> map = list.get(0);
+            Logger.info("id=" + map.get("id").intValue());
+            Integer id = map.get("id").intValue();
+            idField.set(model, id);
+        }
+        return model;
+    }
+
     public int[] insertTables(List modelLIst, Class modelClass) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
-        String tableName = EntityUtils.getTableNameFromModel(modelClass);
+        String tableName = DBUtils.getTableNameFromModel(modelClass);
         return insertTables(modelLIst, modelClass, tableName);
     }
 
 
     //查询
-    public List select(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
+    public List select(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException, JSQLParserException {
         List<List<MetadataEntity>> templeList = select2TempleList(sql);
-        SimpleAssemble simpleAssemble=new SimpleAssemble();
-        List modelList=new ArrayList();
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
+        List modelList = new ArrayList();
         Class modelClass = null;
-        if(templeList!=null&&templeList.size()>0) {
-            modelClass=DynamicClass.getDynamicModel(templeList.get(0));
+        if (templeList != null && templeList.size() > 0) {
+            modelClass = DynamicClass.getDynamicModel(templeList.get(0));
             for (List<MetadataEntity> columnList : templeList) {
                 Object obj = modelClass.newInstance();
                 for (MetadataEntity metadataEntity : columnList) {
@@ -58,11 +79,18 @@ public class BaseEntityDao extends BaseJDBCDao {
     }
 
 
-
     //查询
     public List select(String sql, Class modelClass) throws Exception {
-        List<List<MetadataEntity>> templeList = select2TempleList(sql);
-        SimpleAssemble simpleAssemble = new SimpleAssemble();
+        List<List<MetadataEntity>> templeList = null;
+        String tableName = DBUtils.getTableNameFromModel(modelClass);
+        if (tableName != null) {
+            templeList = select2TempleList(sql, tableName);
+        } else {
+            templeList = select2TempleList(sql);
+        }
+
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        SimpleAssemble simpleAssemble = new SimpleAssemble(optionDB.DBType);
         List modelList = new ArrayList();
         for (List<MetadataEntity> columnList : templeList) {
             Object obj = modelClass.newInstance();
@@ -76,11 +104,27 @@ public class BaseEntityDao extends BaseJDBCDao {
     }
 
 
-    public List execute(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException {
-        logger.debug(sql);
+    public List select2Page(String sql, Class tClass, PageEntity page) throws Exception {
+        String countSql = null;
+        if (sql != null) {
+            countSql = "select count(1) as totalResultSize  from ( " + sql + " ) as num";
+        }
+        List contMapList = this.selectToMapList(countSql);
+        Map map = (Map) contMapList.get(0);
+        Integer totalResultSize = Math.toIntExact((Long) map.get("totalResultSize"));
+        page.setTotalResultSize(totalResultSize);
+        page.setTotalPageSize((totalResultSize / page.getPageSize()));
+        Integer startRows = (page.getCurrentPage() - 1) * page.getPageSize();
+        /*  Integer endRows=(page.getCurrentPage())*page.getPageSize();*/
+        sql = sql + " limit " + startRows + " , " + page.getPageSize();
+        return select(sql, tClass);
+    }
+
+    public List execute(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException, JSQLParserException {
+        Logger.debug(sql);
         List<MainModel> list = new ArrayList<MainModel>();
         if (sql == null) {
-            logger.debug(" execute  sql is null");
+            Logger.debug(" execute  sql is null");
         } else if (sql.startsWith("select")) {
             list = select(sql);
 
@@ -94,8 +138,9 @@ public class BaseEntityDao extends BaseJDBCDao {
 
     public int updateModel(Object object, String... terms) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         int result = 0;
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         if (terms != null && terms.length > 0) {
-            String sql = ModelSQLUtils.update(object, terms);
+            String sql = ModelSQLUtils.update(optionDB.DBType, object, terms);
             result = operation(sql);
         }
         return result;
@@ -121,5 +166,6 @@ public class BaseEntityDao extends BaseJDBCDao {
         return operation(sql);
 
     }
+
 
 }

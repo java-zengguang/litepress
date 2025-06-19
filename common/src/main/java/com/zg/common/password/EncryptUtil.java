@@ -1,6 +1,8 @@
 package com.zg.common.password;
 
 
+import org.tinylog.Logger;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
@@ -16,7 +18,6 @@ public class EncryptUtil {
     public static final String HmacSHA1 = "HmacSHA1";
     public static final String DES = "DES";
     public static final String AES = "AES";
-    public static EncryptUtil me;
     /**
      * 编码格式；默认使用uft-8
      */
@@ -34,25 +35,22 @@ public class EncryptUtil {
         //单例
     }
 
+    private static final class MeHolder {
+        public static final EncryptUtil me = new EncryptUtil();
+    }
+
     //双重锁
     public static EncryptUtil getInstance() {
-        if (me == null) {
-            synchronized (EncryptUtil.class) {
-                if (me == null) {
-                    me = new EncryptUtil();
-                }
-            }
-        }
-        return me;
+        return MeHolder.me;
     }
 
     /**
      * 将二进制转换成16进制
      */
-    public static String parseByte2HexStr(byte buf[]) {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < buf.length; i++) {
-            String hex = Integer.toHexString(buf[i] & 0xFF);
+    public static String parseByte2HexStr(byte[] buf) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : buf) {
+            String hex = Integer.toHexString(b & 0xFF);
             if (hex.length() == 1) {
                 hex = '0' + hex;
             }
@@ -89,7 +87,7 @@ public class EncryptUtil {
             byte[] resBytes = charset == null ? res.getBytes() : res.getBytes(charset);
             return base64(md.digest(resBytes));
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return null;
     }
@@ -117,7 +115,7 @@ public class EncryptUtil {
             byte[] result = mac.doFinal(res.getBytes());
             return base64(result);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return null;
     }
@@ -137,14 +135,14 @@ public class EncryptUtil {
             KeyGenerator kg = KeyGenerator.getInstance(algorithm);
             if (keysize == 0) {
                 byte[] keyBytes = charset == null ? key.getBytes() : key.getBytes(charset);
-                SecureRandom secureRandom= SecureRandom.getInstance("SHA1PRNG");
+                SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
                 secureRandom.setSeed(keyBytes);
                 kg.init(secureRandom);
             } else if (key == null) {
                 kg.init(keysize);
             } else {
                 byte[] keyBytes = charset == null ? key.getBytes() : key.getBytes(charset);
-                SecureRandom secureRandom= SecureRandom.getInstance("SHA1PRNG");
+                SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
                 secureRandom.setSeed(keyBytes);
                 kg.init(keysize, secureRandom);
             }
@@ -160,7 +158,7 @@ public class EncryptUtil {
                 return new String(cipher.doFinal(parseHexStr2Byte(res)));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
         return null;
     }
