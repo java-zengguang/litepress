@@ -9,4 +9,5 @@ module litepress.router {
 
     exports com.zg.litepress.router.entity;
     exports com.zg.litepress.router.register;
+    exports com.zg.litepress.router.annotation;
 }

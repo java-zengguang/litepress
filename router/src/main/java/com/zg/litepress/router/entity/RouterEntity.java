@@ -9,6 +9,6 @@ public class RouterEntity extends MainModel {
     public String version;
     public String host;
     public Integer port;
-    public String url;
-    public String description;
+    public Integer state; //状态  0-初始化  1-运行中 2-主动下线  3-服务异常
+
 }

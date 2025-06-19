@@ -5,6 +5,7 @@ package com.zg.litepress.event.bus;
 import com.zg.litepress.core.error.BizException;
 import com.zg.litepress.core.util.IpConfig;
 import com.zg.litepress.core.util.reflect.JsonUtil;
+import com.zg.litepress.event.entity.ZeroMQRouter;
 import com.zg.litepress.event.entity.ZoreMQConfig;
 import com.zg.litepress.event.event.BaseEvent;
 import com.zg.litepress.event.exception.StateTransitinException;
@@ -83,11 +84,7 @@ public class BaseBistributedZeroMQBus extends BaseMessageBus implements  Message
         this.ip = IpConfig.getLocalHostLANAddress().getHostAddress();
         this.zoreMQConfig = zoreMQConfig;
         context = ZMQ.context(1);
-        RouterRegisterConfig routerRegisterConfig = new RouterRegisterConfig();
-        routerRegisterConfig.namespace="/event";
-        routerRegisterConfig.routerType="event";
-        routerRegisterConfig.registerURL = zoreMQConfig.registerURL;
-        routerRegister = RouterRegister.getInstance(routerRegisterConfig);
+        routerRegister = RouterRegister.getInstance(ZeroMQRouter.class);
 
 
         //初始化本地发布者和订阅者
