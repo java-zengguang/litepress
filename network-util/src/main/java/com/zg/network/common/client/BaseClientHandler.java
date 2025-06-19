@@ -3,8 +3,6 @@ package com.zg.network.common.client;
 import com.zg.network.common.MessgeReceivedListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,21 +12,20 @@ import java.util.List;
  */
 public abstract class BaseClientHandler<T> extends SimpleChannelInboundHandler<T> {
 
-    public final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-    public List<MessgeReceivedListener> messgeReceivedListeners=new ArrayList<>();
+    public List<MessgeReceivedListener> messgeReceivedListeners = new ArrayList<>();
 
     @Override
-    protected  void channelRead0(ChannelHandlerContext ctx, T msg) throws Exception{
-        for(MessgeReceivedListener messgeReceivedListener:messgeReceivedListeners){
+    protected void channelRead0(ChannelHandlerContext ctx, T msg) throws Exception {
+        for (MessgeReceivedListener messgeReceivedListener : messgeReceivedListeners) {
             messgeReceivedListener.onMessageReceived(msg);
         }
     }
 
-    public  void remove(MessgeReceivedListener messgeReceivedListener){
+    public void remove(MessgeReceivedListener messgeReceivedListener) {
         messgeReceivedListeners.remove(messgeReceivedListener);
     }
 
-    public  void addMessgeReceivedListener(MessgeReceivedListener messgeReceivedListener){
+    public void addMessgeReceivedListener(MessgeReceivedListener messgeReceivedListener) {
         messgeReceivedListeners.add(messgeReceivedListener);
     }
 }

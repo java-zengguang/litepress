@@ -4,8 +4,7 @@ import com.zg.common.annotation.*;
 import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.database.DataBaseUtil;
 import com.zg.common.init.Config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -19,7 +18,6 @@ import java.util.*;
 
 
 public class EntityUtils {
-    private static final Logger logger = LoggerFactory.getLogger(EntityUtils.class.getName());
 
     public static String dateFormat = "yyyy-MM-dd HH:mm:ss";
     public static SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
@@ -310,18 +308,18 @@ public class EntityUtils {
 
     public static int toCompareObject(Object o1, Object o2) throws SecurityException, IllegalArgumentException, IllegalAccessException {
 
-        Field[] fields=o1.getClass().getFields();
-        return toCompare(o1,o2,Arrays.asList(fields));
+        Field[] fields = o1.getClass().getFields();
+        return toCompare(o1, o2, Arrays.asList(fields));
     }
 
-    public static int toCompareObject(Object o1, Object o2,List<String> fieldNameList) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
-        Class classes=o1.getClass();
-        List<Field> list=new ArrayList<>();
-        for(String fieldName:fieldNameList){
-            Field field=classes.getField(fieldName);
+    public static int toCompareObject(Object o1, Object o2, List<String> fieldNameList) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
+        Class classes = o1.getClass();
+        List<Field> list = new ArrayList<>();
+        for (String fieldName : fieldNameList) {
+            Field field = classes.getField(fieldName);
             list.add(field);
         }
-        return toCompare(o1,o2,list);
+        return toCompare(o1, o2, list);
     }
 
 
@@ -457,6 +455,74 @@ public class EntityUtils {
         }
 
         return list;
+
+    }
+
+    public static Integer getPKHashCode(Object obj) throws IllegalAccessException {
+        Class modelClass = obj.getClass();
+        Integer pkHashCode = 0;
+
+        Field[] fields = modelClass.getFields();
+
+        for (Field field : fields) {
+            PrimaryKey primaryKey = field.getAnnotation(PrimaryKey.class);
+            if (primaryKey != null) {
+                pkHashCode = pkHashCode + Objects.hashCode(field.get(obj));
+            }
+        }
+
+        return pkHashCode;
+
+    }
+
+    public static Map<Integer, Object> transToPKMap(Collection list) throws IllegalAccessException {
+        Map<Integer, Object> resultMap = new HashMap<>();
+        for (Object obj : list) {
+            Class modelClass = obj.getClass();
+            Integer pkHashCode = 0;
+            Field[] fields = modelClass.getFields();
+            for (Field field : fields) {
+                PrimaryKey primaryKey = field.getAnnotation(PrimaryKey.class);
+                if (primaryKey != null) {
+                    pkHashCode = pkHashCode + Objects.hashCode(field.get(obj));
+                }
+            }
+            resultMap.put(pkHashCode, obj);
+        }
+        return resultMap;
+
+    }
+
+
+    public static List getPKData(Object obj) throws IllegalAccessException {
+
+        List list = new ArrayList();
+        Class modelClass = obj.getClass();
+        Field[] fields = modelClass.getFields();
+
+        for (Field field : fields) {
+            PrimaryKey primaryKeyField = field.getAnnotation(PrimaryKey.class);
+            if (primaryKeyField != null) {
+                list.add(field.get(obj));
+            }
+        }
+
+        return list;
+
+    }
+
+    public static Map getPKDataMap(Object obj) throws IllegalAccessException {
+        Map<String, Object> hashMap = new HashMap();
+        Class modelClass = obj.getClass();
+        Field[] fields = modelClass.getFields();
+        for (Field field : fields) {
+            PrimaryKey primaryKeyField = field.getAnnotation(PrimaryKey.class);
+            if (primaryKeyField != null) {
+                hashMap.put(field.getName(), field.get(obj));
+            }
+        }
+
+        return hashMap;
 
     }
 
@@ -780,7 +846,7 @@ public class EntityUtils {
             setFieldOrcale(field, object, value);
             return;
         } else {
-            logger.info(EntityUtils.class + "====数据源未初始化");
+            Logger.info(EntityUtils.class + "====数据源未初始化");
             return;
         }
     }
@@ -803,7 +869,7 @@ public class EntityUtils {
             } else if ("ORACLE".equals(optionDB.DBType)) {
                 return getFieldOrcale(field, object);
             } else {
-                logger.info(EntityUtils.class + "====数据源未初始化");
+                Logger.info(EntityUtils.class + "====数据源未初始化");
                 return null;
             }
         } else {
@@ -848,6 +914,7 @@ public class EntityUtils {
         }
 
     }
+
 
 }
 

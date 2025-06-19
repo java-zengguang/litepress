@@ -2,23 +2,23 @@ package com.zg.sso.filter;
 
 import com.zg.common.init.Config;
 import com.zg.mvc.entity.MVCOption;
-
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.catalina.connector.RequestFacade;
 import org.apache.coyote.Request;
-import org.apache.log4j.Logger;
 import org.apache.tomcat.util.buf.MessageBytes;
+import org.tinylog.Logger;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.lang.reflect.Field;
+
 
 /**
  * Created by Administrator on 2019/2/14 0014.
  */
 public class ChangeURIFilter implements Filter {
     private MVCOption mvcOption = (MVCOption) Config.getConfig("MVCOption");
-    private static final Logger logger = Logger.getLogger(ChangeURIFilter.class);
+
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -39,7 +39,7 @@ public class ChangeURIFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         synchronized (this) {
             try {
-                logger.info("原本=" + ((HttpServletRequest) servletRequest).getRequestURI());
+                Logger.info("原本=" + ((HttpServletRequest) servletRequest).getRequestURI());
                 RequestFacade facade = (RequestFacade) servletRequest;
                 Class clzz = RequestFacade.class;
                 Field field = clzz.getDeclaredField("request");
@@ -58,13 +58,13 @@ public class ChangeURIFilter implements Filter {
                 //这里就是改变路径的地方
                 String path = changeURI(uriMB.getString());
                 uriMB.setString(path);
-                filterChain.doFilter(facade, servletResponse);
+                filterChain.doFilter((ServletRequest) facade, servletResponse);
                 //用来打印请求路径
-                logger.info("changeUrl=" + ((RequestFacade) servletRequest).getRequestURL());
+                Logger.info("changeUrl=" + ((RequestFacade) servletRequest).getRequestURL());
 
             } catch (Exception e) {
                 e.printStackTrace();
-                logger.info("URL错误");
+                Logger.info("URL错误");
             }
         }
     }

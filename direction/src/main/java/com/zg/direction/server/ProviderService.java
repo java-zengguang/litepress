@@ -9,20 +9,18 @@ public class ProviderService extends BaseService {
 
     private static ProviderConfig providerConfig = (ProviderConfig) BeanFactory.createBean("providerConfig");
 
-    public ProviderService(BaseServiceHandler<String> baseServiceHandler, int port) {
-        super(baseServiceHandler, port);
+    public ProviderService(BaseServiceHandler<String> baseServiceHandler) {
+        super(baseServiceHandler, providerConfig.DTPPort);
     }
 
     public static void main(String args[]) {
-        ProviderService providerService = new ProviderService(new ProviderServiceHandler(), providerConfig.DTPPort);
+        ProviderService providerService = new ProviderService(new ProviderServiceHandler());
         Thread thread = new Thread(providerService);
         thread.start();
     }
 
     @Override
     public void startHeartbeat() {
-   /*  IMHeartbeatHandle IMHeartbeatHandle =new IMHeartbeatHandle(BaseChannelGroups.getChanelGroups());
-            Thread t=new Thread(IMHeartbeatHandle);
-            t.start();*/
+
     }
 }

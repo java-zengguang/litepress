@@ -1,15 +1,14 @@
 package com.zg.sso.utils;
 
-import com.zg.cache.util.RomCacheInte;
-import com.zg.cache.util.RomCacheUtil;
+import com.zg.incache.util.RomCacheInte;
+import com.zg.incache.util.RomCacheUtil;
 import com.zg.mvc.entity.MessageBean;
 import com.zg.sso.common.WebCacheLogin;
 import com.zg.sso.entity.UserLogin;
-import org.apache.log4j.Logger;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ public class SSOUtils {
 
     public static WebCacheLogin webCacheLogin = WebCacheLogin.getInstance();
     private static RomCacheInte romCache = RomCacheUtil.getRomCache("LoginCache");
-    private static final Logger logger = Logger.getLogger(SSOUtils.class.getName());
 
 
     public static MessageBean signOut(HttpServletRequest request, HttpServletResponse response) {

@@ -1,14 +1,14 @@
 package com.zg.sso.common;
 
-import com.zg.cache.util.RomCacheInte;
-import com.zg.cache.util.RomCacheUtil;
+import com.zg.incache.util.RomCacheInte;
+import com.zg.incache.util.RomCacheUtil;
 import com.zg.mvc.entity.MessageBean;
 import com.zg.sso.entity.UserLogin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.tinylog.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +16,6 @@ import java.util.UUID;
 public class WebCacheLogin extends BaseLogin {
     private static WebCacheLogin webCacheLogin = new WebCacheLogin();
     private RomCacheInte romCacheInte = RomCacheUtil.getRomCache("LoginCache");
-    private static final Logger logger = LoggerFactory.getLogger(WebCacheLogin.class);
 
     private WebCacheLogin() {
     }
@@ -58,7 +57,7 @@ public class WebCacheLogin extends BaseLogin {
             newCookieList.add(tokenCookie);
             setCookies(response, newCookieList, userLogin.domain, userLogin.rootPath, userLogin.url);
             String url = new String(userLogin.url);
-            logger.info("url=" + url);
+            Logger.info("url=" + url);
             return new MessageBean("操作成功", true, url);
 
         } else {

@@ -1,15 +1,14 @@
 package com.zg.common.util.io;
 
 
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-import jxl.write.*;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -82,61 +81,45 @@ public class POIUtils {
         return list;
     }
 
-    //将excel映射到内存中 Sheet,<TableList<Map<String,String>>>
-    public static Map<String, List<Map<String, String>>> readXLSX(File file) throws IOException, BiffException {
-        Map<String, List<Map<String, String>>> resultMap = new HashMap();
-        Workbook workbook = Workbook.getWorkbook(file);
-        Sheet[] sheets = workbook.getSheets();
-        for (Sheet sheet : sheets) {
-            String sheetName = sheet.getName();
-            Cell[] titleRow = sheet.getRow(0);
-            List<Map<String, String>> tableList = new ArrayList();
-            for (int i = 1; i < sheet.getRows() + 1; i++) {
-                Map<String, String> lineMap = new HashMap<>();
-                for (int j = 0; j < sheet.getColumns(); j++) {
-                    lineMap.put(titleRow[j].getContents().trim(), sheet.getCell(i, j).getContents().trim());
-                }
-                tableList.add(lineMap);
+    public static XSSFWorkbook addSheet(XSSFWorkbook hssfWorkbook, String sheetName, List<Map> list, int topLine, int leftColumn) {
+        XSSFSheet sheet = hssfWorkbook.createSheet(sheetName);
+        XSSFRow hssfRowHead = null;
+
+        for (int i = 0; i < list.size(); i++) {
+
+            if (i == 0) {
+                hssfRowHead = sheet.createRow(topLine);  //创建表头
             }
-            resultMap.put(sheetName, tableList);
-        }
-        return resultMap;
-    }
+            Map<String, String> map = list.get(i);
 
 
-    public static boolean writeXLSX(Map<String, List<Map>> mapList, File file) throws IOException, WriteException {
-        if (!file.exists()) {
-            if (!file.createNewFile()) {
-                return false;
-            }
-        }
-        WritableWorkbook workbook = Workbook.createWorkbook(file);
-        Set<String> keySet = mapList.keySet();
-        int i = 0;
-        for (String key : keySet) {
+            XSSFRow hssfRow = sheet.createRow(i + topLine + 1);  //一行表头
+            Set<String> keySet = map.keySet();
             int j = 0;
-            List<Map> list = mapList.get(key);
-            WritableSheet sheet = workbook.createSheet(key, i);
-            sheet.getSettings().setDefaultColumnWidth(20);
-            for (Map<String, String> map : list) {
-                int x = 0;
-                Set<String> columnSet = map.keySet();
-                for (String column : columnSet) {
-                    WritableCell cell;
-                    String content = String.valueOf(map.get(column));
-                    cell = new Label(x, j, content);
-                    sheet.addCell(cell);
-                    x++;
+            for (String key : keySet) {
+                if (i == 0) {    //第一行写入表头
+                    XSSFCell headCell = hssfRowHead.createCell(j + leftColumn);
+                    headCell.setCellValue(key);
+
                 }
+                XSSFCell hssfCell = hssfRow.createCell(j + leftColumn);
+                hssfCell.setCellValue(map.get(key));
+
                 j++;
             }
-            //自动调整列宽
-            i++;
+
         }
 
-        workbook.write();
-        workbook.close();
-        return true;
+        return hssfWorkbook;
+
+    }
+    public static void writeXLSX(Map<String, List<Map>> map, File file) throws IOException {
+        XSSFWorkbook hssfWorkbook = new XSSFWorkbook();
+        for (String key : map.keySet()) {
+            POIUtils.addSheet(hssfWorkbook, key, map.get(key), 0, 0);
+        }
+        OutputStream outputStream = new FileOutputStream(file);
+        hssfWorkbook.write(outputStream);
     }
 
     public static void main(String args[]) throws SQLException, IOException, ClassNotFoundException {

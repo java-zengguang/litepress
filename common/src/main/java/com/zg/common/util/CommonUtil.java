@@ -4,12 +4,10 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.io.*;
 import java.net.JarURLConnection;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
@@ -20,41 +18,57 @@ import java.util.jar.JarFile;
  * Created by Administrator on 2018/11/27 0027.
  */
 public class CommonUtil {
-    public static final String PATH;
-    private static final Logger logger = LoggerFactory.getLogger(CommonUtil.class.getName());
 
-    static {
+
+    public static String getRootPath() {
         //获取项目的相对路径
         String path = "";
 
+        System.out.println("projectRootPath=" + System.getProperty("projectRootPath"));
+        if (System.getProperty("projectRootPath") != null) {
+            path = System.getProperty("projectRootPath");
+        } else {
+            path = System.getProperty("user.dir") + File.separator;
+        }
+
+        return path;
+    }
+
+
+    public static String getThisPath(Class classes) {
+        String path = "";
         try {
-
-            if (CommonUtil.class.getResource("/") != null) {
-                path = CommonUtil.class.getResource("/").toURI().getPath();
-                File file=new File(path);
-                path=file.getPath();
-                path = java.net.URLDecoder.decode(path, "UTF-8");
-                path = path + "\\";
-                logger.info("---" + path);
-            } else {
-                path = CommonUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-                File file = new File(path);
-                path = file.getParent();
-                path = java.net.URLDecoder.decode(path, "UTF-8");
-                path = path + "\\";
-
-                logger.info("===" + path);
-            }
-
-
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+            path = classes.getProtectionDomain().getCodeSource().getLocation().getPath();
+            File file = new File(path);
+            path = file.getPath();
+            path = java.net.URLDecoder.decode(path, "UTF-8");
+            path = path + File.separator;
+            Logger.info("---" + path);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
+        return path;
+    }
 
-        PATH = path;
+    public static String getModulePath(Class classes) {
+        String path = "";
+
+        try {
+            path = classes.getProtectionDomain().getCodeSource().getLocation().getPath();
+            File file = new File(path);
+            path = file.getPath();
+            if (path.contains(".jar")) {
+                path = file.getParent();
+            }
+            path = URLDecoder.decode(path, "UTF-8");
+            path = path + File.separator;
+            Logger.info("---" + path);
+        } catch (Exception var3) {
+            var3.printStackTrace();
+        }
+
+        return path;
     }
 
     //读取文件,并把文件信息放入到Properties 容器中
@@ -84,15 +98,16 @@ public class CommonUtil {
 
     public static Element getRootElement(String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
-        // logger.info("配置文件路径："+FileUtils.PATH + fileName);
-        Document doc = reader.read(new File(CommonUtil.PATH + fileName));
+        // Logger.info("配置文件路径："+FileUtils.PATH + fileName);
+        String path = getRootPath();
+        Document doc = reader.read(new File(path + fileName));
         Element root = doc.getRootElement();
         return root;
     }
 
     public static Element getRootElement(String rootPath, String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
-        // logger.info("配置文件路径："+FileUtils.PATH + fileName);
+        // Logger.info("配置文件路径："+FileUtils.PATH + fileName);
         Document doc = reader.read(new File(rootPath + fileName));
         Element root = doc.getRootElement();
         return root;
@@ -117,6 +132,7 @@ public class CommonUtil {
         classList.addAll(classSet);
         return classList;
     }
+
     /**
      * 从包package中获取所有的Class
      *

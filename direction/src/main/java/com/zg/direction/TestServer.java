@@ -5,20 +5,21 @@ import com.zg.direction.annotation.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
-@Provider(providerName = "/Test")
-public class TestServer implements TestInte{
+@Provider(providerName = "/Test/good")
+public class TestServer implements TestInte {
     @Override
-    public TestEntity hello() {
+    public TestEntity hello() throws InterruptedException {
         System.out.println("你好");
-        TestEntity testEntity=new TestEntity();
-        testEntity.s="hello";
+        TestEntity testEntity = new TestEntity();
+        testEntity.s = "hello";
+
         return testEntity;
     }
 
     @Override
     public TestEntity hello1(String name) {
-        TestEntity testEntity=new TestEntity();
-        testEntity.s=name;
+        TestEntity testEntity = new TestEntity();
+        testEntity.s = name;
         return testEntity;
     }
 
@@ -30,7 +31,7 @@ public class TestServer implements TestInte{
     }
 
     @Override
-    public TestEntity hello3(TestEntity name,String x) {
+    public TestEntity hello3(TestEntity name, String x) {
 
         System.out.println(name);
         return name;

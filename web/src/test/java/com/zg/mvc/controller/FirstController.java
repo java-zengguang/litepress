@@ -1,13 +1,14 @@
 package com.zg.mvc.controller;
 
 import com.zg.common.bean.entity.Test;
+import com.zg.common.util.reflect.JsonUtils;
 import com.zg.mvc.annotation.controller.Controller;
 import com.zg.mvc.annotation.controller.ResultMapping;
-import com.zg.common.util.reflect.JsonUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.map.HashedMap;
+import org.tinylog.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class FirstController extends BaseController {
         list.add(new Test(2, "3", new Date()));
         Map map = new HashedMap();
 
-        logger.info("开始转发");
+        Logger.info("开始转发");
         //return "forward::/firstController/hello.do";
         // return "staticURL::/WEB-INF/html/hello.html";
         return "json::" + JsonUtils.objectToJson(map);
@@ -45,7 +46,7 @@ public class FirstController extends BaseController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("hello");
+        Logger.info("hello");
         out.println("hello");
     }
 }

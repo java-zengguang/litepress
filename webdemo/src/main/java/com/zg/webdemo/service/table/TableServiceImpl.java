@@ -18,21 +18,7 @@ import java.util.Map;
  * Created by zengguang on 2018/8/31.
  */
 public class TableServiceImpl implements TableService {
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
-
-
     public TableMapper tableMapper;
-
-
-    public List searchTableName(Table table) {
-        List list = new ArrayList();
-        try {
-            list = tableMapper.searchTableName(table);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
 
     public Integer deleteTableDate(Map map) {
 
@@ -57,12 +43,21 @@ public class TableServiceImpl implements TableService {
                 e.printStackTrace();
             }
         } else {
-            logger.info("参数错误");
+            Logger.info("参数错误");
             return 0;
         }
         return 1;
-    }
+    }    private final Logger Logger = Logger.getLogger(this.getClass().getName());
 
+    public List searchTableName(Table table) {
+        List list = new ArrayList();
+        try {
+            list = tableMapper.searchTableName(table);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     public List<Object> getTableDate(Table table) {
         HashMap map = new HashMap();
@@ -84,7 +79,7 @@ public class TableServiceImpl implements TableService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        logger.info("缓存取出" + list);
+        Logger.info("缓存取出" + list);
         return list;
     }
 
@@ -108,6 +103,9 @@ public class TableServiceImpl implements TableService {
 
 
     }
+
+
+
 
 
 }

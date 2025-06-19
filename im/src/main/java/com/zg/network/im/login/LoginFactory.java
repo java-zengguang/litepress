@@ -1,6 +1,6 @@
 package com.zg.network.im.login;
 
-import com.zg.inte.LoginServiceInte;
+import com.zg.login.inte.LoginServiceInte;
 
 public class LoginFactory {
 

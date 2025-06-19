@@ -2,7 +2,7 @@ package com.zg.sso.service;
 
 import com.zg.sso.dao.LoginEntityDao;
 import org.apache.commons.collections.map.HashedMap;
-import org.apache.log4j.Logger;
+import org.tinylog.Logger;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -11,7 +11,6 @@ import java.util.*;
  * Created by Administrator on 2019/2/12 0012.
  */
 public class LoginService implements LoginServiceInte {
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     private LoginEntityDao loginDao = new LoginEntityDao();
 
@@ -97,7 +96,7 @@ public class LoginService implements LoginServiceInte {
 
 
     public boolean updateToken(String uuid, String token, String url) {
-        logger.info(uuid + token + url);
+        Logger.info(uuid + token + url);
         if (uuid == null) {
             uuid = "";
         }

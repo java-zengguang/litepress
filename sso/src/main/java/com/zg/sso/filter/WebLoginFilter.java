@@ -4,9 +4,7 @@ package com.zg.sso.filter;
 import com.zg.common.init.Config;
 import com.zg.sso.entity.SSOOpthion;
 import com.zg.sso.service.LoginService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.tinylog.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
@@ -20,7 +18,6 @@ import java.util.Map;
  * Created by Administrator on 2019/2/13 0013.
  */
 public class WebLoginFilter implements Filter {
-    private static final Logger logger = LoggerFactory.getLogger(WebLoginFilter.class);
 
     LoginService loginService = new LoginService();
 
@@ -53,10 +50,10 @@ public class WebLoginFilter implements Filter {
 
         int loginStatus = isLogin((HttpServletRequest) request, (HttpServletResponse) response);
         if (loginStatus > 0) {
-            logger.info("通过验证");
+            Logger.info("通过验证");
             chain.doFilter(request, response);
         } else {
-            logger.info("未通过验证");
+            Logger.info("未通过验证");
             Map<String, String> cookieMap = getCookies((HttpServletRequest) request);
             String token = cookieMap.get("token");
             toLogin((HttpServletResponse) response, token);

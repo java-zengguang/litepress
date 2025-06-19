@@ -1,12 +1,12 @@
 package com.zg.mvc.controller;
 
-import com.zg.mvc.annotation.controller.Controller;
-import com.zg.mvc.annotation.controller.ResultMapping;
 import com.zg.common.util.reflect.JsonMap;
 import com.zg.common.util.reflect.JsonUtils;
+import com.zg.mvc.annotation.controller.Controller;
+import com.zg.mvc.annotation.controller.ResultMapping;
 
 @Controller("/test")
-public class TestController extends BaseController{
+public class TestController extends BaseController {
 
     @ResultMapping("/test.do")
     public String test() throws Exception {

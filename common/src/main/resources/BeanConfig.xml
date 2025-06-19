@@ -14,14 +14,24 @@
 
 
     <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
-        <property name="url" type="java.lang.String">jdbc:mysql://10.65.211.110:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+        <property name="url" type="java.lang.String">jdbc:mysql://10.7.128.226:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
         <property name="maxPoolSize" type="int">10</property>
         <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
-        <property name="username" type="java.lang.String">root</property>
+        <property name="username" type="java.lang.String">sunshine</property>
         <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
         <property name="DBType" type="java.lang.String">MYSQL</property>
         <property name="DBPType" type="java.lang.String">C3p0</property>
     </bean>
+    <!--
+        <bean id="optionDB" class="com.zg.common.bean.entity.OptionDB">
+            <property name="url" type="java.lang.String">jdbc:mysql://10.65.211.110:3306/util?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
+            <property name="maxPoolSize" type="int">10</property>
+            <property name="driver" type="java.lang.String">com.mysql.cj.jdbc.Driver</property>
+            <property name="username" type="java.lang.String">root</property>
+            <property name="password" type="java.lang.String">9308B3717B1389CB20DB087BD86CAA61</property>
+            <property name="DBType" type="java.lang.String">MYSQL</property>
+            <property name="DBPType" type="java.lang.String">C3p0</property>
+        </bean>-->
 
     <!--    <bean id="testDB" class="com.zg.common.bean.entity.OptionDB">
             <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8&amp;useSSL=true</property>
@@ -433,6 +443,7 @@
 
     <bean id="initConfig" class="com.zg.common.bean.entity.InitEntity">
         <property name="packageType" type="java.lang.String">jar</property>
+        <property name="appID" type="java.lang.String">common</property>
     </bean>
 
     <bean id="tableMapper" class="com.zg.webdemo.dao.TableMapper">

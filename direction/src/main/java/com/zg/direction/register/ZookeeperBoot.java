@@ -1,33 +1,37 @@
 package com.zg.direction.register;
 
 import com.zg.common.init.Config;
+import com.zg.common.util.CommonUtil;
 import com.zg.direction.entity.ZooKeeperConfig;
-import org.apache.zookeeper.server.*;
-import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
+import com.zg.direction.util.IpConfig;
+import org.apache.zookeeper.server.ServerCnxnFactory;
+import org.apache.zookeeper.server.ServerConfig;
+import org.apache.zookeeper.server.ZooKeeperServerMain;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.util.Properties;
-import java.util.concurrent.CountDownLatch;
 
-public class ZookeeperBoot implements Runnable{
-    private static final Logger LOG =
-            LoggerFactory.getLogger(ZooKeeperServerMain.class);
+
+public class ZookeeperBoot implements Runnable {
+
 
     private static final String USAGE =
             "Usage: ZooKeeperServerMain configfile | port datadir [ticktime] [maxcnxns]";
-
-    private ServerCnxnFactory cnxnFactory;
-
     Object obj;
+    private ServerCnxnFactory cnxnFactory;
 
     public ZookeeperBoot(Object object) {
         this.obj = object;
+    }
+
+    public static void main(String[] args) throws Exception {
+        String rootPath = CommonUtil.getThisPath(ZookeeperBoot.class);
+        System.setProperty("projectRootPath", rootPath);
+        ZookeeperBoot zookeeperBoot = new ZookeeperBoot("");
+        zookeeperBoot.run();
+
     }
 
     @Override
@@ -43,8 +47,9 @@ public class ZookeeperBoot implements Runnable{
             for (Field field : fields) {
                 properties.setProperty(field.getName(), (String) field.get(zooKeeperConfig));
             }
-           // properties.setProperty("clientPortAddress", "127.0.0.1");
-            String ipAddresss= InetAddress.getLocalHost().getHostAddress();
+            // properties.setProperty("clientPortAddress", "127.0.0.1");
+            InetAddress inetAddress = IpConfig.getLocalHostLANAddress();
+            String ipAddresss = inetAddress.getHostAddress();
             properties.setProperty("clientPortAddress", ipAddresss);
             QuorumPeerConfig quorumConfig = new QuorumPeerConfig();
             quorumConfig.parseProperties(properties);
@@ -56,14 +61,6 @@ public class ZookeeperBoot implements Runnable{
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    }
-
-
-    public static void main(String[] args) throws Exception {
-
-        ZookeeperBoot zookeeperBoot=new ZookeeperBoot("");
-        zookeeperBoot.run();
 
     }
 

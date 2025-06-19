@@ -1,8 +1,6 @@
 package com.zg.common.util.reflect;
 
-import com.zg.common.util.reflect.EntityUtils;
-
-import java.io.*;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.ArrayList;

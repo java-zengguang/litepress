@@ -1,16 +1,15 @@
 package com.zg.sso.common;
 
-import com.zg.sso.entity.SSOOpthion;
 import com.zg.common.util.url.URLUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.zg.sso.entity.SSOOpthion;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.tinylog.Logger;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +18,6 @@ public class SSOAdapter {
     private static SSOAdapter ssoAdapter;
     private SSOOpthion ssoOpthion;
     private LoginInte loginService;
-    private static final Logger logger = LoggerFactory.getLogger(WebCacheLogin.class);
 
     private SSOAdapter(SSOOpthion ssoOpthion, LoginInte loginInte) {
         this.loginService = loginInte;
@@ -48,10 +46,10 @@ public class SSOAdapter {
 
         boolean loginStatus = isLogin((HttpServletRequest) request, (HttpServletResponse) response);
         if (loginStatus) {
-            logger.info("通过验证");
+            Logger.info("通过验证");
             return true;
         } else {
-            logger.info("未通过验证");
+            Logger.info("未通过验证");
             Map<String, String> cookieMap = getCookies((HttpServletRequest) request);
             String token = cookieMap.get("token");
             toLogin((HttpServletResponse) response, token);
@@ -88,7 +86,7 @@ public class SSOAdapter {
 
         String url = (request).getRequestURL().toString();
         url = URLUtils.getURLEncoderString(url);
-        logger.info(url);
+        Logger.info(url);
 
         String newToken = loginService.registToken(url, ssoOpthion.domain, ssoOpthion.rootPath);
         return newToken;

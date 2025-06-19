@@ -1,22 +1,22 @@
 package com.zg.common.init;
 
 import com.zg.common.bean.factory.BeanFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by Administrator on 2018/12/14 0014.
  */
 public class Config {
     public static final int ERROR_REPEAT = 3;
-    private static final Logger logger = LoggerFactory.getLogger(Config.class.getName());
-    public static Map configMap = new HashMap<>();
-    public static int count = ERROR_REPEAT;
+    public static Map configMap = new ConcurrentHashMap();
 
-    private static void createConfigMap(String array[]) {
+    public static CountDownLatch count = new CountDownLatch(ERROR_REPEAT);
+
+    private static synchronized void createConfigMap(String array[]) {
         for (String beanName : array) {
             Object object = BeanFactory.createBean(beanName);
             if (object != null) {
@@ -25,20 +25,21 @@ public class Config {
         }
     }
 
-    public static Object getConfig(String beanName) {
+    public static synchronized Object getConfig(String beanName) {
         Object object = configMap.get(beanName);
-        if (count > 0) {
+        if (count.getCount() > 0) {
             if (object == null) {
-                count--;
-                logger.info("初始化" + beanName);
+                count.countDown();
+                Logger.info("初始化" + beanName);
                 String array[] = {beanName};
                 createConfigMap(array);
                 object = getConfig(beanName);
             } else {
-                count = ERROR_REPEAT;
+                count = new CountDownLatch(ERROR_REPEAT);
             }
         }
         return object;
     }
+
 
 }

@@ -6,8 +6,8 @@ import com.zg.sso.common.LoginInte;
 import com.zg.sso.common.SSOAdapter;
 import com.zg.sso.common.SimpleLogin;
 import com.zg.sso.entity.SSOOpthion;
+import jakarta.servlet.*;
 
-import javax.servlet.*;
 import java.io.IOException;
 
 /**

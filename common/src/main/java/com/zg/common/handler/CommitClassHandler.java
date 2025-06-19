@@ -4,8 +4,7 @@ package com.zg.common.handler;
 import com.zg.common.dao.database.NewDBPUtils;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodProxy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import java.util.List;
  * Created by Administrator on 2018/12/24 0024.
  */
 public class CommitClassHandler extends BaseClassHandler {
-    private static final Logger logger = LoggerFactory.getLogger(CommitClassHandler.class);
 
     private Object target;
     private List methodList = new ArrayList();
@@ -49,13 +47,13 @@ public class CommitClassHandler extends BaseClassHandler {
         try {
             result = methodProxy.invokeSuper(o, objects); //调用业务类（父类中）的方法
             if (commitAll || methodList.contains(method.getName())) {
-                logger.info(method.getName() + " 事务被提交");
+                Logger.info(method.getName() + " 事务被提交");
                 NewDBPUtils.commit("optionDB");
             }
 
         } catch (Throwable throwable) {
             throwable.printStackTrace();
-            throw new Exception("事务提交失败！");
+            new Exception("事务提交失败");
         } finally {
             NewDBPUtils.release("optionDB");
         }

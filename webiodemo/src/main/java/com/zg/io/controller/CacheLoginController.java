@@ -30,7 +30,6 @@ public class CacheLoginController extends BaseController {
     }
 
 
-
     @ResultMapping("/login.do")
     public String login(String username, String password, HttpServletRequest request, HttpServletResponse response) throws IllegalAccessException, NoSuchFieldException, SQLException, IOException {
 

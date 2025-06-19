@@ -1,17 +1,16 @@
 package com.zg.network.im.client;
 
+import com.zg.incache.prestuctural.manager.CacheManager;
 import com.zg.network.bean.UserBean;
 import com.zg.network.bean.ZGMPBean;
-import com.zg.prestuctural.manager.CacheManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
+
 
 /**
  * Created by Administrator on 2019/2/27 0027.
  */
 public class ResolveCommand {
 
-    Logger logger = LoggerFactory.getLogger(ResolveCommand.class);
     // private ClientDB clientDB = new ClientDB();
 
     public ZGMPBean resolveCommand(String command) {
@@ -39,7 +38,7 @@ public class ResolveCommand {
                 return null;
             }
         } catch (Exception e) {
-            logger.error("命令错误");
+            Logger.error("命令错误");
         }
         return request;
     }
@@ -50,27 +49,27 @@ public class ResolveCommand {
 
         switch (methodType) {
             case "LOGIN": {
-                // logger.info(" to login  ");
+                // Logger.info(" to login  ");
                 break;
             }
             case "LOGOUT": {
                 if (!isLogin(request)) {
-                    logger.info("还未登陆");
+                    Logger.info("还未登陆");
                     return false;
                 }
                 break;
             }
             case "SEND": {
                 if (!isLogin(request)) {
-                    logger.info("还未登陆");
+                    Logger.info("还未登陆");
                     return false;
                 }
-                // logger.info(" to " + request.message);
+                // Logger.info(" to " + request.message);
                 break;
             }
 
             default: {
-                logger.info(" 未识别得操作类型 " + methodType);
+                Logger.info(" 未识别得操作类型 " + methodType);
                 break;
             }
         }

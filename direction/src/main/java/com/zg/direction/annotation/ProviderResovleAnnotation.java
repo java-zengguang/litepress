@@ -1,11 +1,10 @@
 package com.zg.direction.annotation;
 
+import com.zg.common.annotation.BaseResolveAnnotation;
+import com.zg.common.init.Config;
 import com.zg.direction.entity.ProviderConfig;
 import com.zg.direction.entity.ProviderEntity;
-import com.zg.common.init.Config;
-import com.zg.common.annotation.BaseResolveAnnotation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.zg.direction.util.IpConfig;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -14,7 +13,6 @@ import java.util.Map;
 public class ProviderResovleAnnotation extends BaseResolveAnnotation {
 
     private static ProviderResovleAnnotation pra = null;
-    private Logger logger = LoggerFactory.getLogger(ProviderResovleAnnotation.class);
     private ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
 
     private ProviderResovleAnnotation() {
@@ -40,7 +38,8 @@ public class ProviderResovleAnnotation extends BaseResolveAnnotation {
     public Object getResultValue(Class classes) throws UnknownHostException {
         ProviderEntity provider = new ProviderEntity();
         provider.className = classes.getName();
-        String ipAddresss= InetAddress.getLocalHost().getHostAddress();
+        InetAddress inetAddress = IpConfig.getLocalHostLANAddress();
+        String ipAddresss = inetAddress.getHostAddress();
         provider.host = ipAddresss;
         provider.port = providerConfig.DTPPort;
         // provider.interfaceName=classes.getInterfaces()[0].getName();

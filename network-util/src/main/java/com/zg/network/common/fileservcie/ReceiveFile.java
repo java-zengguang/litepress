@@ -1,13 +1,14 @@
 package com.zg.network.common.fileservcie;
 
+import org.tinylog.Logger;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Logger;
+
 
 public class ReceiveFile implements Runnable {
 
-    private static Logger logger = Logger.getLogger(ReceiveFile.class.getName());
     private int port;
     private File file;
 
@@ -44,7 +45,7 @@ public class ReceiveFile implements Runnable {
             serverSocket.close();
 
         } else {
-            logger.info("文件存储路径出错");
+            Logger.info("文件存储路径出错");
         }
     }
 
