@@ -2,25 +2,32 @@ package com.zg.common.bean.entity;
 
 public class OptionDB extends MainModel {
     public String dataSourceName;
+    public String databaseName = null;
     public String url = null;
     public int maxPoolSize = 5;
     public String driver = null;
     public String username = null;
     public String password = null;
-    public String DBType = null;
-    public String DBPType = null;
+    public String dbtype = null;
+    public String dbptype = null;
+
+    public String owner;
+
+    public String resourcesURL;
+
+    public String resourcesUser;
 
     public OptionDB() {
     }
 
-    public OptionDB(String url, int maxPoolSize, String driver, String username, String password, String DBType, String DBPType) {
+    public OptionDB(String url, int maxPoolSize, String driver, String username, String password, String dbtype, String dbptype) {
         this.url = url;
         this.maxPoolSize = maxPoolSize;
         this.driver = driver;
         this.username = username;
         this.password = password;
-        this.DBType = DBType;
-        this.DBPType = DBPType;
+        this.dbtype = dbtype;
+        this.dbptype = dbptype;
     }
 
     public String getUrl() {
@@ -63,19 +70,19 @@ public class OptionDB extends MainModel {
         this.password = password;
     }
 
-    public String getDBType() {
-        return DBType;
+    public String getDbtype() {
+        return dbtype;
     }
 
-    public void setDBType(String DBType) {
-        this.DBType = DBType;
+    public void setDbtype(String dbtype) {
+        this.dbtype = dbtype;
     }
 
-    public String getDBPType() {
-        return DBPType;
+    public String getDbptype() {
+        return dbptype;
     }
 
-    public void setDBPType(String DBPType) {
-        this.DBPType = DBPType;
+    public void setDbptype(String dbptype) {
+        this.dbptype = dbptype;
     }
 }

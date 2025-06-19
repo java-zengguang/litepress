@@ -1,5 +1,7 @@
 package com.zg.mvc.util.io;
 
+import org.tinylog.Logger;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -9,7 +11,7 @@ import java.nio.channels.FileChannel;
  */
 public class NIOUtils {
 
-    private static int size = 1024;
+    private static final int size = 1024;
 
     //使用nio读取raf
     public static int newReadFile(File file) throws IOException {
@@ -22,7 +24,7 @@ public class NIOUtils {
             buffer.flip();   //buffer模式反转，由写模式变为读模式
             //显示buffer的数据
             while (buffer.hasRemaining()) {  //判断是否到头
-                System.out.print((char) buffer.get());
+                Logger.info((char) buffer.get());
             }
             buffer.clear();  //清空整个缓存
             //buffer.compact(); //只清除已读取的数据
@@ -40,7 +42,7 @@ public class NIOUtils {
         buffer.put("1232300000000000".getBytes());
         buffer.flip();
         writerByte = channel.write(buffer);
-        System.out.print(writerByte);
+        Logger.info(writerByte);
 
         channel.close();
         raf.close();
@@ -82,7 +84,7 @@ public class NIOUtils {
     }
 
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String[] args) throws IOException {
         File file = new File("F:\\1.txt");
         //newReadFile(file);
         newWriterFile(file);

@@ -7,52 +7,66 @@
     <parent>
         <groupId>com.zg.database</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <groupId>com.zg.database</groupId>
     <artifactId>direction</artifactId>
-    <version>1.0-SNAPSHOT</version>
 
     <dependencies>
+
+
         <dependency>
             <groupId>com.zg.database</groupId>
-            <artifactId>util</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>common</artifactId>
+            <version>${revision}</version>
         </dependency>
+
         <dependency>
             <groupId>com.zg.database</groupId>
             <artifactId>network-util</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>3.4.13</version>
+            <version>${revision}</version>
         </dependency>
 
-        <!--zookeeper-->
-<!--        <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>3.4.8</version>
-        </dependency>-->
-        <!--CuratorFramework是一款连接zookeeper服务的框架-->
+
+        <!-- curator-framework -->
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-framework</artifactId>
-            <version>4.0.0</version>
+            <version>5.6.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <!-- curator-recipes -->
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
-            <version>4.0.0</version>
+            <version>5.6.0</version>
         </dependency>
 
-<!--        <dependency>
-            <groupId>io.streamnative</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>3.6.3.1</version>
-        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/io.github.java-diff-utils/java-diff-utils -->
+        <dependency>
+            <groupId>io.github.java-diff-utils</groupId>
+            <artifactId>java-diff-utils</artifactId>
+            <version>4.12</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.2.1-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
+        </dependency>
+
     </dependencies>
 
 </project>

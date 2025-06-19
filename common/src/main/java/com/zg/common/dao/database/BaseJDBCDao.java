@@ -2,11 +2,14 @@ package com.zg.common.dao.database;
 
 
 import com.zg.common.bean.entity.MetadataEntity;
-import com.zg.common.util.reflect.ModelSQLUtils;
+import com.zg.common.bean.entity.OptionDB;
 import com.zg.common.dao.template.EntityDaoTemplate;
-import com.zg.common.dao.template.SimpleEntityDaoTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.zg.common.dao.template.EntityDaoTemplateFactory;
+import com.zg.common.init.Config;
+import com.zg.common.util.database.ParseSQLUtils;
+import com.zg.common.util.reflect.ModelSQLUtils;
+import net.sf.jsqlparser.JSQLParserException;
+import org.tinylog.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,18 +19,18 @@ import java.sql.*;
 import java.util.*;
 
 public class BaseJDBCDao {
-    public  final Logger logger = LoggerFactory.getLogger(this.getClass());
     public String dataSource = "optionDB";
 
 
     public Connection getConnection() throws SQLException, ClassNotFoundException {
-        return NewDBPUtils.getConnection(dataSource);
+        return TransactionManager.getConnection(dataSource);
     }
+
     //查询出列明，数据对应的list集合
     public List<Map> selectToMapList(String sql) throws SQLException, ClassNotFoundException {
 
         // 记录error级别的信息
-        logger.debug(sql);
+        Logger.debug(sql);
         List list = new ArrayList();
         Connection conn = getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -51,44 +54,139 @@ public class BaseJDBCDao {
 
         return list;
     }
-    private String getTableName(String sql) {
-        String tableName="";
-        String stringArray[] = sql.split(" ");
-        for (int i = 0; i < stringArray.length; i++) {
-            if ("from".equals(stringArray[i].toLowerCase().trim()) || "*from".equals(stringArray[i].toLowerCase().trim())) {
-                tableName= stringArray[i + 1];
-                if(tableName.contains(",")){
-                    tableName.replace(",","And");
-                }
-            }
-        }
-        return tableName;
-    }
 
     //查询出列明，数据对应的list集合
-    public List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException {
-        logger.debug(sql);
-        String tableName="";
-        tableName=getTableName(sql);
+    public List<List<MetadataEntity>> select2TempleList(String sql, String tableName) throws SQLException, ClassNotFoundException {
+        Logger.debug(sql);
+        tableName = tableName.trim().toUpperCase();
+        String ownName = "";
+        if (tableName.contains(".")) {
+            String[] splits = tableName.split("\\.");
+            ownName = splits[0];
+            tableName = splits[1];
+        }
+        //获取链接
+        Connection conn = TransactionManager.getConnection(dataSource);
+
+        //获取组件
+        List<String> pkColumnList = new ArrayList<>();
+        DatabaseMetaData dmd = conn.getMetaData();
+        ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
+        while (dmdrs.next()) {
+            String pkStr = dmdrs.getString("COLUMN_NAME");
+            pkColumnList.add(pkStr);
+        }
+        //获取数据
         List list = new ArrayList();
-        Connection conn = getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql);
         ResultSet rs = pstmt.executeQuery();
         ResultSetMetaData rsmd = rs.getMetaData();
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.dbtype);
+
         int columncount = 0;
         while (rs.next()) {
-            List<MetadataEntity> columnList=new ArrayList<>();
+            List<MetadataEntity> columnList = new ArrayList<>();
             columncount = rsmd.getColumnCount();
             for (int i = 1; i < columncount + 1; i++) {
                 String columnLabel = rsmd.getColumnLabel(i);
-                String columnType=rsmd.getColumnTypeName(i);
+                String columnType = rsmd.getColumnTypeName(i);
+                Integer columnScale = rsmd.getScale(i);
+                if (columnScale == -127) {
+                    columnScale = 6;
+                }
                 Object columnValue = rs.getObject(i);
-                MetadataEntity metadataEntity =new MetadataEntity();
-                metadataEntity.tableName=tableName;
-                metadataEntity.columnLabel=columnLabel;
-                metadataEntity.columnType=columnType;
-                metadataEntity.objectValue =columnValue;
-                EntityDaoTemplate entityDaoTemplate=new SimpleEntityDaoTemplate();
+                MetadataEntity metadataEntity = new MetadataEntity();
+                metadataEntity.ownName = ownName;
+                metadataEntity.tableName = tableName;
+                metadataEntity.columnLabel = columnLabel;
+                metadataEntity.columnType = columnType;
+                metadataEntity.columnScale = columnScale;
+                metadataEntity.objectValue = columnValue;
+                metadataEntity.dbType = optionDB.dbtype;
+                if (pkColumnList.contains(columnLabel)) {
+                    metadataEntity.isPK = "1";
+                } else {
+                    metadataEntity.isPK = "0";
+                }
+                if (rsmd.isAutoIncrement(i)) {
+                    metadataEntity.isAutoIncrease = "1";  //自增
+                    //  metadataEntity.isNotCommit="1"; //自增不提交
+                } else {
+                    metadataEntity.isAutoIncrease = "0";
+                    metadataEntity.isNotCommit = "0";  //不自增的列才提交
+                }
+                metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
+                columnList.add(metadataEntity);
+            }
+            list.add(columnList);
+        }
+        pstmt.close();
+        rs.close();
+
+        return list;
+    }
+
+    //查询出列明，数据对应的list集合
+    public List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException, JSQLParserException {
+        Logger.debug(sql);
+        //获取表名
+        List<String> tableNameList = ParseSQLUtils.parseSelectMainTable(sql);
+        //获取链接
+        Connection conn = getConnection();
+        //获取组件
+        Set<String> pkColumnList = new HashSet<>();
+        DatabaseMetaData dmd = conn.getMetaData();
+        for (String tableName : tableNameList) {
+            ResultSet dmdrs = dmd.getPrimaryKeys(null, null, tableName);
+            while (dmdrs.next()) {
+                String pkStr = dmdrs.getString("COLUMN_NAME");
+                pkColumnList.add(pkStr);
+            }
+        }
+        //合并主表
+        StringBuilder tableNameBuffer = new StringBuilder();
+        tableNameList.forEach(tableNameBuffer::append);
+        //获取数据
+        List list = new ArrayList();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
+        ResultSetMetaData rsmd = rs.getMetaData();
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
+        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.dbtype);
+        int columncount = 0;
+        while (rs.next()) {
+            List<MetadataEntity> columnList = new ArrayList<>();
+            columncount = rsmd.getColumnCount();
+            for (int i = 1; i < columncount + 1; i++) {
+                String columnLabel = rsmd.getColumnLabel(i);
+                String columnType = rsmd.getColumnTypeName(i);
+                Integer columnScale = rsmd.getScale(i);
+                if (columnScale == -127) {
+                    columnScale = 6;
+                }
+                String columnName = rsmd.getColumnName(i);
+                Object columnValue = rs.getObject(i);
+                MetadataEntity metadataEntity = new MetadataEntity();
+                metadataEntity.ownName = "";
+                metadataEntity.tableName = tableNameBuffer.toString();
+                metadataEntity.columnLabel = columnLabel;
+                metadataEntity.columnType = columnType;
+                metadataEntity.columnScale = columnScale;
+                metadataEntity.objectValue = columnValue;
+                metadataEntity.dbType = optionDB.dbtype;
+                if (pkColumnList.contains(columnName)) {
+                    metadataEntity.isPK = "1";
+                } else {
+                    metadataEntity.isPK = "0";
+                }
+                if (rsmd.isAutoIncrement(i)) {
+                    metadataEntity.isAutoIncrease = "1";  //自增
+                    metadataEntity.isNotCommit = "1"; //自增不提交
+                } else {
+                    metadataEntity.isAutoIncrease = "0";
+                    metadataEntity.isNotCommit = "0";  //不自增的列才提交
+                }
                 metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
                 columnList.add(metadataEntity);
             }
@@ -103,7 +201,7 @@ public class BaseJDBCDao {
     //执行批操作
     private int[] batchSql(List<String> sqlList) throws SQLException, ClassNotFoundException {
 
-        int result[] = new int[sqlList.size()];
+        int[] result = new int[sqlList.size()];
         for (int i = 0; i < sqlList.size(); i++) {
             String sql = sqlList.get(i);
             result[i] = operation(sql);
@@ -129,18 +227,18 @@ public class BaseJDBCDao {
             sql = sql.replace(";", "");
         }
 
-        int i[] = null;
+        int[] i = null;
         Statement stmt;
-        Connection conn = NewDBPUtils.getConnection(dataSource);
+        Connection conn = TransactionManager.getConnection(dataSource);
 
         stmt = conn.createStatement();
-        logger.debug("--------------start batch-----------");
+        Logger.debug("--------------start batch-----------");
         for (String sql : sqlList) {
-            logger.debug(sql);
+            Logger.debug(sql);
             stmt.addBatch(sql);
         }
         i = stmt.executeBatch();
-        logger.debug("--------------end batch-----------");
+        Logger.debug("--------------end batch-----------");
         stmt.close();
 
         return i;
@@ -157,17 +255,17 @@ public class BaseJDBCDao {
             String lineStr = "";
             while ((line = br.readLine()) != null) {
                 lineStr = lineStr + line;
-                logger.debug(lineStr);
+                Logger.debug(lineStr);
                 // 判断截取点
                 if (lineStr.endsWith(";")) {
                     lineStr = lineStr.replace(";", "");
-                    list.add(new String(lineStr));
+                    list.add(lineStr);
                     lineStr = "";
                 }
             }
 
         } else {
-            logger.debug("Sql文件没找到！");
+            Logger.debug("Sql文件没找到！");
         }
         return list;
     }
@@ -178,14 +276,15 @@ public class BaseJDBCDao {
 
         Connection conn = getConnection();
         Statement stmt = conn.createStatement();
-        logger.debug("-----------------start batch-----------");
+        Logger.debug("-----------------start batch-----------");
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         for (Object model : modelList) {
 
-            String sql = ModelSQLUtils.insert(model, tableName);
+            String sql = ModelSQLUtils.insert(model, tableName, optionDB.dbtype);
             stmt.addBatch(sql);
 
         }
-        logger.debug("------------------end batch-------------");
+        Logger.debug("------------------end batch-------------");
         result = stmt.executeBatch();
         stmt.close();
         return result;
@@ -211,7 +310,7 @@ public class BaseJDBCDao {
 
     //执行增删改
     public Integer operation(String sql) throws SQLException, ClassNotFoundException {
-        logger.debug(sql);
+        Logger.debug(sql);
         Connection conn = getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql);
         int x = pstmt.executeUpdate();
@@ -219,28 +318,5 @@ public class BaseJDBCDao {
         return x;
     }
 
-    public boolean commit() throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
-        try {
-            if (!conn.getAutoCommit()) {
-                conn.commit();
-                release();
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return false;
-        }
-
-        return true;
-    }
-
-
-
-    public void release() throws SQLException, ClassNotFoundException {
-        Connection conn = getConnection();
-        conn.close();
-        NewDBPUtils.release(dataSource);
-    }
 
 }

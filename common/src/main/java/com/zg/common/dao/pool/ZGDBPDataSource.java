@@ -1,11 +1,12 @@
 package com.zg.common.dao.pool;
 
 import com.zg.common.bean.entity.OptionDB;
-import com.zg.common.proxy.ProxyUtils;
+import org.tinylog.Logger;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -22,8 +23,8 @@ public class ZGDBPDataSource {
     private static int MAX_CONN_SIZE = 10;
     private static Integer MAX_POOL_SIZE = 5;
     //  public final ThreadLocal<Connection> tl = new ThreadLocal<Connection>();
-    private static Connection conn[] = new Connection[MAX_POOL_SIZE];
-    private static List connectPool = new ArrayList();
+    private static final Connection[] conn = new Connection[MAX_POOL_SIZE];
+    private static final List connectPool = new ArrayList();
     private static int flag = 0;
     private String url = null;
     private String Driver = null;
@@ -40,7 +41,7 @@ public class ZGDBPDataSource {
     //构造方法
     private ZGDBPDataSource(OptionDB optionDB) {
         this.url = optionDB.getUrl();
-        this.MAX_CONN_SIZE = optionDB.getMaxPoolSize();
+        MAX_CONN_SIZE = optionDB.getMaxPoolSize();
         Driver = optionDB.getDriver();
         this.username = optionDB.getUsername();
         this.password = optionDB.getPassword();
@@ -64,11 +65,11 @@ public class ZGDBPDataSource {
     private void setConfig(Map<String, String> option) {
 
         this.url = option.get("jdbcUrl");
-        this.MAX_CONN_SIZE = Integer.valueOf(option.get("maxPoolSize"));  //最大连接数
+        MAX_CONN_SIZE = Integer.parseInt(option.get("maxPoolSize"));  //最大连接数
         this.Driver = option.get("driverClass");
         this.username = option.get("user");
         this.password = option.get("password");
-        this.MAX_POOL_SIZE = Integer.valueOf(option.get("acquireIncrement"));  //一次性获取的connection数
+        MAX_POOL_SIZE = Integer.valueOf(option.get("acquireIncrement"));  //一次性获取的connection数
     }
 
 
@@ -82,7 +83,7 @@ public class ZGDBPDataSource {
 
             flag = 1;
         } catch (Exception e) {
-
+            throw new RuntimeException(e);
         }
     }
 
@@ -94,10 +95,11 @@ public class ZGDBPDataSource {
 
             Class.forName(Driver);
             conn = DriverManager.getConnection(url, username, password);
-            conn = (Connection) ProxyUtils.getProxyInterface(conn.getClass(), new ZGDBPConnection(conn));
+            conn = (Connection) Proxy.newProxyInstance(conn.getClass().getClassLoader(), conn.getClass().getInterfaces(), new ZGDBPConnection(conn));
+
         } catch (Exception e) {
 
-            e.printStackTrace();
+            Logger.error(e);
         }
         return conn;
     }
@@ -115,7 +117,7 @@ public class ZGDBPDataSource {
                 getConnection();
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                Logger.error(e);
             }
         } else {
             conn = (Connection) connectPool.remove(0);
@@ -124,7 +126,7 @@ public class ZGDBPDataSource {
         try {
             conn.setAutoCommit(false);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.error(e);
         }
 
         //   tl.set(conn);
@@ -138,7 +140,7 @@ public class ZGDBPDataSource {
 
 
     public class ZGDBPConnection implements InvocationHandler {
-        private Connection target;
+        private final Connection target;
 
         public ZGDBPConnection(Connection target) {
             this.target = target;
