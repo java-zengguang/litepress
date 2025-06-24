@@ -10,6 +10,8 @@
     </parent>
 
     <artifactId>litepress-reaction</artifactId>
+    <name>litepress-reaction</name>
+
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>litepress-ml</artifactId>
+    <name>litepress-ml</name>
 
 
     <properties>

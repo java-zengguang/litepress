@@ -10,6 +10,8 @@
     </parent>
 
     <artifactId>litepress-task</artifactId>
+    <name>litepress-task</name>
+
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

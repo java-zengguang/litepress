@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>litepress-db</artifactId>
+    <name>litepress-db</name>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

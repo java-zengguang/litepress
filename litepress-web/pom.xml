@@ -12,6 +12,7 @@
         <version>${revision}</version>
     </parent>
     <artifactId>litepress-web</artifactId>
+    <name>litepress-web</name>
     <packaging>jar</packaging>
 
     <properties>

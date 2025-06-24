@@ -10,6 +10,8 @@
         <version>${revision}</version>
     </parent>
     <artifactId>litepress-network</artifactId>
+    <name>litepress-network</name>
+
     <packaging>jar</packaging>
 
 
