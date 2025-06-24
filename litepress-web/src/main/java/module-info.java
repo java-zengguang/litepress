@@ -11,12 +11,11 @@ open module litepress.web {
     requires jdk.compiler;
     requires io.netty.common;
 
-    requires rocketmq.client;
     requires org.tinylog.api;
     requires commons.collections;
     requires com.google.common;
     requires litepress.core;
-    requires litepress.event;
+
     exports io.github.java_zengguang.litepress.web.servlet;
     exports io.github.java_zengguang.litepress.web.servlet.adapter;
     exports io.github.java_zengguang.litepress.web.annotation.autowired;

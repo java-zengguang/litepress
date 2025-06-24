@@ -8,8 +8,8 @@
     <packaging>pom</packaging>
     <version>${revision}</version>
 
-    <name>litePress</name>
-    <description>litePress</description>
+    <name>litepress</name>
+    <description>litepress</description>
     <url>https://github.com/java-zengguang/litepress</url>
 
     <licenses>
@@ -54,7 +54,7 @@
         <slf4j.api>2.0.13</slf4j.api>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
-        <revision>0.0.1</revision>
+        <revision>0.0.2</revision>
     </properties>
 
     <!-- 发布配置 -->

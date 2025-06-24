@@ -26,6 +26,10 @@
             <groupId>org.tinylog</groupId>
             <artifactId>tinylog-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>tinylog-impl</artifactId>
+        </dependency>
 <!--        <dependency>
             <groupId>org.deeplearning4j</groupId>
             <artifactId>deeplearning4j-nn</artifactId>

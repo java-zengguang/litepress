@@ -4,7 +4,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
-import org.apache.rocketmq.client.exception.MQClientException;
 import org.tinylog.Logger;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,12 +29,12 @@ public class SSE2NettyManager extends BaseSSEManager implements SSEManager {
     private SSE2NettyManager() {
         try {
             init();
-        } catch (InterruptedException | MQClientException e) {
+        } catch (InterruptedException  e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void init() throws InterruptedException, MQClientException {
+    private void init() throws InterruptedException {
         scheduler.scheduleAtFixedRate(() ->
                         userChannels.forEach((key, ctx) -> {
                             AtomicInteger heartbeatTime = heartbeatTimeMap.getOrDefault(ctx, new AtomicInteger(-1));
