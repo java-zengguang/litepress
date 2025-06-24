@@ -3,26 +3,26 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.zg.litepress</groupId>
+    <groupId>io.github.java-zengguang</groupId>
     <artifactId>litepress</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>
 
 
     <modules>
-        <module>core</module>
-        <module>web</module>
-        <module>direction</module>
-        <module>incache</module>
-        <module>network</module>
-        <module>chain</module>
-        <module>event</module>
-        <module>task</module>
-        <module>router</module>
-        <module>reaction</module>
-        <module>ml</module>
-        <module>db</module>
-        <module>boot</module>
+        <module>litepress-core</module>
+        <module>litepress-web</module>
+        <module>litepress-direction</module>
+        <module>litepress-cache</module>
+        <module>litepress-network</module>
+        <module>litepress-chain</module>
+        <module>litepress-event</module>
+        <module>litepress-task</module>
+        <module>litepress-router</module>
+        <module>litepress-reaction</module>
+        <module>litepress-ml</module>
+        <module>litepress-db</module>
+        <module>litepress-boot</module>
     </modules>
 
 
@@ -34,35 +34,157 @@
     </properties>
 
 
-    <distributionManagement>
-        <repository>
-            <id>spismaven</id>
-            <name>nonveh maven</name>
-            <url>http://10.7.42.42:9081/repository/SPIS-maven/</url>
-        </repository>
-    </distributionManagement>
-
-    <dependencies>
-
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
-        </dependency>
+<!--    <distributionManagement>-->
+<!--        <repository>-->
+<!--            <id>spismaven</id>-->
+<!--            <name>nonveh maven</name>-->
+<!--            <url>http://10.7.42.42:9081/repository/SPIS-maven/</url>-->
+<!--        </repository>-->
+<!--    </distributionManagement>-->
 
 
-        <dependency>
-            <groupId>org.tinylog</groupId>
-            <artifactId>tinylog-api</artifactId>
-            <version>2.6.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.tinylog</groupId>
-            <artifactId>tinylog-impl</artifactId>
-            <version>2.6.1</version>
-        </dependency>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2.2</version>
+            </dependency>
 
-    </dependencies>
+            <dependency>
+                <groupId>org.tinylog</groupId>
+                <artifactId>tinylog-api</artifactId>
+                <version>2.7.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.tinylog</groupId>
+                <artifactId>tinylog-impl</artifactId>
+                <version>2.7.0</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>4.2.2.Final</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.19.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>4.9.8</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-acl</artifactId>
+                <version>4.9.8</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-common</artifactId>
+                <version>4.9.8</version>
+            </dependency>
+
+            <!-- curator-framework -->
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>5.8.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>5.8.0</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.github.java-diff-utils/java-diff-utils -->
+            <dependency>
+                <groupId>io.github.java-diff-utils</groupId>
+                <artifactId>java-diff-utils</artifactId>
+                <version>4.12</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.json</groupId>
+                <artifactId>jakarta.json-api</artifactId>
+                <version>2.0.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>13.0</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>33.2.1-jre</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.java-zengguang</groupId>
+                <artifactId>litepress-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.java-zengguang</groupId>
+                <artifactId>litepress-db</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.java-zengguang</groupId>
+                <artifactId>litepress-web</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.java-zengguang</groupId>
+                <artifactId>litepress-reaction</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.java-zengguang</groupId>
+                <artifactId>litepress-router</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.java-zengguang</groupId>
+                <artifactId>litepress-chain</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.java-zengguang</groupId>
+                <artifactId>litepress-boot</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.java-zengguang</groupId>
+                <artifactId>litepress-cache</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.java-zengguang</groupId>
+                <artifactId>litepress-event</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.java-zengguang</groupId>
+                <artifactId>litepress-network</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.nutz</groupId>
+                <artifactId>ssdb4j</artifactId>
+                <version>10.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
@@ -120,6 +242,15 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.8.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
+            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -135,7 +266,10 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+
+
     </build>
+
 
 
 </project>

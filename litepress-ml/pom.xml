@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.github.java-zengguang</groupId>
+        <artifactId>litepress</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>litepress-ml</artifactId>
+
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <nd4j.version>1.0.0-M2.1</nd4j.version>
+
+    </properties>
+    <dependencies>
+
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>tinylog-api</artifactId>
+        </dependency>
+<!--        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-nn</artifactId>
+            <version>1.0.0-M2.1</version>
+        </dependency>-->
+
+<!--        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-cuda-11.4-platform</artifactId>
+            <version>1.0.0-M2.1</version>
+        </dependency>-->
+
+<!--
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native</artifactId>
+            <version>1.0.0-M2.1</version>
+        </dependency>
+-->
+
+
+<!--        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native</artifactId>
+            <version>1.0.0-M2.1</version>
+            <classifier>linux-x86_64</classifier>
+        </dependency>-->
+
+        <!-- ND4J, the numerical computing library for Java -->
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native-platform</artifactId>
+            <version>1.0.0-M2.1</version>
+        </dependency>
+
+
+
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-core</artifactId>
+            <version>1.0.0-M2.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.encog/encog-core -->
+        <dependency>
+            <groupId>org.encog</groupId>
+            <artifactId>encog-core</artifactId>
+            <version>3.4</version>
+        </dependency>
+
+<!--        &lt;!&ndash; For saving/loading models &ndash;&gt;
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-modelimport</artifactId>
+            <version>1.0.0-M2.1</version>
+        </dependency>-->
+
+
+
+        <!-- DataVec - Library for data loading and preprocessing -->
+        <dependency>
+            <groupId>org.datavec</groupId>
+            <artifactId>datavec-api</artifactId>
+            <version>1.0.0-M2.1</version>
+        </dependency>
+
+
+
+    </dependencies>
+</project>

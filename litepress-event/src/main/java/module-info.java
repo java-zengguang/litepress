@@ -1,0 +1,26 @@
+open module litepress.event {
+    requires rocketmq.client;
+    requires rocketmq.remoting;
+    requires rocketmq.acl;
+    requires rocketmq.common;
+    requires ssdb4j;
+    requires commons.pool2;
+    requires com.google.common;
+    requires org.zeromq.jeromq;
+    requires litepress.router;
+    requires litepress.core;
+    requires org.tinylog.api;
+    requires commons.logging;
+    requires litepress.reaction;
+
+    exports io.github.java_zengguang.litepress.event.event;
+    exports io.github.java_zengguang.litepress.event.subsriber;
+    exports io.github.java_zengguang.litepress.event.bus;
+    exports io.github.java_zengguang.litepress.event.event.rule;
+    exports io.github.java_zengguang.litepress.event.event.manager;
+    exports io.github.java_zengguang.litepress.event.en;
+    exports io.github.java_zengguang.litepress.event.event.action;
+    exports io.github.java_zengguang.litepress.event.exception;
+    exports io.github.java_zengguang.litepress.event.entity;
+
+}
