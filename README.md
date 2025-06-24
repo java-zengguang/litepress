@@ -1,23 +1,64 @@
 # databases
 
 #### 介绍
-一个自主实现的轻量级开发框架、包含持久层框架、MVC框架、网络通信框架、PRC框架，脱离Sping也可以轻松开发。
+一个自主实现的轻量级开发框架、包含持久层框架、MVC框架、网络通信框架、PRC框架，脱离Spring也可以轻松开发。
 
-#### 软件架构
-软件架构说明
-
+#### 平台说明
+    要求JDK21+
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1、安装依赖
 
-#### 使用说明
+           <dependency>
+                <groupId>io.github.java-zengguang</groupId>
+                <artifactId>litepress-boot</artifactId>
+                <version>${litepress.version}</version>
+            </dependency>
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+2、创建启动类
+
+@TargetEvn(value = "dev")
+@ProjectRootPath(value = "/tomcat")
+@ScanPackages(value = "com.sinosig.zg.smart.admin")
+public class SinoSigWebApp extends BaseWebAppBoot {
+
+    public SinoSigWebApp(Class clazz, Integer port) {
+
+        super(clazz, port);
+    }
+
+    public static void main(String[] args) {
+
+        SinoSigWebApp sinoSigWebApp = new SinoSigWebApp(SinoSigWebApp.class, 9913);
+        sinoSigWebApp.init();
+
+    }
+
+    @Override
+    public void config() {
+
+    }
+}
+
+
+3、场景配置文件，配置文件名称为  环境+_BeanConfig.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+    <bean id="optionDB" class="io.github.java_zengguang.litepress.core.bean.entity.OptionDB">
+        <property name="url" type="java.lang.String">xxx</property>
+        ...
+    </bean>
+
+
+    <bean id="MVCOption" class="io.github.java_zengguang.litepress.web.entity.MVCOption">
+        ...
+    </bean>
+</beans>
+
+
 
 #### 参与贡献
 
