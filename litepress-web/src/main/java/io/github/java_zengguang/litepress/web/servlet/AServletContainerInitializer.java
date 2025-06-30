@@ -18,6 +18,7 @@ public class AServletContainerInitializer implements ServletContainerInitializer
 
 
         Logger.info("加载servlet");
+/*
 
         ServletRegistration.Dynamic servletDynamic = servletContext.addServlet("AdapterServlet", new AdapterServlet());
         servletDynamic.addMapping("/");
@@ -25,6 +26,7 @@ public class AServletContainerInitializer implements ServletContainerInitializer
 
         ServletRegistration.Dynamic sourceServlet = servletContext.addServlet("AEventSourceServlet", new AdapterServlet());
         servletDynamic.addMapping("/sse");
+*/
 
     }
 }

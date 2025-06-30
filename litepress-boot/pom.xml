@@ -12,8 +12,6 @@
     <name>litepress-boot</name>
 
 
-
-
     <dependencies>
         <dependency>
             <groupId>io.github.java-zengguang</groupId>
@@ -23,17 +21,13 @@
             <groupId>io.github.java-zengguang</groupId>
             <artifactId>litepress-web</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.10.2</version>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.8.180</version>
         </dependency>
     </dependencies>
-
-
-
-
-
 
 
 </project>

@@ -3,6 +3,10 @@ open module litepress.boot {
     requires litepress.core;
     requires litepress.web;
     requires org.tinylog.api;
-    requires org.reflections;
+    requires io.github.classgraph;
+
+    exports io.github.java_zengguang.litepress.boot.annotation;
+    exports io.github.java_zengguang.litepress.boot.init;
+    exports io.github.java_zengguang.litepress.boot;
 
 }

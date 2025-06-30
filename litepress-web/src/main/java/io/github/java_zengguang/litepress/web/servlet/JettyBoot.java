@@ -2,6 +2,7 @@ package io.github.java_zengguang.litepress.web.servlet;
 
 
 import io.github.java_zengguang.litepress.core.init.Evn;
+import jakarta.servlet.Servlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -13,25 +14,23 @@ import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.resource.Resource;
 import org.tinylog.Logger;
 
+import java.util.HashMap;
+import java.util.Map;
 
-public class JettyBoot {
+
+public  class JettyBoot {
     private int port = 8080;
+    private Map<String,Class<? extends Servlet>> servletMap;
 
     public JettyBoot() {
     }
 
-    public JettyBoot(int port) {
+    public JettyBoot(int port,  Map<String,Class<? extends Servlet>> servletMap) {
         this.port = port;
+        this.servletMap = servletMap;
     }
 
-    public static void main(String[] args) {
 
-
-        System.setProperty("projectRootPath", Evn.getModulePath());
-
-        JettyBoot jettyBoot = new JettyBoot();
-        jettyBoot.doMain();
-    }
 
     public void doMain() {
         //创建服务器
@@ -47,12 +46,22 @@ public class JettyBoot {
             server.setHandler(sessionHandler);
 
 
+
+
+
             if (true) {
                 ServletHandler servletHandler = new ServletHandler();
                 servletHandler.addServletWithMapping(AdapterServlet.class, "/");
 
+
+                if(servletMap!=null&& !servletMap.isEmpty()){
+                    servletMap.forEach((path,servlet)->{
+                        servletHandler.addServletWithMapping(servlet, path);
+                    });
+                }
+
                 //过滤
-                if (true) {
+                if (false) {
                     CrossOriginFilter crossOriginFilter = new CrossOriginFilter();
                     FilterHolder filterHolder = new FilterHolder();
                     filterHolder.setFilter(crossOriginFilter);
@@ -88,6 +97,9 @@ public class JettyBoot {
             }
 
 
+
+
+
             ServerConnector connector = server.getBean(ServerConnector.class);
             connector.setIdleTimeout(24 * 60 * 60 * 1000);
             //启动服务器
@@ -97,5 +109,14 @@ public class JettyBoot {
         } catch (Exception e) {
             Logger.error(e.getMessage(), e);
         }
+    }
+
+    public static void main(String[] args) {
+
+
+        System.setProperty("projectRootPath", "io.github.java_zengguang.litepress.web.servlet");
+
+        JettyBoot jettyBoot=new JettyBoot();
+        jettyBoot.doMain();
     }
 }

@@ -1,68 +1,72 @@
 package io.github.java_zengguang.litepress.boot.init;
 
-import java.lang.annotation.Annotation;
-import java.util.*;
-import java.util.stream.Collectors;
-
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import io.github.java_zengguang.litepress.core.init.AnnotationCache;
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.util.ConfigurationBuilder;
+import org.tinylog.Logger;
+
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PackageScan {
 
 
     public static Set<Class<?>> scanByClassType(String[] packages, Class clazz) {
-        // 创建ConfigurationBuilder并设置扫描范围
-        ConfigurationBuilder configuration = new ConfigurationBuilder();
-        configuration.forPackages(packages) // 扫描指定包
-                .setScanners(new SubTypesScanner(false)); // false意味着不包括Object类
-        // 创建Reflections实例并执行扫描
-        Reflections reflections = new Reflections(configuration);
-        Set<Class<?>> subTypes = reflections.getSubTypesOf(clazz);
-        return subTypes;
-    }
-
-    public static Set<Class<?>> scanByAnnotation(String[] packages, Class<? extends Annotation> annotation ) {
-        // 创建ConfigurationBuilder并设置扫描范围
-        ConfigurationBuilder configuration = new ConfigurationBuilder();
-        configuration.forPackages(packages) // 扫描指定包
-                .setScanners(new SubTypesScanner(false), new TypeAnnotationsScanner()); // 添加TypeAnnotationsScanner
-        // 创建Reflections实例并执行扫描
-        Reflections reflections = new Reflections(configuration);
-        Set<Class<?>> subTypes = reflections.getTypesAnnotatedWith(annotation);
-        return subTypes;
+        try (ScanResult scanResult = new ClassGraph()
+                .acceptPackages(packages) // 只扫描指定包
+                .enableAnnotationInfo()   // 启用注解扫描
+                .enableClassInfo()        // 启用类信息扫描
+                .ignoreClassVisibility() // 可选：包括非public类
+                .scan()) {               // 执行扫描
+            Set<Class<?>> classSet = scanResult.getSubclasses(clazz).stream().map((classInfo) ->
+                    classInfo.loadClass()
+            ).collect(Collectors.toSet());
+            return classSet;
+        }
 
     }
 
-    public static void scanByAnnotations(String[] packages ) {
+    public static Set<Class<?>> scanByAnnotation(String[] packages, Class<? extends Annotation> annotation) {
 
-        // 创建ConfigurationBuilder并设置扫描范围
-        ConfigurationBuilder configuration = new ConfigurationBuilder();
-        configuration.forPackages(packages) // 扫描指定包
-                .setScanners(new SubTypesScanner(false), new TypeAnnotationsScanner()); // 添加TypeAnnotationsScanner
-        // 创建Reflections实例并执行扫描
-        Reflections reflections = new Reflections(configuration);
-        Map<String, Set<String>> typesAnnotated= reflections.getStore().get("TypesAnnotated");
-        typesAnnotated.forEach((key,val)->{
-            Set<Class<?>> classSet=val.stream().map((name)-> {
-                try {
-                    return Class.forName(name);
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }).collect(Collectors.toSet());
-            try {
-               Class annotation= Class.forName(key);
-                AnnotationCache.set(annotation, classSet);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-
+        try (ScanResult scanResult = new ClassGraph()
+                .acceptPackages(packages) // 只扫描指定包
+                .enableAnnotationInfo()   // 启用注解扫描
+                .enableClassInfo()        // 启用类信息扫描
+                .ignoreClassVisibility() // 可选：包括非public类
+                .scan()) {               // 执行扫描
+            Set<Class<?>> classSet = scanResult.getClassesWithAnnotation(annotation).stream().map((classInfo) ->
+                    classInfo.loadClass()
+            ).collect(Collectors.toSet());
+            return classSet;
+        }
     }
 
+
+    public static void scanByAnnotations(String[] packages) {
+        Map<Class<?>, Set<Class<?>>> annotationByClassMap = new HashMap<>();
+        try (ScanResult scanResult = new ClassGraph()
+                .acceptPackages(packages) // 只扫描指定包
+                .enableAnnotationInfo()   // 启用注解扫描
+                .enableClassInfo()        // 启用类信息扫描
+                .ignoreClassVisibility() // 可选：包括非public类
+                .scan()) {               // 执行扫描
+            scanResult.getAllClasses().forEach((classInfo) -> {
+                classInfo.getAnnotationInfo().forEach((annotationInfo) -> {
+                    annotationByClassMap.computeIfAbsent(annotationInfo.getClassInfo().loadClass(), k -> new HashSet<>()).add(classInfo.loadClass());
+                });
+
+            });
+
+
+            annotationByClassMap.forEach((key, val) -> {
+                Logger.info(key);
+                AnnotationCache.set(key, val);
+            });
+        }
+    }
 
 }
