@@ -6,16 +6,17 @@ import java.util.Objects;
 
 public class RouterRegisterConfig extends MainModel {
     public String registerURL;
+    public String evn;
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         RouterRegisterConfig that = (RouterRegisterConfig) o;
-        return Objects.equals(registerURL, that.registerURL);
+        return Objects.equals(registerURL, that.registerURL) && Objects.equals(evn, that.evn);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(registerURL);
+        return Objects.hash(registerURL, evn);
     }
 }

@@ -4,7 +4,6 @@ import io.github.java_zengguang.litepress.core.bean.entity.OptionDB;
 import io.github.java_zengguang.litepress.db.dao.pool.DataBaseInte;
 import io.github.java_zengguang.litepress.db.dao.pool.DruidImpl;
 import io.github.java_zengguang.litepress.db.dao.pool.HikariCPImpl;
-import io.github.java_zengguang.litepress.db.dao.pool.ZGDBPImpl;
 import io.github.java_zengguang.litepress.core.init.Config;
 import org.tinylog.Logger;
 
@@ -31,10 +30,7 @@ public class PoolConnectionFactory extends BaseConnectionFactory {
         DataBaseInte databasePool = null;
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
 
-        if ("ZGDBP".equals(optionDB.getDbptype())) {
-            Logger.info("使用ZGDBP链接");
-            databasePool = ZGDBPImpl.getInstance();
-        } else if ("Druid".equals(optionDB.getDbptype())) {
+       if ("Druid".equals(optionDB.getDbptype())) {
             databasePool = DruidImpl.getInstance();
             Logger.info("使用Druid链接");
         } else if ("HikariCP".equals(optionDB.getDbptype())) {

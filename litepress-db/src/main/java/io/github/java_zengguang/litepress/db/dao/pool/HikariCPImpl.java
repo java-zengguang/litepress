@@ -16,10 +16,11 @@ public class HikariCPImpl implements DataBaseInte {
 
     private final static DataBaseInte hikarCP = new HikariCPImpl();
 
-    private static final Map<String, DataSource> dataSourceMap = new Hashtable();
+    private static final Map<String, DataSource> dataSourceMap = new Hashtable<>();
 
     private HikariCPImpl() {
     }
+
 
     public static DataBaseInte getInstance() {
         return hikarCP;
@@ -42,12 +43,15 @@ public class HikariCPImpl implements DataBaseInte {
         try {
             DataSource dataSource = dataSourceMap.get(dataSourceName);
             if (dataSource == null) {
-                dataSource = createDataSourece(dataSourceName);
+                dataSource = createDataSource(dataSourceName);
                 dataSourceMap.put(dataSourceName, dataSource);
             }
-            HikariPoolMXBean pool = ((HikariDataSource) dataSource).getHikariPoolMXBean();
-            Logger.info("当前活动连接数：" + pool.getActiveConnections() + " 当前空闲连接数：" + pool.getIdleConnections() + " 当前总连接数：" + pool.getTotalConnections() + " 当前等待获取连接的线程数：" + pool.getThreadsAwaitingConnection());
-            connection = dataSource.getConnection();
+            if (dataSource != null) {
+                HikariPoolMXBean pool =  pool = ((HikariDataSource) dataSource).getHikariPoolMXBean();
+                Logger.info("当前活动连接数：" + pool.getActiveConnections() + " 当前空闲连接数：" + pool.getIdleConnections() + " 当前总连接数：" + pool.getTotalConnections() + " 当前等待获取连接的线程数：" + pool.getThreadsAwaitingConnection());
+                connection = dataSource.getConnection();
+            }
+
         } catch (Exception e) {
             Logger.error(e);
             Logger.error("数据库链接获取失败" + e.getMessage());
@@ -56,7 +60,7 @@ public class HikariCPImpl implements DataBaseInte {
         return connection;
     }
 
-    private DataSource createDataSourece(String dataSourceName) throws Exception {
+    private DataSource createDataSource(String dataSourceName) throws Exception {
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSourceName);
         if (optionDB == null) {
             return null;

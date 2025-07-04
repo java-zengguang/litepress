@@ -19,7 +19,7 @@ public class PassWordUtil {
 
 
 
-        Logger.info("     sunyongqiang123  " + encryptUtil.AESencode("sunyongqiang123", "hello"));
+        Logger.info("     3GaHIKC_U5ym%6nxkD  " + encryptUtil.AESencode("3GaHIKC_U5ym%6nxkD", "hello"));
 
         Logger.info("     xbKot#CLMV4mLE  " + encryptUtil.AESencode("xbKot#CLMV4mLE", "hello"));
 

@@ -11,18 +11,18 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
 
-public class ProviderResovleAnnotation extends BaseResolveAnnotation {
+public class ProviderResolveAnnotation extends BaseResolveAnnotation {
 
-    private static ProviderResovleAnnotation pra = null;
+    private static ProviderResolveAnnotation pra = null;
     private final ProviderConfig providerConfig = (ProviderConfig) Config.getConfig("providerConfig");
 
-    private ProviderResovleAnnotation() {
+    private ProviderResolveAnnotation() {
     }
 
-    public static ProviderResovleAnnotation getInstance() {
-        synchronized (ProviderResovleAnnotation.class) {
+    public static ProviderResolveAnnotation getInstance() {
+        synchronized (ProviderResolveAnnotation.class) {
             if (pra == null) {
-                pra = new ProviderResovleAnnotation();
+                pra = new ProviderResolveAnnotation();
             }
         }
         return pra;

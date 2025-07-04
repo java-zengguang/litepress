@@ -1,4 +1,4 @@
-package io.github.java_zengguang.litepress.db.dao.database;
+package io.github.java_zengguang.litepress.db.dao.manager;
 
 import io.github.java_zengguang.litepress.core.bean.entity.OptionDB;
 import io.github.java_zengguang.litepress.db.dao.factory.ConnectionFactory;
@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TransactionManager {
 
-    private static final ThreadLocal<Map<String, Connection>> threadLocal = new ThreadLocal();
+    private static final ThreadLocal<Map<String, Connection>> threadLocal = new ThreadLocal<>();
 
 
     public static synchronized Connection getConnection(String dataSource) throws SQLException, ClassNotFoundException {
@@ -55,16 +55,13 @@ public class TransactionManager {
     }
 
 
-    public static synchronized void release() throws SQLException, ClassNotFoundException {
+    public static synchronized void release() throws SQLException {
         Logger.info("base服务层-链接释放-all");
         Map<String, Connection> dataSourceMap = threadLocal.get();
 
         if(dataSourceMap!=null) {
-            List<Map.Entry<String, Connection>> removeList = new ArrayList<>();
 
-            for (Map.Entry<String, Connection> entry : dataSourceMap.entrySet()) {
-                removeList.add(entry);
-            }
+            List<Map.Entry<String, Connection>> removeList = new ArrayList<>(dataSourceMap.entrySet());
             for (Map.Entry<String, Connection> entry : removeList) {
                 entry.getValue().close();
                 dataSourceMap.remove(entry.getKey());
@@ -93,7 +90,7 @@ public class TransactionManager {
         }
     }
 
-    public static synchronized boolean commit(String dataSource) throws SQLException, ClassNotFoundException {
+    public static synchronized void commit(String dataSource) throws SQLException, ClassNotFoundException {
         Logger.info("base服务层-事务提交-"+dataSource);
         Connection conn = getConnection(dataSource);
         try {
@@ -104,10 +101,8 @@ public class TransactionManager {
             // TODO Auto-generated catch block
             Logger.error(e);
             conn.rollback();
-            return false;
         }
 
-        return true;
     }
 
     public static synchronized void release(String dataSource) throws SQLException, ClassNotFoundException {

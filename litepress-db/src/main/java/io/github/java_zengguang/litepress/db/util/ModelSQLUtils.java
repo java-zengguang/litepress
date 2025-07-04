@@ -23,8 +23,8 @@ public class ModelSQLUtils {
 
     //
     public static String insert(Object model, String tableName, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
-        List<String> memberList = new ArrayList();
-        List<String> valuesList = new ArrayList();
+        List<String> memberList = new ArrayList<>();
+        List<String> valuesList = new ArrayList<>();
         Assemble assemble = new SimpleAssemble(dbType);
         List<MetadataEntity> list = assemble.analysis(model);
         for (MetadataEntity entity : list) {
@@ -55,8 +55,8 @@ public class ModelSQLUtils {
 
 
     public static String replace(Object model, String tableName, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException {
-        List<String> memberList = new ArrayList();
-        List<String> valuesList = new ArrayList();
+        List<String> memberList = new ArrayList<>();
+        List<String> valuesList = new ArrayList<>();
         Assemble assemble = new SimpleAssemble(dbType);
         List<MetadataEntity> list = assemble.analysis(model);
         for (MetadataEntity entity : list) {
@@ -73,8 +73,8 @@ public class ModelSQLUtils {
         for (int i = 0; i < memberList.size(); i++) {
             if (memberList.get(i) != null && valuesList.get(i) != null && !"".equals(valuesList.get(i))) {
 
-                member.append(memberList.get(i) + ",");
-                values.append(valuesList.get(i) + ",");
+                member.append(memberList.get(i)).append(",");
+                values.append(valuesList.get(i)).append(",");
 
             }
 
@@ -94,7 +94,7 @@ public class ModelSQLUtils {
         for (MetadataEntity entity : list) {
             if ("1".equals(entity.isNotCommit)) {
                 tableName = entity.tableName;
-                condition.append(entity.columnLabel + "=" + entity.columnValue + " and ");
+                condition.append(entity.columnLabel).append("=").append(entity.columnValue).append(" and ");
             }
         }
         condition = condition.delete(condition.length() - 4, condition.length());

@@ -14,7 +14,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseAssemble implements Assemble {
+public abstract class BaseAssemble<T> implements Assemble<T> {
 
     public String dbType;
 
@@ -22,8 +22,8 @@ public abstract class BaseAssemble implements Assemble {
         this.dbType = dbType;
     }
 
-    public Object assembling(MetadataEntity metadataEntity, Object obj) throws IllegalAccessException {
-        Class classes = obj.getClass();
+    public T assembling(MetadataEntity metadataEntity, T obj) throws IllegalAccessException {
+        Class<?> classes = obj.getClass();
         Field[] fields = classes.getFields();
         for (Field field : fields) {
             String fileName = field.getName();
@@ -39,9 +39,9 @@ public abstract class BaseAssemble implements Assemble {
         return obj;
     }
 
-    public List<MetadataEntity> analysis(Object obj) throws IllegalAccessException, InstantiationException {
+    public List<MetadataEntity> analysis(T obj) throws IllegalAccessException, InstantiationException {
         List<MetadataEntity> metadataEntityList = new ArrayList<>();
-        Class classes = obj.getClass();
+        Class<?> classes = obj.getClass();
         String tableName = DBUtils.getTableNameFromModel(classes);
         String entityName = classes.getSimpleName();
         Field[] fields = classes.getFields();

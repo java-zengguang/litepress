@@ -2,7 +2,7 @@ package io.github.java_zengguang.litepress.chain.util;
 
 
 import com.google.common.collect.Sets;
-import io.github.java_zengguang.litepress.db.dao.database.NewJDBCUtil;
+import io.github.java_zengguang.litepress.db.dao.dao.SimpleEntityDao;
 import org.tinylog.Logger;
 
 import java.sql.SQLException;
@@ -67,11 +67,11 @@ public class DeleteNwePolFromlOldPol {
 
     public List<String> loadData(String tableName) throws SQLException, ClassNotFoundException {
         //新库保单号
-        NewJDBCUtil newJdbcUtil = new NewJDBCUtil("uat_new-non-auto_nvpolicy");
+        SimpleEntityDao newJdbcUtil = new SimpleEntityDao("uat_new-non-auto_nvpolicy");
         List<String> newPolicy = newJdbcUtil.selectOneColList(" select distinct policyno from " + tableName + " a ");
         Logger.info(tableName + "新保单库数据加载完成");
         //老库保单号
-        NewJDBCUtil oldOdbcUtil = new NewJDBCUtil("dev_old-non-auto_sundb");
+        SimpleEntityDao oldOdbcUtil = new SimpleEntityDao("dev_old-non-auto_sundb");
         List<String> oldPolicy = oldOdbcUtil.selectOneColList(" select distinct policyno from " + tableName + " a ");
         Logger.info(tableName + "老保单库数据加载完成");
 
@@ -97,10 +97,10 @@ public class DeleteNwePolFromlOldPol {
                 sqlList.add(sql);
             }
             if (sqlList != null && sqlList.size() > 0) {
-                NewJDBCUtil jdbcUtil = new NewJDBCUtil("dev_old-non-auto_sundb");
+                SimpleEntityDao jdbcUtil = new SimpleEntityDao("dev_old-non-auto_sundb");
                 Logger.info("数据删除开始");
                 try {
-                    jdbcUtil.batchSql(sqlList, true);
+                    jdbcUtil.batchSQL(sqlList);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }

@@ -2,21 +2,22 @@ package io.github.java_zengguang.litepress.db.dao.assemble;
 
 import io.github.java_zengguang.litepress.core.bean.entity.MetadataEntity;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleAssemble extends BaseAssemble {
+public class SimpleAssemble<T> extends BaseAssemble<T> {
 
     public SimpleAssemble(String dbType) {
         super(dbType);
     }
 
     @Override
-    public List assembList(List<List<MetadataEntity>> templeList, Class classes) throws IllegalAccessException, InstantiationException {
-        List modelList = new ArrayList();
-        if (templeList != null && templeList.size() > 0) {
+    public List<T> assembList(List<List<MetadataEntity>> templeList, Class<T> classes) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        List<T> modelList = new ArrayList<>();
+        if (templeList != null && !templeList.isEmpty()) {
             for (List<MetadataEntity> columnList : templeList) {
-                Object obj = classes.newInstance();
+                T obj = classes.getDeclaredConstructor().newInstance();
                 for (MetadataEntity metadataEntity : columnList) {
                     obj = assembling(metadataEntity, obj);
                     modelList.add(obj);
@@ -27,9 +28,9 @@ public class SimpleAssemble extends BaseAssemble {
     }
 
     @Override
-    public List<List<MetadataEntity>> analysisList(List<Object> objs) throws IllegalAccessException, InstantiationException {
+    public List<List<MetadataEntity>> analysisList(List<T> obs) throws IllegalAccessException, InstantiationException {
         List<List<MetadataEntity>> lists = new ArrayList<>();
-        for (Object obj : objs) {
+        for (T obj : obs) {
             lists.add(analysis(obj));
         }
         return lists;

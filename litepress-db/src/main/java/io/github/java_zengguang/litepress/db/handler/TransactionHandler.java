@@ -1,16 +1,14 @@
 package io.github.java_zengguang.litepress.db.handler;
 
 import io.github.java_zengguang.litepress.core.annotation.Transaction;
-import io.github.java_zengguang.litepress.db.dao.database.TransactionManager;
+import io.github.java_zengguang.litepress.db.dao.manager.TransactionManager;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 
-/**
- * Created by Administrator on 2018/12/24 0024.
- */
+
 public class TransactionHandler implements InvocationHandler {
     private final Object target;
 

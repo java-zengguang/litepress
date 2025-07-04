@@ -11,12 +11,13 @@ module litepress.db {
 
     exports io.github.java_zengguang.litepress.db.proxy;
     exports io.github.java_zengguang.litepress.db.dao.assemble;
-    exports io.github.java_zengguang.litepress.db.dao.database;
+    exports io.github.java_zengguang.litepress.db.dao.manager;
     exports io.github.java_zengguang.litepress.db.dao.factory;
     exports io.github.java_zengguang.litepress.db.dao.pool;
     exports io.github.java_zengguang.litepress.db.dao.template;
 
     exports io.github.java_zengguang.litepress.db.handler;
     exports io.github.java_zengguang.litepress.db.util;
+    exports io.github.java_zengguang.litepress.db.dao.dao;
 
 }

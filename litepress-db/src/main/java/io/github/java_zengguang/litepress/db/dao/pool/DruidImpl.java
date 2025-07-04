@@ -15,7 +15,7 @@ public class DruidImpl implements DataBaseInte {
 
     private final static DataBaseInte druid = new DruidImpl();
 
-    private static final Map<String, DataSource> dataSourceMap = new Hashtable();
+    private static final Map<String, DataSource> dataSourceMap = new Hashtable<>();
 
     private DruidImpl() {
     }
@@ -44,7 +44,9 @@ public class DruidImpl implements DataBaseInte {
                 dataSource = createDataSourece(dataSourceName);
                 dataSourceMap.put(dataSourceName, dataSource);
             }
-            connection = dataSource.getConnection();
+            if (dataSource != null) {
+                connection = dataSource.getConnection();
+            }
         } catch (Exception e) {
             Logger.error(e);
             Logger.error("数据库链接获取失败" + e.getMessage());

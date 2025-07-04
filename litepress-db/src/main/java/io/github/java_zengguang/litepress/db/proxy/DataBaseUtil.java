@@ -1,10 +1,12 @@
-package io.github.java_zengguang.litepress.db.dao.database;
+package io.github.java_zengguang.litepress.db.proxy;
 
 import io.github.java_zengguang.litepress.core.bean.entity.ColumnInfo;
 import io.github.java_zengguang.litepress.core.bean.entity.OptionDB;
 import io.github.java_zengguang.litepress.core.bean.entity.TableInfo;
 import io.github.java_zengguang.litepress.core.init.Config;
 import io.github.java_zengguang.litepress.core.util.reflect.ListUtils;
+import io.github.java_zengguang.litepress.db.dao.dao.SimpleEntityDao;
+import io.github.java_zengguang.litepress.db.dao.manager.TransactionManager;
 import org.tinylog.Logger;
 
 import java.sql.*;
@@ -27,7 +29,7 @@ public class DataBaseUtil {
                     " WHERE  table_name='" + tableName + "' AND table_schema=(SELECT DATABASE())";
             List list = null;
             try {
-                NewJDBCUtil jdbcUtil = new NewJDBCUtil("opthinDB");
+                SimpleEntityDao jdbcUtil = new SimpleEntityDao("opthinDB");
                 list = jdbcUtil.selectToMapList(tableInfoSQL);
             } catch (SQLException | ClassNotFoundException e) {
                 Logger.error(e);
@@ -56,7 +58,7 @@ public class DataBaseUtil {
 
         String tableListSQL = "SELECT TABLE_NAME FROM information_schema.tables" +
                 " WHERE table_schema=(SELECT DATABASE())";
-        NewJDBCUtil jdbcUtil = new NewJDBCUtil("opthinDB");
+        SimpleEntityDao jdbcUtil = new SimpleEntityDao("opthinDB");
         List<Map> tableNameList = jdbcUtil.selectToMapList(tableListSQL);
 
 

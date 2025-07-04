@@ -68,8 +68,7 @@ public class Evn {
             SAXReader reader = new SAXReader();
             document = reader.read(inputStream);
         } catch (Exception e) {
-            e.printStackTrace();
-            Logger.info("读取配置文件失败");
+            Logger.error(e,"读取配置文件失败");
         } finally {
             inputStream.close();
         }
@@ -82,7 +81,7 @@ public class Evn {
             }
             return document.getRootElement();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e,"读取配置文件失败");
         }
         return null;
     }

@@ -6,7 +6,7 @@ import com.google.common.collect.Table;
 
 import io.github.java_zengguang.litepress.core.init.Config;
 import io.github.java_zengguang.litepress.core.util.reflect.JsonUtil;
-import io.github.java_zengguang.litepress.direction.annotation.ProviderResovleAnnotation;
+import io.github.java_zengguang.litepress.direction.annotation.ProviderResolveAnnotation;
 import io.github.java_zengguang.litepress.direction.entity.ProviderConfig;
 import io.github.java_zengguang.litepress.direction.entity.ProviderEntity;
 import io.github.java_zengguang.litepress.direction.server.ProviderServiceHandler;
@@ -133,14 +133,10 @@ public class ProviderRegister {
 
     private Map<String, Object> loadProvider() {
         Map<String, Object> providerMap = null;
-        ProviderResovleAnnotation pra = ProviderResovleAnnotation.getInstance();
+        ProviderResolveAnnotation pra = ProviderResolveAnnotation.getInstance();
         try {
             providerMap = pra.getProviders();
-        } catch (ClassNotFoundException e) {
-            Logger.error("ProviderAdapter初始化错误", e);
-        } catch (IllegalAccessException e) {
-            Logger.error("ProviderAdapter初始化错误", e);
-        } catch (InstantiationException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             Logger.error("ProviderAdapter初始化错误", e);
         } catch (UnknownHostException e) {
             Logger.error(e);

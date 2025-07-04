@@ -5,7 +5,7 @@ import io.github.java_zengguang.litepress.chain.components.Components;
 import io.github.java_zengguang.litepress.chain.entity.BaseProcess;
 import io.github.java_zengguang.litepress.core.bean.entity.OptionDB;
 import io.github.java_zengguang.litepress.core.init.Config;
-import io.github.java_zengguang.litepress.db.dao.database.NewJDBCUtil;
+import io.github.java_zengguang.litepress.db.dao.dao.SimpleEntityDao;
 import io.github.java_zengguang.litepress.db.util.ModelSQLUtils;
 
 
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class RefreshPlanStateSave extends BaseCommonComponent {
 
-    NewJDBCUtil newJDBCUtil = new NewJDBCUtil("optionDB");
+    SimpleEntityDao newJDBCUtil = new SimpleEntityDao("optionDB");
 
     @Override
     public BaseProcess doExecute(BaseProcess baseProcess) throws Exception {
@@ -31,7 +31,7 @@ public class RefreshPlanStateSave extends BaseCommonComponent {
             sqlList.add(sql);
 
         }
-        newJDBCUtil.batchSql(sqlList, true);
+        newJDBCUtil.batchSQL(sqlList);
 
         return baseProcess;
     }
