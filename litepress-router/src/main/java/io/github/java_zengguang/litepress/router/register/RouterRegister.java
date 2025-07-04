@@ -39,7 +39,7 @@ public class RouterRegister<T extends RouterEntity> {
         ZKRegister zkRegister =clazz.getAnnotation(ZKRegister.class);
         registerConfig = (RouterRegisterConfig) Config.getConfig(zkRegister.name());
         this.clazz=  clazz;
-        this.namespace = zkRegister.namespace()+"_"+registerConfig.evn;
+        this.namespace= registerConfig.namespace;
         this.routerType = zkRegister.routerType();
         this.curatorFramework = getZkClient(routerType);
 

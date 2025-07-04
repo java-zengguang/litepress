@@ -9,8 +9,5 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ZKRegister {
     String name();
-
-    String namespace();
-
     String routerType();
 }
