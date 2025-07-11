@@ -9,7 +9,10 @@ import io.github.java_zengguang.litepress.web.netty.sse.SSE2NettyManager;
 import io.github.java_zengguang.litepress.web.netty.sse.SSEManager;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.codec.http.multipart.FileUpload;
@@ -19,7 +22,8 @@ import io.netty.handler.codec.http.multipart.MemoryAttribute;
 import io.netty.util.CharsetUtil;
 import org.tinylog.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
@@ -67,6 +71,8 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
         return cookies;
     }
 
+
+
     public HttpRequestEntity transHttpRequestEntity(FullHttpRequest request) {
         String requestURI = request.uri();
         HttpRequestEntity httpRequestEntity = new HttpRequestEntity();
@@ -75,9 +81,9 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
         httpRequestEntity.methodType = request.method().name();
         httpRequestEntity.headers = getHeaders(request);
         httpRequestEntity.cookies = getCookies(request);
+
         QueryStringDecoder decoder = new QueryStringDecoder(httpRequestEntity.url);
         httpRequestEntity.path = decoder.path();
-
         Map<String, List<String>> uriAttributes = decoder.parameters();
         if (uriAttributes != null && !uriAttributes.isEmpty()) {
             uriAttributes.forEach((key, values) -> {
@@ -85,6 +91,8 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
                 httpRequestEntity.paramMap.put(key, values.getFirst());
             });
         }
+
+
         if (HttpMethod.POST.equals(request.method()) && httpRequestEntity.contentType != null) {
             if (httpRequestEntity.contentType.equals("application/json")) {
                 httpRequestEntity.sceneType = SceneType.JSON.name();
@@ -92,8 +100,19 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
             } else if (httpRequestEntity.contentType.equals("multipart/form-data")) {
                 httpRequestEntity.sceneType = SceneType.FORM.name();
                 httpRequestEntity.paramMap.putAll(readBody(request));
+            } else if (httpRequestEntity.contentType.equals("application/x-www-form-urlencoded;charset=UTF-8")) {
+                 decoder = new QueryStringDecoder(request.content().toString(CharsetUtil.UTF_8),false);
+                 uriAttributes = decoder.parameters();
+                if (uriAttributes != null && !uriAttributes.isEmpty()) {
+                    uriAttributes.forEach((key, values) -> {
+                        //这里做了特殊处理，所有的摒弃一个字段对应多个值，只取第一个
+                        httpRequestEntity.paramMap.put(key, values.getFirst());
+                    });
+                }
             }
         }
+
+
         return httpRequestEntity;
     }
 

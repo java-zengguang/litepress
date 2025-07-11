@@ -11,7 +11,7 @@
 1、安装依赖
 
            <dependency>
-                <groupId>io.github.java-zengguang</groupId>
+                <groupId>io.github.java_zengguang</groupId>
                 <artifactId>litepress-boot</artifactId>
                 <version>${litepress.version}</version>
             </dependency>
