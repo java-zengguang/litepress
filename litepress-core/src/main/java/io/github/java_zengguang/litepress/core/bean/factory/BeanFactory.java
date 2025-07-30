@@ -26,7 +26,7 @@ public class BeanFactory {
 
                 if (beanName.equals(id)) {
                     String beanClassName = bean.attributeValue("class");
-                    o = Class.forName(beanClassName).newInstance();
+                    o = Class.forName(beanClassName).getDeclaredConstructor().newInstance();
                     for (Object propertyO : bean.elements("property")) {
                         Element property = (Element) propertyO;
                         String name = property.attributeValue("name");
