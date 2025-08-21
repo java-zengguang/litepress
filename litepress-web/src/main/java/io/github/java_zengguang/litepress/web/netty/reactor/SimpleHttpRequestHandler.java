@@ -97,7 +97,7 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
             if (httpRequestEntity.contentType.equals("application/json")) {
                 httpRequestEntity.sceneType = SceneType.JSON.name();
                 httpRequestEntity.paramMap.put("body", request.content().toString(CharsetUtil.UTF_8));
-            } else if (httpRequestEntity.contentType.equals("multipart/form-data")) {
+            } else if (httpRequestEntity.contentType.startsWith("multipart/form-data")) {
                 httpRequestEntity.sceneType = SceneType.FORM.name();
                 httpRequestEntity.paramMap.putAll(readBody(request));
             } else if (httpRequestEntity.contentType.equals("application/x-www-form-urlencoded;charset=UTF-8")) {
@@ -119,7 +119,7 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
     private Map<String, Object> readBody(FullHttpRequest request) {
         Map<String, Object> paramMap = new HashMap<>();
         List<File> files = new ArrayList<>();
-        if ("multipart/form-data".equalsIgnoreCase(request.headers().get("Content-Type"))) {
+        if (request.headers().get(HttpHeaderNames.CONTENT_TYPE).startsWith("multipart/form-data")) {
             HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(request);
             try {
                 while (decoder.hasNext()) {

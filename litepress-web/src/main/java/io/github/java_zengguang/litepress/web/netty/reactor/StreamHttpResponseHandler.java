@@ -7,6 +7,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 import org.tinylog.Logger;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -16,11 +18,12 @@ public class StreamHttpResponseHandler extends BaseHttpResponseHandler {
         if (responseEntity.result instanceof BlockingQueue<?> blockingQueue) {
             Thread.ofVirtual().start(() -> {
                 Logger.info("SSE虚拟线程启动");
-
+                Duration heartbeatInterval = Duration.ofSeconds(15);
+                Instant lastHeartbeat = Instant.now();
                 // 监听通道关闭（确保资源清理）
                 ctx.channel().closeFuture().addListener(f -> {
                     blockingQueue.clear();
-                    Logger.info("通道关闭，清理队列");
+                    Logger.info("前端主动关闭，通道关闭，清理队列");
                 });
 
                 try {
@@ -45,8 +48,14 @@ public class StreamHttpResponseHandler extends BaseHttpResponseHandler {
                     String flag = "keep";
                     while (!"stop".equals(flag)) {
                         try {
-                            Object object = blockingQueue.poll(1, TimeUnit.SECONDS); // 避免无限阻塞
-                            if (object == null) continue; // 超时检查
+                            if (Duration.between(lastHeartbeat, Instant.now()).compareTo(heartbeatInterval) > 0) {
+                             //   ctx.writeAndFlush(Unpooled.copiedBuffer("event: keepalive\n\n".getBytes()));
+                                lastHeartbeat = Instant.now();
+                            }
+
+                            // 非阻塞获取数据
+                            Object object = blockingQueue.poll(1, TimeUnit.SECONDS);
+                            if (object == null) continue;
 
                             if (object instanceof SSEDto data) {
                                 flag = data.flag;
@@ -69,7 +78,13 @@ public class StreamHttpResponseHandler extends BaseHttpResponseHandler {
                 } finally {
                     Logger.info("SSE虚拟线程退出");
                     if (ctx.channel().isActive()) {
-                        ctx.close();
+                        ctx.close().addListener((future)->{
+                            if (future.isSuccess()) {
+                                Logger.info("服务端成功关闭连接");
+                            } else {
+                                Logger.error("服务端关闭连接失败", future.cause());
+                            }
+                        });
                     }
                 }
             });

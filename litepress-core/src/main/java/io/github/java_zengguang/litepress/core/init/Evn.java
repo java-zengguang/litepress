@@ -16,7 +16,7 @@ public class Evn {
     private static String dynamicModelPath;
     private static String modulePath;
     private static String beanConfig;
-    private static Document document;
+
 
     private static String environment; //环境
 
@@ -62,28 +62,8 @@ public class Evn {
         Evn.beanConfig = beanConfig;
     }
 
-    private static void createDocument() throws DocumentException, IOException {
-        InputStream inputStream = new ByteArrayInputStream(beanConfig.getBytes(StandardCharsets.UTF_8));
-        try {
-            SAXReader reader = new SAXReader();
-            document = reader.read(inputStream);
-        } catch (Exception e) {
-            Logger.error(e,"读取配置文件失败");
-        } finally {
-            inputStream.close();
-        }
-    }
-
-    public static Element getRootElement() {
-        try {
-            if (document == null) {
-                createDocument();
-            }
-            return document.getRootElement();
-        } catch (Exception e) {
-            Logger.error(e,"读取配置文件失败");
-        }
-        return null;
+    public static String getBeanConfig() {
+        return beanConfig;
     }
 
     public static String getEnvironment() {
@@ -93,4 +73,8 @@ public class Evn {
     public static void setEnvironment(String environment) {
         Evn.environment = environment;
     }
+
+
+
+
 }

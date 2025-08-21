@@ -2,7 +2,6 @@ package io.github.java_zengguang.litepress.core.init;
 
 import io.github.java_zengguang.litepress.core.bean.factory.BeanFactory;
 import io.github.java_zengguang.litepress.core.util.reflect.TransEntityTypeUtils;
-import org.tinylog.Logger;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -11,41 +10,27 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by Administrator on 2018/12/14 0014.
  */
 public class Config {
-    public static final int ERROR_REPEAT = 3;
-    public static final Map configMap = new ConcurrentHashMap();
-    public static CountDownLatch count = new CountDownLatch(ERROR_REPEAT);
+    private static boolean init = true;
+    private static final Map configMap = new ConcurrentHashMap();
 
 
-
-
-    private static synchronized void createConfigMap(String[] array) {
-        for (String beanName : array) {
-            Object object = BeanFactory.createBean(beanName);
-            if (object != null) {
-                configMap.put(beanName, object);
-            }
+    public static synchronized void initConfig() {
+        if (init) {
+            Map objectMap = BeanFactory.createAllBeans();
+            configMap.putAll(objectMap);
+            init = false;
         }
     }
 
+
     public static synchronized Object getConfig(String beanName) {
+        initConfig();
         Object object = configMap.get(beanName);
-        if (count.getCount() > 0) {
-            if (object == null) {
-                count.countDown();
-                Logger.info("初始化" + beanName);
-                String[] array = {beanName};
-                createConfigMap(array);
-                object = getConfig(beanName);
-            } else {
-                count = new CountDownLatch(ERROR_REPEAT);
-            }
-        }
         return object;
     }
 

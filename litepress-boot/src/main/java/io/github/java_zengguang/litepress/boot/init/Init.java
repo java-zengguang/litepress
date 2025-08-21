@@ -4,11 +4,14 @@ package io.github.java_zengguang.litepress.boot.init;
 import io.github.java_zengguang.litepress.boot.annotation.ProjectRootPath;
 import io.github.java_zengguang.litepress.boot.annotation.ScanPackages;
 import io.github.java_zengguang.litepress.boot.annotation.TargetEvn;
+import io.github.java_zengguang.litepress.core.init.Config;
 import io.github.java_zengguang.litepress.core.init.Evn;
 import io.github.java_zengguang.litepress.core.relect.dynameic.DynamicClass;
 import org.dom4j.DocumentException;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
@@ -21,8 +24,7 @@ public class Init {
         String packages = scanPackages.value();
         System.out.println("扫描路径" + packages);
         if (true) { //扫描controller
-          PackageScan.scanByAnnotations(packages.split(","));
-
+            PackageScan.scanByAnnotations(packages.split(","));
         }
 
     }
@@ -33,8 +35,7 @@ public class Init {
         if (init) {
             try {
                 initEvn(clazz);
-                initConfig(clazz);
-                initLogConfig(clazz);
+                initBean();
                 initAnnotation(clazz);
                 init = false;
             } catch (Exception e) {
@@ -44,34 +45,28 @@ public class Init {
     }
 
 
-    public static String getConfigData(String configFileName) throws IOException {
+    public static String readFile2String(String configFileName) throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        StringBuffer stringBuffer = new StringBuffer();
         try (InputStream is = classLoader.getResourceAsStream(configFileName)) {
             if (is == null) {
                 System.out.println("Resource NOT found: " + configFileName);
                 return null;
             }
-            // 使用 BufferedReader 读取文件内容
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                stringBuffer.append(line).append("\n");
-            }
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return stringBuffer.toString();
+        return null;
     }
 
-    private static void initLogConfig(Class clazz) {
+    private static void readLogConfig() {
         String configFileName = "tinylog.properties";
         if (Evn.getEnvironment() != null) {
             configFileName = Evn.getEnvironment() + "_" + configFileName;
         }
         try {
             System.out.println("加载配置文件" + configFileName);
-            String doc = getConfigData(configFileName);
+            String doc = readFile2String(configFileName);
             if (doc == null) {
                 return;
             }
@@ -82,17 +77,21 @@ public class Init {
         }
     }
 
-    private static void initConfig(Class clazz) throws IOException {
+
+    private static void initBean() {
+        Config.initConfig();
+    }
+
+    private static void readBeanConfig() throws IOException {
 
         String configFileName = "BeanConfig.xml";
         if (Evn.getEnvironment() != null) {
             configFileName = Evn.getEnvironment() + "_" + configFileName;
         }
         System.out.println("加载配置文件" + configFileName);
-        String doc = getConfigData(configFileName);
+        String doc = readFile2String(configFileName);
         System.out.println(doc);
         Evn.setBeanConfig(doc);
-
 
     }
 
@@ -106,7 +105,7 @@ public class Init {
         return path;
     }
 
-    private static void initEvn(Class clazz) throws DocumentException {
+    private static void initEvn(Class clazz) throws DocumentException, IOException {
         System.out.println("初始化环境变量");
         TargetEvn targetEvn = (TargetEvn) clazz.getAnnotation(TargetEvn.class);
         Evn.setEnvironment(targetEvn.value());
@@ -130,7 +129,8 @@ public class Init {
         Evn.setDynamicModelPath(getPath(DynamicClass.class));
         System.out.println(Evn.getDynamicModelPath());
 
-
+        readLogConfig();
+        readBeanConfig();
     }
 
 

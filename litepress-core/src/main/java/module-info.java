@@ -30,7 +30,6 @@ module litepress.core {
     requires com.fasterxml.jackson.databind;
 
     requires zip4j;
-    requires org.graalvm.nativeimage;
     requires net.bytebuddy;
     requires org.apache.poi.poi;
     requires org.apache.poi.ooxml;
