@@ -1,12 +1,15 @@
 package io.github.java_zengguang.litepress.web.netty.reactor;
 
+import io.github.java_zengguang.litepress.core.init.Config;
 import io.github.java_zengguang.litepress.web.entity.CookieEntity;
 import io.github.java_zengguang.litepress.web.entity.HttpRequestEntity;
 import io.github.java_zengguang.litepress.web.entity.HttpResponseEntity;
+import io.github.java_zengguang.litepress.web.entity.MVCOption;
 import io.github.java_zengguang.litepress.web.enums.SceneType;
 import io.github.java_zengguang.litepress.web.netty.adapter.HttpNettyControllerAdapter;
 import io.github.java_zengguang.litepress.web.netty.sse.SSE2NettyManager;
 import io.github.java_zengguang.litepress.web.netty.sse.SSEManager;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -24,6 +27,9 @@ import org.tinylog.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
@@ -117,6 +123,7 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
     }
 
     private Map<String, Object> readBody(FullHttpRequest request) {
+        MVCOption mvcOption= (MVCOption) Config.getConfig("MVCOption");
         Map<String, Object> paramMap = new HashMap<>();
         List<File> files = new ArrayList<>();
         if (request.headers().get(HttpHeaderNames.CONTENT_TYPE).startsWith("multipart/form-data")) {
@@ -133,7 +140,15 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
                             case FileUpload:
                                 FileUpload fileUpload = (FileUpload) data;
                                 if (fileUpload.isCompleted() && !fileUpload.getFilename().isEmpty()) {
-                                    files.add(fileUpload.getFile());
+                                    // 降级：读取字节数据
+                                    ByteBuf byteBuf = fileUpload.getByteBuf();
+                                    byte[] bytes = new byte[byteBuf.readableBytes()];
+                                    byteBuf.readBytes(bytes);
+                                    File file=new File(mvcOption.temporaryFilePath,fileUpload.getFilename());
+                                    Files.write(Paths.get(mvcOption.temporaryFilePath+fileUpload.getFilename()), bytes);
+                                    files.add(file);
+
+
                                 }
                                 break;
                         }
