@@ -57,7 +57,8 @@ public class BaseEntityDao<T> implements EntityDao<T> {
         Class<?> clazz = model.getClass();
         Field[] fields = clazz.getFields();
         Field idField = Arrays.stream(fields).filter(field -> field.isAnnotationPresent(AutoIncrease.class)).findFirst().get();
-        if (insertTable(model) > 0) {
+        String tableName = DBUtils.getTableNameFromModel(model.getClass());
+        if (dataManager.insertEntity(model, tableName, optionDB.dbtype)) {
             String sql = "select @@IDENTITY as id ";
             List<Map<String, Object>> list = dataManager.selectToMapList(sql);
             Map<String, Object> map = list.getFirst();
@@ -214,8 +215,7 @@ public class BaseEntityDao<T> implements EntityDao<T> {
     public int updateModel(Object object, String... terms) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
         int result = 0;
         if (terms != null && terms.length > 0) {
-            String sql = ModelSQLUtils.update(optionDB.dbtype, object, terms);
-            result = dataManager.operation(sql);
+            result = dataManager.updateEntity(optionDB.dbtype, object, terms);
         }
         return result;
     }

@@ -8,15 +8,18 @@ import io.github.java_zengguang.litepress.core.bean.entity.OptionDB;
 import io.github.java_zengguang.litepress.core.init.Config;
 import io.github.java_zengguang.litepress.core.relect.dynameic.DynameicSerializer;
 import io.github.java_zengguang.litepress.core.relect.dynameic.DynamicClass;
+import io.github.java_zengguang.litepress.db.dao.assemble.Assemble;
 import io.github.java_zengguang.litepress.db.dao.assemble.SimpleAssemble;
 import io.github.java_zengguang.litepress.db.dao.template.EntityDaoTemplate;
 import io.github.java_zengguang.litepress.db.dao.template.EntityDaoTemplateFactory;
+import io.github.java_zengguang.litepress.db.util.DBUtils;
 import io.github.java_zengguang.litepress.db.util.ParseSQLUtils;
 import net.sf.jsqlparser.JSQLParserException;
 import org.tinylog.Logger;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
 
@@ -324,6 +327,143 @@ public class BaseDataManager implements DataManager {
         return result;
     }
 
+    public Integer updateEntity(String dbType, Object model, String... terms) throws IllegalAccessException, InstantiationException, SQLException, ClassNotFoundException {
+
+        String sql;
+        String condition = " ";
+        for (String term : terms) {
+            condition = condition + " and " + term;
+        }
+        String tableName = DBUtils.getTableNameFromModel(model.getClass());
+        List<String> memberList = new ArrayList();
+        List<Object> valuesList = new ArrayList();
+        Assemble assemble = new SimpleAssemble(dbType);
+        List<MetadataEntity> list = assemble.analysis(model);
+        StringBuilder memberValues = new StringBuilder();
+        for (MetadataEntity entity : list) {
+            if ("1".equals(entity.isNotCommit)) {
+                if (entity.fieldName != null && entity.objectValue != null && !"".equals(entity.objectValue)) {
+                    memberList.add(entity.fieldName);
+                    valuesList.add(entity.objectValue);
+                    memberValues.append(" " + entity.fieldName + "=" + "?,");
+                }
+
+            }
+        }
+
+
+        memberValues.setCharAt(memberValues.length() - 1, ' ');
+        sql = "update " + tableName + " set " + memberValues + "where 1=1 " + condition;
+
+
+        Connection conn = TransactionManager.getConnection(dataSource);
+        PreparedStatement stmt = conn.prepareStatement(sql);
+
+        for (int i = 0; i < valuesList.size(); i++) {
+            Object value = valuesList.get(i);
+            int parameterIndex = i + 1; // PreparedStatement 参数索引从 1 开始
+
+            if (value == null) {
+                // 如果值为 null，需要指定字段类型，这里假设为 VARCHAR，可根据实际情况调整
+                stmt.setNull(parameterIndex, Types.VARCHAR);
+            } else if (value instanceof String) {
+                stmt.setString(parameterIndex, (String) value);
+            } else if (value instanceof Integer) {
+                stmt.setInt(parameterIndex, (Integer) value);
+            } else if (value instanceof Long) {
+                stmt.setLong(parameterIndex, (Long) value);
+            } else if (value instanceof Double) {
+                stmt.setDouble(parameterIndex, (Double) value);
+            } else if (value instanceof Float) {
+                stmt.setFloat(parameterIndex, (Float) value);
+            } else if (value instanceof Boolean) {
+                stmt.setBoolean(parameterIndex, (Boolean) value);
+            } else if (value instanceof java.sql.Date) {
+                stmt.setDate(parameterIndex, (java.sql.Date) value);
+            } else if (value instanceof java.util.Date utilDate) {
+                // 如果是 java.util.Date，通常推荐转为 Timestamp
+                stmt.setTimestamp(parameterIndex, new java.sql.Timestamp(utilDate.getTime()));
+            } else if (value instanceof BigDecimal) {
+                stmt.setBigDecimal(parameterIndex, (BigDecimal) value);
+            } else if (value instanceof byte[]) {
+                stmt.setBytes(parameterIndex, (byte[]) value);
+            } else {
+                // 未知类型，可以打印警告或抛异常，或者尝试 toString() 后存为字符串
+                System.err.println("Unsupported type for value at index " + i + ": " + value.getClass().getName());
+                stmt.setObject(parameterIndex, value); // fallback，通用但不够精准
+            }
+        }
+        int flag = stmt.executeUpdate();
+        stmt.close();
+        return flag;
+    }
+
+    public Boolean insertEntity(Object model, String tableName, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException, ClassNotFoundException {
+        List<String> memberList = new ArrayList<>();
+        List<Object> valuesList = new ArrayList<>();
+        StringBuilder member = new StringBuilder();
+        StringBuilder values = new StringBuilder();
+        Assemble assemble = new SimpleAssemble(dbType);
+        List<MetadataEntity> list = assemble.analysis(model);
+        for (MetadataEntity entity : list) {
+            if ("1".equals(entity.isNotCommit)) {
+                if (entity.fieldName != null && entity.objectValue != null && !"".equals(entity.objectValue)) {
+                    memberList.add(entity.fieldName);
+                    member.append(entity.fieldName + ",");
+                    values.append("?,");
+                    valuesList.add(entity.objectValue);
+                }
+            }
+        }
+
+        //   List<String> notCommitFields = EntityUtils.getNoCommitFields(model.getClass());
+        String sql = null;
+        member.deleteCharAt(member.length() - 1);
+        values.deleteCharAt(values.length() - 1);
+        sql = "insert into " + tableName + " (" + member + ") values (" + values + ")";
+
+        Connection conn = TransactionManager.getConnection(dataSource);
+        PreparedStatement stmt = conn.prepareStatement(sql);
+
+        for (int i = 0; i < valuesList.size(); i++) {
+            Object value = valuesList.get(i);
+            int parameterIndex = i + 1; // PreparedStatement 参数索引从 1 开始
+
+            if (value == null) {
+                // 如果值为 null，需要指定字段类型，这里假设为 VARCHAR，可根据实际情况调整
+                stmt.setNull(parameterIndex, Types.VARCHAR);
+            } else if (value instanceof String) {
+                stmt.setString(parameterIndex, (String) value);
+            } else if (value instanceof Integer) {
+                stmt.setInt(parameterIndex, (Integer) value);
+            } else if (value instanceof Long) {
+                stmt.setLong(parameterIndex, (Long) value);
+            } else if (value instanceof Double) {
+                stmt.setDouble(parameterIndex, (Double) value);
+            } else if (value instanceof Float) {
+                stmt.setFloat(parameterIndex, (Float) value);
+            } else if (value instanceof Boolean) {
+                stmt.setBoolean(parameterIndex, (Boolean) value);
+            } else if (value instanceof java.sql.Date) {
+                stmt.setDate(parameterIndex, (java.sql.Date) value);
+            } else if (value instanceof java.util.Date utilDate) {
+                // 如果是 java.util.Date，通常推荐转为 Timestamp
+                stmt.setTimestamp(parameterIndex, new java.sql.Timestamp(utilDate.getTime()));
+            } else if (value instanceof BigDecimal) {
+                stmt.setBigDecimal(parameterIndex, (BigDecimal) value);
+            } else if (value instanceof byte[]) {
+                stmt.setBytes(parameterIndex, (byte[]) value);
+            } else {
+                // 未知类型，可以打印警告或抛异常，或者尝试 toString() 后存为字符串
+                System.err.println("Unsupported type for value at index " + i + ": " + value.getClass().getName());
+                stmt.setObject(parameterIndex, value); // fallback，通用但不够精准
+            }
+        }
+
+        Boolean flag = stmt.execute();
+        stmt.close();
+        return flag;
+    }
 
     //执行批操作
     public int[] batchSQL(List<String> sqlList) throws SQLException, ClassNotFoundException {
