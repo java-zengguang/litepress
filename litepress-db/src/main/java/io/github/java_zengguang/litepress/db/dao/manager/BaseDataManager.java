@@ -342,7 +342,7 @@ public class BaseDataManager implements DataManager {
         StringBuilder memberValues = new StringBuilder();
         for (MetadataEntity entity : list) {
             if ("1".equals(entity.isNotCommit)) {
-                if (entity.fieldName != null && entity.objectValue != null && !"".equals(entity.objectValue)) {
+                if (entity.fieldName != null && entity.objectValue != null ) {
                     memberList.add(entity.fieldName);
                     valuesList.add(entity.objectValue);
                     memberValues.append(" " + entity.fieldName + "=" + "?,");
@@ -407,7 +407,7 @@ public class BaseDataManager implements DataManager {
         List<MetadataEntity> list = assemble.analysis(model);
         for (MetadataEntity entity : list) {
             if ("1".equals(entity.isNotCommit)) {
-                if (entity.fieldName != null && entity.objectValue != null && !"".equals(entity.objectValue)) {
+                if (entity.fieldName != null && entity.objectValue != null) {
                     memberList.add(entity.fieldName);
                     member.append(entity.fieldName + ",");
                     values.append("?,");
