@@ -15,7 +15,7 @@ public interface DataManager {
      Class<?> selectStream(String sql, File tempFile)  throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JSQLParserException, NoSuchMethodException, InvocationTargetException;
      Class<?> selectStream(String sql, String tableName, String tempFileDir, List<File> tempFileList, Integer fileSize) throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JSQLParserException, NoSuchMethodException, InvocationTargetException;
      List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException, JSQLParserException;
-     Boolean insertEntity(Object model, String tableName, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException, ClassNotFoundException;
+     Integer insertEntity(Object model, String tableName, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException, ClassNotFoundException;
      int[] operationAll(List<String> sqlList) throws SQLException, ClassNotFoundException ;
      Integer updateEntity(String dbType, Object model, String... terms) throws IllegalAccessException, InstantiationException, SQLException, ClassNotFoundException;
      int[] batchSQL(List<String> sqlList) throws SQLException, ClassNotFoundException;

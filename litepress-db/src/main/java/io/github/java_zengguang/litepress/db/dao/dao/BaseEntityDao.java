@@ -58,7 +58,7 @@ public class BaseEntityDao<T> implements EntityDao<T> {
         Field[] fields = clazz.getFields();
         Field idField = Arrays.stream(fields).filter(field -> field.isAnnotationPresent(AutoIncrease.class)).findFirst().get();
         String tableName = DBUtils.getTableNameFromModel(model.getClass());
-        if (dataManager.insertEntity(model, tableName, optionDB.dbtype)) {
+        if (dataManager.insertEntity(model, tableName, optionDB.dbtype)>0) {
             String sql = "select @@IDENTITY as id ";
             List<Map<String, Object>> list = dataManager.selectToMapList(sql);
             Map<String, Object> map = list.getFirst();

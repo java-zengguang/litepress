@@ -398,7 +398,7 @@ public class BaseDataManager implements DataManager {
         return flag;
     }
 
-    public Boolean insertEntity(Object model, String tableName, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException, ClassNotFoundException {
+    public Integer insertEntity(Object model, String tableName, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException, ClassNotFoundException {
         List<String> memberList = new ArrayList<>();
         List<Object> valuesList = new ArrayList<>();
         StringBuilder member = new StringBuilder();
@@ -460,9 +460,9 @@ public class BaseDataManager implements DataManager {
             }
         }
 
-        Boolean flag = stmt.execute();
+        Integer result= stmt.executeUpdate();
         stmt.close();
-        return flag;
+        return result;
     }
 
     //执行批操作
