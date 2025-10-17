@@ -18,10 +18,7 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
-import io.netty.handler.codec.http.multipart.FileUpload;
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import io.netty.handler.codec.http.multipart.InterfaceHttpData;
-import io.netty.handler.codec.http.multipart.MemoryAttribute;
+import io.netty.handler.codec.http.multipart.*;
 import io.netty.util.CharsetUtil;
 import org.tinylog.Logger;
 
@@ -134,7 +131,7 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
                     if (data != null) {
                         switch (data.getHttpDataType()) {
                             case Attribute:
-                                MemoryAttribute attribute = (MemoryAttribute) data;
+                                Attribute attribute = (Attribute) data;
                                 paramMap.put(attribute.getName(), attribute.getValue());
                                 break;
                             case FileUpload:
@@ -147,8 +144,6 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
                                     File file=new File(mvcOption.temporaryFilePath,fileUpload.getFilename());
                                     Files.write(Paths.get(mvcOption.temporaryFilePath+fileUpload.getFilename()), bytes);
                                     files.add(file);
-
-
                                 }
                                 break;
                         }
