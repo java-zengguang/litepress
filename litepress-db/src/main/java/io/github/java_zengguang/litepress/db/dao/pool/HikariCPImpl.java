@@ -79,6 +79,7 @@ public class HikariCPImpl implements DataBaseInte {
         config.setMinimumIdle(1);
         config.setAutoCommit(false);
         config.setIdleTimeout(600000);
+        config.setConnectionTimeout(30000); // 建议设置30秒超时
         return new HikariDataSource(config);
     }
 
