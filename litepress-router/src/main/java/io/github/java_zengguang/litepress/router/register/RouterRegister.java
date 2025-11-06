@@ -29,17 +29,17 @@ public class RouterRegister<T extends RouterEntity> {
     private static Map<String, RouterRegister> registerMap = new HashMap<>();
     private Set<T> serviceSet = new HashSet<>();
     private Table<String, String, T> routeTable = HashBasedTable.create();  //name version  RouterEntity
-    private  RouterRegisterConfig registerConfig ;
+    private RouterRegisterConfig registerConfig;
     private String namespace;
     private String routerType;
     private CuratorFramework curatorFramework;
     private Class<T> clazz;
 
-    private RouterRegister( Class<T> clazz) throws Exception {
-        ZKRegister zkRegister =clazz.getAnnotation(ZKRegister.class);
+    private RouterRegister(Class<T> clazz) throws Exception {
+        ZKRegister zkRegister = clazz.getAnnotation(ZKRegister.class);
         registerConfig = (RouterRegisterConfig) Config.getConfig(zkRegister.name());
-        this.clazz=  clazz;
-        this.namespace= registerConfig.namespace;
+        this.clazz = clazz;
+        this.namespace = registerConfig.namespace;
         this.routerType = zkRegister.routerType();
         this.curatorFramework = getZkClient(routerType);
 
@@ -149,7 +149,7 @@ public class RouterRegister<T extends RouterEntity> {
                     .withMode(CreateMode.EPHEMERAL)
                     .forPath(path, JsonUtil.obj2String(router).getBytes());
 
-        }else{
+        } else {
             curatorFramework.setData()
                     .forPath(path, JsonUtil.obj2String(router).getBytes());
         }
@@ -159,25 +159,36 @@ public class RouterRegister<T extends RouterEntity> {
         if (!routerType.equals(router.routerType)) {
             throw new BizException("写入类型错误");
         }
-        router.state=1;
+        router.state = 1;
         saveRouter(router);
         serviceSet.add(router);
     }
 
 
-    public T setState(String name,String version,Integer state) throws Exception {
-       T router= routeTable.get(name,version);
-       if(router==null) {
-           T newRouter= JsonUtil.string2Obj(JsonUtil.obj2String(router),clazz);
-           newRouter.state=state;
-           saveRouter(newRouter);
-           return newRouter;
-       }
-       return router;
+    public T setState(String name, String version, Integer state) throws Exception {
+        T router = routeTable.get(name, version);
+        if (router == null) {
+            T newRouter = JsonUtil.string2Obj(JsonUtil.obj2String(router), clazz);
+            newRouter.state = state;
+            saveRouter(newRouter);
+            return newRouter;
+        }
+        return router;
+    }
+
+    public T getLocalRouter(String name) {
+        return serviceSet.stream().filter((x) -> name.equals(x.name) && x.state == 1).findFirst().orElse(null);
+
     }
 
     public T getRouter(String name) {
-        return routeTable.row(name).values().stream().filter((x)->x.state==1).findAny().get();
+        List<T> activeRoutes = routeTable.row(name).values().stream()
+                .filter(x -> x.state == 1).toList();
+        if (activeRoutes.isEmpty()) {
+            return null;
+        }
+
+        return activeRoutes.get(new Random().nextInt(activeRoutes.size()));
     }
 
     public List<T> getRouters(String name) {

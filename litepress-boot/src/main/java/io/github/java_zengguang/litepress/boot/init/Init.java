@@ -8,12 +8,15 @@ import io.github.java_zengguang.litepress.core.init.Config;
 import io.github.java_zengguang.litepress.core.init.Evn;
 import io.github.java_zengguang.litepress.core.relect.dynameic.DynamicClass;
 import org.dom4j.DocumentException;
+import org.tinylog.configuration.Configuration;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
 public class Init {
     public static boolean init = true;
@@ -30,11 +33,29 @@ public class Init {
     }
 
 
+
+    public static void loadTinyLogConfig() {
+
+        try {
+            if (Evn.getInitConfigMap("tinyLogConfig") != null) {
+                Properties properties = new Properties();
+                properties.load(new StringReader(Evn.getInitConfigMap("tinyLogConfig")));
+                properties.forEach((key, value) -> {
+                    Configuration.set((String) key, (String) value);
+                });
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     public static void doMain(Class clazz) {  //启动类
         System.out.println("初始化");
         if (init) {
             try {
                 initEvn(clazz);
+                loadTinyLogConfig();
                 initBean();
                 initAnnotation(clazz);
                 init = false;
@@ -116,12 +137,9 @@ public class Init {
             Evn.setEnvironment(sTargetEvn);
         }
 
-
         ProjectRootPath projectRootPath = (ProjectRootPath) clazz.getAnnotation(ProjectRootPath.class);
-
         Evn.setRootPath(projectRootPath.value());
         System.out.println(Evn.getRootPath());
-
 
         Evn.setModulePath(getPath(clazz));
         System.out.println(Evn.getModulePath());

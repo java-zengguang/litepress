@@ -97,55 +97,6 @@ public class BeanFactory {
         return beanMaps;
     }
 
-/*
-
-    public static Object createBean(String id) {
-        Object o = null;
-        Element root;
-        try {
-            root = getRootElement();
-
-            for (Object beanO : root.elements("bean")) {
-                Element bean = (Element) beanO;
-                String beanName = bean.attributeValue("id");
-
-                if (beanName.equals(id)) {
-                    String beanClassName = bean.attributeValue("class");
-                    o = Class.forName(beanClassName).getDeclaredConstructor().newInstance();
-                    for (Object propertyO : bean.elements("property")) {
-                        Element property = (Element) propertyO;
-                        String name = property.attributeValue("name");
-                        Field field = Class.forName(beanClassName).getField(name);
-                        field.setAccessible(true);
-                        if (property.attributeValue("type") != null) {
-                            String value = property.getStringValue();
-                            //对密码做个加密
-                            if ("password".equals(name) && property.attributeValue("encryption") == null) {
-                                value = PassWordUtil.decrypt(value);
-                            }
-                            field.set(o, TransEntityTypeUtils.translateType(value, field.getType().getSimpleName()));
-                        }
-                        if (property.attributeValue("ref") != null) {
-                            field.set(o, BeanFactory.createBean(property.attributeValue("ref")));
-                        }
-                    }
-                }//
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            Logger.error(e);
-        }
-
-        try {
-            o = createProxy(o);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            Logger.error(e);
-        }
-        return o;
-
-    }
-*/
 
 
     public static Object createProxy(Object target) throws NoSuchMethodException, SecurityException, ClassNotFoundException, DocumentException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {

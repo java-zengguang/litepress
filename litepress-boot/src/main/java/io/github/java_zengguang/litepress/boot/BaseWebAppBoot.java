@@ -23,26 +23,10 @@ public abstract class BaseWebAppBoot {
     }
 
 
-    public void loadTinyLogConfig() {
-
-        try {
-            if (Evn.getInitConfigMap("tinyLogConfig") != null) {
-                Properties properties = new Properties();
-                properties.load(new StringReader(Evn.getInitConfigMap("tinyLogConfig")));
-                properties.forEach((key, value) -> {
-                    Configuration.set((String) key, (String) value);
-                });
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public void init() {
 
 
         Init.doMain(clazz);
-        loadTinyLogConfig();
         config();
         ReactorWebService tomcatBoot=new ReactorWebService(port);
         try {
