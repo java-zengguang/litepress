@@ -11,20 +11,21 @@ import java.sql.SQLException;
 
 public class TransactionHandler implements InvocationHandler {
     private final Object target;
+    private TransactionManager transactionManager;
 
 
     public TransactionHandler(Object target) {
         this.target = target;
-
+        this.transactionManager=TransactionManager.getInstance();
     }
 
-    public void commit() throws  InvocationTargetException,  SQLException {
+    public void commit() throws InvocationTargetException, SQLException {
 
-        TransactionManager.commit();
+        transactionManager.commit();
     }
 
     public void release() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, SQLException, ClassNotFoundException {
-        TransactionManager.release();
+        transactionManager.release();
     }
 
     @Override

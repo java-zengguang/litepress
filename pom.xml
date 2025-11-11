@@ -55,7 +55,7 @@
         <slf4j.api>2.0.13</slf4j.api>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
-        <revision>0.0.7</revision>
+        <revision>0.0.8</revision>
     </properties>
 
     <!-- 发布配置 -->

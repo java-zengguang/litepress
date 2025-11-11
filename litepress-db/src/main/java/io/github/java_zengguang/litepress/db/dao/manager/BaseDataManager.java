@@ -14,28 +14,28 @@ import io.github.java_zengguang.litepress.db.dao.template.EntityDaoTemplate;
 import io.github.java_zengguang.litepress.db.dao.template.EntityDaoTemplateFactory;
 import io.github.java_zengguang.litepress.db.util.DBUtils;
 import io.github.java_zengguang.litepress.db.util.ParseSQLUtils;
-import net.sf.jsqlparser.JSQLParserException;
 import org.tinylog.Logger;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
 
 public class BaseDataManager implements DataManager {
-    private String dataSource;
+    private final String dataSource;
+    private final TransactionManager transactionManager;
 
     public BaseDataManager(String dataSource) {
         this.dataSource = dataSource;
+        this.transactionManager = TransactionManager.getInstance();
     }
 
-    private Connection getConnection() throws SQLException, ClassNotFoundException {
-        return TransactionManager.getConnection(dataSource);
+    private Connection getConnection() throws Exception {
+        return transactionManager.getConnection(dataSource);
     }
 
     //查询出列明，数据对应的list集合
-    public List<Map<String, Object>> selectToMapList(String sql) throws SQLException, ClassNotFoundException {
+    public List<Map<String, Object>> selectToMapList(String sql) throws Exception {
         // 记录error级别的信息
         Logger.debug(sql);
         List<Map<String, Object>> list = new ArrayList();
@@ -61,7 +61,7 @@ public class BaseDataManager implements DataManager {
     }
 
     //查询出列明，数据对应的list集合
-    public List<List<MetadataEntity>> select2TempleList(String sql, String... tableNames) throws SQLException, ClassNotFoundException {
+    public List<List<MetadataEntity>> select2TempleList(String sql, String... tableNames) throws Exception {
         Logger.debug(sql);
         List<List<MetadataEntity>> list = new ArrayList<>();
         //合并主表
@@ -69,7 +69,7 @@ public class BaseDataManager implements DataManager {
         List<String> tableNameList = Arrays.asList(tableNames);
         tableNameList.forEach(tableNameBuffer::append);
 
-        Connection conn = TransactionManager.getConnection(dataSource);
+        Connection conn = this.getConnection();
         //获取组件
         List<String> pkColumnList = new ArrayList<>();
         DatabaseMetaData dmd = conn.getMetaData();
@@ -130,10 +130,10 @@ public class BaseDataManager implements DataManager {
     }
 
 
-    public Class<?> selectStream(String sql, File tempFile) throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JSQLParserException, NoSuchMethodException, InvocationTargetException {
+    public Class<?> selectStream(String sql, File tempFile) throws Exception {
         Class<?> modelClass = null;
         String tableName = ParseSQLUtils.parseSelectMainTable(sql).get(0);
-        Connection conn = TransactionManager.getConnection(dataSource);
+        Connection conn = this.getConnection();
         //获取组件
         List<String> pkColumnList = new ArrayList<>();
         DatabaseMetaData dmd = conn.getMetaData();
@@ -206,7 +206,7 @@ public class BaseDataManager implements DataManager {
     }
 
 
-    public Class<?> selectStream(String sql, String tableName, String tempFileDir, List<File> tempFileList, Integer fileSize) throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JSQLParserException, NoSuchMethodException, InvocationTargetException {
+    public Class<?> selectStream(String sql, String tableName, String tempFileDir, List<File> tempFileList, Integer fileSize) throws Exception {
         Class<?> modelClass = null;
 
         tableName = tableName.trim().toUpperCase();
@@ -216,7 +216,7 @@ public class BaseDataManager implements DataManager {
             ownName = splits[0];
             tableName = splits[1];
         }
-        Connection conn = TransactionManager.getConnection(dataSource);
+        Connection conn = this.getConnection();
         //获取组件
         List<String> pkColumnList = new ArrayList<>();
         DatabaseMetaData dmd = conn.getMetaData();
@@ -310,7 +310,7 @@ public class BaseDataManager implements DataManager {
 
 
     //查询出列明，数据对应的list集合
-    public List<List<MetadataEntity>> select2TempleList(String sql) throws SQLException, ClassNotFoundException, JSQLParserException {
+    public List<List<MetadataEntity>> select2TempleList(String sql) throws Exception {
         Logger.debug(sql);
         List<String> tableNameList = ParseSQLUtils.parseSelectMainTable(sql);
         String[] array = tableNameList.toArray(new String[0]);
@@ -318,7 +318,7 @@ public class BaseDataManager implements DataManager {
     }
 
     //执行批操作
-    public int[] operationAll(List<String> sqlList) throws SQLException, ClassNotFoundException {
+    public int[] operationAll(List<String> sqlList) throws Exception {
         int[] result = new int[sqlList.size()];
         for (int i = 0; i < sqlList.size(); i++) {
             String sql = sqlList.get(i);
@@ -327,7 +327,7 @@ public class BaseDataManager implements DataManager {
         return result;
     }
 
-    public Integer updateEntity(String dbType, Object model, String... terms) throws IllegalAccessException, InstantiationException, SQLException, ClassNotFoundException {
+    public Integer updateEntity(String dbType, Object model, String... terms) throws Exception {
 
         String sql;
         String condition = " ";
@@ -342,7 +342,7 @@ public class BaseDataManager implements DataManager {
         StringBuilder memberValues = new StringBuilder();
         for (MetadataEntity entity : list) {
             if ("1".equals(entity.isNotCommit)) {
-                if (entity.fieldName != null && entity.objectValue != null ) {
+                if (entity.fieldName != null && entity.objectValue != null) {
                     memberList.add(entity.fieldName);
                     valuesList.add(entity.objectValue);
                     memberValues.append(" " + entity.fieldName + "=" + "?,");
@@ -356,7 +356,7 @@ public class BaseDataManager implements DataManager {
         sql = "update " + tableName + " set " + memberValues + "where 1=1 " + condition;
 
 
-        Connection conn = TransactionManager.getConnection(dataSource);
+        Connection conn = this.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql);
 
         for (int i = 0; i < valuesList.size(); i++) {
@@ -398,7 +398,7 @@ public class BaseDataManager implements DataManager {
         return flag;
     }
 
-    public Integer insertEntity(Object model, String tableName, String dbType) throws IllegalArgumentException, IllegalAccessException, SQLException, InstantiationException, ClassNotFoundException {
+    public Integer insertEntity(Object model, String tableName, String dbType) throws Exception {
         List<String> memberList = new ArrayList<>();
         List<Object> valuesList = new ArrayList<>();
         StringBuilder member = new StringBuilder();
@@ -422,7 +422,7 @@ public class BaseDataManager implements DataManager {
         values.deleteCharAt(values.length() - 1);
         sql = "insert into " + tableName + " (" + member + ") values (" + values + ")";
 
-        Connection conn = TransactionManager.getConnection(dataSource);
+        Connection conn = this.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql);
 
         for (int i = 0; i < valuesList.size(); i++) {
@@ -460,16 +460,16 @@ public class BaseDataManager implements DataManager {
             }
         }
 
-        Integer result= stmt.executeUpdate();
+        Integer result = stmt.executeUpdate();
         stmt.close();
         return result;
     }
 
     //执行批操作
-    public int[] batchSQL(List<String> sqlList) throws SQLException, ClassNotFoundException {
+    public int[] batchSQL(List<String> sqlList) throws Exception {
         //清洗脚本
         Statement stmt;
-        Connection conn = TransactionManager.getConnection(dataSource);
+        Connection conn = this.getConnection();
         stmt = conn.createStatement();
         Logger.debug("--------------start batch-----------");
         for (String sql : sqlList) {
@@ -483,9 +483,9 @@ public class BaseDataManager implements DataManager {
     }
 
 
-    public List<String> selectOneColList(String sql) throws SQLException, ClassNotFoundException {
+    public List<String> selectOneColList(String sql) throws Exception {
         List<String> list = new ArrayList<>();
-        Connection conn = TransactionManager.getConnection(dataSource);
+        Connection conn = this.getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql);
         ResultSet rs;
         rs = pstmt.executeQuery();
@@ -525,7 +525,7 @@ public class BaseDataManager implements DataManager {
     }
 
 
-    public String getOneValue(String sql) throws SQLException, ClassNotFoundException {
+    public String getOneValue(String sql) throws Exception {
         String result = "";
         ResultSet rs = null;
         PreparedStatement pstmt = null;
@@ -539,7 +539,7 @@ public class BaseDataManager implements DataManager {
     }
 
     //执行增删改
-    public Integer operation(String sql) throws SQLException, ClassNotFoundException {
+    public Integer operation(String sql) throws Exception {
         Logger.debug(sql);
         Connection conn = getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql);

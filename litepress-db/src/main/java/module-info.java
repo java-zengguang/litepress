@@ -8,6 +8,7 @@ module litepress.db {
     requires org.tinylog.api;
     requires jsqlparser;
     requires pagehelper;
+    requires org.apache.poi.poi;
 
     exports io.github.java_zengguang.litepress.db.proxy;
     exports io.github.java_zengguang.litepress.db.dao.assemble;

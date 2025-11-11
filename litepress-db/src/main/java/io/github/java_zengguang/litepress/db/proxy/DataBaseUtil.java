@@ -12,9 +12,7 @@ import org.tinylog.Logger;
 import java.sql.*;
 import java.util.*;
 
-/**
- * Created by Administrator on 2018/11/27 0027.
- */
+
 public class DataBaseUtil {
 
     private static final Map<String, Map> tableInfoMap = new HashMap<>();
@@ -31,7 +29,7 @@ public class DataBaseUtil {
             try {
                 SimpleEntityDao jdbcUtil = new SimpleEntityDao("opthinDB");
                 list = jdbcUtil.selectToMapList(tableInfoSQL);
-            } catch (SQLException | ClassNotFoundException e) {
+            } catch (Exception e) {
                 Logger.error(e);
             }
             tableInfo = ListUtils.createMap(list, "COLUMN_NAME", "DATA_TYPE");
@@ -53,7 +51,7 @@ public class DataBaseUtil {
 
     }
 
-    private static void loadTableListInfo() throws SQLException, ClassNotFoundException {
+    private static void loadTableListInfo() throws Exception {
         String tableName = "";
 
         String tableListSQL = "SELECT TABLE_NAME FROM information_schema.tables" +
@@ -75,7 +73,7 @@ public class DataBaseUtil {
     }
 
 
-    private static Map<String, Map> getTableListInfo() throws SQLException, ClassNotFoundException {
+    private static Map<String, Map> getTableListInfo() throws Exception {
         if (tableInfoMap == null || tableInfoMap.size() == 0) {
             loadTableListInfo();
             getTableListInfo();
@@ -85,9 +83,9 @@ public class DataBaseUtil {
 
 
     //查询数据库中的表名
-    public static List<String> getTableNameList(String dataSource) throws SQLException, ClassNotFoundException {
+    public static List<String> getTableNameList(String dataSource) throws Exception {
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-        Connection conn = TransactionManager.getConnection(dataSource);
+        Connection conn = TransactionManager.getInstance().getConnection(dataSource);
         DatabaseMetaData dbmd = conn.getMetaData();
         String userName = optionDB.username.toUpperCase();
         if (userName.contains("@")) {
@@ -98,15 +96,15 @@ public class DataBaseUtil {
         while (rs.next()) {
             tableNameList.add(rs.getString("TABLE_NAME"));
         }
-        TransactionManager.release(dataSource);
+        TransactionManager.getInstance().release(dataSource);
         return tableNameList;
     }
 
 
     //查询数据库中的表结构
-    public static List<TableInfo> getTableInfoList(String dataSource, String tableName) throws SQLException, ClassNotFoundException {
+    public static List<TableInfo> getTableInfoList(String dataSource, String tableName) throws Exception {
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
-        Connection conn = TransactionManager.getConnection(dataSource);
+        Connection conn = TransactionManager.getInstance().getConnection(dataSource);
         DatabaseMetaData dbmd = conn.getMetaData();
         String userName = optionDB.username.toUpperCase();
         if (userName.contains("@")) {
@@ -128,13 +126,13 @@ public class DataBaseUtil {
             tableInfo.columnList = columnInfoList;
             tableInfoList.add(tableInfo);
         }
-        TransactionManager.release(dataSource);
+        TransactionManager.getInstance().release(dataSource);
         return tableInfoList;
     }
 
 
-    public static TableInfo getTableInfo(String dataSource, String tableName) throws SQLException, ClassNotFoundException {
-        Connection conn = TransactionManager.getConnection(dataSource);
+    public static TableInfo getTableInfo(String dataSource, String tableName) throws Exception {
+        Connection conn = TransactionManager.getInstance().getConnection(dataSource);
         DatabaseMetaData dbmd = conn.getMetaData();
 
         TableInfo tableInfo = new TableInfo();
@@ -182,13 +180,13 @@ public class DataBaseUtil {
         }
         tableInfo.columnList = columnInfoList;
         tableInfo.pkColumnList = pkColumnList;
-        TransactionManager.release(dataSource);
+        TransactionManager.getInstance().release(dataSource);
         return tableInfo;
     }
 
 
-    public static TableInfo getUserTableInfo(String dataSource, String tableName) throws SQLException, ClassNotFoundException {
-        Connection conn = TransactionManager.getConnection(dataSource);
+    public static TableInfo getUserTableInfo(String dataSource, String tableName) throws Exception {
+        Connection conn = TransactionManager.getInstance().getConnection(dataSource);
         DatabaseMetaData dbmd = conn.getMetaData();
         String currentUser = dbmd.getUserName();
 
@@ -238,7 +236,7 @@ public class DataBaseUtil {
         }
         tableInfo.columnList = columnInfoList;
         tableInfo.pkColumnList = pkColumnList;
-        TransactionManager.release(dataSource);
+        TransactionManager.getInstance().release(dataSource);
         return tableInfo;
     }
 

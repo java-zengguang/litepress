@@ -11,16 +11,12 @@ import io.github.java_zengguang.litepress.db.dao.manager.BaseDataManager;
 import io.github.java_zengguang.litepress.db.dao.manager.DataManager;
 import io.github.java_zengguang.litepress.db.util.DBUtils;
 import io.github.java_zengguang.litepress.db.util.ModelSQLUtils;
-import net.sf.jsqlparser.JSQLParserException;
 import org.tinylog.Logger;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.*;
 
 
@@ -38,27 +34,21 @@ public class BaseEntityDao<T> implements EntityDao<T> {
         this.optionDB = (OptionDB) Config.getConfig(dataSource);
     }
 
-    public int insertTable(T model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
-        List<T> list = new ArrayList<>();
-        list.add(model);
-        int[] results = insertTables(list, (Class<T>) model.getClass());
-        int result = 0;
-        if (results != null && results.length > 0) {
-            result = results[0];
-        }
-        return result;
+    public int insertTable(T model) throws Exception {
+
+        return Arrays.stream(this.insertTables(List.of(model), (Class<T>) model.getClass())).findFirst().orElse(-1);
     }
 
-    public Integer operation(String sql) throws SQLException, ClassNotFoundException {
+    public Integer operation(String sql) throws Exception {
         return dataManager.operation(sql);
     }
 
-    public T insertAutoIncrease(T model) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+    public T insertAutoIncrease(T model) throws Exception {
         Class<?> clazz = model.getClass();
         Field[] fields = clazz.getFields();
         Field idField = Arrays.stream(fields).filter(field -> field.isAnnotationPresent(AutoIncrease.class)).findFirst().get();
         String tableName = DBUtils.getTableNameFromModel(model.getClass());
-        if (dataManager.insertEntity(model, tableName, optionDB.dbtype)>0) {
+        if (dataManager.insertEntity(model, tableName, optionDB.dbtype) > 0) {
             String sql = "select @@IDENTITY as id ";
             List<Map<String, Object>> list = dataManager.selectToMapList(sql);
             Map<String, Object> map = list.getFirst();
@@ -71,18 +61,18 @@ public class BaseEntityDao<T> implements EntityDao<T> {
         return model;
     }
 
-    public int[] insertTables(List<T> modelLIst, Class<T> modelClass) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+    public int[] insertTables(List<T> modelLIst, Class<T> modelClass) throws Exception {
         String tableName = DBUtils.getTableNameFromModel(modelClass);
         return insertTables(modelLIst, tableName);
     }
 
     @Override
-    public int[] batchSQL(List<String> sqlList) throws SQLException, ClassNotFoundException {
+    public int[] batchSQL(List<String> sqlList) throws Exception {
         return dataManager.batchSQL(sqlList);
     }
 
     //插入model_list ，未提交，未初始化连接
-    public int[] insertTables(List<T> modelList, String tableName) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+    public int[] insertTables(List<T> modelList, String tableName) throws Exception {
         List<String> sqlList = modelList.stream().map((model) -> {
             try {
                 return ModelSQLUtils.insert(model, tableName, optionDB.dbtype);
@@ -90,7 +80,6 @@ public class BaseEntityDao<T> implements EntityDao<T> {
                 throw new RuntimeException(e);
             }
         }).toList();
-
         return dataManager.batchSQL(sqlList);
 
     }
@@ -111,13 +100,13 @@ public class BaseEntityDao<T> implements EntityDao<T> {
     }
 
     //查询
-    public List<T> select(String sql) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException, JSQLParserException, InvocationTargetException, NoSuchMethodException {
+    public List<T> select(String sql) throws Exception {
         List<List<MetadataEntity>> templeList = dataManager.select2TempleList(sql);
         return transMetadata2Obj(templeList);
     }
 
 
-    public List<T> select(String sql, String tableName) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+    public List<T> select(String sql, String tableName) throws Exception {
 
         List<List<MetadataEntity>> templeList = dataManager.select2TempleList(sql, tableName);
 
@@ -126,7 +115,7 @@ public class BaseEntityDao<T> implements EntityDao<T> {
 
 
     //查询出列明，数据对应的list集合
-    public List<Map> selectToMapList(String sql) throws SQLException, ClassNotFoundException {
+    public List<Map> selectToMapList(String sql) throws Exception {
 
         // 记录error级别的信息
         Logger.debug(sql);
@@ -135,7 +124,7 @@ public class BaseEntityDao<T> implements EntityDao<T> {
     }
 
 
-    public List<String> selectOneColList(String sql) throws SQLException, ClassNotFoundException {
+    public List<String> selectOneColList(String sql) throws Exception {
         return dataManager.selectOneColList(sql);
     }
 
@@ -167,17 +156,17 @@ public class BaseEntityDao<T> implements EntityDao<T> {
     }
 
 
-    public String selectOneValue(String sql) throws SQLException, ClassNotFoundException {
+    public String selectOneValue(String sql) throws Exception {
         return dataManager.selectOneColList(sql).getFirst();
     }
 
 
-    public Class<?> selectStream(String sql, File tempFile) throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JSQLParserException, InvocationTargetException, NoSuchMethodException {
+    public Class<?> selectStream(String sql, File tempFile) throws Exception {
         return dataManager.selectStream(sql, tempFile);
     }
 
 
-    public Class<?> selectStream(String sql, String tableName, String tempFileDir, List<File> tempFileList, Integer fileSize) throws SQLException, ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, JSQLParserException, InvocationTargetException, NoSuchMethodException {
+    public Class<?> selectStream(String sql, String tableName, String tempFileDir, List<File> tempFileList, Integer fileSize) throws Exception {
         return dataManager.selectStream(sql, tableName, tempFileDir, tempFileList, fileSize);
     }
 
@@ -198,7 +187,7 @@ public class BaseEntityDao<T> implements EntityDao<T> {
         return select(sql, tClass);
     }
 
-    public List<T> execute(String sql) throws SQLException, IllegalAccessException, IOException, ClassNotFoundException, ParseException, InstantiationException, JSQLParserException, InvocationTargetException, NoSuchMethodException {
+    public List<T> execute(String sql) throws Exception {
         Logger.debug(sql);
         List<T> list = new ArrayList<>();
         if (sql == null) {
@@ -212,13 +201,15 @@ public class BaseEntityDao<T> implements EntityDao<T> {
     }
 
 
-    public int updateModel(Object object, String... terms) throws SQLException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+    public int updateModel(Object object, String... terms) throws Exception {
         int result = 0;
         if (terms != null && terms.length > 0) {
             result = dataManager.updateEntity(optionDB.dbtype, object, terms);
         }
         return result;
     }
+
+
 
 
     public Integer insertMap2Data(String tableName, Map<String, String> para) throws Exception {
