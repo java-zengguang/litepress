@@ -3,15 +3,13 @@ package io.github.java_zengguang.litepress.direction.adapter;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-
 import io.github.java_zengguang.litepress.core.init.Config;
 import io.github.java_zengguang.litepress.core.util.reflect.JsonUtil;
 import io.github.java_zengguang.litepress.direction.annotation.ProviderResolveAnnotation;
 import io.github.java_zengguang.litepress.direction.entity.ProviderConfig;
 import io.github.java_zengguang.litepress.direction.entity.ProviderEntity;
-import io.github.java_zengguang.litepress.direction.server.ProviderServiceHandler;
-import io.github.java_zengguang.litepress.network.common.client.BaseKeepClient;
-import io.github.java_zengguang.litepress.network.common.service.BaseKeepService;
+import io.github.java_zengguang.litepress.direction.server.ProviderKeepService;
+import io.github.java_zengguang.litepress.network.common.client.NettyClient;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.cache.ChildData;
@@ -96,7 +94,7 @@ public class ProviderRegister {
                 Logger.debug("删除！" + childData.getPath());
                 ProviderEntity provider = (ProviderEntity) JsonUtil.string2Obj(new String(childData.getData()), ProviderEntity.class);
                 providerTable.remove(provider.providerName, provider.path);
-                BaseKeepClient.close(provider.host, provider.port);
+                NettyClient.close(provider.host, provider.port);
 
             }
         });
@@ -122,7 +120,7 @@ public class ProviderRegister {
             thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    BaseKeepService providerService = new BaseKeepService(new ProviderServiceHandler(),providerConfig.DTPPort);
+                    ProviderKeepService providerService = ProviderKeepService.getInstance(providerConfig.DTPPort);
                     providerService.doMain();
                 }
             });

@@ -17,5 +17,6 @@ open module litepress.direction {
     requires io.netty.transport;
     requires jakarta.json;
     requires com.fasterxml.jackson.databind;
+    requires io.netty.codec;
 
 }

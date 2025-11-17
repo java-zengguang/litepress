@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.github.java_zengguang.litepress.core.util.reflect.JsonUtil;
 import io.github.java_zengguang.litepress.direction.entity.DTPRequest;
 import io.github.java_zengguang.litepress.direction.entity.DTPResponse;
-import io.github.java_zengguang.litepress.network.common.service.BaseKeepServiceHandler;
+import io.github.java_zengguang.litepress.network.common.service.NettyServiceHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @ChannelHandler.Sharable
-public class ProviderServiceHandler extends BaseKeepServiceHandler {
+public class ProviderServiceHandler extends NettyServiceHandler {
 
 
     public Class[] getParamterTypes(List<String> paramterTypes) throws ClassNotFoundException {

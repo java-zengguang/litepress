@@ -5,11 +5,6 @@ import io.github.java_zengguang.litepress.core.init.Evn;
 import io.github.java_zengguang.litepress.boot.init.Init;
 
 import io.github.java_zengguang.litepress.web.netty.reactor.ReactorWebService;
-import org.tinylog.configuration.Configuration;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Properties;
 
 public abstract class BaseWebAppBoot {
 
@@ -28,7 +23,7 @@ public abstract class BaseWebAppBoot {
 
         Init.doMain(clazz);
         config();
-        ReactorWebService tomcatBoot=new ReactorWebService(port);
+        ReactorWebService tomcatBoot= ReactorWebService.getInstance(port);
         try {
             tomcatBoot.doMain();
         } catch (Exception e) {

@@ -1,14 +1,11 @@
 package io.github.java_zengguang.litepress.network.common.service;
 
 import io.netty.channel.*;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.util.concurrent.GlobalEventExecutor;
 import org.tinylog.Logger;
 
 
 
-public abstract class BaseKeepServiceHandler extends ChannelInboundHandlerAdapter {
+public abstract class NettyServiceHandler extends ChannelInboundHandlerAdapter {
 
 
     @Override

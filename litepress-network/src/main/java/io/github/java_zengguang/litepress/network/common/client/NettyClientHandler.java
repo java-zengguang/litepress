@@ -8,19 +8,19 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.tinylog.Logger;
 
 
-public class BaseKeepClientHandler extends ChannelInboundHandlerAdapter {
+public abstract class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     private Class agreementClass;  //协议
 
-    public BaseKeepClientHandler(Class agreementClass) {
+    public NettyClientHandler(Class agreementClass) {
         this.agreementClass = agreementClass;
     }
 
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable e) {
         // 异常处理逻辑
-        cause.printStackTrace();
+        Logger.error(e);
         // 关闭Channel
         ctx.close();
     }
@@ -28,7 +28,10 @@ public class BaseKeepClientHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws InterruptedException {
         Logger.debug("返回请求 message: " + msg);
         BaseTranslationProtocol baseTranslationProtocol = (BaseTranslationProtocol) JsonUtil.string2Obj((String) msg, agreementClass);
-        BaseMessageCache.dealResponse(baseTranslationProtocol);
+        this.deal(baseTranslationProtocol);
     }
+
+
+    public abstract void deal(BaseTranslationProtocol translationProtocol);
 
 }

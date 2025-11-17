@@ -3,7 +3,6 @@ package io.github.java_zengguang.litepress.web.netty.reactor;
 import io.github.java_zengguang.litepress.core.init.Config;
 import io.github.java_zengguang.litepress.web.entity.CookieEntity;
 import io.github.java_zengguang.litepress.web.entity.HttpRequestEntity;
-import io.github.java_zengguang.litepress.web.entity.HttpResponseEntity;
 import io.github.java_zengguang.litepress.web.entity.MVCOption;
 import io.github.java_zengguang.litepress.web.enums.SceneType;
 import io.github.java_zengguang.litepress.web.netty.adapter.HttpNettyControllerAdapter;
@@ -18,15 +17,21 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
-import io.netty.handler.codec.http.multipart.*;
+import io.netty.handler.codec.http.multipart.Attribute;
+import io.netty.handler.codec.http.multipart.FileUpload;
+import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import io.netty.util.CharsetUtil;
 import org.tinylog.Logger;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+import reactor.util.retry.Retry;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
@@ -75,7 +80,6 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
     }
 
 
-
     public HttpRequestEntity transHttpRequestEntity(FullHttpRequest request) {
         String requestURI = request.uri();
         HttpRequestEntity httpRequestEntity = new HttpRequestEntity();
@@ -104,8 +108,8 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
                 httpRequestEntity.sceneType = SceneType.FORM.name();
                 httpRequestEntity.paramMap.putAll(readBody(request));
             } else if (httpRequestEntity.contentType.equals("application/x-www-form-urlencoded;charset=UTF-8")) {
-                 decoder = new QueryStringDecoder(request.content().toString(CharsetUtil.UTF_8),false);
-                 uriAttributes = decoder.parameters();
+                decoder = new QueryStringDecoder(request.content().toString(CharsetUtil.UTF_8), false);
+                uriAttributes = decoder.parameters();
                 if (uriAttributes != null && !uriAttributes.isEmpty()) {
                     uriAttributes.forEach((key, values) -> {
                         //这里做了特殊处理，所有的摒弃一个字段对应多个值，只取第一个
@@ -120,7 +124,7 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
     }
 
     private Map<String, Object> readBody(FullHttpRequest request) {
-        MVCOption mvcOption= (MVCOption) Config.getConfig("MVCOption");
+        MVCOption mvcOption = (MVCOption) Config.getConfig("MVCOption");
         Map<String, Object> paramMap = new HashMap<>();
         List<File> files = new ArrayList<>();
         if (request.headers().get(HttpHeaderNames.CONTENT_TYPE).startsWith("multipart/form-data")) {
@@ -141,8 +145,8 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
                                     ByteBuf byteBuf = fileUpload.getByteBuf();
                                     byte[] bytes = new byte[byteBuf.readableBytes()];
                                     byteBuf.readBytes(bytes);
-                                    File file=new File(mvcOption.temporaryFilePath,fileUpload.getFilename());
-                                    Files.write(Paths.get(mvcOption.temporaryFilePath+fileUpload.getFilename()), bytes);
+                                    File file = new File(mvcOption.temporaryFilePath, fileUpload.getFilename());
+                                    Files.write(Paths.get(mvcOption.temporaryFilePath + fileUpload.getFilename()), bytes);
                                     files.add(file);
                                 }
                                 break;
@@ -164,29 +168,17 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
     }
 
 
-    private void dealSSE(ChannelHandlerContext ctx, HttpRequestEntity httpRequestEntity) {
-        String groupId = (String) httpRequestEntity.paramMap.get("groupId");
-        String clientId = (String) httpRequestEntity.paramMap.get("clientId");
-        SSEManager sseManager = SSE2NettyManager.getInstance();
-        sseManager.createSSE(ctx, groupId);
-        Logger.info("创建SSE链接  groupId: " + groupId + " clientId:" + clientId);
-    }
+//    private void dealSSE(ChannelHandlerContext ctx, HttpRequestEntity httpRequestEntity) {
+//        String groupId = (String) httpRequestEntity.paramMap.get("groupId");
+//        String clientId = (String) httpRequestEntity.paramMap.get("clientId");
+//        SSEManager sseManager = SSE2NettyManager.getInstance();
+//        sseManager.createSSE(ctx, groupId);
+//        Logger.info("创建SSE链接  groupId: " + groupId + " clientId:" + clientId);
+//    }
 
-    private void dealController(ChannelHandlerContext ctx, HttpRequestEntity httpRequestEntity) throws Exception {
-        // 处理接收到的 HTTP 请求
-        HttpResponseEntity responseEntity = controllerAdapter.dealHttpRequest(httpRequestEntity);
 
-        if (responseEntity.result instanceof BlockingQueue) {
-            HttpResponseHandler httpResponseHandler = new StreamHttpResponseHandler();
-            httpResponseHandler.dealHttpResponse(ctx, responseEntity);
-        } else {
-            HttpResponseHandler httpResponseHandler = new SimpleHttpResponseHandler();
-            httpResponseHandler.dealHttpResponse(ctx, responseEntity);
-        }
 
-    }
-
-    @Override
+/*    @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
         // 处理接收到的 HTTP 请求
         HttpRequestEntity httpRequestEntity = transHttpRequestEntity(msg);
@@ -196,6 +188,31 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
             dealController(ctx, httpRequestEntity);
         }
 
+    }*/
+
+    // Reactor 示例 - 与 Spring 生态完美集成
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) {
+        HttpRequestEntity httpRequestEntity = transHttpRequestEntity(msg);
+        Mono.fromCallable(() -> controllerAdapter.dealHttpRequest(httpRequestEntity))
+                .subscribeOn(Schedulers.boundedElastic()) // 内置弹性线程池
+                .doOnError(error -> Logger.error("处理失败: {}", httpRequestEntity.path, error))
+                .retryWhen(Retry.backoff(0, Duration.ofSeconds(1))) // 内置重试机制
+                .subscribe(responseEntity -> ctx.executor().execute(() -> {
+                    try {
+                        if (responseEntity.result instanceof BlockingQueue) {
+                            HttpResponseHandler httpResponseHandler = new StreamHttpResponseHandler();
+                            httpResponseHandler.dealHttpResponse(ctx, responseEntity);
+                        } else {
+                            HttpResponseHandler httpResponseHandler = new SimpleHttpResponseHandler();
+                            httpResponseHandler.dealHttpResponse(ctx, responseEntity);
+                        }
+                    } catch (Exception e) {
+                        Logger.error(e);
+                    }
+                }), error -> ctx.executor().execute(() -> {
+                    Logger.error(error);
+                }));
     }
 
     @Override

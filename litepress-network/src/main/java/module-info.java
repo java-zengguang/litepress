@@ -3,9 +3,7 @@ module litepress.network {
     requires litepress.core;
     exports io.github.java_zengguang.litepress.network.common.service;
     exports io.github.java_zengguang.litepress.network.common.client;
-    exports io.github.java_zengguang.litepress.network.bean;
-    exports io.github.java_zengguang.litepress.network.common.fileservcie;
-    exports io.github.java_zengguang.litepress.network.common.heartbeat;
+
     exports io.github.java_zengguang.litepress.network.common.cache;
     exports io.github.java_zengguang.litepress.network.entity;
 

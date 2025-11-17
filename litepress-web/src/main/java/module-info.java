@@ -15,6 +15,7 @@ open module litepress.web {
     requires commons.collections;
     requires com.google.common;
     requires litepress.core;
+    requires reactor.core;
 
     exports io.github.java_zengguang.litepress.web.servlet;
     exports io.github.java_zengguang.litepress.web.servlet.adapter;

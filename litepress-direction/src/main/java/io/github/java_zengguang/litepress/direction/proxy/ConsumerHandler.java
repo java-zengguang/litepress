@@ -3,9 +3,12 @@ package io.github.java_zengguang.litepress.direction.proxy;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.java_zengguang.litepress.core.util.reflect.JsonUtil;
-import io.github.java_zengguang.litepress.direction.client.ConsumerKeepClientUtil;
+import io.github.java_zengguang.litepress.direction.adapter.ProviderRegister;
 import io.github.java_zengguang.litepress.direction.entity.DTPRequest;
 import io.github.java_zengguang.litepress.direction.entity.DTPResponse;
+import io.github.java_zengguang.litepress.direction.entity.ProviderEntity;
+import io.github.java_zengguang.litepress.network.common.client.NettyClient;
+import io.github.java_zengguang.litepress.network.entity.BaseRequest;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -78,8 +81,7 @@ public class ConsumerHandler implements InvocationHandler {
         request.methodParamterDataTypeMapList = methodParamterDataTypeMap;
 
 
-        DTPResponse response;
-        response = ConsumerKeepClientUtil.addSynRequest(request.providerName, request);
+        DTPResponse  response = this.addSynRequest(request.providerName, request);
 
 
         Object result = null;
@@ -93,5 +95,40 @@ public class ConsumerHandler implements InvocationHandler {
         }
 
         return result;
+    }
+
+    //同步返回结果
+    public   DTPResponse addSynRequest(String providerName, DTPRequest request) throws Exception {
+        //从注册中心获取配置
+        ProviderRegister providerRegister = ProviderRegister.getInstance();
+        ProviderEntity providerEntity = providerRegister.findPriorityNode(providerName);
+        //添加一些配置信息
+        request.className = providerEntity.className;
+        request.providerName = providerEntity.providerName;
+        request.path = providerEntity.path;
+
+        //构建请求结构
+        BaseRequest baseRequest=new BaseRequest();
+        baseRequest.id= request.id;
+        baseRequest.state="1";
+        baseRequest.message=request;
+        //获取客户端、发送请求
+        NettyClient baseKeepClient = NettyClient.getInstance(providerEntity.host,providerEntity.port,DTPResponse.class);
+        baseKeepClient.sendRequest(baseRequest);
+        //   LockSupport.parkUntil(baseRequest,System.currentTimeMillis() + 10 * 1000);
+        DTPResponse response = (DTPResponse)baseRequest.result;
+
+        if (response == null) {
+            response = new DTPResponse();
+            response.id = request.id;
+            response.success = false;
+            response.error = request.id + "没有收到返回消息，可能服务变化" + request.path + "clieckversion" + providerEntity.clientVersion;
+        }
+
+        if (!response.success) {
+            throw new Exception(response.error);
+        }
+        return response;
+
     }
 }
