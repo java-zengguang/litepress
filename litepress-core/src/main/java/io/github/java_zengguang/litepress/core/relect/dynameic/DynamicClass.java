@@ -2,7 +2,6 @@ package io.github.java_zengguang.litepress.core.relect.dynameic;
 
 
 import io.github.java_zengguang.litepress.core.bean.entity.MetadataEntity;
-import io.github.java_zengguang.litepress.core.init.Evn;
 import io.github.java_zengguang.litepress.core.relect.bytebuddy.DynamicClassGenerator;
 import io.github.java_zengguang.litepress.core.util.CommonUtil;
 import org.tinylog.Logger;
@@ -202,19 +201,7 @@ public class DynamicClass {
     }
 
 
-    public static void main(String[] args) throws MalformedURLException, FileNotFoundException, URISyntaxException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        Evn.setModulePath("/home/zengguang/IdeaProjects/databases/common/target/classes/");
-        getDynamicModel("XX", """
-                package com.zg.litepress.core.bean.entity;                
-                
-                
-                public class XX extends MainModel{
-                    public static void main(String args[]){
-                
-                    }
-                }
-                """.toString());
-    }
+
 
 }
 

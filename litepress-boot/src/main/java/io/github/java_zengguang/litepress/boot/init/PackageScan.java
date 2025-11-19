@@ -3,7 +3,6 @@ package io.github.java_zengguang.litepress.boot.init;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import io.github.java_zengguang.litepress.core.init.AnnotationCache;
-import org.tinylog.Logger;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -63,7 +62,6 @@ public class PackageScan {
 
 
             annotationByClassMap.forEach((key, val) -> {
-                Logger.info(key);
                 AnnotationCache.set(key, val);
             });
         }

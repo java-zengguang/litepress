@@ -11,25 +11,19 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Created by Administrator on 2018/12/14 0014.
- */
+
 public class Config {
-    private static boolean init = true;
-    private static final Map configMap = new ConcurrentHashMap();
+    private static Map configMap = new ConcurrentHashMap();
 
 
-    public static synchronized void initConfig() {
-        if (init) {
-            Map objectMap = BeanFactory.createAllBeans();
-            configMap.putAll(objectMap);
-            init = false;
-        }
+    public static synchronized void initConfig(String configString) {
+        BeanFactory beanFactory = new BeanFactory(configString);
+        Map objectMap = beanFactory.createAllBeans();
+        configMap.putAll(objectMap);
     }
 
 
     public static synchronized Object getConfig(String beanName) {
-        initConfig();
         Object object = configMap.get(beanName);
         return object;
     }

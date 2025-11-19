@@ -1,20 +1,16 @@
 package io.github.java_zengguang.litepress.web.servlet;
 
 
-import io.github.java_zengguang.litepress.core.init.Evn;
 import jakarta.servlet.Servlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.eclipse.jetty.util.resource.Resource;
 import org.tinylog.Logger;
 
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -84,17 +80,6 @@ public  class JettyBoot {
 
 
 
-            if (true) {
-                ResourceHandler resourceHandler = new ResourceHandler();
-                String path = Evn.getRootPath();;
-                if (System.getProperty("projectRootPath") != null) {
-                    path = System.getProperty("projectRootPath");
-                }
-                resourceHandler.setBaseResource(Resource.newResource(path + "static"));
-                resourceHandler.setPathInfoOnly(true);
-                resourceHandler.setDirAllowed(true);
-                server.insertHandler(resourceHandler);
-            }
 
 
 

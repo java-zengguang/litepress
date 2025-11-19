@@ -19,10 +19,14 @@ import java.util.Map;
 
 public class BeanFactory {
 
+    private String config;
 
+    public BeanFactory(String config) {
+        this.config = config;
+    }
 
-    private static Element getRootElement() {
-        try (InputStream inputStream = new ByteArrayInputStream(Evn.getBeanConfig().getBytes(StandardCharsets.UTF_8))) {
+    private  Element getRootElement() {
+        try (InputStream inputStream = new ByteArrayInputStream(config.getBytes(StandardCharsets.UTF_8))) {
             SAXReader reader = new SAXReader();
             Document document = reader.read(inputStream);
             return document.getRootElement();
@@ -32,7 +36,7 @@ public class BeanFactory {
         return null;
     }
 
-    public static Map<String, Object> createAllBeans() {
+    public  Map<String, Object> createAllBeans() {
         Map<String, Object> beanMaps = new HashMap<>();
         Map<String, Map< String,Field>> refMaps = new HashMap<>();
         try {
@@ -99,7 +103,7 @@ public class BeanFactory {
 
 
 
-    public static Object createProxy(Object target) throws NoSuchMethodException, SecurityException, ClassNotFoundException, DocumentException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public  Object createProxy(Object target) throws NoSuchMethodException, SecurityException, ClassNotFoundException, DocumentException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
         String pName = target.getClass().getPackage().getName();
         Element root = getRootElement();

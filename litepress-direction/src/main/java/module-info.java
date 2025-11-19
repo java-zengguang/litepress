@@ -2,7 +2,6 @@ open module litepress.direction {
     exports io.github.java_zengguang.litepress.direction.annotation;
     exports io.github.java_zengguang.litepress.direction.proxy;
     exports io.github.java_zengguang.litepress.direction.adapter;
-    exports io.github.java_zengguang.litepress.direction.register;
     exports io.github.java_zengguang.litepress.direction.util;
 
     requires litepress.core;

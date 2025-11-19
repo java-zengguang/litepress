@@ -30,7 +30,7 @@ public class TransactionManager {
 
 
     public synchronized Connection getConnection(String dataSource) throws Exception {
-        Logger.info("base服务层-链接获取-" + dataSource);
+        Logger.debug("base服务层-链接获取-" + dataSource);
         Connection connection = null;
         Map<String, Connection> dataConnectionMap = threadLocal.get();
 
@@ -50,7 +50,7 @@ public class TransactionManager {
 
 
     public synchronized void release() throws SQLException {
-        Logger.info("base服务层-链接释放-all");
+        Logger.debug("base服务层-链接释放-all");
         Map<String, Connection> dataSourceMap = threadLocal.get();
         if (dataSourceMap != null) {
             List<Map.Entry<String, Connection>> removeList = new ArrayList<>(dataSourceMap.entrySet());
@@ -64,7 +64,7 @@ public class TransactionManager {
 
 
     public synchronized void commit() throws SQLException {
-        Logger.info("base服务层-事务提交-all");
+        Logger.debug("base服务层-事务提交-all");
         Map<String, Connection> dataSourceMap = threadLocal.get();
         if (dataSourceMap != null) {
             List<Connection> connectionList = dataSourceMap.values().stream().toList();
@@ -84,7 +84,7 @@ public class TransactionManager {
 
 
     public synchronized void release(String dataSource) throws Exception {
-        Logger.info("base服务层-链接释放-" + dataSource);
+        Logger.debug("base服务层-链接释放-" + dataSource);
         Connection conn = getConnection(dataSource);
         conn.close();
         Map<String, Connection> dataSourceMap = threadLocal.get();
