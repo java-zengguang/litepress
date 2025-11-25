@@ -31,12 +31,12 @@ public class HikariCPImpl implements DataBasePool {
         config.setUsername(optionDB.username);
         config.setPassword(optionDB.password);
         config.setDriverClassName(optionDB.driver);
-        config.setKeepaliveTime(60000);
-        config.setMaxLifetime(1500000);
+        config.setKeepaliveTime(600000);  //10分钟
+        config.setMaxLifetime(1800000); //30分钟
         config.setValidationTimeout(5000);
         config.setConnectionTestQuery("SELECT 1 from  dual");
         config.setMaximumPoolSize(optionDB.maxPoolSize);
-        config.setMinimumIdle(1);
+        config.setMinimumIdle(2);
         config.setAutoCommit(false);
         config.setIdleTimeout(600000);
         config.setConnectionTimeout(30000); // 建议设置30秒超时

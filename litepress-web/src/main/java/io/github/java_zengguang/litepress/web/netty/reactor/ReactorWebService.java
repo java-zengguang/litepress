@@ -30,7 +30,7 @@ public class ReactorWebService {
         nettyService = NettyService.builder()
                 .port(port)
                 .bossThreads(2)
-                .workerThreads(32)
+                .workerThreads(4)
                 .channelInitializer(channelInitializer).build();
     }
 

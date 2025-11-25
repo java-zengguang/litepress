@@ -37,7 +37,6 @@ import java.util.concurrent.BlockingQueue;
 
 // 自定义请求处理器
 public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
-    public static final List<String> ssePaths = List.of("/sse");
     private final HttpNettyControllerAdapter controllerAdapter = HttpNettyControllerAdapter.getInstance();
 
 
@@ -168,27 +167,6 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
     }
 
 
-//    private void dealSSE(ChannelHandlerContext ctx, HttpRequestEntity httpRequestEntity) {
-//        String groupId = (String) httpRequestEntity.paramMap.get("groupId");
-//        String clientId = (String) httpRequestEntity.paramMap.get("clientId");
-//        SSEManager sseManager = SSE2NettyManager.getInstance();
-//        sseManager.createSSE(ctx, groupId);
-//        Logger.info("创建SSE链接  groupId: " + groupId + " clientId:" + clientId);
-//    }
-
-
-
-/*    @Override
-    protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
-        // 处理接收到的 HTTP 请求
-        HttpRequestEntity httpRequestEntity = transHttpRequestEntity(msg);
-        if (ssePaths.contains(httpRequestEntity.path)) {
-            dealSSE(ctx, httpRequestEntity); //创建SSE监听
-        } else {
-            dealController(ctx, httpRequestEntity);
-        }
-
-    }*/
 
     // Reactor 示例 - 与 Spring 生态完美集成
     @Override

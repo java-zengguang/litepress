@@ -13,48 +13,70 @@ import org.tinylog.Logger;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class PoolConnectionFactory implements ConnectionFactory {
 
-    private static final Map<String, DataSource> dataSourceMap = new Hashtable<>();
+    private static final ConcurrentMap<String, DataSource> dataSourceMap = new ConcurrentHashMap<>();
 
-    private static PoolConnectionFactory poolConnectionFactory;
+    private static final PoolConnectionFactory poolConnectionFactory = new PoolConnectionFactory();
 
     private PoolConnectionFactory() {
     }
 
-    public synchronized static PoolConnectionFactory getInstance() {
-        if (poolConnectionFactory == null) {
-            poolConnectionFactory = new PoolConnectionFactory();
-        }
+    public static PoolConnectionFactory getInstance() {
         return poolConnectionFactory;
     }
 
 
     @Override
-    public Connection createConnection(String dataSourceName) throws Exception {
-        DataSource dataSource = dataSourceMap.get(dataSourceName);
-        if (dataSource == null) {
-            OptionDB optionDB = (OptionDB) Config.getConfig(dataSourceName);
-            if ("Druid".equals(optionDB.getDbptype())) {
-                DataBasePool databasePool = DruidImpl.getInstance();
-                dataSource = databasePool.createDataSource(optionDB);
-            } else if ("HikariCP".equals(optionDB.getDbptype())) {
-                DataBasePool databasePool = HikariCPImpl.getInstance();
-                dataSource = databasePool.createDataSource(optionDB);
-                HikariPoolMXBean pool = ((HikariDataSource) dataSource).getHikariPoolMXBean();
-                Logger.info("当前活动连接数：" + pool.getActiveConnections() + " 当前空闲连接数：" + pool.getIdleConnections() + " 当前总连接数：" + pool.getTotalConnections() + " 当前等待获取连接的线程数：" + pool.getThreadsAwaitingConnection());
-
-            } else {
-                throw new BizException("未找到适配的连接池，支持Druid、HikariCP请检查配置！");
+    public Connection createConnection(String dataSourceName) {
+        try {
+            DataSource dataSource = dataSourceMap.computeIfAbsent(dataSourceName,
+                    key -> {
+                        try {
+                            return createDataSourceSafely(key);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+            if (dataSource instanceof HikariDataSource hikariDataSource) {
+                HikariPoolMXBean pool = (hikariDataSource).getHikariPoolMXBean();
+                Logger.info(String.format("%s当前活动连接数：%d 当前空闲连接数：%d 当前总连接数：%d 当前等待获取连接的线程数：%d",
+                        hikariDataSource.getPoolName(),
+                        pool.getActiveConnections(),
+                        pool.getIdleConnections(),
+                        pool.getTotalConnections(),
+                        pool.getThreadsAwaitingConnection()));
             }
-            dataSourceMap.put(dataSourceName, dataSource);
+            return dataSource.getConnection();
+        } catch (Exception e) {
+            Logger.error(e);
+            throw new BizException(e);
         }
-        return dataSource.getConnection();
+
     }
+
+
+    private DataSource createDataSourceSafely(String dataSourceName) throws Exception {
+        OptionDB optionDB = (OptionDB) Config.getConfig(dataSourceName);
+        if (optionDB == null) {
+            throw new BizException("未找到数据源配置: " + dataSourceName);
+        }
+        if ("Druid".equals(optionDB.getDbptype())) {
+            DataBasePool databasePool = DruidImpl.getInstance();
+            return databasePool.createDataSource(optionDB);
+        } else if ("HikariCP".equals(optionDB.getDbptype())) {
+            DataBasePool databasePool = HikariCPImpl.getInstance();
+            return databasePool.createDataSource(optionDB);
+        } else {
+            throw new BizException("未找到适配的连接池，支持Druid、HikariCP请检查配置！");
+        }
+
+    }
+
 
     @Override
     public List<DBPoolStatusPo> getDBPoolState() {
