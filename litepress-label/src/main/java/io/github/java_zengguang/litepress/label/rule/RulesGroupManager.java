@@ -38,4 +38,10 @@ public class RulesGroupManager {
         return labels;
     }
 
+
+    public RulesGroup getRuleGroup(String groupName) {
+        return rulesGroupMap.get(groupName);
+    }
+
+
 }

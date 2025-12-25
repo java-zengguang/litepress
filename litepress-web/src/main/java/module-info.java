@@ -30,5 +30,7 @@ open module litepress.web {
     exports io.github.java_zengguang.litepress.web.netty.reactor;
     exports io.github.java_zengguang.litepress.web.netty.intercepter;
     exports io.github.java_zengguang.litepress.web.netty.sse;
+    exports io.github.java_zengguang.litepress.web.netty.reactor.request;
+    exports io.github.java_zengguang.litepress.web.netty.reactor.response;
 
 }

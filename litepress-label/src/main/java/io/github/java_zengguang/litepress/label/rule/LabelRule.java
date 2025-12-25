@@ -1,7 +1,6 @@
 package io.github.java_zengguang.litepress.label.rule;
 
 
-
 import io.github.java_zengguang.litepress.label.entity.LabelEntity;
 import io.github.java_zengguang.litepress.label.entity.LabelMetadata;
 import org.jeasy.rules.api.Facts;
@@ -19,12 +18,14 @@ public class LabelRule extends BasicRule implements Rule {
     private final LabelCondition condition;
     private final List<LabelAction> actions;
     private final Map<String, List<LabelMetadata>> labelItemsMap;
+    private final List<LabelMetadata> labelItems;
 
 
     LabelRule(String name, String description, int priority, LabelCondition condition, List<LabelAction> actions, List<LabelMetadata> labelItems) {
         super(name, description, priority);
         this.condition = condition;
         this.actions = actions;
+        this.labelItems = labelItems;
         this.labelItemsMap = labelItems.stream().collect(Collectors.groupingBy(x -> x.name));
     }
 
@@ -53,5 +54,9 @@ public class LabelRule extends BasicRule implements Rule {
             Set<LabelEntity> labels = facts.get("labels");
             action.execute(labels);
         }
+    }
+
+    public List<LabelMetadata> getLabelItems() {
+        return labelItems;
     }
 }

@@ -10,4 +10,13 @@ public class HttpResponseEntity {
     public List<CookieEntity> cookies=new ArrayList<>();
     public Integer statusCode=200;
     public Object result;
+
+
+    public  static HttpResponseEntity error(String message,Integer statusCode){
+        HttpResponseEntity httpResponseEntity=new HttpResponseEntity();
+        httpResponseEntity.statusCode=statusCode;
+        httpResponseEntity.result=message;
+        return httpResponseEntity;
+    }
+
 }

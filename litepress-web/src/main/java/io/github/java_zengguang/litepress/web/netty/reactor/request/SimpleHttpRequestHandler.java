@@ -1,14 +1,17 @@
-package io.github.java_zengguang.litepress.web.netty.reactor;
+package io.github.java_zengguang.litepress.web.netty.reactor.request;
 
+import io.github.java_zengguang.litepress.core.error.BizException;
 import io.github.java_zengguang.litepress.core.init.Config;
 import io.github.java_zengguang.litepress.web.entity.CookieEntity;
 import io.github.java_zengguang.litepress.web.entity.HttpRequestEntity;
+import io.github.java_zengguang.litepress.web.entity.HttpResponseEntity;
 import io.github.java_zengguang.litepress.web.entity.MVCOption;
 import io.github.java_zengguang.litepress.web.enums.SceneType;
 import io.github.java_zengguang.litepress.web.netty.adapter.HttpNettyControllerAdapter;
-import io.github.java_zengguang.litepress.web.netty.sse.SSE2NettyManager;
-import io.github.java_zengguang.litepress.web.netty.sse.SSEManager;
+import io.github.java_zengguang.litepress.web.netty.reactor.response.HttpResponseHandler;
+import io.github.java_zengguang.litepress.web.netty.reactor.response.HttpResponseHandlerFactory;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -23,21 +26,27 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import io.netty.util.CharsetUtil;
 import org.tinylog.Logger;
+import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.retry.Retry;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeoutException;
 
 // 自定义请求处理器
 public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final HttpNettyControllerAdapter controllerAdapter = HttpNettyControllerAdapter.getInstance();
+    private final static Map<Channel, Disposable> channelMap = new ConcurrentHashMap();
 
 
     public Map<String, List<String>> getHeaders(FullHttpRequest request) {
@@ -167,30 +176,59 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
     }
 
 
-
-    // Reactor 示例 - 与 Spring 生态完美集成
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) {
         HttpRequestEntity httpRequestEntity = transHttpRequestEntity(msg);
-        Mono.fromCallable(() -> controllerAdapter.dealHttpRequest(httpRequestEntity))
-                .subscribeOn(Schedulers.boundedElastic()) // 内置弹性线程池
-                .doOnError(error -> Logger.error("处理失败: {}", httpRequestEntity.path, error))
-                .retryWhen(Retry.backoff(0, Duration.ofSeconds(1))) // 内置重试机制
-                .subscribe(responseEntity -> ctx.executor().execute(() -> {
-                    try {
-                        if (responseEntity.result instanceof BlockingQueue) {
-                            HttpResponseHandler httpResponseHandler = new StreamHttpResponseHandler();
-                            httpResponseHandler.dealHttpResponse(ctx, responseEntity);
-                        } else {
-                            HttpResponseHandler httpResponseHandler = new SimpleHttpResponseHandler();
-                            httpResponseHandler.dealHttpResponse(ctx, responseEntity);
-                        }
-                    } catch (Exception e) {
-                        Logger.error(e);
-                    }
-                }), error -> ctx.executor().execute(() -> {
-                    Logger.error(error);
-                }));
+
+        // 1. 管理订阅
+        Disposable disposable = Mono.defer(() ->
+                        Mono.fromCallable(() -> controllerAdapter.dealHttpRequest(httpRequestEntity)))
+                .subscribeOn(Schedulers.boundedElastic())
+                .doOnError(error -> {
+                    Logger.error(error, "处理失败: %s".formatted(httpRequestEntity.path));
+                })
+                // 2. 修正重试逻辑
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
+                        .filter(throwable -> isRetryable(throwable)))  // 只重试特定异常
+                .subscribe(
+                        response -> sendHttpResponse(ctx, response),
+                        error -> handleError(ctx, error, httpRequestEntity)  // 3. 改进错误处理
+                );
+
+        // 保存 Disposable 以便后续管理
+        channelMap.put(ctx.channel(), disposable);
+    }
+
+    private boolean isRetryable(Throwable throwable) {
+        // 网络/连接相关异常 - 通常可重试
+        if (throwable instanceof IOException || throwable instanceof TimeoutException) {
+            return true;
+        }
+
+        // 资源暂时不可用
+        if (throwable.getCause() instanceof SocketTimeoutException ||
+                "Connection reset by peer".equals(throwable.getMessage())) {
+            return true;
+        }
+
+        return false;
+    }
+    private void handleError(ChannelHandlerContext ctx, Throwable error, HttpRequestEntity request) {
+        HttpResponseEntity response;
+        if (error instanceof TimeoutException) {
+            response = HttpResponseEntity.error("请求超时", 408);
+        } else if (error instanceof BizException) {
+            response = HttpResponseEntity.error(error.getMessage(), 400);
+        } else {
+            response = HttpResponseEntity.error("服务内部错误", 500);
+        }
+        sendHttpResponse(ctx, response);
+    }
+
+    // 4. 改进响应处理器选择
+    private void sendHttpResponse(ChannelHandlerContext ctx, HttpResponseEntity responseEntity) {
+        HttpResponseHandler handler = HttpResponseHandlerFactory.getHandler(responseEntity);
+        handler.dealHttpResponse(ctx, responseEntity);
     }
 
     @Override
@@ -199,4 +237,15 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
         Logger.error(cause, "netty网络异常！");
         ctx.close();
     }
+
+    // 当连接关闭时
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) {
+        Disposable disposable = channelMap.get(ctx.channel());
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();  // 取消正在进行的异步操作
+        }
+        ctx.fireChannelInactive();
+    }
+
 }

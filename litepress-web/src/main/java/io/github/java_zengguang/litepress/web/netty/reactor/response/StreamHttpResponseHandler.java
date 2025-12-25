@@ -1,4 +1,4 @@
-package io.github.java_zengguang.litepress.web.netty.reactor;
+package io.github.java_zengguang.litepress.web.netty.reactor.response;
 
 import io.github.java_zengguang.litepress.web.entity.HttpResponseEntity;
 import io.github.java_zengguang.litepress.web.netty.sse.SSEDto;
