@@ -42,7 +42,7 @@ public class LabelSQLRule extends BasicRule implements Rule {
             if (businessNoList != null && !businessNoList.isEmpty()) {
                 Map<String, Set<LabelEntity>> finalLabelMap = labelMap;
                 businessNoList.forEach((businessNo) -> {
-                    finalLabelMap.computeIfAbsent(businessNo, k -> new HashSet<>()).add(new LabelEntity(businessNo, new LabelMetadata(name)));
+                    finalLabelMap.computeIfAbsent(businessNo, k -> new HashSet<>()).add(new LabelEntity(businessNo, new LabelMetadata.Builder().name(name).build()));
                 });
                 facts.put("labelMap", labelMap);
                 return true;

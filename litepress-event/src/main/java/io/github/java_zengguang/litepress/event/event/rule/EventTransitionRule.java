@@ -6,12 +6,15 @@ import io.github.java_zengguang.litepress.event.exception.StateTransitinExceptio
 
 
 public interface EventTransitionRule {
-    boolean checkTransitionRule(BaseEvent baseEvent) ;
+    boolean checkTransitionRule(BaseEvent baseEvent);
 
-    void doTransitionState(BaseEvent baseEvent);
+    void doTransitionState(BaseEvent baseEvent) throws Exception;
 
     void doAction(BaseEvent baseEvent) throws StateTransitinException;
 
-    public String getNextEvent();
+    String getEvent();
+
+    String getFrom();
+
 
 }

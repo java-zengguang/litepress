@@ -1,16 +1,15 @@
 package io.github.java_zengguang.litepress.event.bus;
 
 
-
 import io.github.java_zengguang.litepress.core.error.BizException;
 import io.github.java_zengguang.litepress.core.util.IpConfig;
 import io.github.java_zengguang.litepress.core.util.reflect.JsonUtil;
 import io.github.java_zengguang.litepress.event.entity.ZeroMQRouter;
 import io.github.java_zengguang.litepress.event.entity.ZoreMQConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
+
 import io.github.java_zengguang.litepress.event.exception.StateTransitinException;
 import io.github.java_zengguang.litepress.event.subsriber.EventListener;
-
 import io.github.java_zengguang.litepress.router.entity.RouterEntity;
 import io.github.java_zengguang.litepress.router.register.RouterRegister;
 import org.apache.rocketmq.client.exception.MQBrokerException;
@@ -27,7 +26,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class BaseBistributedZeroMQBus extends BaseMessageBus implements  MessageBus {
+public class BaseBistributedZeroMQBus extends BaseMessageBus implements MessageBus {
 
     private ZoreMQConfig zoreMQConfig;
 
@@ -42,7 +41,7 @@ public class BaseBistributedZeroMQBus extends BaseMessageBus implements  Message
 
     private String ip;
 
-    private ExecutorService customerExecutor ;
+    private ExecutorService customerExecutor;
 
     private ZMQ.Socket getSubscriber(String eventType) {
         String address = "tcp://" + ip + ":" + zoreMQConfig.port;
@@ -114,7 +113,7 @@ public class BaseBistributedZeroMQBus extends BaseMessageBus implements  Message
                 while (true) {
                     String receivedTopic = subscriber.recvStr(0); // 接收主题
                     String message = subscriber.recvStr(0);       // 接收消息
-                    customerExecutor.submit(()->{
+                    customerExecutor.submit(() -> {
                         doCustomer(receivedTopic, message);
                     });
                 }
@@ -127,44 +126,32 @@ public class BaseBistributedZeroMQBus extends BaseMessageBus implements  Message
 
     private void doCustomer(String topic, String message) {
         Logger.info("消息监听    " + new String(message));
-        EventListener eventListener = eventListenerMap.get(topic);
-        if (eventListener != null) {
-            try {
-                BaseEvent baseEvent = JsonUtil.string2Obj(message, BaseEvent.class);
-                doInvokeEventListener(eventListener, baseEvent);
-            } catch (StateTransitinException e) {
-                Logger.error(e);
-            }
-
-        }
+        BaseEvent baseEvent = JsonUtil.string2Obj(message, BaseEvent.class);
+        doInvokeEventListener( baseEvent);
 
     }
 
     @Override
-    public void publish(BaseEvent baseEvent) throws IOException, StateTransitinException, MQBrokerException, RemotingException, InterruptedException, MQClientException {
+    public void doPublish(BaseEvent baseEvent) throws IOException, StateTransitinException, MQBrokerException, RemotingException, InterruptedException, MQClientException {
 
-        publishBefore(baseEvent);
         ZMQ.Socket publisher = getPublisher(baseEvent.eventType);
         if (publisher == null) {
             throw new BizException("未找到事件监听");
         }
         publisher.sendMore(baseEvent.eventType); // 发送主题
         publisher.send(JsonUtil.obj2String(baseEvent));   // 发送消息
-        publishAfter(baseEvent);
     }
 
 
     @Override
-    public void subscriber(String eventType, EventListener listener) throws MQClientException, InterruptedException {
+    public void doSubscriber(String eventType, EventListener listener) throws MQClientException, InterruptedException {
         if (!eventListenerMap.containsKey(eventType)) {
             ZMQ.Socket subscriber = getSubscriber(eventType);
             subscriber.subscribe(eventType.getBytes());
-            eventListenerMap.put(eventType, listener);
         }
 
 
     }
-
 
 
 }

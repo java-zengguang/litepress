@@ -30,33 +30,7 @@
             <groupId>org.tinylog</groupId>
             <artifactId>tinylog-impl</artifactId>
         </dependency>
-<!--        <dependency>
-            <groupId>org.deeplearning4j</groupId>
-            <artifactId>deeplearning4j-nn</artifactId>
-            <version>1.0.0-M2.1</version>
-        </dependency>-->
 
-<!--        <dependency>
-            <groupId>org.nd4j</groupId>
-            <artifactId>nd4j-cuda-11.4-platform</artifactId>
-            <version>1.0.0-M2.1</version>
-        </dependency>-->
-
-<!--
-        <dependency>
-            <groupId>org.nd4j</groupId>
-            <artifactId>nd4j-native</artifactId>
-            <version>1.0.0-M2.1</version>
-        </dependency>
--->
-
-
-<!--        <dependency>
-            <groupId>org.nd4j</groupId>
-            <artifactId>nd4j-native</artifactId>
-            <version>1.0.0-M2.1</version>
-            <classifier>linux-x86_64</classifier>
-        </dependency>-->
 
         <!-- ND4J, the numerical computing library for Java -->
         <dependency>
@@ -65,7 +39,11 @@
             <version>1.0.0-M2.1</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-api</artifactId>
+            <version>1.0.0-M2.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.deeplearning4j</groupId>
@@ -80,12 +58,7 @@
             <version>3.4</version>
         </dependency>
 
-<!--        &lt;!&ndash; For saving/loading models &ndash;&gt;
-        <dependency>
-            <groupId>org.deeplearning4j</groupId>
-            <artifactId>deeplearning4j-modelimport</artifactId>
-            <version>1.0.0-M2.1</version>
-        </dependency>-->
+
 
 
 

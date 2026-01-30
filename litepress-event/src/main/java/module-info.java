@@ -12,12 +12,12 @@ open module litepress.event {
     requires org.tinylog.api;
     requires commons.logging;
     requires litepress.reaction;
+    requires org.apache.poi.ooxml.schemas;
 
     exports io.github.java_zengguang.litepress.event.event;
     exports io.github.java_zengguang.litepress.event.subsriber;
     exports io.github.java_zengguang.litepress.event.bus;
     exports io.github.java_zengguang.litepress.event.event.rule;
-    exports io.github.java_zengguang.litepress.event.event.manager;
     exports io.github.java_zengguang.litepress.event.en;
     exports io.github.java_zengguang.litepress.event.event.action;
     exports io.github.java_zengguang.litepress.event.exception;

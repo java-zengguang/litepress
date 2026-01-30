@@ -13,17 +13,18 @@ public class Test0 {
         zoreMQConfig.port = "5555";
         zoreMQConfig.registerURL = "10.7.136.172:2181";
         ZoreMQBus bus = new ZoreMQBus(zoreMQConfig);
-        bus.subscriber("/hello", new BaseEventListener() {
+        bus.register("/hello", new BaseEventListener() {
+
             @Override
-            public void callBack(String eventMessage) throws Exception {
-                Logger.info("hello " + eventMessage);
+            public void saveEventState(BaseEvent baseEvent) {
+
             }
         });
 
-        bus.subscriber("/1", new BaseEventListener() {
+        bus.register("/1", new BaseEventListener() {
             @Override
-            public void callBack(String eventMessage) throws Exception {
-                Logger.info("1 " + eventMessage);
+            public void saveEventState(BaseEvent baseEvent) {
+
             }
         });
 

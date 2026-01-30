@@ -3,26 +3,17 @@ package io.github.java_zengguang.litepress.event;
 
 
 import io.github.java_zengguang.litepress.event.bus.RocketMQBus;
-import io.github.java_zengguang.litepress.event.en.EventStage;
 
 import io.github.java_zengguang.litepress.event.entity.RocketConfig;
 import io.github.java_zengguang.litepress.event.entity.SSDBConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
-import io.github.java_zengguang.litepress.event.event.manager.EventStateManager;
-import io.github.java_zengguang.litepress.event.event.manager.SimpleEventStateManager;
 import io.github.java_zengguang.litepress.event.event.rule.EventTransitionRule;
 import io.github.java_zengguang.litepress.event.event.rule.EventTransitionRuleBuilder;
-import io.github.java_zengguang.litepress.event.exception.StateTransitinException;
 import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.apache.rocketmq.client.exception.MQBrokerException;
-import org.apache.rocketmq.client.exception.MQClientException;
-import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.nutz.ssdb4j.SSDBs;
 import org.nutz.ssdb4j.spi.SSDB;
 import org.tinylog.Logger;
-
-import java.io.IOException;
 
 public class Test2 {
 
@@ -40,7 +31,7 @@ public class Test2 {
     }
 
 
-    public static void main(String args[]) throws MQClientException, InterruptedException, IOException, StateTransitinException, MQBrokerException, RemotingException {
+    public static void main(String args[]) throws Exception {
 
 
         RocketConfig rocketConfig = new RocketConfig();
@@ -62,31 +53,29 @@ public class Test2 {
 for(int i=0;i<1000000;i++) {
     Logger.info("初始化");
 }
-        messageBus.subscriber("say", new BaseEventListener() {
+        messageBus.register("say", new BaseEventListener() {
             @Override
-            public void callBack(String eventMessage) throws Exception {
-                Logger.info("我收到了 say " + eventMessage);
+            public void saveEventState(BaseEvent baseEvent) {
+
             }
         });
 
 
         EventTransitionRule eventTransitionRule = new EventTransitionRuleBuilder().event("say").to("done")
                 .action((baseEvent) -> {
-                    ssdb.decr(baseEvent.businessNo, 1);
-                    Logger.info("计数");
+
                 }).build();
 
 
-        EventStateManager eventStateManager = new SimpleEventStateManager();
-        eventStateManager.addEventTransitionRule("say", EventStage.SUCCESSFUL.name(), eventTransitionRule);
 
-        messageBus.setEventStateManager(eventStateManager);
+
+
         messageBus.init();
 
         ssdb.set("001", 10);
         Logger.info("事件发布");
         for(int i=0;i<10;i++) {
-            messageBus.publish(new BaseEvent("say", "001", "hello"));
+            messageBus.publish(new BaseEvent("say", "001"));
         }
 
 

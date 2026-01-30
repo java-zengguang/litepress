@@ -11,7 +11,7 @@ public class EventTransitionRuleBuilder {
 
 
     public EventTransitionRuleBuilder() {
-        eventTransitionRule.form = "0"; //初始化状态，默认
+        eventTransitionRule.from = "0"; //初始化状态，默认
     }
 
     public static EventTransitionRuleBuilder crate() {
@@ -19,7 +19,7 @@ public class EventTransitionRuleBuilder {
     }
 
     public EventTransitionRuleBuilder form(String state) {
-        eventTransitionRule.form = state;
+        eventTransitionRule.from = state;
         return this;
     }
 
@@ -43,20 +43,7 @@ public class EventTransitionRuleBuilder {
         return this;
     }
 
-    public EventTransitionRuleBuilder nextEvent(String nextEvent) {
-        eventTransitionRule.nextEvent = nextEvent;
-        return this;
-    }
-
-    public EventTransitionRuleBuilder end() {
-        eventTransitionRule.end =true;
-        return this;
-    }
-
     public EventTransitionRule build() throws StateTransitinException {
-        if(eventTransitionRule.end && eventTransitionRule.nextEvent!=null){
-            throw new StateTransitinException("构建错误，终止节点不允许有下一事件节点");
-        }
         return this.eventTransitionRule;
     }
 

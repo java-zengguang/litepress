@@ -1,7 +1,6 @@
 package io.github.java_zengguang.litepress.event.bus;
 
 
-
 import io.github.java_zengguang.litepress.core.util.reflect.JsonUtil;
 import io.github.java_zengguang.litepress.event.entity.ZoreMQConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
@@ -17,7 +16,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public abstract class BaseZeroMQBus extends BaseMessageBus implements  MessageBus {
+public abstract class BaseZeroMQBus extends BaseMessageBus implements MessageBus {
 
     private ZoreMQConfig zoreMQConfig;
 
@@ -25,7 +24,7 @@ public abstract class BaseZeroMQBus extends BaseMessageBus implements  MessageBu
 
     private ZMQ.Socket subscriber;
 
-    private ExecutorService customerExecutor ;
+    private ExecutorService customerExecutor;
 
 
     public BaseZeroMQBus(ZoreMQConfig zoreMQConfig) {
@@ -47,10 +46,10 @@ public abstract class BaseZeroMQBus extends BaseMessageBus implements  MessageBu
             public void run() {
                 // 订阅特定主题
                 while (true) {
-                    String receivedTopic = subscriber.recvStr(0); // 接收主题
+               //     String receivedTopic = subscriber.recvStr(0); // 接收主题
                     String message = subscriber.recvStr(0);       // 接收消息
-                    customerExecutor.submit(()->{
-                        doCustomer(receivedTopic, message);
+                    customerExecutor.submit(() -> {
+                        doCustomer( message);
                     });
                 }
             }
@@ -58,34 +57,22 @@ public abstract class BaseZeroMQBus extends BaseMessageBus implements  MessageBu
         executor.shutdown();
     }
 
-    private void doCustomer(String topic, String message) {
+    private void doCustomer( String message) {
         Logger.info("消息监听    " + new String(message));
-        EventListener eventListener = eventListenerMap.get(topic);
-        if (eventListener != null) {
-            try {
-                BaseEvent baseEvent = JsonUtil.string2Obj(message, BaseEvent.class);
-                doInvokeEventListener(eventListener, baseEvent);
-            } catch (StateTransitinException e) {
-                Logger.error(e);
-            }
-
-        }
-
+        BaseEvent baseEvent = JsonUtil.string2Obj(message, BaseEvent.class);
+        doInvokeEventListener( baseEvent);
     }
 
 
     @Override
-    public void publish(BaseEvent baseEvent) throws IOException, StateTransitinException, MQBrokerException, RemotingException, InterruptedException, MQClientException {
-        publishBefore(baseEvent);
+    public void doPublish(BaseEvent baseEvent) throws IOException, StateTransitinException, MQBrokerException, RemotingException, InterruptedException, MQClientException {
         publisher.sendMore(baseEvent.eventType); // 发送主题
         publisher.send(JsonUtil.obj2String(baseEvent));   // 发送消息
-        publishAfter(baseEvent);
-
     }
 
 
     @Override
-    public void subscriber(String eventType, EventListener listener) throws MQClientException, InterruptedException {
+    public void doSubscriber(String eventType, EventListener listener) throws MQClientException, InterruptedException {
         if (!eventListenerMap.containsKey(eventType)) {
             subscriber.subscribe(eventType.getBytes());
             eventListenerMap.put(eventType, listener);
@@ -93,7 +80,6 @@ public abstract class BaseZeroMQBus extends BaseMessageBus implements  MessageBu
 
 
     }
-
 
 
 }

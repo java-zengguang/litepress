@@ -4,18 +4,12 @@ package io.github.java_zengguang.litepress.event;
 import io.github.java_zengguang.litepress.event.bus.RocketMQBus;
 import io.github.java_zengguang.litepress.event.entity.RocketConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
-import io.github.java_zengguang.litepress.event.exception.StateTransitinException;
 import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
-import org.apache.rocketmq.client.exception.MQBrokerException;
-import org.apache.rocketmq.client.exception.MQClientException;
-import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.tinylog.Logger;
-
-import java.io.IOException;
 
 public class Test1 {
 
-    public static void main(String args[]) throws MQClientException, InterruptedException, IOException, StateTransitinException, MQBrokerException, RemotingException {
+    public static void main(String args[]) throws Exception {
         RocketConfig rocketConfig=  new RocketConfig();
         rocketConfig.group="BASE1";
         rocketConfig.namesrvAddr="10.7.128.187:9876;10.7.128.188:9876";
@@ -24,10 +18,11 @@ public class Test1 {
         rocketConfig.topic="BASE";
         RocketMQBus messageBus=new RocketMQBus(rocketConfig);
         Logger.info("初始化");
-        messageBus.subscriber("tag1", new BaseEventListener() {
+        messageBus.register("tag1", new BaseEventListener() {
+
             @Override
-            public void callBack(String eventMessage) throws Exception {
-                Logger.info(eventMessage);
+            public void saveEventState(BaseEvent baseEvent) {
+
             }
         });
         messageBus.init();

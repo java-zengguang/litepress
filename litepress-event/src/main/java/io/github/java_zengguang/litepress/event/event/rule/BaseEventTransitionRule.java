@@ -1,7 +1,6 @@
 package io.github.java_zengguang.litepress.event.event.rule;
 
 
-import io.github.java_zengguang.litepress.event.en.ProcessState;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
 import io.github.java_zengguang.litepress.event.event.action.StateAction;
 import io.github.java_zengguang.litepress.event.event.action.StateHandler;
@@ -9,24 +8,17 @@ import io.github.java_zengguang.litepress.event.exception.StateTransitinExceptio
 
 public abstract class BaseEventTransitionRule implements EventTransitionRule {
 
-    public String form;
+    public String from;
     public String event;
     public StateHandler when;
     public String to;
-
     public StateAction action;
-
-    public String nextEvent;  //发送，下一个事件
-
-    public boolean end=false;  //终止节点，标识流程最终状态，默认false
-
-
 
 
     @Override
-    public boolean checkTransitionRule(BaseEvent baseEvent)  {
+    public boolean checkTransitionRule(BaseEvent baseEvent) {
         //初始状态
-        if (!baseEvent.processStage.equals(this.form)) {
+        if (!baseEvent.eventState.equals(this.from)) {
             return false;
         }
         //事件
@@ -39,29 +31,35 @@ public abstract class BaseEventTransitionRule implements EventTransitionRule {
         }
         return true;
     }
+
     @Override
-    public void doTransitionState(BaseEvent baseEvent){
+    public void doTransitionState(BaseEvent baseEvent) throws Exception {
         if (this.to != null) {
-            baseEvent.processStage = this.to;  //转换状态
-            if(end){
-                baseEvent.processState= ProcessState.SUCCESSFUL.name();  //最终节点
-            }
+            baseEvent.eventState = this.to;  //转换状态
         }
     }
 
     @Override
-    public  void doAction(BaseEvent baseEvent) throws StateTransitinException {
+    public void doAction(BaseEvent baseEvent) throws StateTransitinException {
         if (action != null) {
             try {
                 action.deal(baseEvent);
             } catch (Exception e) {
-                throw new StateTransitinException("动作执行失败");
+                throw new StateTransitinException("动作执行失败", e);
             }
         }
     }
+
+
     @Override
-    public String getNextEvent(){
-        return nextEvent;
+    public String getEvent() {
+        return event;
     }
+
+    @Override
+    public String getFrom() {
+        return from;
+    }
+
 
 }

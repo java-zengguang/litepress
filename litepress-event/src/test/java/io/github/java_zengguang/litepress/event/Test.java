@@ -2,26 +2,17 @@ package io.github.java_zengguang.litepress.event;
 
 
 import io.github.java_zengguang.litepress.event.bus.RocketMQBus;
-import io.github.java_zengguang.litepress.event.en.EventStage;
 import io.github.java_zengguang.litepress.event.entity.RocketConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
-import io.github.java_zengguang.litepress.event.event.manager.EventStateManager;
-import io.github.java_zengguang.litepress.event.event.manager.SimpleEventStateManager;
 import io.github.java_zengguang.litepress.event.event.rule.EventTransitionRule;
 import io.github.java_zengguang.litepress.event.event.rule.EventTransitionRuleBuilder;
-import io.github.java_zengguang.litepress.event.exception.StateTransitinException;
 import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
 import io.github.java_zengguang.litepress.react.semaphore.impl.LocalSemaphoreManager;
-import org.apache.rocketmq.client.exception.MQBrokerException;
-import org.apache.rocketmq.client.exception.MQClientException;
-import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.tinylog.Logger;
-
-import java.io.IOException;
 
 public class Test {
 
-    public static void main(String args[]) throws MQClientException, InterruptedException, IOException, StateTransitinException, MQBrokerException, RemotingException {
+    public static void main(String args[]) throws Exception {
 
         RocketConfig rocketConfig = new RocketConfig();
         rocketConfig.group = "BASE_STATE";
@@ -30,59 +21,41 @@ public class Test {
         rocketConfig.secretKey = "12345678";
         rocketConfig.topic = "BASE_STATE";
 
-/*        SSDBConfig ssdbConfig=new SSDBConfig();
-
-        ssdbConfig.ip="10.7.128.189";
-        ssdbConfig.port="5508";
-        ssdbConfig.password="Tm9udmVoaWNsZVAzODBTU0RCQXV0aFRva2Vu";*/
-
 
         RocketMQBus messageBus = new RocketMQBus(rocketConfig);
 
 
         Logger.info("初始化");
-        messageBus.subscriber("say", new BaseEventListener() {
+        BaseEventListener eventListener = new BaseEventListener() {
+
             @Override
-            public void callBack(String eventMessage) throws Exception {
-                Logger.info("我收到了 say " + eventMessage);
+            public void saveEventState(BaseEvent baseEvent) {
+
             }
-        });
+        };
 
-        messageBus.subscriber("say-done", new BaseEventListener() {
-            @Override
-            public void callBack(String eventMessage) throws Exception {
-                Logger.info("我收到了 say-done " + eventMessage);
-            }
-        });
 
-        EventTransitionRule eventTransitionRule = new EventTransitionRuleBuilder().event("say").to("done").action((baseEvent) -> {
-            Logger.info("回招呼");
-            try {
-                messageBus.publish(new BaseEvent("say-done", baseEvent.businessNo, baseEvent.processStage, "hello-done"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (StateTransitinException e) {
-                throw new RuntimeException(e);
-            } catch (MQBrokerException e) {
-                throw new RuntimeException(e);
-            } catch (RemotingException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (MQClientException e) {
-                throw new RuntimeException(e);
-            }
-        }).build();
+        EventTransitionRule eventTransitionRule = new EventTransitionRuleBuilder()
+                .event("say")
+                .form("say")
+                .to("say-done")
+                .action((baseEvent) -> {
+                    Logger.info("打招呼");
+                }).build();
 
-        EventTransitionRule eventTransitionRule1 = new EventTransitionRuleBuilder().event("say-done").form("done").to("good").action((baseEvent) -> {
-            Logger.info("完成处理"+baseEvent.businessNo+baseEvent.processStage);
-        }).build();
+        EventTransitionRule eventTransitionRule1 = new EventTransitionRuleBuilder()
+                .event("say")
+                .form("say-done")
+                .to("call-done")
+                .action((baseEvent) -> {
+                    Logger.info("回招呼！");
+                }).build();
+        eventListener.addEventTransitionRule(eventTransitionRule);
+        eventListener.addEventTransitionRule(eventTransitionRule1);
 
-        EventStateManager eventStateManager = new SimpleEventStateManager();
-        eventStateManager.addEventTransitionRule("say", EventStage.SUCCESSFUL.name(), eventTransitionRule);
-        eventStateManager.addEventTransitionRule("say", EventStage.SUCCESSFUL.name(),eventTransitionRule1);
+        messageBus.register("say", eventListener);
 
-        messageBus.setEventStateManager(eventStateManager);
+
         messageBus.setSemaphoreManager(new LocalSemaphoreManager());
         messageBus.init();
 
@@ -91,9 +64,8 @@ public class Test {
         Thread.sleep(10000);
 
         Logger.info("事件发布");
-        messageBus.publish(new BaseEvent("say", "006", "hello"));
-        messageBus.publish(new BaseEvent("say", "007", "hello1"));
-        messageBus.publish(new BaseEvent("say", "008", "hello2"));
+        messageBus.publish(new BaseEvent("say","say", "1243"));
+
         Logger.info("开始消费");
         messageBus.resumeCustomer();
 

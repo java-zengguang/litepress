@@ -6,5 +6,9 @@ module litepress.ml {
     requires encog.core;
     requires nd4j.api;
     requires org.tinylog.api;
+    exports io.github.java_zengguang.litepress.ml;
+    exports io.github.java_zengguang.litepress.ml.train;
+    exports io.github.java_zengguang.litepress.ml.config;
+    exports io.github.java_zengguang.litepress.ml.factory;
 
 }
