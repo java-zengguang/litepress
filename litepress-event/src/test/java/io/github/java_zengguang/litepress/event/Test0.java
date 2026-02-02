@@ -15,17 +15,10 @@ public class Test0 {
         ZoreMQBus bus = new ZoreMQBus(zoreMQConfig);
         bus.register("/hello", new BaseEventListener() {
 
-            @Override
-            public void saveEventState(BaseEvent baseEvent) {
-
-            }
         });
 
         bus.register("/1", new BaseEventListener() {
-            @Override
-            public void saveEventState(BaseEvent baseEvent) {
 
-            }
         });
 
         bus.init();

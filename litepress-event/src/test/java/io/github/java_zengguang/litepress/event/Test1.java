@@ -20,10 +20,7 @@ public class Test1 {
         Logger.info("初始化");
         messageBus.register("tag1", new BaseEventListener() {
 
-            @Override
-            public void saveEventState(BaseEvent baseEvent) {
 
-            }
         });
         messageBus.init();
         Logger.info("事件发布");

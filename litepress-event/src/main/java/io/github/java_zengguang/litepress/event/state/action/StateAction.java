@@ -1,4 +1,4 @@
-package io.github.java_zengguang.litepress.event.event.action;
+package io.github.java_zengguang.litepress.event.state.action;
 
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
 

@@ -17,9 +17,9 @@ open module litepress.event {
     exports io.github.java_zengguang.litepress.event.event;
     exports io.github.java_zengguang.litepress.event.subsriber;
     exports io.github.java_zengguang.litepress.event.bus;
-    exports io.github.java_zengguang.litepress.event.event.rule;
+    exports io.github.java_zengguang.litepress.event.state.rule;
     exports io.github.java_zengguang.litepress.event.en;
-    exports io.github.java_zengguang.litepress.event.event.action;
+    exports io.github.java_zengguang.litepress.event.state.action;
     exports io.github.java_zengguang.litepress.event.exception;
     exports io.github.java_zengguang.litepress.event.entity;
 

@@ -1,13 +1,13 @@
-package io.github.java_zengguang.litepress.event.event.rule;
+package io.github.java_zengguang.litepress.event.state.rule;
 
 
-import io.github.java_zengguang.litepress.event.event.action.StateAction;
-import io.github.java_zengguang.litepress.event.event.action.StateHandler;
+import io.github.java_zengguang.litepress.event.state.action.StateAction;
+import io.github.java_zengguang.litepress.event.state.action.StateHandler;
 import io.github.java_zengguang.litepress.event.exception.StateTransitinException;
 
 public class EventTransitionRuleBuilder {
 
-    private SimpleEventTransitionRule eventTransitionRule = new SimpleEventTransitionRule();
+    private SimpleStateTransitionRule eventTransitionRule = new SimpleStateTransitionRule();
 
 
     public EventTransitionRuleBuilder() {
@@ -43,7 +43,7 @@ public class EventTransitionRuleBuilder {
         return this;
     }
 
-    public EventTransitionRule build() throws StateTransitinException {
+    public StateTransitionRule build() throws StateTransitinException {
         return this.eventTransitionRule;
     }
 

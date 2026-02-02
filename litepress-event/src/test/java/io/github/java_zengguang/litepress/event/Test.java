@@ -4,9 +4,11 @@ package io.github.java_zengguang.litepress.event;
 import io.github.java_zengguang.litepress.event.bus.RocketMQBus;
 import io.github.java_zengguang.litepress.event.entity.RocketConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
-import io.github.java_zengguang.litepress.event.event.rule.EventTransitionRule;
-import io.github.java_zengguang.litepress.event.event.rule.EventTransitionRuleBuilder;
-import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
+import io.github.java_zengguang.litepress.event.state.BaseStateModel;
+import io.github.java_zengguang.litepress.event.state.StateModel;
+import io.github.java_zengguang.litepress.event.state.rule.StateTransitionRule;
+import io.github.java_zengguang.litepress.event.state.rule.EventTransitionRuleBuilder;
+import io.github.java_zengguang.litepress.event.subsriber.StateEventListener;
 import io.github.java_zengguang.litepress.react.semaphore.impl.LocalSemaphoreManager;
 import org.tinylog.Logger;
 
@@ -26,32 +28,34 @@ public class Test {
 
 
         Logger.info("初始化");
-        BaseEventListener eventListener = new BaseEventListener() {
-
-            @Override
-            public void saveEventState(BaseEvent baseEvent) {
-
-            }
-        };
+        StateEventListener eventListener = new StateEventListener() ;
 
 
-        EventTransitionRule eventTransitionRule = new EventTransitionRuleBuilder()
+        StateTransitionRule stateTransitionRule = new EventTransitionRuleBuilder()
                 .event("say")
-                .form("say")
                 .to("say-done")
                 .action((baseEvent) -> {
                     Logger.info("打招呼");
                 }).build();
 
-        EventTransitionRule eventTransitionRule1 = new EventTransitionRuleBuilder()
+        StateTransitionRule stateTransitionRule1 = new EventTransitionRuleBuilder()
                 .event("say")
                 .form("say-done")
                 .to("call-done")
                 .action((baseEvent) -> {
                     Logger.info("回招呼！");
                 }).build();
-        eventListener.addEventTransitionRule(eventTransitionRule);
-        eventListener.addEventTransitionRule(eventTransitionRule1);
+
+        StateModel stateModel=new BaseStateModel("xxxx") {
+            @Override
+            public void saveEventState(BaseEvent baseEvent) {
+
+            }
+        };
+        stateModel.addEventTransitionRule(stateTransitionRule);
+        stateModel.addEventTransitionRule(stateTransitionRule1);
+
+        eventListener.addStateModel("xxxx",stateModel);
 
         messageBus.register("say", eventListener);
 
@@ -64,7 +68,7 @@ public class Test {
         Thread.sleep(10000);
 
         Logger.info("事件发布");
-        messageBus.publish(new BaseEvent("say","say", "1243"));
+        messageBus.publish(new BaseEvent("say","xxxx", "1243"));
 
         Logger.info("开始消费");
         messageBus.resumeCustomer();

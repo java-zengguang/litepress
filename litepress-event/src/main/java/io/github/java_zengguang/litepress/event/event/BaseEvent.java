@@ -1,6 +1,7 @@
 package io.github.java_zengguang.litepress.event.event;
 
 import io.github.java_zengguang.litepress.event.en.ProcessState;
+import io.github.java_zengguang.litepress.event.state.po.StatePo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,10 @@ public  class BaseEvent {
 
     public String result;  //当前事件的处理结果
     public String errorMessage;
+
+    public StatePo statePo;
+
+
 
     public Map<String, Object> paramMap = new HashMap<>();
 
@@ -36,9 +41,9 @@ public  class BaseEvent {
         this.processState = ProcessState.INIT.name();
     }
 
-    public BaseEvent(String eventType, String eventState, String message) {
+    public BaseEvent(String eventType,String stateModelId, String message) {
         this.eventType = eventType;
-        this.eventState = eventState;
+        this.statePo = new StatePo(stateModelId);
         this.message = message;
         this.eventID = UUID.randomUUID().toString();
         this.processState = ProcessState.INIT.name();

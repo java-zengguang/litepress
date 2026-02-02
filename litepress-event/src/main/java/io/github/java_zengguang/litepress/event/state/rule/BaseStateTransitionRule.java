@@ -1,12 +1,12 @@
-package io.github.java_zengguang.litepress.event.event.rule;
+package io.github.java_zengguang.litepress.event.state.rule;
 
 
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
-import io.github.java_zengguang.litepress.event.event.action.StateAction;
-import io.github.java_zengguang.litepress.event.event.action.StateHandler;
+import io.github.java_zengguang.litepress.event.state.action.StateAction;
+import io.github.java_zengguang.litepress.event.state.action.StateHandler;
 import io.github.java_zengguang.litepress.event.exception.StateTransitinException;
 
-public abstract class BaseEventTransitionRule implements EventTransitionRule {
+public abstract class BaseStateTransitionRule implements StateTransitionRule {
 
     public String from;
     public String event;
@@ -61,5 +61,9 @@ public abstract class BaseEventTransitionRule implements EventTransitionRule {
         return from;
     }
 
+    @Override
+    public String getTo() {
+        return to;
+    }
 
 }

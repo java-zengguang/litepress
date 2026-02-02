@@ -7,8 +7,8 @@ import io.github.java_zengguang.litepress.event.bus.RocketMQBus;
 import io.github.java_zengguang.litepress.event.entity.RocketConfig;
 import io.github.java_zengguang.litepress.event.entity.SSDBConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
-import io.github.java_zengguang.litepress.event.event.rule.EventTransitionRule;
-import io.github.java_zengguang.litepress.event.event.rule.EventTransitionRuleBuilder;
+import io.github.java_zengguang.litepress.event.state.rule.StateTransitionRule;
+import io.github.java_zengguang.litepress.event.state.rule.EventTransitionRuleBuilder;
 import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.nutz.ssdb4j.SSDBs;
@@ -54,14 +54,11 @@ for(int i=0;i<1000000;i++) {
     Logger.info("初始化");
 }
         messageBus.register("say", new BaseEventListener() {
-            @Override
-            public void saveEventState(BaseEvent baseEvent) {
 
-            }
         });
 
 
-        EventTransitionRule eventTransitionRule = new EventTransitionRuleBuilder().event("say").to("done")
+        StateTransitionRule stateTransitionRule = new EventTransitionRuleBuilder().event("say").to("done")
                 .action((baseEvent) -> {
 
                 }).build();
