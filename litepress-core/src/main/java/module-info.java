@@ -33,6 +33,7 @@ module litepress.core {
     requires net.bytebuddy;
     requires org.apache.poi.poi;
     requires org.apache.poi.ooxml;
+    requires org.apache.commons.collections4;
 
 
 }

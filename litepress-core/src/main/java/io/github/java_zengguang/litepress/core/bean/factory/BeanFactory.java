@@ -1,6 +1,5 @@
 package io.github.java_zengguang.litepress.core.bean.factory;
 
-import io.github.java_zengguang.litepress.core.init.Evn;
 import io.github.java_zengguang.litepress.core.password.PassWordUtil;
 import io.github.java_zengguang.litepress.core.util.reflect.TransEntityTypeUtils;
 import org.dom4j.Document;

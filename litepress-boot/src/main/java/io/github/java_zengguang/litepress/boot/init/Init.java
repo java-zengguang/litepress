@@ -1,35 +1,75 @@
 package io.github.java_zengguang.litepress.boot.init;
 
 
-import io.github.java_zengguang.litepress.boot.annotation.ScanPackages;
 import io.github.java_zengguang.litepress.core.init.Config;
-import io.github.java_zengguang.litepress.core.init.Evn;
+import io.github.java_zengguang.litepress.core.init.PropertyConfig;
 import org.tinylog.configuration.Configuration;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Properties;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Init {
 
+    private static String environment;
 
-
-
-    public static void initEvn() throws IOException {
-        //使用环境变量覆盖，兼容方式
-        String sTargetEvn = System.getenv("TargetEvn");
-        if (sTargetEvn == null) {
-            sTargetEvn = "dev";
+    public static void init() {
+        try {
+            //加载当前环境
+            environment = System.getenv().getOrDefault("TargetEvn", "dev");
+            initConfig();
+            System.out.println("当前环境 %s ".formatted(environment));
+        } catch (Exception e) {
+            System.out.println("配置文件加载失败！");
         }
-        Evn.setEnvironment(sTargetEvn);
-        readLogConfig();
-        readBeanConfig();
+    }
+
+    public static String getEnvironment() {
+        return environment;
     }
 
 
-    private static String readFile2String(String configFileName) throws IOException {
+    private static void initConfig() throws IOException {
+        //初始化日志
+        List<String> logConfigNames = new ArrayList<>();
+        logConfigNames.add("config.properties");
+        if (environment != null) {
+            logConfigNames.add("%s_config.properties".formatted(environment));
+        }
+        //加载config配置
+        PropertyConfig propertyConfig = PropertyConfig.getInstance();
+        for (String logConfigName : logConfigNames) {
+            String doc = readFile2String(logConfigName);
+            if (doc != null) {
+                propertyConfig.load(doc);
+            }
+        }
+
+        Map<String, String> tinylogConfig = propertyConfig.getSubMap("tinylog.");
+
+        Configuration.replace(tinylogConfig);
+
+
+        //初始化bean
+        List<String> beanConfigNames = new ArrayList<>();
+        beanConfigNames.add("BeanConfig.xml");
+        if (environment != null) {
+            beanConfigNames.add("%s_BeanConfig.xml".formatted(environment));
+        }
+        for (String beanConfigFileName : beanConfigNames) {
+            String doc = readFile2String(beanConfigFileName);
+            if (doc != null) {
+                Config.initConfig(doc);
+            }
+        }
+
+    }
+
+
+    private static String readFile2String(String configFileName) {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try (InputStream is = classLoader.getResourceAsStream(configFileName)) {
             if (is == null) {
@@ -41,40 +81,6 @@ public class Init {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private static void readLogConfig() {
-        String configFileName = "tinylog.properties";
-        if (Evn.getEnvironment() != null) {
-            configFileName = Evn.getEnvironment() + "_" + configFileName;
-        }
-        try {
-            System.out.println("加载配置文件" + configFileName);
-            String doc = readFile2String(configFileName);
-            System.out.println(doc);
-            Properties properties = new Properties();
-            properties.load(new StringReader(doc));
-            properties.forEach((key, value) -> {
-                Configuration.set((String) key, (String) value);
-            });
-
-        } catch (IOException e) {
-            System.out.println(configFileName + " 加载失败！");
-        }
-    }
-
-
-    private static void readBeanConfig() throws IOException {
-
-        String configFileName = "BeanConfig.xml";
-        if (Evn.getEnvironment() != null) {
-            configFileName = Evn.getEnvironment() + "_" + configFileName;
-        }
-        System.out.println("加载配置文件" + configFileName);
-        String doc = readFile2String(configFileName);
-        System.out.println(doc);
-        Config.initConfig(doc);
-
     }
 
 

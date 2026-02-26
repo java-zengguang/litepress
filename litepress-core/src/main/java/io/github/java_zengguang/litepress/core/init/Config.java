@@ -20,6 +20,7 @@ public class Config {
         BeanFactory beanFactory = new BeanFactory(configString);
         Map objectMap = beanFactory.createAllBeans();
         configMap.putAll(objectMap);
+
     }
 
 
