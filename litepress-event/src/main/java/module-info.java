@@ -13,7 +13,6 @@ open module litepress.event {
     requires commons.logging;
     requires litepress.reaction;
     requires org.apache.poi.ooxml.schemas;
-
     exports io.github.java_zengguang.litepress.event.event;
     exports io.github.java_zengguang.litepress.event.subsriber;
     exports io.github.java_zengguang.litepress.event.bus;
@@ -22,5 +21,7 @@ open module litepress.event {
     exports io.github.java_zengguang.litepress.event.state.action;
     exports io.github.java_zengguang.litepress.event.exception;
     exports io.github.java_zengguang.litepress.event.entity;
+    exports io.github.java_zengguang.litepress.event.state.po;
+    exports  io.github.java_zengguang.litepress.event.state;
 
 }

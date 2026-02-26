@@ -7,6 +7,8 @@ import io.github.java_zengguang.litepress.event.event.BaseEvent;
 import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
 import org.tinylog.Logger;
 
+import java.util.Set;
+
 public class Test1 {
 
     public static void main(String args[]) throws Exception {
@@ -18,17 +20,35 @@ public class Test1 {
         rocketConfig.topic="BASE";
         RocketMQBus messageBus=new RocketMQBus(rocketConfig);
         Logger.info("初始化");
-        messageBus.register("tag1", new BaseEventListener() {
+        messageBus.register( new BaseEventListener(BaseEvent.class, Set.of("tag1")) {
 
+            @Override
+            public void init(BaseEvent baseEvent) throws Exception {
 
+            }
+
+            @Override
+            public void dealEvent(BaseEvent event) throws Exception {
+
+            }
+
+            @Override
+            public void beforeDealEvent(BaseEvent event) throws Exception {
+
+            }
+
+            @Override
+            public void afterDealEvent(BaseEvent event) throws Exception {
+
+            }
         });
         messageBus.init();
         Logger.info("事件发布");
-        messageBus.publish(new BaseEvent("say","hello"));
-        messageBus.publish(new BaseEvent("say","world"));
-        messageBus.publish(new BaseEvent("say","1"));
-        messageBus.publish(new BaseEvent("say","2"));
-        messageBus.publish(new BaseEvent("tag1","2"));
-        messageBus.publish(new BaseEvent("tag","3"));
+        messageBus.publish(new BaseEvent());
+        messageBus.publish(new BaseEvent());
+        messageBus.publish(new BaseEvent());
+        messageBus.publish(new BaseEvent());
+        messageBus.publish(new BaseEvent());
+        messageBus.publish(new BaseEvent());
     }
 }

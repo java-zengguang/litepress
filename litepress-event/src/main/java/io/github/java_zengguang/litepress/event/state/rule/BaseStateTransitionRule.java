@@ -2,11 +2,11 @@ package io.github.java_zengguang.litepress.event.state.rule;
 
 
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
+import io.github.java_zengguang.litepress.event.exception.StateTransitinException;
 import io.github.java_zengguang.litepress.event.state.action.StateAction;
 import io.github.java_zengguang.litepress.event.state.action.StateHandler;
-import io.github.java_zengguang.litepress.event.exception.StateTransitinException;
 
-public abstract class BaseStateTransitionRule implements StateTransitionRule {
+public abstract class BaseStateTransitionRule<T extends BaseEvent> implements StateTransitionRule<T> {
 
     public String from;
     public String event;
@@ -15,53 +15,51 @@ public abstract class BaseStateTransitionRule implements StateTransitionRule {
     public StateAction action;
 
 
-    @Override
-    public boolean checkTransitionRule(BaseEvent baseEvent) {
+    private boolean checkTransitionRule(T t) {
         //初始状态
-        if (!baseEvent.eventState.equals(this.from)) {
+        if (!t.instance.state.equals(this.from)) {
             return false;
         }
         //事件
-        if (this.event != null && !baseEvent.eventType.equals(this.event)) {
+        if (this.event != null && !t.name.equals(this.event)) {
             return false;
         }
         //条件
-        if (this.when != null && !this.when.deal(baseEvent)) {
+        if (this.when != null && !this.when.deal(t)) {
             return false;
         }
         return true;
     }
 
     @Override
-    public void doTransitionState(BaseEvent baseEvent) throws Exception {
-        if (this.to != null) {
-            baseEvent.eventState = this.to;  //转换状态
-        }
-    }
+    public void doTransitionState(T t) throws Exception {
+        if (this.checkTransitionRule(t)) {
+            if (action != null) {
+                try {
+                    action.deal(t);
+                    if (this.to != null) {
 
-    @Override
-    public void doAction(BaseEvent baseEvent) throws StateTransitinException {
-        if (action != null) {
-            try {
-                action.deal(baseEvent);
-            } catch (Exception e) {
-                throw new StateTransitinException("动作执行失败", e);
+                        t.instance.state = this.to;
+                    }
+
+                } catch (Exception e) {
+                    throw new StateTransitinException("动作执行失败", e);
+                }
             }
+
         }
+
     }
 
 
-    @Override
     public String getEvent() {
         return event;
     }
 
-    @Override
     public String getFrom() {
         return from;
     }
 
-    @Override
     public String getTo() {
         return to;
     }

@@ -43,7 +43,7 @@ public class EventTransitionRuleBuilder {
         return this;
     }
 
-    public StateTransitionRule build() throws StateTransitinException {
+    public SimpleStateTransitionRule build() throws StateTransitinException {
         return this.eventTransitionRule;
     }
 

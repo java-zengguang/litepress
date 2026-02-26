@@ -12,5 +12,6 @@ public class HttpRequestEntity extends MainModel {
     public List<CookieEntity> cookies=new ArrayList<>();
     public String sceneType; //场景类型  FILE 、 JSON  、FORM  、SSE
     public Map<String, Object> paramMap=new HashMap<>();
+    public String body;
 
 }

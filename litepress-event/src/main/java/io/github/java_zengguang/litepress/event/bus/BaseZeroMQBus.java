@@ -5,7 +5,7 @@ import io.github.java_zengguang.litepress.core.util.reflect.JsonUtil;
 import io.github.java_zengguang.litepress.event.entity.ZoreMQConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
 import io.github.java_zengguang.litepress.event.exception.StateTransitinException;
-import io.github.java_zengguang.litepress.event.subsriber.EventListener;
+import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.remoting.exception.RemotingException;
@@ -59,20 +59,20 @@ public abstract class BaseZeroMQBus extends BaseMessageBus implements MessageBus
 
     private void doCustomer( String message) {
         Logger.info("消息监听    " + new String(message));
-        BaseEvent baseEvent = JsonUtil.string2Obj(message, BaseEvent.class);
-        doInvokeEventListener( baseEvent);
+    //    BaseEvent baseEvent = JsonUtil.string2Obj(message, BaseEvent.class);
+        doInvokeEventListener( message);
     }
 
 
     @Override
     public void doPublish(BaseEvent baseEvent) throws IOException, StateTransitinException, MQBrokerException, RemotingException, InterruptedException, MQClientException {
-        publisher.sendMore(baseEvent.eventType); // 发送主题
+        publisher.sendMore(baseEvent.name); // 发送主题
         publisher.send(JsonUtil.obj2String(baseEvent));   // 发送消息
     }
 
 
     @Override
-    public void doSubscriber(String eventType, EventListener listener) throws MQClientException, InterruptedException {
+    public void doSubscriber(String eventType, BaseEventListener listener) throws MQClientException, InterruptedException {
         if (!eventListenerMap.containsKey(eventType)) {
             subscriber.subscribe(eventType.getBytes());
             eventListenerMap.put(eventType, listener);

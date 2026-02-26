@@ -4,14 +4,15 @@ package io.github.java_zengguang.litepress.web.netty.adapter;
 import io.github.java_zengguang.litepress.core.init.Config;
 import io.github.java_zengguang.litepress.core.util.reflect.JsonUtil;
 import io.github.java_zengguang.litepress.core.util.reflect.TypeConverter;
-import io.github.java_zengguang.litepress.web.servlet.adapter.ControllerAdapter;
 import io.github.java_zengguang.litepress.web.annotation.controller.ParamEntity;
 import io.github.java_zengguang.litepress.web.annotation.controller.RequestBody;
 import io.github.java_zengguang.litepress.web.entity.HttpRequestEntity;
 import io.github.java_zengguang.litepress.web.entity.HttpResponseEntity;
 import io.github.java_zengguang.litepress.web.entity.MVCOption;
 import io.github.java_zengguang.litepress.web.netty.intercepter.HttpInterceptor;
+import io.github.java_zengguang.litepress.web.servlet.adapter.ControllerAdapter;
 import io.github.java_zengguang.litepress.web.util.ResolveAnnotation;
+import io.netty.handler.codec.http.HttpMethod;
 import org.tinylog.Logger;
 
 import java.io.File;
@@ -21,7 +22,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public abstract class BaseControllerAdapter implements ControllerAdapter {
@@ -71,26 +75,29 @@ public abstract class BaseControllerAdapter implements ControllerAdapter {
         List<Object> methodParamValues = new ArrayList<>();
         List<ParamEntity> methodParams = getParameters(method);
 
-        for (ParamEntity methodParam : methodParams) {
-            {
-                Object methodParamValue = null;
-                //处理json
-                if (methodParam.isJson && requestEntity.paramMap.containsKey("body")) {
-                    methodParamValue = JsonUtil.string2Obj((String) requestEntity.paramMap.get("body"), methodParam.paramGenericityType);
-                }
-                //处理文件
-                if (methodParam.paramType == File.class && requestEntity.paramMap.containsKey("files")) {
-                    List files = (List) requestEntity.paramMap.get("files");
-                    methodParamValue = files.getFirst();
-                }
-                //处理form中的string变量
-                if (requestEntity.paramMap.containsKey(methodParam.paramName)) {
-                    methodParamValue = TypeConverter.convertStringToType((String) requestEntity.paramMap.get(methodParam.paramName), methodParam.paramType);
-                }
-
+        if (HttpMethod.POST.name().equals(requestEntity.methodType) && requestEntity.contentType != null) {
+            //处理json
+            if (requestEntity.contentType.equals("application/json")) {
+                Object methodParamValue = JsonUtil.string2Obj(requestEntity.body, methodParams.getFirst().paramGenericityType);
                 methodParamValues.add(methodParamValue);
+            } else if (requestEntity.contentType.startsWith("multipart/form-data") || requestEntity.contentType.equals("application/x-www-form-urlencoded;charset=UTF-8")) {
+                for (ParamEntity methodParam : methodParams) {{
+                        Object methodParamValue = null;
+                        //处理文件
+                        if (methodParam.paramType == File.class && requestEntity.paramMap.containsKey("files")) {
+                            List files = (List) requestEntity.paramMap.get("files");
+                            methodParamValue = files.getFirst();
+                        }
+                        //处理form中的string变量
+                        if (requestEntity.paramMap.containsKey(methodParam.paramName)) {
+                            methodParamValue = TypeConverter.convertStringToType((String) requestEntity.paramMap.get(methodParam.paramName), methodParam.paramType);
+                        }
+                        methodParamValues.add(methodParamValue);
+                    }
+                }
             }
         }
+
 
         //构建返回
         HttpResponseEntity httpResponseEntity = new HttpResponseEntity();
@@ -105,9 +112,9 @@ public abstract class BaseControllerAdapter implements ControllerAdapter {
         try {
             httpResponseEntity.result = method.invoke(method.getDeclaringClass().newInstance(), methodParamValues.toArray());
         } catch (Exception e) {
-            if(e instanceof InvocationTargetException){
+            if (e instanceof InvocationTargetException) {
                 Logger.error(((InvocationTargetException) e).getTargetException(), "系统内部错误！");
-            }else{
+            } else {
                 Logger.error(e, "系统内部错误！");
             }
             httpResponseEntity.statusCode = 500;
@@ -125,7 +132,7 @@ public abstract class BaseControllerAdapter implements ControllerAdapter {
     }
 
 
-    public List<ParamEntity> getParameters(Method method) throws  ClassNotFoundException, IOException {
+    public List<ParamEntity> getParameters(Method method) throws ClassNotFoundException, IOException {
         int parameterCount = method.getParameterCount();
         Parameter[] parameters = method.getParameters();
         Type[] paramGenericTypes = method.getGenericParameterTypes();

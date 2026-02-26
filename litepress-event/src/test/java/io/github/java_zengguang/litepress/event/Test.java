@@ -6,9 +6,10 @@ import io.github.java_zengguang.litepress.event.entity.RocketConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
 import io.github.java_zengguang.litepress.event.state.BaseStateModel;
 import io.github.java_zengguang.litepress.event.state.StateModel;
-import io.github.java_zengguang.litepress.event.state.rule.StateTransitionRule;
+import io.github.java_zengguang.litepress.event.state.po.EventInstancePo;
+import io.github.java_zengguang.litepress.event.state.rule.SimpleStateTransitionRule;
 import io.github.java_zengguang.litepress.event.state.rule.EventTransitionRuleBuilder;
-import io.github.java_zengguang.litepress.event.subsriber.StateEventListener;
+import io.github.java_zengguang.litepress.event.subsriber.BaseStateEventListener;
 import io.github.java_zengguang.litepress.react.semaphore.impl.LocalSemaphoreManager;
 import org.tinylog.Logger;
 
@@ -28,18 +29,41 @@ public class Test {
 
 
         Logger.info("初始化");
-        StateEventListener eventListener = new StateEventListener() ;
+        BaseStateEventListener eventListener = new BaseStateEventListener(BaseEvent.class) {
+            @Override
+            public void init(BaseEvent baseEvent) throws Exception {
+
+            }
+
+            @Override
+            public void dealEvent(BaseEvent event) throws Exception {
+
+            }
+
+            @Override
+            public void beforeDealEvent(BaseEvent event) throws Exception {
+
+            }
+
+            @Override
+            public void afterDealEvent(BaseEvent event) throws Exception {
+
+            }
 
 
-        StateTransitionRule stateTransitionRule = new EventTransitionRuleBuilder()
+        };
+
+
+        SimpleStateTransitionRule stateTransitionRule = new EventTransitionRuleBuilder()
                 .event("say")
                 .to("say-done")
                 .action((baseEvent) -> {
                     Logger.info("打招呼");
+                    messageBus.publish(baseEvent);
                 }).build();
 
-        StateTransitionRule stateTransitionRule1 = new EventTransitionRuleBuilder()
-                .event("say")
+        SimpleStateTransitionRule stateTransitionRule1 = new EventTransitionRuleBuilder()
+                .event("call-say")
                 .form("say-done")
                 .to("call-done")
                 .action((baseEvent) -> {
@@ -47,17 +71,13 @@ public class Test {
                 }).build();
 
         StateModel stateModel=new BaseStateModel("xxxx") {
-            @Override
-            public void saveEventState(BaseEvent baseEvent) {
-
-            }
         };
         stateModel.addEventTransitionRule(stateTransitionRule);
         stateModel.addEventTransitionRule(stateTransitionRule1);
 
         eventListener.addStateModel("xxxx",stateModel);
 
-        messageBus.register("say", eventListener);
+        messageBus.register( eventListener);
 
 
         messageBus.setSemaphoreManager(new LocalSemaphoreManager());
@@ -68,7 +88,7 @@ public class Test {
         Thread.sleep(10000);
 
         Logger.info("事件发布");
-        messageBus.publish(new BaseEvent("say","xxxx", "1243"));
+        messageBus.publish(new BaseEvent());
 
         Logger.info("开始消费");
         messageBus.resumeCustomer();

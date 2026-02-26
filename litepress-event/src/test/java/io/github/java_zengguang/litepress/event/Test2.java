@@ -15,6 +15,8 @@ import org.nutz.ssdb4j.SSDBs;
 import org.nutz.ssdb4j.spi.SSDB;
 import org.tinylog.Logger;
 
+import java.util.Set;
+
 public class Test2 {
 
     private static SSDB createSSDB(SSDBConfig ssdbConfig) {
@@ -53,8 +55,27 @@ public class Test2 {
 for(int i=0;i<1000000;i++) {
     Logger.info("初始化");
 }
-        messageBus.register("say", new BaseEventListener() {
+        messageBus.register( new BaseEventListener(BaseEvent.class, Set.of("say")) {
 
+            @Override
+            public void init(BaseEvent baseEvent) throws Exception {
+
+            }
+
+            @Override
+            public void dealEvent(BaseEvent event) throws Exception {
+
+            }
+
+            @Override
+            public void beforeDealEvent(BaseEvent event) throws Exception {
+
+            }
+
+            @Override
+            public void afterDealEvent(BaseEvent event) throws Exception {
+
+            }
         });
 
 
@@ -72,7 +93,7 @@ for(int i=0;i<1000000;i++) {
         ssdb.set("001", 10);
         Logger.info("事件发布");
         for(int i=0;i<10;i++) {
-            messageBus.publish(new BaseEvent("say", "001"));
+            messageBus.publish(new BaseEvent());
         }
 
 

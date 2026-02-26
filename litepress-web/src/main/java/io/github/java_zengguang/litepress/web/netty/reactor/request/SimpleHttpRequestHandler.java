@@ -109,14 +109,14 @@ public class SimpleHttpRequestHandler extends SimpleChannelInboundHandler<FullHt
 
 
         if (HttpMethod.POST.equals(request.method()) && httpRequestEntity.contentType != null) {
+            httpRequestEntity.body=request.content().toString(CharsetUtil.UTF_8);
             if (httpRequestEntity.contentType.equals("application/json")) {
                 httpRequestEntity.sceneType = SceneType.JSON.name();
-                httpRequestEntity.paramMap.put("body", request.content().toString(CharsetUtil.UTF_8));
             } else if (httpRequestEntity.contentType.startsWith("multipart/form-data")) {
                 httpRequestEntity.sceneType = SceneType.FORM.name();
                 httpRequestEntity.paramMap.putAll(readBody(request));
             } else if (httpRequestEntity.contentType.equals("application/x-www-form-urlencoded;charset=UTF-8")) {
-                decoder = new QueryStringDecoder(request.content().toString(CharsetUtil.UTF_8), false);
+                decoder = new QueryStringDecoder(httpRequestEntity.body, false);
                 uriAttributes = decoder.parameters();
                 if (uriAttributes != null && !uriAttributes.isEmpty()) {
                     uriAttributes.forEach((key, values) -> {

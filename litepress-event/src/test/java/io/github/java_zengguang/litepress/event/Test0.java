@@ -6,6 +6,8 @@ import io.github.java_zengguang.litepress.event.event.BaseEvent;
 import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
 import org.tinylog.Logger;
 
+import java.util.Set;
+
 public class Test0 {
 
     public static void main(String args[]) throws Exception {
@@ -13,20 +15,36 @@ public class Test0 {
         zoreMQConfig.port = "5555";
         zoreMQConfig.registerURL = "10.7.136.172:2181";
         ZoreMQBus bus = new ZoreMQBus(zoreMQConfig);
-        bus.register("/hello", new BaseEventListener() {
+        bus.register(new BaseEventListener(BaseEvent.class, Set.of("/hello")) {
 
+            @Override
+            public void init(BaseEvent baseEvent) throws Exception {
+
+            }
+
+            @Override
+            public void dealEvent(BaseEvent event) throws Exception {
+
+            }
+
+            @Override
+            public void beforeDealEvent(BaseEvent event) throws Exception {
+
+            }
+
+            @Override
+            public void afterDealEvent(BaseEvent event) throws Exception {
+
+            }
         });
 
-        bus.register("/1", new BaseEventListener() {
-
-        });
 
         bus.init();
 
 
-        bus.publish(new BaseEvent("/hello", "zengguang"));
-        bus.publish(new BaseEvent("/hello", "zengguang"));
-        bus.publish(new BaseEvent("/1", "zengguang"));
+        bus.publish(new BaseEvent());
+        bus.publish(new BaseEvent());
+        bus.publish(new BaseEvent());
 
 
         Thread.sleep(10000);

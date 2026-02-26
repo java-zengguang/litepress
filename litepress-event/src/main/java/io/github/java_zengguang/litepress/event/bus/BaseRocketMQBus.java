@@ -6,7 +6,7 @@ import io.github.java_zengguang.litepress.event.client.RocketMQFactory;
 import io.github.java_zengguang.litepress.event.entity.RocketConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
 import io.github.java_zengguang.litepress.event.exception.StateTransitinException;
-import io.github.java_zengguang.litepress.event.subsriber.EventListener;
+import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -27,14 +27,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class BaseRocketMQBus extends BaseMessageBus implements RocketMQManager, MessageBus {
-    public Set<String> tagSet = new HashSet<>();
+public abstract class BaseRocketMQBus extends BaseMessageBus implements  MessageBus {
+    private Set<String> tagSet = new HashSet<>();
+    private RocketConfig rocketConfig;
+    private DefaultMQPushConsumer consumer;
+    private DefaultMQProducer producer;
 
-    public RocketConfig rocketConfig;
-    public DefaultMQPushConsumer consumer;
-    public DefaultMQProducer producer;
 
-    public BaseRocketMQBus(RocketConfig rocketConfig) throws InterruptedException, MQClientException {
+    public BaseRocketMQBus(RocketConfig rocketConfig) {
         this.rocketConfig = rocketConfig;
     }
 
@@ -69,13 +69,13 @@ public abstract class BaseRocketMQBus extends BaseMessageBus implements RocketMQ
 
     private void doCustomer(Message message) {
         Logger.info("消息监听    " + new String(message.getBody()));
-        BaseEvent baseEvent = JsonUtil.string2Obj(new String(message.getBody()), BaseEvent.class);
-        doInvokeEventListener( baseEvent);
+
+        doInvokeEventListener(new String(message.getBody()));
     }
 
     private Message trans2Message(BaseEvent baseEvent) {
-        Logger.info("消息发送    " + baseEvent.eventType + "" + baseEvent.message);
-        Message message = new Message(rocketConfig.topic, baseEvent.eventType, baseEvent.eventID, JsonUtil.obj2String(baseEvent).getBytes(StandardCharsets.UTF_8));
+        Logger.info("消息发送    " + baseEvent.name + "" + baseEvent.message);
+        Message message = new Message(rocketConfig.topic, baseEvent.name, baseEvent.id, JsonUtil.obj2String(baseEvent).getBytes(StandardCharsets.UTF_8));
         message.putUserProperty("ProtocolType", "EVENT");
         return message;
     }
@@ -98,7 +98,7 @@ public abstract class BaseRocketMQBus extends BaseMessageBus implements RocketMQ
 
 
     @Override
-    public void doSubscriber(String eventType, EventListener listener) throws MQClientException, InterruptedException {
+    public void doSubscriber(String eventType, BaseEventListener listener) throws MQClientException, InterruptedException {
         tagSet.add(eventType);
     }
 
@@ -111,12 +111,10 @@ public abstract class BaseRocketMQBus extends BaseMessageBus implements RocketMQ
         return tags.toString();
     }
 
-    @Override
     public void suspendCustomer() {
         consumer.suspend();
     }
 
-    @Override
     public void resumeCustomer() {
         consumer.resume();
     }

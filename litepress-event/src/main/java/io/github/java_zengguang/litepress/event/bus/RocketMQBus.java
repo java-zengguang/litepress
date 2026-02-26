@@ -7,7 +7,7 @@ import org.apache.rocketmq.client.exception.MQClientException;
 public class RocketMQBus extends BaseRocketMQBus {
 
 
-    public RocketMQBus(RocketConfig rocketConfig) throws InterruptedException, MQClientException {
+    public RocketMQBus(RocketConfig rocketConfig){
         super(rocketConfig);
     }
 
