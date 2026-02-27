@@ -75,28 +75,25 @@ public abstract class BaseControllerAdapter implements ControllerAdapter {
         List<Object> methodParamValues = new ArrayList<>();
         List<ParamEntity> methodParams = getParameters(method);
 
-        if (HttpMethod.POST.name().equals(requestEntity.methodType) && requestEntity.contentType != null) {
-            //处理json
-            if (requestEntity.contentType.equals("application/json")) {
-                Object methodParamValue = JsonUtil.string2Obj(requestEntity.body, methodParams.getFirst().paramGenericityType);
-                methodParamValues.add(methodParamValue);
-            } else if (requestEntity.contentType.startsWith("multipart/form-data") || requestEntity.contentType.equals("application/x-www-form-urlencoded;charset=UTF-8")) {
-                for (ParamEntity methodParam : methodParams) {{
-                        Object methodParamValue = null;
-                        //处理文件
-                        if (methodParam.paramType == File.class && requestEntity.paramMap.containsKey("files")) {
-                            List files = (List) requestEntity.paramMap.get("files");
-                            methodParamValue = files.getFirst();
-                        }
-                        //处理form中的string变量
-                        if (requestEntity.paramMap.containsKey(methodParam.paramName)) {
-                            methodParamValue = TypeConverter.convertStringToType((String) requestEntity.paramMap.get(methodParam.paramName), methodParam.paramType);
-                        }
-                        methodParamValues.add(methodParamValue);
-                    }
-                }
+
+        for (ParamEntity methodParam : methodParams) {
+            Object methodParamValue = null;
+            //处理文件
+            if (methodParam.isJson) {
+                methodParamValue = JsonUtil.string2Obj(requestEntity.body, methodParams.getFirst().paramGenericityType);
             }
+            if (methodParam.paramType == File.class && requestEntity.paramMap.containsKey("files")) {
+                List files = (List) requestEntity.paramMap.get("files");
+                methodParamValue = files.getFirst();
+            }
+            //处理form中的string变量
+            if (requestEntity.paramMap.containsKey(methodParam.paramName)) {
+                methodParamValue = TypeConverter.convertStringToType((String) requestEntity.paramMap.get(methodParam.paramName), methodParam.paramType);
+            }
+            methodParamValues.add(methodParamValue);
         }
+
+
 
 
         //构建返回
