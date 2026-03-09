@@ -55,7 +55,7 @@
         <slf4j.api>2.0.13</slf4j.api>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
-        <revision>0.0.10</revision>
+        <revision>0.0.11</revision>
     </properties>
 
     <!-- 发布配置 -->
@@ -69,7 +69,13 @@
             <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-
+<!--    <distributionManagement>-->
+<!--        <repository>-->
+<!--            <id>spismaven</id>-->
+<!--            <name>nonveh maven</name>-->
+<!--            <url>http://10.7.42.42:9081/repository/SPIS-maven/</url>-->
+<!--        </repository>-->
+<!--    </distributionManagement>-->
 
     <dependencyManagement>
         <dependencies>

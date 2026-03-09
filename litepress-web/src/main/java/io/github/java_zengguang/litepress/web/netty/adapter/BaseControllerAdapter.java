@@ -72,15 +72,25 @@ public abstract class BaseControllerAdapter implements ControllerAdapter {
             return httpResponseEntity;
         }
 
+
+        //构建返回
+        HttpResponseEntity httpResponseEntity = new HttpResponseEntity();
+
+        //执行前置拦截
+        for (HttpInterceptor interceptor : preHttpInterceptors) {
+            if (!interceptor.doInvoke(requestEntity, httpResponseEntity)) {
+                return httpResponseEntity;
+            }
+        }
+
         List<Object> methodParamValues = new ArrayList<>();
         List<ParamEntity> methodParams = getParameters(method);
-
 
         for (ParamEntity methodParam : methodParams) {
             Object methodParamValue = null;
             //处理文件
             if (methodParam.isJson) {
-                methodParamValue = JsonUtil.string2Obj(requestEntity.body, methodParams.getFirst().paramGenericityType);
+                methodParamValue = JsonUtil.string2Obj(requestEntity.body, methodParam.paramGenericityType);
             }
             if (methodParam.paramType == File.class && requestEntity.paramMap.containsKey("files")) {
                 List files = (List) requestEntity.paramMap.get("files");
@@ -93,18 +103,6 @@ public abstract class BaseControllerAdapter implements ControllerAdapter {
             methodParamValues.add(methodParamValue);
         }
 
-
-
-
-        //构建返回
-        HttpResponseEntity httpResponseEntity = new HttpResponseEntity();
-
-        //执行前置拦截
-        for (HttpInterceptor interceptor : preHttpInterceptors) {
-            if (!interceptor.doInvoke(requestEntity, httpResponseEntity)) {
-                return httpResponseEntity;
-            }
-        }
         //执行controller方法
         try {
             httpResponseEntity.result = method.invoke(method.getDeclaringClass().newInstance(), methodParamValues.toArray());
