@@ -25,7 +25,7 @@ public abstract class BaseStateModel implements StateModel {
         eventSet.add(stateTransitionRule.getEvent());
         eventSet.add(stateTransitionRule.getFrom());
         eventSet.add(stateTransitionRule.getTo());
-        this.eventTransitionRuleMap.computeIfAbsent(stateTransitionRule.getFrom(), (key) -> {
+        this.eventTransitionRuleMap.computeIfAbsent(stateTransitionRule.getEvent(), (key) -> {
             return new ArrayList<>();
         }).add(stateTransitionRule);
     }
@@ -39,8 +39,8 @@ public abstract class BaseStateModel implements StateModel {
     //递归任务，状态切换后，直接触发动作
     public void doTransitionRule(BaseEvent baseEvent) throws StateTransitinException {
         EventInstancePo instancePo = baseEvent.instance;
-        if (instancePo != null && eventTransitionRuleMap.containsKey(instancePo.state)) {
-            List<StateTransitionRule> stateTransitionRules = eventTransitionRuleMap.get(instancePo.state);
+        if (instancePo != null && eventTransitionRuleMap.containsKey(baseEvent.name)) {
+            List<StateTransitionRule> stateTransitionRules = eventTransitionRuleMap.get(baseEvent.name);
             for (StateTransitionRule stateTransitionRule : stateTransitionRules) {
                 try {
                      stateTransitionRule.doTransitionState(baseEvent);

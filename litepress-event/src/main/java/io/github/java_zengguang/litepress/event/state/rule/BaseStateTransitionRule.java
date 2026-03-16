@@ -17,9 +17,9 @@ public abstract class BaseStateTransitionRule<T extends BaseEvent> implements St
 
     private boolean checkTransitionRule(T t) {
         //初始状态
-        if (!t.instance.state.equals(this.from)) {
-            return false;
-        }
+//        if (!t.instance.state.equals(this.from)) {
+//            return false;
+//        }
         //事件
         if (this.event != null && !t.name.equals(this.event)) {
             return false;

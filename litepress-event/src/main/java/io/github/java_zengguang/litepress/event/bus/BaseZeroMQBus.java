@@ -1,6 +1,7 @@
 package io.github.java_zengguang.litepress.event.bus;
 
 
+import io.github.java_zengguang.litepress.core.error.BizException;
 import io.github.java_zengguang.litepress.core.util.reflect.JsonUtil;
 import io.github.java_zengguang.litepress.event.entity.ZoreMQConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
@@ -13,48 +14,46 @@ import org.tinylog.Logger;
 import org.zeromq.ZMQ;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public abstract class BaseZeroMQBus extends BaseMessageBus implements MessageBus {
 
-    private ZoreMQConfig zoreMQConfig;
 
     private ZMQ.Socket publisher;
 
     private ZMQ.Socket subscriber;
 
-    private ExecutorService customerExecutor;
+    private final ConcurrentHashMap<String, ExecutorService> executors = new ConcurrentHashMap<>();
 
 
-    public BaseZeroMQBus(ZoreMQConfig zoreMQConfig) {
-        this.zoreMQConfig = zoreMQConfig;
+
+    public BaseZeroMQBus() {
         ZMQ.Context context = ZMQ.context(1);
-        publisher = context.socket(ZMQ.PUB);
-        publisher.bind("tcp://*:" + zoreMQConfig.port);
-        subscriber = context.socket(ZMQ.SUB);
-        subscriber.connect("tcp://localhost:" + zoreMQConfig.port);
-        customerExecutor = Executors.newVirtualThreadPerTaskExecutor();
+        // 使用PAIR模式
+        publisher = context.socket(ZMQ.PAIR);
+        subscriber = context.socket(ZMQ.PAIR);
+        publisher.bind("inproc://zeromq-bus");
+        subscriber.connect("inproc://zeromq-bus");
     }
 
-    public void init() throws MQClientException, InterruptedException {
 
-        Logger.info("初始化");
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                // 订阅特定主题
-                while (true) {
-               //     String receivedTopic = subscriber.recvStr(0); // 接收主题
-                    String message = subscriber.recvStr(0);       // 接收消息
-                    customerExecutor.submit(() -> {
-                        doCustomer( message);
-                    });
-                }
+    // 按用户/会话ID分组，相同ID的顺序处理
+
+    public void init() {
+        new Thread(() -> {
+            while (true) {
+                String topic = subscriber.recvStr(0);
+                String message = subscriber.recvStr(0);
+                BaseEvent baseEvent=JsonUtil.string2Obj(message,BaseEvent.class);
+                String sessionId = baseEvent.accessId; // 提取会话ID
+
+                executors.computeIfAbsent(sessionId, k ->
+                        Executors.newSingleThreadExecutor()
+                ).submit(() -> doCustomer(message));
             }
-        });
-        executor.shutdown();
+        }).start();
     }
 
     private void doCustomer( String message) {
