@@ -16,6 +16,8 @@ open module litepress.web {
     requires com.google.common;
     requires litepress.core;
     requires reactor.core;
+    requires io.netty.handler;
+    requires java.net.http;
 
     exports io.github.java_zengguang.litepress.web.servlet;
     exports io.github.java_zengguang.litepress.web.servlet.adapter;
