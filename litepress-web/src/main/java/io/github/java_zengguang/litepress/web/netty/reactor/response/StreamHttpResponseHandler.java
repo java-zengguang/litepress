@@ -70,9 +70,9 @@ public class StreamHttpResponseHandler extends BaseHttpResponseHandler {
                     try {
                         // 检查心跳
                         if (Duration.between(lastHeartbeat, Instant.now()).compareTo(Duration.ofSeconds(HEARTBEAT_INTERVAL_SECONDS)) > 0) {
-                            if (!sendHeartbeat(ctx)) {
+          /*                  if (!sendHeartbeat(ctx)) {
                                 break;
-                            }
+                            }*/
                             lastHeartbeat = Instant.now();
                         }
 

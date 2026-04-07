@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class TrainModelFactory {
 
-    private static Map<String, TrainModel> modelMap = new HashMap<>();
+
 
     private static TrainModelFactory trainModelFactory = null;
 
@@ -26,28 +26,19 @@ public class TrainModelFactory {
 
     }
 
-    public TrainModel getTrainModelInstance(TrainConfig trainConfig) throws IOException {
+
+
+    public TrainModel createTrainModel(TrainConfig trainConfig) throws IOException {
         TrainModel trainModel = null;
-        if (modelMap.containsKey(trainConfig.modelID)) {
-            trainModel = modelMap.get(trainConfig.modelID);
+        if ("dl4j".equals(trainConfig.modelType)) {
+            trainModel = new TrainModelDl4j(trainConfig.input, trainConfig.output, trainConfig.hiddenLayer, trainConfig.timeOut, trainConfig.accuracyRate, trainConfig.localFilePath);
         } else {
-            if ("dl4j".equals(trainConfig.modelType)) {
-                trainModel = new TrainModelDl4j(trainConfig.input, trainConfig.output, trainConfig.hiddenLayer, trainConfig.timeOut, trainConfig.accuracyRate, trainConfig.localFilePath);
-            } else {
-                trainModel = new TrainModelEncog(trainConfig.input, trainConfig.output, trainConfig.hiddenLayer, trainConfig.timeOut, trainConfig.accuracyRate, trainConfig.localFilePath);
-            }
-            if (trainModel != null) {
-                modelMap.put(trainConfig.modelID, trainModel);
-            }
+            trainModel = new TrainModelEncog(trainConfig.input, trainConfig.output, trainConfig.hiddenLayer, trainConfig.timeOut, trainConfig.accuracyRate, trainConfig.localFilePath);
         }
         return trainModel;
     }
 
 
-    public void clearModel(String modelID) {
-        if (modelMap.containsKey(modelID)) {
-            modelMap.remove(modelID);
-        }
-    }
+
 
 }
