@@ -13,6 +13,8 @@ import io.github.java_zengguang.litepress.event.subsriber.BaseStateEventListener
 import io.github.java_zengguang.litepress.react.semaphore.impl.LocalSemaphoreManager;
 import org.tinylog.Logger;
 
+import java.util.List;
+
 public class Test {
 
     public static void main(String args[]) throws Exception {
@@ -64,7 +66,7 @@ public class Test {
 
         SimpleStateTransitionRule stateTransitionRule1 = new EventTransitionRuleBuilder()
                 .event("call-say")
-                .form("say-done")
+                .form(List.of("say-done"))
                 .to("call-done")
                 .action((baseEvent) -> {
                     Logger.info("回招呼！");

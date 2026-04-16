@@ -22,9 +22,20 @@ public abstract class BaseStateModel implements StateModel {
 
     public void addEventTransitionRule(BaseStateTransitionRule stateTransitionRule) {
 
-        eventSet.add(stateTransitionRule.getEvent());
-        eventSet.add(stateTransitionRule.getFrom());
-        eventSet.add(stateTransitionRule.getTo());
+        String event = stateTransitionRule.getEvent();
+        List<String> from = stateTransitionRule.getFrom();
+        String to = stateTransitionRule.getTo();
+        if (event != null) {
+            eventSet.add(event);
+        }
+        if (from != null) {
+            stateSet.addAll(from);
+        }
+        if (to != null) {
+            stateSet.add(to);
+        }
+
+
         this.eventTransitionRuleMap.computeIfAbsent(stateTransitionRule.getEvent(), (key) -> {
             return new ArrayList<>();
         }).add(stateTransitionRule);
@@ -43,7 +54,7 @@ public abstract class BaseStateModel implements StateModel {
             List<StateTransitionRule> stateTransitionRules = eventTransitionRuleMap.get(baseEvent.name);
             for (StateTransitionRule stateTransitionRule : stateTransitionRules) {
                 try {
-                     stateTransitionRule.doTransitionState(baseEvent);
+                    stateTransitionRule.doTransitionState(baseEvent);
                 } catch (Exception e) {
                     Logger.error(e);
                     throw new StateTransitinException("执行任务出错！", e);
@@ -55,7 +66,6 @@ public abstract class BaseStateModel implements StateModel {
     public List<String> getEvents() {
         return new ArrayList<>(eventSet);
     }
-
 
 
 }
