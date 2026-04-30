@@ -55,27 +55,27 @@
         <slf4j.api>2.0.13</slf4j.api>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
-        <revision>0.0.12</revision>
+        <revision>0.0.13</revision>
     </properties>
 
-    <!-- 发布配置 -->
-    <distributionManagement>
-        <snapshotRepository>
-            <id>central</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>central</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
+<!--    &lt;!&ndash; 发布配置 &ndash;&gt;-->
 <!--    <distributionManagement>-->
+<!--        <snapshotRepository>-->
+<!--            <id>central</id>-->
+<!--            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>-->
+<!--        </snapshotRepository>-->
 <!--        <repository>-->
-<!--            <id>spismaven</id>-->
-<!--            <name>nonveh maven</name>-->
-<!--            <url>http://10.7.42.42:9081/repository/SPIS-maven/</url>-->
+<!--            <id>central</id>-->
+<!--            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
 <!--        </repository>-->
 <!--    </distributionManagement>-->
+    <distributionManagement>
+        <repository>
+            <id>spismaven</id>
+            <name>nonveh maven</name>
+            <url>http://10.7.42.42:9081/repository/SPIS-maven/</url>
+        </repository>
+    </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
@@ -350,15 +350,15 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.8.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <publishingServerId>central</publishingServerId>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.sonatype.central</groupId>-->
+<!--                <artifactId>central-publishing-maven-plugin</artifactId>-->
+<!--                <version>0.8.0</version>-->
+<!--                <extensions>true</extensions>-->
+<!--                <configuration>-->
+<!--                    <publishingServerId>central</publishingServerId>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
 
         </plugins>
 

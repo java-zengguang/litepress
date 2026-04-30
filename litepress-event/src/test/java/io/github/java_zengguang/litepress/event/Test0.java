@@ -40,7 +40,6 @@ public class Test0 {
         });
 
 
-        bus.init();
 
         Thread.sleep(1000);
       BaseEvent baseEvent=  new BaseEvent();
