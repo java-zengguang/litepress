@@ -21,45 +21,66 @@ import java.util.concurrent.Executors;
 public abstract class BaseZeroMQBus extends BaseMessageBus implements MessageBus {
 
 
+    private final ZoreMQConfig config;
+
     private ZMQ.Socket publisher;
 
     private ZMQ.Socket subscriber;
 
     private final ConcurrentHashMap<String, ExecutorService> executors = new ConcurrentHashMap<>();
 
+    private Thread receiverThread;
 
 
-    public BaseZeroMQBus() {
-        ZMQ.Context context = ZMQ.context(1);
+    public BaseZeroMQBus(ZoreMQConfig config) {
+        this.config = config;
+        ZMQ.Context context = ZMQ.context(config.ioThreads);
         // 使用PAIR模式
         publisher = context.socket(ZMQ.PAIR);
         subscriber = context.socket(ZMQ.PAIR);
-        publisher.bind("inproc://zeromq-bus");
-        subscriber.connect("inproc://zeromq-bus");
+        publisher.bind(config.busAddress);
+        subscriber.connect(config.busAddress);
+    }
+
+    public BaseZeroMQBus() {
+        this(new ZoreMQConfig());
     }
 
 
     // 按用户/会话ID分组，相同ID的顺序处理
 
     public void init() {
-        new Thread(() -> {
-            while (true) {
+        receiverThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
                 String topic = subscriber.recvStr(0);
                 String message = subscriber.recvStr(0);
-                BaseEvent baseEvent=JsonUtil.string2Obj(message,BaseEvent.class);
+                BaseEvent baseEvent = JsonUtil.string2Obj(message, BaseEvent.class);
                 String sessionId = baseEvent.accessId; // 提取会话ID
 
-                executors.computeIfAbsent(sessionId, k ->
-                        Executors.newSingleThreadExecutor()
-                ).submit(() -> doCustomer(message));
+                executors.computeIfAbsent(sessionId, k -> {
+                    if (executors.size() >= config.maxSessionThreads) {
+                        Logger.warn("会话线程池已达上限 {}，复用已有池", config.maxSessionThreads);
+                        // 超过上限时复用一个已有线程池
+                        return executors.values().iterator().next();
+                    }
+                    return Executors.newSingleThreadExecutor();
+                }).submit(() -> doCustomer(message));
             }
-        }).start();
+        }, "zeromq-bus-receiver");
+        receiverThread.start();
     }
 
-    private void doCustomer( String message) {
-        Logger.info("消息监听    " + new String(message));
-    //    BaseEvent baseEvent = JsonUtil.string2Obj(message, BaseEvent.class);
-        doInvokeEventListener( message);
+    public void shutdown() {
+        if (receiverThread != null) {
+            receiverThread.interrupt();
+        }
+        executors.values().forEach(ExecutorService::shutdown);
+        executors.clear();
+    }
+
+    private void doCustomer(String message) {
+        Logger.info("消息监听    " + message);
+        doInvokeEventListener(message);
     }
 
 
