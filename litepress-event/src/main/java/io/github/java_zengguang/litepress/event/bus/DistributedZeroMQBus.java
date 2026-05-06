@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class BaseBistributedZeroMQBus extends BaseMessageBus implements MessageBus {
+public class DistributedZeroMQBus extends BaseMessageBus implements MessageBus {
 
     private ZoreMQConfig zoreMQConfig;
 
@@ -78,7 +78,7 @@ public class BaseBistributedZeroMQBus extends BaseMessageBus implements MessageB
 
     }
 
-    public BaseBistributedZeroMQBus(ZoreMQConfig zoreMQConfig) throws Exception {
+    public DistributedZeroMQBus(ZoreMQConfig zoreMQConfig) throws Exception {
         this.ip = IpConfig.getLocalHostLANAddress().getHostAddress();
         this.zoreMQConfig = zoreMQConfig;
         context = ZMQ.context(1);

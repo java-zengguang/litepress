@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public abstract class BaseZeroMQBus extends BaseMessageBus implements MessageBus {
+public abstract class ZeroMQBus extends BaseMessageBus implements MessageBus {
 
     private final ZMQ.Context context;
     private final ZMQ.Socket publisher;
@@ -20,7 +20,7 @@ public abstract class BaseZeroMQBus extends BaseMessageBus implements MessageBus
     private final ThreadPoolExecutor workerPool;
     private Thread receiverThread;
 
-    public BaseZeroMQBus(ZoreMQConfig config) {
+    public ZeroMQBus(ZoreMQConfig config) {
         try {
             this.context = ZMQ.context(config.ioThreads);
             this.publisher = context.socket(ZMQ.PAIR);
@@ -43,7 +43,7 @@ public abstract class BaseZeroMQBus extends BaseMessageBus implements MessageBus
         }
     }
 
-    public BaseZeroMQBus() {
+    public ZeroMQBus() {
         this(new ZoreMQConfig());
     }
 
