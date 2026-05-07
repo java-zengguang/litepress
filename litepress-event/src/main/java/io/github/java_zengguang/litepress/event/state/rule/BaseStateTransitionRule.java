@@ -5,8 +5,10 @@ import io.github.java_zengguang.litepress.event.event.BaseEvent;
 import io.github.java_zengguang.litepress.event.exception.StateTransitinException;
 import io.github.java_zengguang.litepress.event.state.action.StateAction;
 import io.github.java_zengguang.litepress.event.state.action.StateHandler;
+import io.github.java_zengguang.litepress.event.state.po.StatePo;
 import org.tinylog.Logger;
 
+import java.util.Date;
 import java.util.List;
 
 public abstract class BaseStateTransitionRule<T extends BaseEvent> implements StateTransitionRule<T> {
@@ -26,8 +28,8 @@ public abstract class BaseStateTransitionRule<T extends BaseEvent> implements St
             return false;
         }
         //初始状态
-        if (this.from != null && !this.from.isEmpty() && !this.from.contains(t.instance.state)) {
-            Logger.error("%s 状态不匹配，当前状态 %s 所需状态 %s".formatted(t.name, t.instance.state, this.from));
+        if (this.from != null && !this.from.isEmpty() && !this.from.contains(t.instance.state.name)) {
+            Logger.error("%s 状态不匹配，当前状态 %s 所需状态 %s".formatted(t.name, t.instance.state.name, this.from));
             return false;
         }
         //条件
@@ -41,7 +43,7 @@ public abstract class BaseStateTransitionRule<T extends BaseEvent> implements St
                 try {
                     action.deal(t);
                     if (this.to != null) {
-                        t.instance.state = this.to;
+                        t.instance.state = new StatePo(this.to,new Date().getTime());
                     }
 
                 } catch (Exception e) {
