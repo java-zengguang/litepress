@@ -34,6 +34,7 @@ module litepress.core {
     requires org.apache.poi.poi;
     requires org.apache.poi.ooxml;
     requires org.apache.commons.collections4;
+    requires com.fasterxml.jackson.datatype.jsr310;
 
 
 }
