@@ -5,9 +5,9 @@ import io.github.java_zengguang.litepress.event.event.BaseEvent;
 import io.github.java_zengguang.litepress.event.exception.StateTransitinException;
 
 
-public interface StateTransitionRule<T extends BaseEvent> {
+public interface StateTransitionRule {
 
-    void doTransitionState(T t) throws Exception;
+    void doTransitionState(BaseEvent baseEvent) throws Exception;
 
 
 }

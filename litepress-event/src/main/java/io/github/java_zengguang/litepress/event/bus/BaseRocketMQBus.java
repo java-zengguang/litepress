@@ -98,7 +98,7 @@ public abstract class BaseRocketMQBus extends BaseMessageBus implements  Message
 
 
     @Override
-    public void doSubscriber(String eventType, BaseEventListener listener) throws MQClientException, InterruptedException {
+    public void doRegister(String eventType, BaseEventListener listener) throws MQClientException, InterruptedException {
         tagSet.add(eventType);
     }
 

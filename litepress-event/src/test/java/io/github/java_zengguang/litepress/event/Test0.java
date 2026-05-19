@@ -2,6 +2,7 @@ package io.github.java_zengguang.litepress.event;
 
 import io.github.java_zengguang.litepress.core.util.reflect.JsonUtil;
 import io.github.java_zengguang.litepress.event.bus.LocalBus;
+import io.github.java_zengguang.litepress.event.bus.MessageBus;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
 import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
 import org.tinylog.Logger;
@@ -12,12 +13,8 @@ public class Test0 {
 
     public static void main(String args[]) throws Exception {
         LocalBus bus = new LocalBus();
-        bus.register(new BaseEventListener(BaseEvent.class, Set.of("hello")) {
+        bus.register(new BaseEventListener( Set.of("hello")) {
 
-            @Override
-            public void init(BaseEvent baseEvent) throws Exception {
-
-            }
 
             @Override
             public void dealEvent(BaseEvent event) throws Exception {

@@ -6,10 +6,10 @@ import io.github.java_zengguang.litepress.event.event.BaseEvent;
 import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
 import io.github.java_zengguang.litepress.react.semaphore.SemaphoreManager;
 import org.tinylog.Logger;
-import org.tinylog.ThreadContext;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BaseMessageBus implements MessageBus {
@@ -19,14 +19,21 @@ public abstract class BaseMessageBus implements MessageBus {
 
     public void doInvokeEventListener(String body) {
         BaseEvent baseEvent = JsonUtil.string2Obj(body, BaseEvent.class);
-        addTrace(baseEvent);  //绑定链路信息
         if (eventListenerMap.containsKey(baseEvent.name)) {
             BaseEventListener eventListener = eventListenerMap.get(baseEvent.name);
             try {
-                eventListener.dealEvent(body);
+                //透传messageBus，方便实现事件联
+                List<BaseEvent> nextEvents = eventListener.dealEvent(body);
+                if (nextEvents != null && !nextEvents.isEmpty()) {
+                    for (BaseEvent nextEvent : nextEvents) {
+                        nextEvent.parentId = baseEvent.id;
+                        nextEvent.id = UUID.randomUUID().toString();
+                        this.publish(nextEvent);
+                    }
+                }
             } catch (Exception e) {
                 Logger.error(e, "事件处理异常");
-                baseEvent.errorMessage = e.getMessage();
+                baseEvent.message = "事件处理异常";
             }
         }
 
@@ -34,7 +41,6 @@ public abstract class BaseMessageBus implements MessageBus {
 
     public void publish(BaseEvent baseEvent) throws Exception {
         doPublish(baseEvent);
-      //  doInvokeEventListener(JsonUtil.obj2String(baseEvent));
     }
 
 
@@ -44,7 +50,7 @@ public abstract class BaseMessageBus implements MessageBus {
             for (String event : events) {
                 if (!eventListenerMap.containsKey(event)) {
                     eventListenerMap.put(event, listener);
-                    doSubscriber(event, listener);
+                    doRegister(event, listener);
                 }
             }
         }
@@ -56,16 +62,9 @@ public abstract class BaseMessageBus implements MessageBus {
         this.semaphoreManager = semaphoreManager;
     }
 
-
-    private void addTrace(BaseEvent baseEvent) {
-        if (baseEvent.traceMap != null && !baseEvent.traceMap.isEmpty()) {
-            baseEvent.traceMap.forEach(ThreadContext::put);
-        }
-    }
-
     public abstract void doPublish(BaseEvent baseEvent) throws Exception;
 
-    public abstract void doSubscriber(String event, BaseEventListener listener) throws Exception;
+    public abstract void doRegister(String event, BaseEventListener listener) throws Exception;
 
 
 }

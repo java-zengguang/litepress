@@ -32,7 +32,7 @@ public class LocalBus extends BaseMessageBus implements MessageBus {
     }
 
     @Override
-    public void doSubscriber(String eventType, BaseEventListener listener) {
+    public void doRegister(String eventType, BaseEventListener listener) {
         eventListenerMap.putIfAbsent(eventType, listener);
     }
 

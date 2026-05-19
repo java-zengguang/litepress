@@ -1,10 +1,14 @@
 package io.github.java_zengguang.litepress.event.subsriber;
 
+
+import io.github.java_zengguang.litepress.event.bus.MessageBus;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
 
-public interface EventListener<T extends BaseEvent> {
+import java.util.List;
+
+public interface EventListener {
     //回调message ，事件内容
 
-    void dealEvent(String body) throws Exception;
+    List<BaseEvent> dealEvent(String body) throws Exception;
 
 }

@@ -3,10 +3,8 @@ package io.github.java_zengguang.litepress.event.bus;
 
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
 import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
-import io.github.java_zengguang.litepress.event.subsriber.EventListener;
 import io.github.java_zengguang.litepress.react.semaphore.SemaphoreManager;
 
-import java.util.List;
 
 
 public interface MessageBus {

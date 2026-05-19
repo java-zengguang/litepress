@@ -13,6 +13,7 @@ open module litepress.event {
     requires commons.logging;
     requires litepress.reaction;
     requires org.apache.poi.ooxml.schemas;
+    requires org.apache.poi.poi;
     exports io.github.java_zengguang.litepress.event.event;
     exports io.github.java_zengguang.litepress.event.subsriber;
     exports io.github.java_zengguang.litepress.event.bus;

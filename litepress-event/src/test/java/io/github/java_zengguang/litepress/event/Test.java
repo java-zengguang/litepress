@@ -6,7 +6,6 @@ import io.github.java_zengguang.litepress.event.entity.RocketConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
 import io.github.java_zengguang.litepress.event.state.BaseStateModel;
 import io.github.java_zengguang.litepress.event.state.StateModel;
-import io.github.java_zengguang.litepress.event.state.po.EventInstancePo;
 import io.github.java_zengguang.litepress.event.state.rule.SimpleStateTransitionRule;
 import io.github.java_zengguang.litepress.event.state.rule.EventTransitionRuleBuilder;
 import io.github.java_zengguang.litepress.event.subsriber.BaseStateEventListener;
@@ -31,11 +30,8 @@ public class Test {
 
 
         Logger.info("初始化");
-        BaseStateEventListener eventListener = new BaseStateEventListener(BaseEvent.class) {
-            @Override
-            public void init(BaseEvent baseEvent) throws Exception {
+        BaseStateEventListener eventListener = new BaseStateEventListener() {
 
-            }
 
             @Override
             public void dealEvent(BaseEvent event) throws Exception {

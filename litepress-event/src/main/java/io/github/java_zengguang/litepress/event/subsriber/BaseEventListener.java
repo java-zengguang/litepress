@@ -2,7 +2,6 @@ package io.github.java_zengguang.litepress.event.subsriber;
 
 import io.github.java_zengguang.litepress.core.util.reflect.JsonUtil;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
-import org.tinylog.ThreadContext;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,21 +9,16 @@ import java.util.List;
 import java.util.Set;
 
 
-public abstract class BaseEventListener<T extends BaseEvent> implements EventListener<T> {
-    public Class<T> tClass;
+public abstract class BaseEventListener implements EventListener {
     private Set<String> events;
-    private ThreadLocal<BaseEvent> threadLocal = new ThreadLocal<>();
 
-    public BaseEventListener(Class<T> tClass) {
-        this.tClass = tClass;
+    public BaseEventListener() {
         this.events = new HashSet<>();
     }
 
-    public BaseEventListener(Class<T> tClass, Set<String> events) {
-        this.tClass = tClass;
+    public BaseEventListener(Set<String> events) {
         this.events = events;
     }
-
 
 
 
@@ -36,23 +30,23 @@ public abstract class BaseEventListener<T extends BaseEvent> implements EventLis
         this.events.addAll(events);
     }
 
-    public void dealEvent(String body) throws Exception {
-        T event = JsonUtil.string2Obj(body, tClass);
-        init(event);
+    public List<BaseEvent> dealEvent(String body) throws Exception {
+        BaseEvent event = JsonUtil.string2Obj(body,BaseEvent.class);
         beforeDealEvent(event);
         dealEvent(event);
         afterDealEvent(event);
+        if (event.nextEvents != null && !event.nextEvents.isEmpty()) {
+            return event.nextEvents;
+        }
+        return null;
     }
 
-    public abstract void init(T t) throws Exception;
+
+    public abstract void beforeDealEvent(BaseEvent event) throws Exception;
 
     //如果需要处理事件、幂等、等操作可以重写 dealEvent方法
-    public abstract void dealEvent(T event) throws Exception;
+    public abstract void dealEvent(BaseEvent event) throws Exception;
 
-    public abstract void beforeDealEvent(T event) throws Exception;
-
-
-    public abstract void afterDealEvent(T event) throws Exception;
-
+    public abstract void afterDealEvent(BaseEvent event) throws Exception;
 
 }

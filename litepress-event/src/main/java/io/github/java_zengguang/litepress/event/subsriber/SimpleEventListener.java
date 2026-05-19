@@ -1,17 +1,10 @@
 package io.github.java_zengguang.litepress.event.subsriber;
 
+import io.github.java_zengguang.litepress.core.util.reflect.JsonUtil;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
 
-public class SimpleEventListener extends BaseEventListener{
+public class SimpleEventListener extends BaseEventListener {
 
-    public SimpleEventListener(Class aClass) {
-        super(aClass);
-    }
-
-    @Override
-    public void init(BaseEvent baseEvent) throws Exception {
-
-    }
 
     @Override
     public void dealEvent(BaseEvent event) throws Exception {
@@ -27,4 +20,6 @@ public class SimpleEventListener extends BaseEventListener{
     public void afterDealEvent(BaseEvent event) throws Exception {
 
     }
+
+
 }

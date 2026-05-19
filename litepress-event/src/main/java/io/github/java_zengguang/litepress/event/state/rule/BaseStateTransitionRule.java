@@ -11,7 +11,7 @@ import org.tinylog.Logger;
 import java.util.Date;
 import java.util.List;
 
-public abstract class BaseStateTransitionRule<T extends BaseEvent> implements StateTransitionRule<T> {
+public abstract class BaseStateTransitionRule implements StateTransitionRule {
 
     public List<String> from;
     public String event;
@@ -20,30 +20,30 @@ public abstract class BaseStateTransitionRule<T extends BaseEvent> implements St
     public StateAction action;
 
 
-    private boolean checkTransitionRule(T t) {
+    private boolean checkTransitionRule(BaseEvent event) {
 
         //事件
-        if (this.event != null && !t.name.equals(this.event)) {
-            Logger.error("%s 时间不匹配，当前事件 %s 所需事件 %s".formatted(t.name, t.name, this.when));
+        if (this.event != null && !event.name.equals(this.event)) {
+            Logger.error("%s 时间不匹配，当前事件 %s 所需事件 %s".formatted(event.name, event.name, this.when));
             return false;
         }
         //初始状态
-        if (this.from != null && !this.from.isEmpty() && !this.from.contains(t.instance.state.name)) {
-            Logger.error("%s 状态不匹配，当前状态 %s 所需状态 %s".formatted(t.name, t.instance.state.name, this.from));
+        if (this.from != null && !this.from.isEmpty() && !this.from.contains(event.instance.state.name)) {
+            Logger.error("%s 状态不匹配，当前状态 %s 所需状态 %s".formatted(event.name, event.instance.state.name, this.from));
             return false;
         }
         //条件
-        return this.when == null || this.when.deal(t);
+        return this.when == null || this.when.deal(event);
     }
 
     @Override
-    public void doTransitionState(T t) throws Exception {
-        if (this.checkTransitionRule(t)) {
+    public void doTransitionState(BaseEvent event) throws Exception {
+        if (this.checkTransitionRule(event)) {
             if (action != null) {
                 try {
-                    action.deal(t);
+                    action.deal(event);
                     if (this.to != null) {
-                        t.instance.state = new StatePo(this.to,new Date().getTime());
+                        event.instance.state = new StatePo(this.to,new Date().getTime());
                     }
 
                 } catch (Exception e) {

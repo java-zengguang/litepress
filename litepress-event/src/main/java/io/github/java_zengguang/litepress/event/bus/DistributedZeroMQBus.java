@@ -143,7 +143,7 @@ public class DistributedZeroMQBus extends BaseMessageBus implements MessageBus {
 
 
     @Override
-    public void doSubscriber(String eventType, BaseEventListener listener) throws MQClientException, InterruptedException {
+    public void doRegister(String eventType, BaseEventListener listener) throws MQClientException, InterruptedException {
         if (!eventListenerMap.containsKey(eventType)) {
             ZMQ.Socket subscriber = getSubscriber(eventType);
             subscriber.subscribe(eventType.getBytes());

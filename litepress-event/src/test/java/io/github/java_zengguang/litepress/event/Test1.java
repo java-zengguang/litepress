@@ -1,6 +1,7 @@
 package io.github.java_zengguang.litepress.event;
 
 
+import io.github.java_zengguang.litepress.event.bus.MessageBus;
 import io.github.java_zengguang.litepress.event.bus.RocketMQBus;
 import io.github.java_zengguang.litepress.event.entity.RocketConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
@@ -20,12 +21,10 @@ public class Test1 {
         rocketConfig.topic="BASE";
         RocketMQBus messageBus=new RocketMQBus(rocketConfig);
         Logger.info("初始化");
-        messageBus.register( new BaseEventListener(BaseEvent.class, Set.of("tag1")) {
+        messageBus.register( new BaseEventListener(Set.of("tag1")) {
 
-            @Override
-            public void init(BaseEvent baseEvent) throws Exception {
 
-            }
+
 
             @Override
             public void dealEvent(BaseEvent event) throws Exception {

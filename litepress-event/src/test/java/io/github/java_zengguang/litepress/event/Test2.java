@@ -1,14 +1,12 @@
 package io.github.java_zengguang.litepress.event;
 
 
-
 import io.github.java_zengguang.litepress.event.bus.RocketMQBus;
-
 import io.github.java_zengguang.litepress.event.entity.RocketConfig;
 import io.github.java_zengguang.litepress.event.entity.SSDBConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
-import io.github.java_zengguang.litepress.event.state.rule.StateTransitionRule;
 import io.github.java_zengguang.litepress.event.state.rule.EventTransitionRuleBuilder;
+import io.github.java_zengguang.litepress.event.state.rule.StateTransitionRule;
 import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.nutz.ssdb4j.SSDBs;
@@ -52,15 +50,12 @@ public class Test2 {
         SSDB ssdb = createSSDB(ssdbConfig);
         RocketMQBus messageBus = new RocketMQBus(rocketConfig);
 
-for(int i=0;i<1000000;i++) {
-    Logger.info("初始化");
-}
-        messageBus.register( new BaseEventListener(BaseEvent.class, Set.of("say")) {
+        for (int i = 0; i < 1000000; i++) {
+            Logger.info("初始化");
+        }
+        messageBus.register(new BaseEventListener(Set.of("say")) {
 
-            @Override
-            public void init(BaseEvent baseEvent) throws Exception {
 
-            }
 
             @Override
             public void dealEvent(BaseEvent event) throws Exception {
@@ -85,14 +80,11 @@ for(int i=0;i<1000000;i++) {
                 }).build();
 
 
-
-
-
         messageBus.init();
 
         ssdb.set("001", 10);
         Logger.info("事件发布");
-        for(int i=0;i<10;i++) {
+        for (int i = 0; i < 10; i++) {
             messageBus.publish(new BaseEvent());
         }
 
@@ -104,7 +96,7 @@ for(int i=0;i<1000000;i++) {
             Logger.info(x);
             if (x < 1) {
                 flag = false;
-            }else{
+            } else {
                 Thread.sleep(1000);
             }
         }

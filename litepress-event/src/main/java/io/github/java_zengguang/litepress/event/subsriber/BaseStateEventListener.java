@@ -7,12 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseStateEventListener<T extends BaseEvent> extends BaseEventListener<T> {
+public abstract class BaseStateEventListener extends BaseEventListener {
     private final Map<String, StateModel> stateModelMap = new HashMap<>();
 
-    public BaseStateEventListener(Class<T> tClass) {
-        super(tClass);
-    }
 
     public void addStateModel(String modelId, StateModel stateModel) {
         stateModelMap.put(modelId, stateModel);
@@ -22,7 +19,7 @@ public abstract class BaseStateEventListener<T extends BaseEvent> extends BaseEv
 
 
     //如果需要处理事件、幂等、等操作可以重写 dealEvent方法
-    public void dealEvent(T event) throws Exception {
+    public void dealEvent(BaseEvent event) throws Exception {
         if (event.instance != null) {
             StateModel stateModel = stateModelMap.get(event.instance.modelId);
             stateModel.doTransitionRule(event);
