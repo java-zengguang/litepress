@@ -3,7 +3,8 @@ package io.github.java_zengguang.litepress.db.dao.manager;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
-import io.github.java_zengguang.litepress.core.bean.entity.MetadataEntity;
+import io.github.java_zengguang.litepress.core.bean.entity.MetaColumnPo;
+import io.github.java_zengguang.litepress.core.bean.entity.MetaDataPo;
 import io.github.java_zengguang.litepress.core.bean.entity.OptionDB;
 import io.github.java_zengguang.litepress.core.init.Config;
 import io.github.java_zengguang.litepress.core.relect.dynameic.DynameicSerializer;
@@ -61,9 +62,10 @@ public class BaseDataManager implements DataManager {
     }
 
     //查询出列明，数据对应的list集合
-    public List<List<MetadataEntity>> select2TempleList(String sql, String... tableNames) throws Exception {
+    public List<MetaDataPo> select2TempleList(String sql, String... tableNames) throws Exception {
         Logger.debug(sql);
-        List<List<MetadataEntity>> list = new ArrayList<>();
+        List<MetaDataPo> metaDataPos = new ArrayList<>();
+
         //合并主表
         StringBuilder tableNameBuffer = new StringBuilder();
         List<String> tableNameList = Arrays.asList(tableNames);
@@ -89,24 +91,25 @@ public class BaseDataManager implements DataManager {
 
         int columncount = 0;
         while (rs.next()) {
-            List<MetadataEntity> columnList = new ArrayList<>();
+            MetaDataPo metaDataPo = new MetaDataPo();
+            metaDataPo.dbType = optionDB.dbtype;
+            metaDataPo.tableName = tableNameBuffer.toString();
+            metaDataPo.ownName = "";
+            List<MetaColumnPo> columnList = new ArrayList<>();
             columncount = rsmd.getColumnCount();
             for (int i = 1; i < columncount + 1; i++) {
                 String columnLabel = rsmd.getColumnLabel(i);
                 String columnType = rsmd.getColumnTypeName(i);
-                Integer columnScale = rsmd.getScale(i);
+                int columnScale = rsmd.getScale(i);
                 if (columnScale == -127) {
                     columnScale = 6;
                 }
                 Object columnValue = rs.getObject(i);
-                MetadataEntity metadataEntity = new MetadataEntity();
-                metadataEntity.ownName = "";
-                metadataEntity.tableName = tableNameBuffer.toString();
+                MetaColumnPo metadataEntity = new MetaColumnPo();
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
-                metadataEntity.objectValue = columnValue;
+                metadataEntity.jdbcValue = columnValue;
                 metadataEntity.columnScale = columnScale;
-                metadataEntity.dbType = optionDB.dbtype;
                 if (pkColumnList.contains(columnLabel)) {
                     metadataEntity.isPK = "1";
                 } else {
@@ -122,11 +125,12 @@ public class BaseDataManager implements DataManager {
                 metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
                 columnList.add(metadataEntity);
             }
-            list.add(columnList);
+            metaDataPo.columnPos = columnList;
+            metaDataPos.add(metaDataPo);
         }
         pstmt.close();
         rs.close();
-        return list;
+        return metaDataPos;
     }
 
 
@@ -155,7 +159,12 @@ public class BaseDataManager implements DataManager {
         OptionDB optionDB = (OptionDB) Config.getConfig(dataSource);
         EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(optionDB.dbtype);
         while (rs.next()) {
-            List<MetadataEntity> columnList = new ArrayList<>();
+            MetaDataPo metaDataPo = new MetaDataPo();
+            metaDataPo.dbType = optionDB.dbtype;
+            metaDataPo.tableName = tableName;
+            metaDataPo.ownName = "";
+            List<MetaColumnPo> columnList = new ArrayList<>();
+            metaDataPo.columnPos=columnList;
             columncount = rsmd.getColumnCount();
             for (int i = 1; i < columncount + 1; i++) {
                 Integer columnScale = rsmd.getScale(i);
@@ -165,13 +174,11 @@ public class BaseDataManager implements DataManager {
                 String columnLabel = rsmd.getColumnLabel(i);
                 String columnType = rsmd.getColumnTypeName(i);
                 Object columnValue = rs.getObject(i);
-                MetadataEntity metadataEntity = new MetadataEntity();
-                metadataEntity.tableName = tableName;
+                MetaColumnPo metadataEntity = new MetaColumnPo();
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
-                metadataEntity.objectValue = columnValue;
+                metadataEntity.jdbcValue = columnValue;
                 metadataEntity.columnScale = columnScale;
-                metadataEntity.dbType = optionDB.dbtype;
                 if (pkColumnList.contains(columnLabel)) {
                     metadataEntity.isPK = "1";
                 } else {
@@ -189,14 +196,12 @@ public class BaseDataManager implements DataManager {
             }
             SimpleAssemble<Object> simpleAssemble = new SimpleAssemble<>(optionDB.dbtype);
             if (modelClass == null) {
-                modelClass = DynamicClass.getDynamicModel(columnList);
+                modelClass = DynamicClass.getDynamicModel(metaDataPo);
                 kryo.register(modelClass, new DynameicSerializer(modelClass));
             }
 
             Object obj = modelClass.getDeclaredConstructor().newInstance();
-            for (MetadataEntity metadataEntity : columnList) {
-                obj = simpleAssemble.assembling(metadataEntity, obj);
-            }
+            obj = simpleAssemble.assembling(metaDataPo, obj);
             kryo.writeObject(output, obj);
         }
         rs.close();
@@ -251,7 +256,13 @@ public class BaseDataManager implements DataManager {
                 output = new Output(new FileOutputStream(tempFile), 1024000);
             }
 
-            List<MetadataEntity> columnList = new ArrayList<>();
+            MetaDataPo metaDataPo = new MetaDataPo();
+            metaDataPo.dbType = optionDB.dbtype;
+            metaDataPo.tableName = tableName;
+            metaDataPo.ownName = "";
+            List<MetaColumnPo> columnList = new ArrayList<>();
+            metaDataPo.columnPos=columnList;
+
             columncount = rsmd.getColumnCount();
             for (int i = 1; i < columncount + 1; i++) {
                 Integer columnScale = rsmd.getScale(i);
@@ -261,14 +272,12 @@ public class BaseDataManager implements DataManager {
                 String columnLabel = rsmd.getColumnLabel(i);
                 String columnType = rsmd.getColumnTypeName(i);
                 Object columnValue = rs.getObject(i);
-                MetadataEntity metadataEntity = new MetadataEntity();
-                metadataEntity.ownName = ownName;
-                metadataEntity.tableName = tableName;
+                MetaColumnPo metadataEntity = new MetaColumnPo();
+
                 metadataEntity.columnLabel = columnLabel;
                 metadataEntity.columnType = columnType;
-                metadataEntity.objectValue = columnValue;
+                metadataEntity.jdbcValue = columnValue;
                 metadataEntity.columnScale = columnScale;
-                metadataEntity.dbType = optionDB.dbtype;
                 if (pkColumnList.contains(columnLabel)) {
                     metadataEntity.isPK = "1";
                 } else {
@@ -283,19 +292,17 @@ public class BaseDataManager implements DataManager {
                 }
                 metadataEntity = entityDaoTemplate.translateEntity(metadataEntity);
                 columnList.add(metadataEntity);
-
             }
             SimpleAssemble<Object> simpleAssemble = new SimpleAssemble<>(optionDB.dbtype);
             if (modelClass == null) {
-                modelClass = DynamicClass.getDynamicModel(columnList);
+                modelClass = DynamicClass.getDynamicModel(metaDataPo);
                 kryo.register(modelClass, new DynameicSerializer(modelClass));
             }
 
 
             Object obj = modelClass.getDeclaredConstructor().newInstance();
-            for (MetadataEntity metadataEntity : columnList) {
-                obj = simpleAssemble.assembling(metadataEntity, obj);
-            }
+            obj = simpleAssemble.assembling(metaDataPo, obj);
+
             kryo.writeObject(output, obj);
             count++;
         }
@@ -310,7 +317,7 @@ public class BaseDataManager implements DataManager {
 
 
     //查询出列明，数据对应的list集合
-    public List<List<MetadataEntity>> select2TempleList(String sql) throws Exception {
+    public List<MetaDataPo> select2TempleList(String sql) throws Exception {
         Logger.debug(sql);
         List<String> tableNameList = ParseSQLUtils.parseSelectMainTable(sql);
         String[] array = tableNameList.toArray(new String[0]);
@@ -338,13 +345,13 @@ public class BaseDataManager implements DataManager {
         List<String> memberList = new ArrayList();
         List<Object> valuesList = new ArrayList();
         Assemble assemble = new SimpleAssemble(dbType);
-        List<MetadataEntity> list = assemble.analysis(model);
+        List<MetaColumnPo> list = assemble.analysis(model).columnPos;
         StringBuilder memberValues = new StringBuilder();
-        for (MetadataEntity entity : list) {
+        for (MetaColumnPo entity : list) {
             if ("1".equals(entity.isNotCommit)) {
-                if (entity.fieldName != null && entity.objectValue != null) {
+                if (entity.fieldName != null && entity.jdbcValue != null) {
                     memberList.add(entity.fieldName);
-                    valuesList.add(entity.objectValue);
+                    valuesList.add(entity.jdbcValue);
                     memberValues.append(" " + entity.fieldName + "=" + "?,");
                 }
 
@@ -404,14 +411,14 @@ public class BaseDataManager implements DataManager {
         StringBuilder member = new StringBuilder();
         StringBuilder values = new StringBuilder();
         Assemble assemble = new SimpleAssemble(dbType);
-        List<MetadataEntity> list = assemble.analysis(model);
-        for (MetadataEntity entity : list) {
+        List<MetaColumnPo> list = assemble.analysis(model).columnPos;
+        for (MetaColumnPo entity : list) {
             if ("1".equals(entity.isNotCommit)) {
-                if (entity.fieldName != null && entity.objectValue != null) {
+                if (entity.fieldName != null && entity.jdbcValue != null) {
                     memberList.add(entity.fieldName);
                     member.append(entity.fieldName + ",");
                     values.append("?,");
-                    valuesList.add(entity.objectValue);
+                    valuesList.add(entity.jdbcValue);
                 }
             }
         }

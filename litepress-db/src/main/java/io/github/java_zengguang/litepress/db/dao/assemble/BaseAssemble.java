@@ -3,12 +3,11 @@ package io.github.java_zengguang.litepress.db.dao.assemble;
 import io.github.java_zengguang.litepress.core.annotation.AutoIncrease;
 import io.github.java_zengguang.litepress.core.annotation.NotCommitField;
 import io.github.java_zengguang.litepress.core.annotation.PrimaryKey;
-import io.github.java_zengguang.litepress.core.bean.entity.MetadataEntity;
+import io.github.java_zengguang.litepress.core.bean.entity.MetaColumnPo;
+import io.github.java_zengguang.litepress.core.bean.entity.MetaDataPo;
 import io.github.java_zengguang.litepress.db.dao.template.EntityDaoTemplate;
 import io.github.java_zengguang.litepress.db.dao.template.EntityDaoTemplateFactory;
-
 import io.github.java_zengguang.litepress.db.util.DBUtils;
-import org.tinylog.Logger;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -22,25 +21,26 @@ public abstract class BaseAssemble<T> implements Assemble<T> {
         this.dbType = dbType;
     }
 
-    public T assembling(MetadataEntity metadataEntity, T obj) throws IllegalAccessException {
+    public T assembling(MetaDataPo metaData, T obj) throws IllegalAccessException {
+        List<MetaColumnPo> metaColumnPos = metaData.columnPos;
+        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(metaData.dbType);
         Class<?> classes = obj.getClass();
         Field[] fields = classes.getFields();
         for (Field field : fields) {
             String fileName = field.getName();
-            if (fileName.equalsIgnoreCase(metadataEntity.fieldName)) {
-                if (field.getType().getSimpleName().equals(metadataEntity.fieldType)) {
-                    field.set(obj, metadataEntity.fieldValue);
-                } else {
-                    Logger.info("实体类类型不匹配" + classes + ":" + fileName);
+            MetaColumnPo metaColumnPo = metaColumnPos.stream().filter(x -> fileName.equalsIgnoreCase(x.columnLabel)).findFirst().orElse(null);
+            if (metaColumnPo != null) {
+                Object fieldValue = entityDaoTemplate.translateObject(field, metaColumnPo.jdbcValue);
+                if (fieldValue != null) {
+                    field.set(obj, fieldValue);
                 }
-
             }
         }
         return obj;
     }
 
-    public List<MetadataEntity> analysis(T obj) throws IllegalAccessException, InstantiationException {
-        List<MetadataEntity> metadataEntityList = new ArrayList<>();
+    public MetaDataPo analysis(T obj) throws IllegalAccessException, InstantiationException {
+        List<MetaColumnPo> metadataEntityList = new ArrayList<>();
         Class<?> classes = obj.getClass();
         String tableName = DBUtils.getTableNameFromModel(classes);
         String entityName = classes.getSimpleName();
@@ -48,12 +48,10 @@ public abstract class BaseAssemble<T> implements Assemble<T> {
         EntityDaoTemplate simpleEntityDaoTemplate = EntityDaoTemplateFactory.getTemplate(dbType);
 
         for (Field field : fields) {
-            MetadataEntity metadataEntity = new MetadataEntity();
+            MetaColumnPo metadataEntity = new MetaColumnPo();
             metadataEntity.fieldName = field.getName();
             metadataEntity.fieldType = field.getType().getSimpleName();
-            metadataEntity.objectValue = field.get(obj);
-            metadataEntity.tableName = tableName;
-            metadataEntity.entityName = entityName;
+            metadataEntity.jdbcValue = field.get(obj);
             metadataEntity = simpleEntityDaoTemplate.translateDatabase(metadataEntity);
             NotCommitField notCommitField = field.getAnnotation(NotCommitField.class);
             if (notCommitField == null) {
@@ -76,7 +74,11 @@ public abstract class BaseAssemble<T> implements Assemble<T> {
 
             metadataEntityList.add(metadataEntity);
         }
-        return metadataEntityList;
+        MetaDataPo metaDataPo=new MetaDataPo();
+        metaDataPo.columnPos=metadataEntityList;
+        metaDataPo.tableName=tableName;
+        metaDataPo.entityName=entityName;
+        return metaDataPo;
     }
 
 }

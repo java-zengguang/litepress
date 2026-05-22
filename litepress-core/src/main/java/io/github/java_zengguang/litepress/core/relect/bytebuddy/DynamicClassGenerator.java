@@ -2,7 +2,8 @@ package io.github.java_zengguang.litepress.core.relect.bytebuddy;
 
 import io.github.java_zengguang.litepress.core.annotation.*;
 import io.github.java_zengguang.litepress.core.bean.entity.MainModel;
-import io.github.java_zengguang.litepress.core.bean.entity.MetadataEntity;
+import io.github.java_zengguang.litepress.core.bean.entity.MetaColumnPo;
+import io.github.java_zengguang.litepress.core.bean.entity.MetaDataPo;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.annotation.AnnotationDescription;
 import net.bytebuddy.dynamic.DynamicType;
@@ -46,21 +47,22 @@ public class DynamicClassGenerator {
         }
     }
 
-    public static Class getDynamicModel(List<MetadataEntity> columnList) {
+    public static Class getDynamicModel(MetaDataPo metaDataPo) {
         Logger.info("动态类生成开始");
+        List<MetaColumnPo> columnList=metaDataPo.columnPos;
         Class clazz = null;
         try {
             // 使用 ByteBuddy 动态生成类
             DynamicType.Builder byteBuddyBuilder = new ByteBuddy()
                     .subclass(MainModel.class)
-                    .name("com.zg.litepress.core.bean.entity." + columnList.get(0).entityName)
+                    .name("com.zg.litepress.core.bean.entity." + metaDataPo.entityName)
                     .annotateType(
-                            AnnotationDescription.Builder.ofType(Model.class).define("tableName", columnList.get(0).tableName).build(),
+                            AnnotationDescription.Builder.ofType(Model.class).define("tableName", metaDataPo.tableName).build(),
                             AnnotationDescription.Builder.ofType(FieldTypeMode.class).define("typeMode", "entity").build()
                     );
             Logger.info( "动态实体加载-1");
 
-            for (MetadataEntity metadataEntity : columnList) {
+            for (MetaColumnPo metadataEntity : columnList) {
 
                 List<Class<? extends Annotation>> annotations = new ArrayList<>();
                 if ("1".equals(metadataEntity.isPK)) {

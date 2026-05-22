@@ -1,7 +1,8 @@
 package io.github.java_zengguang.litepress.db.util;
 
-import io.github.java_zengguang.litepress.core.bean.entity.MetadataEntity;
+import io.github.java_zengguang.litepress.core.bean.entity.MetaColumnPo;
 
+import io.github.java_zengguang.litepress.core.bean.entity.MetaDataPo;
 import io.github.java_zengguang.litepress.db.dao.assemble.Assemble;
 import io.github.java_zengguang.litepress.db.dao.assemble.SimpleAssemble;
 import org.tinylog.Logger;
@@ -26,8 +27,9 @@ public class ModelSQLUtils {
         List<String> memberList = new ArrayList<>();
         List<String> valuesList = new ArrayList<>();
         Assemble assemble = new SimpleAssemble(dbType);
-        List<MetadataEntity> list = assemble.analysis(model);
-        for (MetadataEntity entity : list) {
+        MetaDataPo metaDataPo=assemble.analysis(model);
+        List<MetaColumnPo> list = metaDataPo.columnPos;
+        for (MetaColumnPo entity : list) {
             if ("1".equals(entity.isNotCommit)) {
                 memberList.add(entity.fieldName);
                 valuesList.add(entity.columnValue);
@@ -58,8 +60,9 @@ public class ModelSQLUtils {
         List<String> memberList = new ArrayList<>();
         List<String> valuesList = new ArrayList<>();
         Assemble assemble = new SimpleAssemble(dbType);
-        List<MetadataEntity> list = assemble.analysis(model);
-        for (MetadataEntity entity : list) {
+        MetaDataPo metaDataPo=assemble.analysis(model);
+        List<MetaColumnPo> list = metaDataPo.columnPos;
+        for (MetaColumnPo entity : list) {
             if ("1".equals(entity.isNotCommit)) {
                 memberList.add(entity.fieldName);
                 valuesList.add(entity.columnValue);
@@ -89,11 +92,12 @@ public class ModelSQLUtils {
     public static String delete(Object o, String dbType) throws Exception {
         StringBuffer condition = new StringBuffer();
         Assemble assemble = new SimpleAssemble(dbType);
-        List<MetadataEntity> list = assemble.analysis(o);
+        MetaDataPo metaDataPo=assemble.analysis(o);
+        List<MetaColumnPo> list = metaDataPo.columnPos;
         String tableName = "";
-        for (MetadataEntity entity : list) {
+        for (MetaColumnPo entity : list) {
             if ("1".equals(entity.isNotCommit)) {
-                tableName = entity.tableName;
+                tableName =metaDataPo.tableName;
                 condition.append(entity.columnLabel).append("=").append(entity.columnValue).append(" and ");
             }
         }
@@ -106,10 +110,11 @@ public class ModelSQLUtils {
     public static String deleteByPK(Object o, String dbType) throws Exception {
         StringBuffer condition = new StringBuffer();
         Assemble assemble = new SimpleAssemble(dbType);
-        List<MetadataEntity> list = assemble.analysis(o);
+        MetaDataPo metaDataPo=assemble.analysis(o);
+        List<MetaColumnPo> list = metaDataPo.columnPos;
         String tableName = "";
-        for (MetadataEntity entity : list) {
-            tableName = entity.tableName;
+        for (MetaColumnPo entity : list) {
+            tableName =metaDataPo.tableName;
             if ("1".equals(entity.isPK)) {
                 condition.append(entity.columnLabel + "=" + entity.columnValue + " and ");
             }
@@ -129,8 +134,9 @@ public class ModelSQLUtils {
         List<String> memberList = new ArrayList();
         List<String> valuesList = new ArrayList();
         Assemble assemble = new SimpleAssemble(dbType);
-        List<MetadataEntity> list = assemble.analysis(model);
-        for (MetadataEntity entity : list) {
+        MetaDataPo metaDataPo=assemble.analysis(model);
+        List<MetaColumnPo> list = metaDataPo.columnPos;
+        for (MetaColumnPo entity : list) {
             if (pkList.containsAll(Arrays.asList(entity.columnValue, entity.columnValue.toLowerCase(), entity.columnValue.toUpperCase()))) {  //主鍵條件
                 condition = condition + " and " + entity.fieldName + "=" + entity.columnValue;
             } else {
@@ -161,10 +167,11 @@ public class ModelSQLUtils {
     public static String deleteByPK(Object o, List<String> pkList, String dbType) throws Exception {
         StringBuffer condition = new StringBuffer();
         Assemble assemble = new SimpleAssemble(dbType);
-        List<MetadataEntity> list = assemble.analysis(o);
+        MetaDataPo metaDataPo=assemble.analysis(o);
+        List<MetaColumnPo> list = metaDataPo.columnPos;
         String tableName = "";
-        for (MetadataEntity entity : list) {
-            tableName = entity.tableName;
+        for (MetaColumnPo entity : list) {
+            tableName =metaDataPo.tableName;
             if (pkList.containsAll(Arrays.asList(entity.columnValue, entity.columnValue.toLowerCase(), entity.columnValue.toUpperCase()))) {
                 condition.append(entity.columnLabel + "=" + entity.columnValue + " and ");
             }
@@ -181,8 +188,9 @@ public class ModelSQLUtils {
         List<String> memberList = new ArrayList();
         List<String> valuesList = new ArrayList();
         Assemble assemble = new SimpleAssemble(dbType);
-        List<MetadataEntity> list = assemble.analysis(model);
-        for (MetadataEntity entity : list) {
+        MetaDataPo metaDataPo=assemble.analysis(model);
+        List<MetaColumnPo> list = metaDataPo.columnPos;
+        for (MetaColumnPo entity : list) {
             if ("1".equals(entity.isPK)) {  //主鍵條件
                 condition = condition + " and " + entity.fieldName + "=" + entity.columnValue;
 
@@ -235,14 +243,14 @@ public class ModelSQLUtils {
         List<String> memberList = new ArrayList();
         List<String> valuesList = new ArrayList();
         Assemble assemble = new SimpleAssemble(dbType);
-        List<MetadataEntity> newList = assemble.analysis(newModel);
-        List<MetadataEntity> oldList = assemble.analysis(oldModel);
-        for (MetadataEntity newEntity : newList) {
+        List<MetaColumnPo> newList = assemble.analysis(newModel).columnPos;
+        List<MetaColumnPo> oldList = assemble.analysis(oldModel).columnPos;
+        for (MetaColumnPo newEntity : newList) {
             if ("1".equals(newEntity.isPK)) {  //主鍵條件
                 condition = condition + " and " + newEntity.fieldName + "=" + newEntity.columnValue;
 
             } else {
-                MetadataEntity oldEntity = oldList.stream().filter(a -> Objects.equals(a.fieldName, newEntity.fieldName)).collect(Collectors.toList()).get(0);
+                MetaColumnPo oldEntity = oldList.stream().filter(a -> Objects.equals(a.fieldName, newEntity.fieldName)).collect(Collectors.toList()).get(0);
                 if ("1".equals(newEntity.isNotCommit) && !isCompare(oldEntity.columnValue, newEntity.columnValue)) {  //只提交不同的位置
                     memberList.add(newEntity.fieldName);
                     valuesList.add(newEntity.columnValue);
@@ -280,8 +288,9 @@ public class ModelSQLUtils {
         List<String> memberList = new ArrayList();
         List<String> valuesList = new ArrayList();
         Assemble assemble = new SimpleAssemble(dbType);
-        List<MetadataEntity> list = assemble.analysis(model);
-        for (MetadataEntity entity : list) {
+        MetaDataPo metaDataPo=assemble.analysis(model);
+        List<MetaColumnPo> list = metaDataPo.columnPos;
+        for (MetaColumnPo entity : list) {
             if ("1".equals(entity.isNotCommit)) {
                 memberList.add(entity.fieldName);
                 valuesList.add(entity.columnValue);

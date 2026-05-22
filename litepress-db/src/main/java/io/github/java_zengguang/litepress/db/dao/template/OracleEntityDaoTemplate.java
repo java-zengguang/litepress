@@ -1,16 +1,21 @@
 package io.github.java_zengguang.litepress.db.dao.template;
 
-import io.github.java_zengguang.litepress.core.bean.entity.MetadataEntity;
+import io.github.java_zengguang.litepress.core.bean.entity.MetaColumnPo;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class OracleEntityDaoTemplate extends BaseEntityDaoTemplate {
-    private List<List<String>> configArrayList;
-    private Map<String, List<String>> columnConfigMap;  //第一列放fieldtype,第二三列放引号用来拼sql
+    // DB列类型 → [Java类型名, SQL前缀, SQL后缀]
+    private Map<String, List<String>> columnConfigMap;
+    // Java类型名 → [SQL前缀, SQL后缀]
     private Map<String, List<String>> fieldConfigMap;
 
     public OracleEntityDaoTemplate() {
@@ -18,94 +23,100 @@ public class OracleEntityDaoTemplate extends BaseEntityDaoTemplate {
     }
 
     private void init() {
+        columnConfigMap = new HashMap<>();
+        columnConfigMap.put("INTEGER", List.of("Integer", "", ""));
+        columnConfigMap.put("INT", List.of("Integer", "", ""));
+        columnConfigMap.put("DECFLOAT", List.of("Double", "", ""));
+        columnConfigMap.put("LONG", List.of("String", "'", "'"));
+        columnConfigMap.put("VARCHAR", List.of("String", "'", "'"));
+        columnConfigMap.put("VARCHAR2", List.of("String", "'", "'"));
+        columnConfigMap.put("NVARCHAR2", List.of("String", "'", "'"));
+        columnConfigMap.put("CHARACTER VARYING", List.of("String", "'", "'"));
+        columnConfigMap.put("CHAR", List.of("String", "'", "'"));
+        columnConfigMap.put("TEXT", List.of("String", "'", "'"));
+        columnConfigMap.put("NUMBER", List.of("BigDecimal", "", ""));
+        columnConfigMap.put("NUMERIC", List.of("BigDecimal", "", ""));
+        columnConfigMap.put("DATE", List.of("LocalDate", "to_date('", "','yyyy-MM-dd')"));
+        columnConfigMap.put("DATETIME", List.of("LocalDateTime", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
+        columnConfigMap.put("TIMESTAMP", List.of("LocalDateTime", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
 
-        configArrayList = new ArrayList<List<String>>() {
-            {
-                add(Arrays.asList("INTEGER", "Integer", "", ""));
-                add(Arrays.asList("INT", "Integer", "", ""));
-                add(Arrays.asList("DECFLOAT", "Double", "", ""));
-                add(Arrays.asList("LONG", "String", "'", "'"));
-                add(Arrays.asList("VARCHAR", "String", "'", "'"));
-                add(Arrays.asList("VARCHAR2", "String", "'", "'"));
-                add(Arrays.asList("NVARCHAR2", "String", "'", "'"));
-                add(Arrays.asList("CHARACTER VARYING", "String", "'", "'"));
-                add(Arrays.asList("CHAR", "String", "'", "'"));
-                add(Arrays.asList("TEXT", "String", "'", "'"));
-                add(Arrays.asList("NUMBER", "BigDecimal", "", ""));
-                add(Arrays.asList("NUMERIC", "BigDecimal", "", ""));
-                add(Arrays.asList("DATE", "Date", "to_date('", "','yyyy-MM-dd')"));
-                add(Arrays.asList("DATETIME", "Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
-                add(Arrays.asList("TIMESTAMP", "Date", "to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
-            }
-
-        };
-
-        columnConfigMap = new HashMap();
-        for (List<String> list : configArrayList) {
-            columnConfigMap.put(list.get(0), list);
-        }
-
-        fieldConfigMap = new HashMap();
-        for (List<String> list : configArrayList) {
-            fieldConfigMap.put(list.get(1), list);
-        }
+        fieldConfigMap = new HashMap<>();
+        fieldConfigMap.put("Integer", List.of("", ""));
+        fieldConfigMap.put("Double", List.of("", ""));
+        fieldConfigMap.put("String", List.of("'", "'"));
+        fieldConfigMap.put("BigDecimal", List.of("", ""));
+        fieldConfigMap.put("LocalDate", List.of("to_date('", "','yyyy-MM-dd')"));
+        fieldConfigMap.put("LocalDateTime", List.of("to_date('", "','yyyy-MM-dd hh24:mi:ss')"));
+        fieldConfigMap.put("Date", List.of("to_date('", "','yyyy-MM-dd hh24:mi:ss')")); // 兼容旧的java.util.Date
     }
 
     @Override
-    public MetadataEntity translateEntity(MetadataEntity metadataEntity) {
-        metadataEntity.entityName = metadataEntity.tableName.replace(".", "");
+    public MetaColumnPo translateEntity(MetaColumnPo metadataEntity) {
         metadataEntity.fieldName = metadataEntity.columnLabel;
-        metadataEntity.fieldValue = metadataEntity.objectValue;
+        metadataEntity.fieldValue = metadataEntity.jdbcValue;
         List<String> configList = columnConfigMap.get(metadataEntity.columnType);
-        metadataEntity.fieldType = configList.get(1);
-        if (metadataEntity.objectValue != null) {
+        if (configList == null || configList.isEmpty()) {
+            return null;
+        }
+        metadataEntity.fieldType = configList.get(0);
+        if (metadataEntity.jdbcValue != null) {
             if ("BigDecimal".equals(metadataEntity.fieldType)) { //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下
-                BigDecimal bigDecimal = BigDecimal.valueOf(Double.parseDouble("" + metadataEntity.objectValue)); //对于改数平台场景需要，保留尾部0
+                BigDecimal bigDecimal = BigDecimal.valueOf(Double.parseDouble("" + metadataEntity.jdbcValue)); //对于改数平台场景需要，保留尾部0
                 bigDecimal = bigDecimal.setScale(metadataEntity.columnScale, RoundingMode.HALF_UP); //指定精度，避免科学计数法
                 metadataEntity.fieldValue = bigDecimal;
                 metadataEntity.columnValue = bigDecimal.toString();
             }
-            if ("Date".equals(metadataEntity.fieldType)) {
-                if (metadataEntity.objectValue instanceof Timestamp) {
-                    metadataEntity.fieldValue = new Date(((Timestamp) metadataEntity.objectValue).getTime()); //将timestap转成date，防止比较对不上
+            if ("LocalDate".equals(metadataEntity.fieldType)) {
+                if (metadataEntity.jdbcValue instanceof java.sql.Date) {
+                    metadataEntity.fieldValue = ((java.sql.Date) metadataEntity.jdbcValue).toLocalDate();
                 }
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                metadataEntity.columnValue = configList.get(2) + dateFormat.format(metadataEntity.objectValue) + configList.get(3);
+                metadataEntity.columnValue = configList.get(1) + metadataEntity.fieldValue + configList.get(2);
+            } else if ("LocalDateTime".equals(metadataEntity.fieldType)) {
+                if (metadataEntity.jdbcValue instanceof Timestamp) {
+                    metadataEntity.fieldValue = ((Timestamp) metadataEntity.jdbcValue).toLocalDateTime();
+                }
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                metadataEntity.columnValue = configList.get(1) + formatter.format((LocalDateTime) metadataEntity.fieldValue) + configList.get(2);
             } else {
-                metadataEntity.columnValue = configList.get(2) + metadataEntity.objectValue + configList.get(3);
+                metadataEntity.columnValue = configList.get(1) + metadataEntity.jdbcValue + configList.get(2);
             }
         }
         return metadataEntity;
     }
 
     @Override
-    public MetadataEntity translateDatabase(MetadataEntity metadataEntity) {
+    public MetaColumnPo translateDatabase(MetaColumnPo metadataEntity) {
 
         //metadataEntity.tableName = metadataEntity.entityName;
         metadataEntity.columnLabel = metadataEntity.fieldName;
         List<String> configList = fieldConfigMap.get(metadataEntity.fieldType);
-        // metadataEntity.columnType = configList.get(0);
-        if (metadataEntity.objectValue != null) {
+        if (metadataEntity.jdbcValue != null) {
 
             if ("String".equals(metadataEntity.fieldType)) {
-                String value = (String) metadataEntity.objectValue;
+                String value = (String) metadataEntity.jdbcValue;
                 if (value.contains("'")) {
                     value = value.replace("'", "''");
-                    metadataEntity.objectValue = value;
+                    metadataEntity.jdbcValue = value;
                 }
             }
 
-            if ("BigDecimal".equals(metadataEntity.fieldType) && metadataEntity.objectValue instanceof BigDecimal) { //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下
-                BigDecimal bigDecimal = (BigDecimal) metadataEntity.objectValue;
+            if ("BigDecimal".equals(metadataEntity.fieldType) && metadataEntity.jdbcValue instanceof BigDecimal) { //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下
+                BigDecimal bigDecimal = (BigDecimal) metadataEntity.jdbcValue;
                 metadataEntity.columnValue = bigDecimal.toString();
             }
 
-            if (configList != null && configList.size() > 0) {
-                if ("Date".equals(metadataEntity.fieldType)) {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    metadataEntity.columnValue = configList.get(2) + dateFormat.format(metadataEntity.objectValue) + configList.get(3);
+            if (configList != null && !configList.isEmpty()) {
+                if ("LocalDate".equals(metadataEntity.fieldType)) {
+                    metadataEntity.columnValue = configList.get(0) + metadataEntity.jdbcValue + configList.get(1);
+                } else if ("LocalDateTime".equals(metadataEntity.fieldType)) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    metadataEntity.columnValue = configList.get(0) + formatter.format((LocalDateTime) metadataEntity.jdbcValue) + configList.get(1);
+                } else if ("Date".equals(metadataEntity.fieldType)) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    LocalDateTime ldt = new Timestamp(((Date) metadataEntity.jdbcValue).getTime()).toLocalDateTime();
+                    metadataEntity.columnValue = configList.get(0) + formatter.format(ldt) + configList.get(1);
                 } else {
-                    metadataEntity.columnValue = configList.get(2) + metadataEntity.objectValue + configList.get(3);
+                    metadataEntity.columnValue = configList.get(0) + metadataEntity.jdbcValue + configList.get(1);
                 }
             }
         }

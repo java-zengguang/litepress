@@ -2,13 +2,11 @@ package io.github.java_zengguang.litepress.core.bean.entity;
 
 import java.util.List;
 
-public class MetadataEntity extends MainModel {
-    public String dbType;
-
+public class MetaColumnPo extends MainModel {
+/*    public String dbType;
     public String ownName; //属主 可以填属性
-
     public String tableName;
-    public String entityName;
+    public String entityName;*/
     public String columnLabel;
     public String columnType;
 
@@ -16,7 +14,7 @@ public class MetadataEntity extends MainModel {
 
     public String fieldName;
     public String fieldType;
-    public Object objectValue;
+    public Object jdbcValue;
     public Object fieldValue;
     public String columnValue;
     public String isNotCommit;  //1-提交  0-不提交

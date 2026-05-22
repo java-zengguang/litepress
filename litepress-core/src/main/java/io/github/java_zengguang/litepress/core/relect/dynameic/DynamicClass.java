@@ -1,7 +1,8 @@
 package io.github.java_zengguang.litepress.core.relect.dynameic;
 
 
-import io.github.java_zengguang.litepress.core.bean.entity.MetadataEntity;
+import io.github.java_zengguang.litepress.core.bean.entity.MetaColumnPo;
+import io.github.java_zengguang.litepress.core.bean.entity.MetaDataPo;
 import io.github.java_zengguang.litepress.core.relect.bytebuddy.DynamicClassGenerator;
 import io.github.java_zengguang.litepress.core.util.CommonUtil;
 import org.tinylog.Logger;
@@ -23,7 +24,7 @@ import java.util.List;
 public class DynamicClass {
 
 
-    private static String produceEntityJavaCode(List<String> referenceList, String calssName, String tableName, List<MetadataEntity> columnList, List<String> interfaceList, String parentClass) throws Exception {
+    private static String produceEntityJavaCode(List<String> referenceList, String calssName, String tableName, List<MetaColumnPo> columnList, List<String> interfaceList, String parentClass) throws Exception {
 
         List<String> pkFieldList = new ArrayList<>();
 
@@ -52,7 +53,7 @@ public class DynamicClass {
             }
             sb.append("{\r\n");
 
-            for (MetadataEntity metadataEntity : columnList) {
+            for (MetaColumnPo metadataEntity : columnList) {
                 if ("1".equals(metadataEntity.isPK)) {
                     sb.append("@PrimaryKey\r\n");
                 }
@@ -72,7 +73,7 @@ public class DynamicClass {
         return sb.toString();
     }
 
-    public static Class getDynamicModel(List<MetadataEntity> columnList) {
+    public static Class getDynamicModel(MetaDataPo metaDataPo) {
 /*        Class model = null;
         if (columnList != null && columnList.size() > 0) {
 
@@ -87,10 +88,10 @@ public class DynamicClass {
             model = DynamicClass.getDynamicModel(importList, entityName, tableName, columnList, null, "MainModel");
         }*/
 
-        return DynamicClassGenerator.getDynamicModel(columnList);
+        return DynamicClassGenerator.getDynamicModel(metaDataPo);
     }
 
-    public static Class getDynamicModel(List<String> referenceList, String className, String tableName, List<MetadataEntity> columnList, List<String> interfaceList, String parentClass) {
+    public static Class getDynamicModel(List<String> referenceList, String className, String tableName, List<MetaColumnPo> columnList, List<String> interfaceList, String parentClass) {
         String javaCode;
         try {
             javaCode = produceEntityJavaCode(referenceList, className, tableName, columnList, interfaceList, parentClass);

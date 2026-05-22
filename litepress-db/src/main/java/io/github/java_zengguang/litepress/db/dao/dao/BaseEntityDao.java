@@ -1,7 +1,8 @@
 package io.github.java_zengguang.litepress.db.dao.dao;
 
 import io.github.java_zengguang.litepress.core.annotation.AutoIncrease;
-import io.github.java_zengguang.litepress.core.bean.entity.MetadataEntity;
+import io.github.java_zengguang.litepress.core.bean.entity.MetaColumnPo;
+import io.github.java_zengguang.litepress.core.bean.entity.MetaDataPo;
 import io.github.java_zengguang.litepress.core.bean.entity.OptionDB;
 import io.github.java_zengguang.litepress.core.bean.entity.PageEntity;
 import io.github.java_zengguang.litepress.core.init.Config;
@@ -86,29 +87,29 @@ public class BaseEntityDao<T> implements EntityDao<T> {
 
 
     public List select(String sql, Class modelClass) throws Exception {
-        List<List<MetadataEntity>> templeList = null;
+        List<MetaDataPo> metaDataPos = null;
 
         String tableName = DBUtils.getTableNameFromModel(modelClass);
 
         if (tableName != null) {
-            templeList = dataManager.select2TempleList(sql, tableName);
+            metaDataPos = dataManager.select2TempleList(sql, tableName);
         } else {
-            templeList = dataManager.select2TempleList(sql);
+            metaDataPos = dataManager.select2TempleList(sql);
         }
 
-        return transMetadata2Obj(templeList, modelClass);
+        return transMetadata2Obj(metaDataPos, modelClass);
     }
 
     //查询
     public List<T> select(String sql) throws Exception {
-        List<List<MetadataEntity>> templeList = dataManager.select2TempleList(sql);
+        List<MetaDataPo> templeList = dataManager.select2TempleList(sql);
         return transMetadata2Obj(templeList);
     }
 
 
     public List<T> select(String sql, String tableName) throws Exception {
 
-        List<List<MetadataEntity>> templeList = dataManager.select2TempleList(sql, tableName);
+        List<MetaDataPo> templeList = dataManager.select2TempleList(sql, tableName);
 
         return transMetadata2Obj(templeList);
     }
@@ -128,28 +129,24 @@ public class BaseEntityDao<T> implements EntityDao<T> {
         return dataManager.selectOneColList(sql);
     }
 
-    private List<T> transMetadata2Obj(List<List<MetadataEntity>> transMetadata2Obj) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        return transMetadata2Obj(transMetadata2Obj, null);
+    private List<T> transMetadata2Obj(List<MetaDataPo> metaDataPos) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        return transMetadata2Obj(metaDataPos, null);
     }
 
-    private List<T> transMetadata2Obj(List<List<MetadataEntity>> templeList, Class<T> modelClass) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    private List<T> transMetadata2Obj(List<MetaDataPo> metaDataPos, Class<T> modelClass) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         List<T> modelList = new ArrayList<>();
-        if (templeList != null && !templeList.isEmpty()) {
+        if (metaDataPos != null && !metaDataPos.isEmpty()) {
             SimpleAssemble<T> simpleAssemble = new SimpleAssemble<>(optionDB.dbtype);
-            if (!templeList.isEmpty()) {
+            if (!metaDataPos.isEmpty()) {
                 if (modelClass == null) {
-                    modelClass = DynamicClass.getDynamicModel(templeList.get(0));
+                    modelClass = DynamicClass.getDynamicModel(metaDataPos.get(0));
                 }
-                for (List<MetadataEntity> columnList : templeList) {
+                for (MetaDataPo metaDataPo : metaDataPos) {
                     T obj = modelClass.getDeclaredConstructor().newInstance();
-                    for (MetadataEntity metadataEntity : columnList) {
-                        if (metadataEntity != null) {
-                            obj = simpleAssemble.assembling(metadataEntity, obj);
-                        }
-
-                    }
+                    obj = simpleAssemble.assembling(metaDataPo, obj);
                     modelList.add(obj);
                 }
+
             }
         }
         return modelList;
@@ -208,8 +205,6 @@ public class BaseEntityDao<T> implements EntityDao<T> {
         }
         return result;
     }
-
-
 
 
     public Integer insertMap2Data(String tableName, Map<String, String> para) throws Exception {
