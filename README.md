@@ -60,6 +60,22 @@ public class SinoSigWebApp extends BaseWebAppBoot {
 
 
 
+#### 发布说明
+
+项目使用 Maven Profiles 管理发布目标，通过 `-P` 参数一键切换：
+
+    # 发布到公司内网仓库（默认，无需额外参数）
+    mvn deploy
+
+    # 发布到 Maven Central（需要 GPG 签名）
+    mvn deploy -P central
+
+| Profile    | 激活方式         | 发布目标                | 说明                     |
+|------------|-----------------|------------------------|--------------------------|
+| `internal` | 默认激活         | 公司内网 Nexus          | 日常开发发布使用           |
+| `central`  | `-P central`    | Sonatype Maven Central | 对外开源发布，自动启用 GPG 签名 |
+
+
 #### 参与贡献
 
 1.  Fork 本仓库
