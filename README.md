@@ -1,94 +1,102 @@
-# databases
+# Litepress
 
-#### 介绍
-一个自主实现的轻量级开发框架、包含持久层框架、MVC框架、网络通信框架、PRC框架，脱离Spring也可以轻松开发。
+轻量级 Java 开发框架，脱离 Spring 也能轻松开发。内置持久层、MVC、网络通信、RPC、事件总线等能力。
 
-#### 平台说明
-    要求JDK21+
+**要求：JDK 21+**
 
-#### 安装教程
+## 快速开始
 
-1、安装依赖
+### 1. 引入依赖
 
-           <dependency>
-                <groupId>io.github.java_zengguang</groupId>
-                <artifactId>litepress-boot</artifactId>
-                <version>${litepress.version}</version>
-            </dependency>
+```xml
+<dependency>
+    <groupId>io.github.java-zengguang</groupId>
+    <artifactId>litepress-boot</artifactId>
+    <version>${litepress.version}</version>
+</dependency>
+```
 
-2、创建启动类
+### 2. 创建启动类
 
-@TargetEvn(value = "dev")
-@ProjectRootPath(value = "/tomcat")
-@ScanPackages(value = "com.sinosig.zg.smart.admin")
-public class SinoSigWebApp extends BaseWebAppBoot {
+```java
+@TargetEvn("dev")
+@ProjectRootPath("/tomcat")
+@ScanPackages("com.example.app")
+public class MyApp extends BaseWebAppBoot {
 
-    public SinoSigWebApp(Class clazz, Integer port) {
-
+    public MyApp(Class clazz, Integer port) {
         super(clazz, port);
     }
 
     public static void main(String[] args) {
-
-        SinoSigWebApp sinoSigWebApp = new SinoSigWebApp(SinoSigWebApp.class, 9913);
-        sinoSigWebApp.init();
-
+        MyApp app = new MyApp(MyApp.class, 8080);
+        app.init();
     }
 
     @Override
     public void config() {
-
+        // 自定义配置
     }
 }
+```
 
+### 3. 编写配置文件
 
-3、场景配置文件，配置文件名称为  环境+_BeanConfig.xml
+文件名格式：`{环境}_BeanConfig.xml`，如 `dev_BeanConfig.xml`：
 
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
-
     <bean id="optionDB" class="io.github.java_zengguang.litepress.core.bean.entity.OptionDB">
-        <property name="url" type="java.lang.String">xxx</property>
-        ...
+        <property name="url" type="java.lang.String">jdbc:mysql://localhost:3306/mydb</property>
+        <!-- ... -->
     </bean>
-
 
     <bean id="MVCOption" class="io.github.java_zengguang.litepress.web.entity.MVCOption">
-        ...
+        <!-- ... -->
     </bean>
 </beans>
+```
 
+## 模块说明
 
+| 模块 | 说明 |
+|------|------|
+| `litepress-boot` | 应用启动器，包扫描与初始化 |
+| `litepress-core` | 核心工具、配置、加解密 |
+| `litepress-web` | 基于 Jetty 的 MVC 框架 |
+| `litepress-db` | 持久层，SQL 解析、事务、DAO |
+| `litepress-network` | 基于 Netty 的网络通信 |
+| `litepress-direction` | RPC 远程调用 |
+| `litepress-router` | 基于 Zookeeper 的服务注册与发现 |
+| `litepress-event` | 事件总线（本地 / RocketMQ / ZeroMQ / Redis） |
+| `litepress-reaction` | 异步处理与信号量管理 |
+| `litepress-cache` | 缓存（内存 / MongoDB / Infinispan） |
+| `litepress-task` | 基于 Quartz 的定时任务 |
+| `litepress-chain` | 数据链路与对比 |
+| `litepress-label` | 基于规则的标签引擎 |
+| `litepress-ml` | 机器学习（ND4J / DeepLearning4J） |
 
-#### 发布说明
+## 构建与发布
 
-项目使用 Maven Profiles 管理发布目标，通过 `-P` 参数一键切换：
+```bash
+# 编译
+mvn clean compile
 
-    # 发布到公司内网仓库（默认，无需额外参数）
-    mvn deploy
+# 发布到公司内网（默认）
+mvn deploy
 
-    # 发布到 Maven Central（需要 GPG 签名）
-    mvn deploy -P central
+# 发布到 Maven Central
+mvn deploy -P central
+```
 
-| Profile    | 激活方式         | 发布目标                | 说明                     |
-|------------|-----------------|------------------------|--------------------------|
-| `internal` | 默认激活         | 公司内网 Nexus          | 日常开发发布使用           |
-| `central`  | `-P central`    | Sonatype Maven Central | 对外开源发布，自动启用 GPG 签名 |
+## 参与贡献
 
+1. Fork 本仓库
+2. 新建 `Feat_xxx` 分支
+3. 提交代码
+4. 新建 Pull Request
 
-#### 参与贡献
+## License
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+[MIT](LICENSE)
