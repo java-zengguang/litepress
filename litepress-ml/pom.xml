@@ -13,13 +13,6 @@
     <name>litepress-ml</name>
 
 
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <nd4j.version>1.0.0-M2.1</nd4j.version>
-
-    </properties>
     <dependencies>
 
         <dependency>
@@ -36,39 +29,30 @@
         <dependency>
             <groupId>org.nd4j</groupId>
             <artifactId>nd4j-native-platform</artifactId>
-            <version>1.0.0-M2.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.nd4j</groupId>
             <artifactId>nd4j-api</artifactId>
-            <version>1.0.0-M2.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.deeplearning4j</groupId>
             <artifactId>deeplearning4j-core</artifactId>
-            <version>1.0.0-M2.1</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.encog/encog-core -->
         <dependency>
             <groupId>org.encog</groupId>
             <artifactId>encog-core</artifactId>
-            <version>3.4</version>
         </dependency>
-
-
-
 
 
         <!-- DataVec - Library for data loading and preprocessing -->
         <dependency>
             <groupId>org.datavec</groupId>
             <artifactId>datavec-api</artifactId>
-            <version>1.0.0-M2.1</version>
         </dependency>
-
 
 
     </dependencies>
