@@ -16,12 +16,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * SSE 流式响应处理器。
- * 
+ * <p>
  * 使用虚拟线程处理 SSE 数据流，支持：
  * - 阻塞队列消费
  * - 心跳保活
  * - 优雅关闭
- * 
+ * <p>
  * 注意：SSE 业务方法应该快速返回 BlockingQueue，然后在其他线程中往队列放数据。
  * 如果业务方法同步往队列放数据，会阻塞 Reactor 线程池。
  */
@@ -39,11 +39,13 @@ public class StreamHttpResponseHandler extends BaseHttpResponseHandler {
 
     @Override
     public void dealHttpResponse(ChannelHandlerContext ctx, HttpResponseEntity responseEntity) {
-        if (!(responseEntity.result instanceof BlockingQueue<?> blockingQueue)) {
-            Logger.warn("SSE 响应结果不是 BlockingQueue 类型，无法进行流式输出");
-            return;
+        if ((responseEntity.result instanceof BlockingQueue<?> blockingQueue)) {
+            dealBlockingQueue(ctx, blockingQueue);
         }
+    }
 
+
+    private void dealBlockingQueue(ChannelHandlerContext ctx, BlockingQueue<?> blockingQueue) {
         // 使用原子标记确保资源只清理一次
         AtomicBoolean cleaned = new AtomicBoolean(false);
 
@@ -88,7 +90,7 @@ public class StreamHttpResponseHandler extends BaseHttpResponseHandler {
                             if (!sendSSEData(ctx, data)) {
                                 break;
                             }
-                        } else if (object != null) {
+                        } else {
                             Logger.warn("SSE 队列中包含非 SSEDto 类型数据: {}", object.getClass().getName());
                         }
                     } catch (InterruptedException e) {
