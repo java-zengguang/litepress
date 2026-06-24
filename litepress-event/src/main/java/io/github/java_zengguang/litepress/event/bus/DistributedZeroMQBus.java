@@ -1,0 +1,156 @@
+package io.github.java_zengguang.litepress.event.bus;
+
+
+import io.github.java_zengguang.litepress.core.error.BizException;
+import io.github.java_zengguang.litepress.core.util.IpConfig;
+import io.github.java_zengguang.litepress.core.util.reflect.JsonUtil;
+import io.github.java_zengguang.litepress.event.entity.ZeroMQRouter;
+import io.github.java_zengguang.litepress.event.entity.ZoreMQConfig;
+import io.github.java_zengguang.litepress.event.event.BaseEvent;
+
+import io.github.java_zengguang.litepress.event.exception.StateTransitinException;
+import io.github.java_zengguang.litepress.event.subsriber.BaseEventListener;
+import io.github.java_zengguang.litepress.router.entity.RouterEntity;
+import io.github.java_zengguang.litepress.router.register.RouterRegister;
+import org.apache.rocketmq.client.exception.MQBrokerException;
+import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.remoting.exception.RemotingException;
+import org.tinylog.Logger;
+import org.zeromq.ZMQ;
+
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class DistributedZeroMQBus extends BaseMessageBus implements MessageBus {
+
+    private ZoreMQConfig zoreMQConfig;
+
+    private ZMQ.Context context;
+
+    private Map<String, ZMQ.Socket> publisherMap = new HashMap();
+
+    private Map<String, ZMQ.Socket> subscriberMap = new HashMap();
+
+
+    private RouterRegister<RouterEntity> routerRegister;
+
+    private String ip;
+
+    private ExecutorService customerExecutor;
+
+    private ZMQ.Socket getSubscriber(String eventType) {
+        String address = "tcp://" + ip + ":" + zoreMQConfig.port;
+        ZMQ.Socket subscriber = subscriberMap.get(address);
+        try {
+            RouterEntity routerEntity = new RouterEntity();
+            routerEntity.host = ip;
+            routerEntity.port = Integer.parseInt(zoreMQConfig.port);
+            routerEntity.path = eventType;
+            routerEntity.version = new Date().getTime() + "";
+            routerEntity.routerType = "event";
+            routerRegister.putRouter(routerEntity);
+        } catch (Exception e) {
+            Logger.error(e, "注册失败");
+        }
+
+
+        return subscriber;
+    }
+
+    private ZMQ.Socket getPublisher(String eventType) throws InterruptedException {
+        RouterEntity router = routerRegister.getRouter(eventType);
+        if (router != null) {
+            String address = "tcp://" + router.host + ":" + zoreMQConfig.port;
+            ZMQ.Socket publisher = publisherMap.get(address);
+            if (publisher == null) {
+                publisher = context.socket(ZMQ.PUB);
+                publisher.connect(address);
+                publisherMap.put(address, publisher);
+            }
+            return publisher;
+        }
+        return null;
+
+    }
+
+    public DistributedZeroMQBus(ZoreMQConfig zoreMQConfig) throws Exception {
+        this.ip = IpConfig.getLocalHostLANAddress().getHostAddress();
+        this.zoreMQConfig = zoreMQConfig;
+        context = ZMQ.context(1);
+        routerRegister = RouterRegister.getInstance(ZeroMQRouter.class);
+
+
+        //初始化本地发布者和订阅者
+
+        String address = "tcp://" + ip + ":" + zoreMQConfig.port;
+        ZMQ.Socket publisher = context.socket(ZMQ.PUB);
+        publisher.bind(address);
+        publisherMap.put(address, publisher);
+
+
+        ZMQ.Socket subscriber = context.socket(ZMQ.SUB);
+        subscriber.connect(address);
+        subscriberMap.put(address, subscriber);
+
+        customerExecutor = Executors.newVirtualThreadPerTaskExecutor();
+
+    }
+
+    public void init() throws MQClientException, InterruptedException, UnknownHostException {
+        String address = "tcp://" + ip + ":" + zoreMQConfig.port;
+        ZMQ.Socket subscriber = subscriberMap.get(address);
+        Logger.info("初始化");
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                // 订阅特定主题
+                while (true) {
+                    String receivedTopic = subscriber.recvStr(0); // 接收主题
+                    String message = subscriber.recvStr(0);       // 接收消息
+                    customerExecutor.submit(() -> {
+                        doCustomer(receivedTopic, message);
+                    });
+                }
+            }
+        });
+        executor.shutdown();
+
+        Thread.sleep(2000);
+    }
+
+    private void doCustomer(String topic, String message) {
+        Logger.info("消息监听    " + new String(message));
+        doInvokeEventListener( message);
+
+    }
+
+    @Override
+    public void doPublish(BaseEvent baseEvent) throws IOException, StateTransitinException, MQBrokerException, RemotingException, InterruptedException, MQClientException {
+
+        ZMQ.Socket publisher = getPublisher(baseEvent.name);
+        if (publisher == null) {
+            throw new BizException("未找到事件监听");
+        }
+        publisher.sendMore(baseEvent.name); // 发送主题
+        publisher.send(JsonUtil.obj2String(baseEvent));   // 发送消息
+    }
+
+
+    @Override
+    public void doRegister(String eventType, BaseEventListener listener) throws MQClientException, InterruptedException {
+        if (!eventListenerMap.containsKey(eventType)) {
+            ZMQ.Socket subscriber = getSubscriber(eventType);
+            subscriber.subscribe(eventType.getBytes());
+        }
+
+
+    }
+
+
+}

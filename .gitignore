@@ -1,0 +1,7 @@
+./.idea
+./target
+./.flattened-pom.xml
+./dependency-reduced-pom.xml
+./pom.xml.versionsBackup
+./*.iml
+/.idea/
