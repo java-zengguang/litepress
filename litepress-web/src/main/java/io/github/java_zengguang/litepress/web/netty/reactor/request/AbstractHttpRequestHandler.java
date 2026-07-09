@@ -112,7 +112,7 @@ public abstract class AbstractHttpRequestHandler {
             } else if (httpRequestEntity.contentType.startsWith("multipart/form-data")) {
                 httpRequestEntity.sceneType = SceneType.FORM.name();
                 httpRequestEntity.paramMap.putAll(readBody(request));
-            } else if ("application/x-www-form-urlencoded;charset=UTF-8".equals(httpRequestEntity.contentType)) {
+            } else if (httpRequestEntity.contentType.contains("application/x-www-form-urlencoded")) {
                 decoder = new QueryStringDecoder(httpRequestEntity.body, false);
                 uriAttributes = decoder.parameters();
                 if (uriAttributes != null && !uriAttributes.isEmpty()) {

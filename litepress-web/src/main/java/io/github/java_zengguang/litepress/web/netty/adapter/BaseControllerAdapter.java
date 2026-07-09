@@ -9,6 +9,7 @@ import io.github.java_zengguang.litepress.web.annotation.controller.RequestBody;
 import io.github.java_zengguang.litepress.web.entity.HttpRequestEntity;
 import io.github.java_zengguang.litepress.web.entity.HttpResponseEntity;
 import io.github.java_zengguang.litepress.web.entity.MVCOption;
+import io.github.java_zengguang.litepress.web.entity.MessageBean;
 import io.github.java_zengguang.litepress.web.netty.intercepter.HttpInterceptor;
 import io.github.java_zengguang.litepress.web.servlet.adapter.ControllerAdapter;
 import io.github.java_zengguang.litepress.web.util.ResolveAnnotation;
@@ -113,7 +114,7 @@ public abstract class BaseControllerAdapter implements ControllerAdapter {
                 Logger.error(e, "系统内部错误！");
             }
             httpResponseEntity.statusCode = 500;
-            httpResponseEntity.result = "系统错误！";
+            httpResponseEntity.result = MessageBean.error("系统内部错误！");
         }
         //执行后置拦截
         for (HttpInterceptor interceptor : postHttpInterceptors) {
