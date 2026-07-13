@@ -1,4 +1,4 @@
-package io.github.java_zengguang.litepress.core.relect.dynameic;
+package io.github.java_zengguang.litepress.db.relect.dynameic;
 
 import java.io.IOException;
 import java.io.InputStream;

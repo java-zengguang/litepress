@@ -1,7 +1,7 @@
 package io.github.java_zengguang.litepress.db.dao.assemble;
 
-import io.github.java_zengguang.litepress.core.bean.entity.MetaColumnPo;
-import io.github.java_zengguang.litepress.core.bean.entity.MetaDataPo;
+import io.github.java_zengguang.litepress.db.po.EntityDataPo;
+import io.github.java_zengguang.litepress.db.po.MetaDataPo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -27,8 +27,8 @@ public class SimpleAssemble<T> extends BaseAssemble<T> {
     }
 
     @Override
-    public List<MetaDataPo> analysisList(List<T> obs) throws IllegalAccessException, InstantiationException {
-        List<MetaDataPo> lists = new ArrayList<>();
+    public List<EntityDataPo> analysisList(List<T> obs) throws IllegalAccessException {
+        List<EntityDataPo> lists = new ArrayList<>();
         for (T obj : obs) {
             lists.add(analysis(obj));
         }

@@ -3,7 +3,8 @@ package io.github.java_zengguang.litepress.label.sql;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-import io.github.java_zengguang.litepress.db.dao.dao.SimpleEntityDao;
+import io.github.java_zengguang.litepress.db.dao.EntityDao;
+import io.github.java_zengguang.litepress.db.dao.SimpleEntityDao;
 import io.github.java_zengguang.litepress.label.entity.LabelEntity;
 import io.github.java_zengguang.litepress.label.entity.LabelMetadata;
 import org.jeasy.rules.api.Facts;
@@ -32,13 +33,13 @@ public class LabelSQLRule extends BasicRule implements Rule {
             labelMap = new HashMap<>();
         }
         try {
-            SimpleEntityDao SimpleEntityDao = new SimpleEntityDao(dataSource);
+            EntityDao simpleEntityDao = SimpleEntityDao.create(dataSource);
             //缺少一个动态匹配字符串解析器，构造sql
 
             Handlebars handlebars = new Handlebars();
             Template template = handlebars.compileInline(sql);
             String resultSQL = template.apply(input);
-            List<String> businessNoList = SimpleEntityDao.selectOneColList(resultSQL);
+            List<String> businessNoList = simpleEntityDao.selectOneColList(resultSQL);
             if (businessNoList != null && !businessNoList.isEmpty()) {
                 Map<String, Set<LabelEntity>> finalLabelMap = labelMap;
                 businessNoList.forEach((businessNo) -> {

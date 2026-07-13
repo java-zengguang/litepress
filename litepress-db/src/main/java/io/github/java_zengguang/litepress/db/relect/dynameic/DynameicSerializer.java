@@ -3,7 +3,7 @@
 // (powered by FernFlower decompiler)
 //
 
-package io.github.java_zengguang.litepress.core.relect.dynameic;
+package io.github.java_zengguang.litepress.db.relect.dynameic;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoException;

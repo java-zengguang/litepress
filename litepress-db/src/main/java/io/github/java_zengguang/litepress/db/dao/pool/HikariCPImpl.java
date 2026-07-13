@@ -12,8 +12,6 @@ public class HikariCPImpl implements DataBasePool {
 
     private static DataBasePool hikarCP;
 
-    private static final Map<String, DataSource> dataSourceMap = new Hashtable<>();
-
     private HikariCPImpl() {
     }
 
@@ -24,8 +22,7 @@ public class HikariCPImpl implements DataBasePool {
     }
 
 
-
-    public DataSource createDataSource(OptionDB optionDB) throws Exception {
+    public DataSource createDataSource(OptionDB optionDB)  {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(optionDB.url);
         config.setUsername(optionDB.username);
@@ -37,7 +34,7 @@ public class HikariCPImpl implements DataBasePool {
         config.setConnectionTestQuery("SELECT 1 from  dual");
         config.setMaximumPoolSize(optionDB.maxPoolSize);
         config.setMinimumIdle(2);
-        config.setAutoCommit(false);
+        config.setAutoCommit(true);  //默认事务自动提交
         config.setIdleTimeout(600000);
         config.setConnectionTimeout(30000); // 建议设置30秒超时
         return new HikariDataSource(config);

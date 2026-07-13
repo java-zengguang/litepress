@@ -43,7 +43,7 @@ public class DruidImpl implements DataBasePool {
         properties.put("timeBetweenEvictionRunsMillis", "30000");
         properties.put("logAbandoned", "false");
         properties.put("filters", "stat,config,wall");
-        properties.put("defaultAutoCommit", "false");
+        properties.put("defaultAutoCommit", "true");
         //  properties.put("connectionProperties","config.decrypt="true";config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALbMDWRmnQ21QFC8P8m75xpc2CbY3lcwJxAo5TQtgMx0GBnmr2vvvtmmdKvvYfrdM+DLfpB5jtu00HX2vEMmzBsCAwEAAQ==");
 
         return DruidDataSourceFactory.createDataSource(properties);

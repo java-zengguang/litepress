@@ -1,6 +1,9 @@
 package io.github.java_zengguang.litepress.db.dao.template;
 
-import io.github.java_zengguang.litepress.core.bean.entity.MetaColumnPo;
+import io.github.java_zengguang.litepress.db.po.EntityDataPo;
+import io.github.java_zengguang.litepress.db.po.EntityFieldPo;
+import io.github.java_zengguang.litepress.db.po.MetaColumnPo;
+import io.github.java_zengguang.litepress.db.po.MetaDataPo;
 import org.tinylog.Logger;
 
 import java.math.BigDecimal;
@@ -55,60 +58,60 @@ public class MysqlEntityDaoTemplate extends BaseEntityDaoTemplate {
         fieldConfigMap.put("Date", List.of("'", "'")); // 兼容旧的java.util.Date
     }
 
+
+
     @Override
-    public MetaColumnPo translateEntity(MetaColumnPo metadataEntity) {
-        metadataEntity.fieldName = metadataEntity.columnLabel;
-        metadataEntity.fieldValue = metadataEntity.jdbcValue;
+    public EntityFieldPo translateEntity(MetaColumnPo metadataEntity) {
+        EntityFieldPo entityFieldPo = new EntityFieldPo();
+        entityFieldPo.fieldName = metadataEntity.columnLabel;
+        entityFieldPo.fieldValue = metadataEntity.jdbcValue;
 
         List<String> configList = columnConfigMap.get(metadataEntity.columnType);
         if (configList == null || configList.isEmpty()) {
             Logger.info("错误的类型" + metadataEntity.columnType);
             return null;
         }
-        metadataEntity.fieldType = configList.get(0);
-
-
-        return metadataEntity;
+        entityFieldPo.fieldType = configList.get(0);
+        return entityFieldPo;
     }
 
+
     @Override
-    public MetaColumnPo translateDatabase(MetaColumnPo metadataEntity) {
-
-        //   metadataEntity.tableName = metadataEntity.entityName;
-        metadataEntity.columnLabel = metadataEntity.fieldName;
-        List<String> configList = fieldConfigMap.get(metadataEntity.fieldType);
-        if (metadataEntity.jdbcValue != null) {
-
-            if ("String".equals(metadataEntity.fieldType)) {
-                String value = (String) metadataEntity.jdbcValue;
+    public MetaColumnPo translateDatabase(EntityFieldPo entityFieldPo) {
+        MetaColumnPo metaColumnPo = new MetaColumnPo();
+        metaColumnPo.columnLabel = entityFieldPo.fieldName;
+        List<String> configList = fieldConfigMap.get(entityFieldPo.fieldType);
+        if (entityFieldPo.fieldValue != null) {
+            if ("String".equals(entityFieldPo.fieldType)) {
+                String value = (String) metaColumnPo.jdbcValue;
                 if (value.contains("'")) {
                     value = value.replace("'", "''");
-                    metadataEntity.jdbcValue = value;
+                    metaColumnPo.jdbcValue = value;
                 }
             }
 
-            if ("BigDecimal".equals(metadataEntity.fieldType) && metadataEntity.jdbcValue instanceof BigDecimal) { //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下
-                BigDecimal bigDecimal = (BigDecimal) metadataEntity.jdbcValue;
-                metadataEntity.columnValue = bigDecimal.toString();
+            if ("BigDecimal".equals(entityFieldPo.fieldType) && metaColumnPo.jdbcValue instanceof BigDecimal) { //直接使用BigDecimal会出现尾部0丢失的情况，所以用String转一下
+                BigDecimal bigDecimal = (BigDecimal) metaColumnPo.jdbcValue;
+                metaColumnPo.columnValue = bigDecimal.toString();
             }
             if (configList != null && !configList.isEmpty()) {
 
-                if ("LocalDate".equals(metadataEntity.fieldType)) {
-                    metadataEntity.columnValue = configList.get(0) + metadataEntity.jdbcValue + configList.get(1);
-                } else if ("LocalDateTime".equals(metadataEntity.fieldType)) {
+                if ("LocalDate".equals(entityFieldPo.fieldType)) {
+                    metaColumnPo.columnValue = configList.get(0) + metaColumnPo.jdbcValue + configList.get(1);
+                } else if ("LocalDateTime".equals(entityFieldPo.fieldType)) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                    metadataEntity.columnValue = configList.get(0) + formatter.format((LocalDateTime) metadataEntity.jdbcValue) + configList.get(1);
-                } else if ("Date".equals(metadataEntity.fieldType)) {
+                    metaColumnPo.columnValue = configList.get(0) + formatter.format((LocalDateTime) metaColumnPo.jdbcValue) + configList.get(1);
+                } else if ("Date".equals(entityFieldPo.fieldType)) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                    LocalDateTime ldt = new Timestamp(((Date) metadataEntity.jdbcValue).getTime()).toLocalDateTime();
-                    metadataEntity.columnValue = configList.get(0) + formatter.format(ldt) + configList.get(1);
+                    LocalDateTime ldt = new Timestamp(((Date) metaColumnPo.jdbcValue).getTime()).toLocalDateTime();
+                    metaColumnPo.columnValue = configList.get(0) + formatter.format(ldt) + configList.get(1);
                 } else {
-                    metadataEntity.columnValue = configList.get(0) + metadataEntity.jdbcValue + configList.get(1);
+                    metaColumnPo.columnValue = configList.get(0) + metaColumnPo.jdbcValue + configList.get(1);
                 }
             }
         }
 
-        return metadataEntity;
+        return metaColumnPo;
     }
 
 

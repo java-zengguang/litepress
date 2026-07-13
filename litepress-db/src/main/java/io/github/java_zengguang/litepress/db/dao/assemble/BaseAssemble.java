@@ -3,10 +3,12 @@ package io.github.java_zengguang.litepress.db.dao.assemble;
 import io.github.java_zengguang.litepress.core.annotation.AutoIncrease;
 import io.github.java_zengguang.litepress.core.annotation.NotCommitField;
 import io.github.java_zengguang.litepress.core.annotation.PrimaryKey;
-import io.github.java_zengguang.litepress.core.bean.entity.MetaColumnPo;
-import io.github.java_zengguang.litepress.core.bean.entity.MetaDataPo;
 import io.github.java_zengguang.litepress.db.dao.template.EntityDaoTemplate;
 import io.github.java_zengguang.litepress.db.dao.template.EntityDaoTemplateFactory;
+import io.github.java_zengguang.litepress.db.po.EntityDataPo;
+import io.github.java_zengguang.litepress.db.po.EntityFieldPo;
+import io.github.java_zengguang.litepress.db.po.MetaColumnPo;
+import io.github.java_zengguang.litepress.db.po.MetaDataPo;
 import io.github.java_zengguang.litepress.db.util.DBUtils;
 
 import java.lang.reflect.Field;
@@ -21,9 +23,10 @@ public abstract class BaseAssemble<T> implements Assemble<T> {
         this.dbType = dbType;
     }
 
+    //直接利用元数据转换
     public T assembling(MetaDataPo metaData, T obj) throws IllegalAccessException {
         List<MetaColumnPo> metaColumnPos = metaData.columnPos;
-        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(metaData.dbType);
+        EntityDaoTemplate entityDaoTemplate = EntityDaoTemplateFactory.getTemplate(dbType);
         Class<?> classes = obj.getClass();
         Field[] fields = classes.getFields();
         for (Field field : fields) {
@@ -39,20 +42,23 @@ public abstract class BaseAssemble<T> implements Assemble<T> {
         return obj;
     }
 
-    public MetaDataPo analysis(T obj) throws IllegalAccessException, InstantiationException {
-        List<MetaColumnPo> metadataEntityList = new ArrayList<>();
+
+    //读取实体类信息，用户后续转换sql语句
+    public EntityDataPo analysis(T obj) throws IllegalAccessException {
+        List<EntityFieldPo> entityFieldPos = new ArrayList<>();
         Class<?> classes = obj.getClass();
         String tableName = DBUtils.getTableNameFromModel(classes);
         String entityName = classes.getSimpleName();
         Field[] fields = classes.getFields();
-        EntityDaoTemplate simpleEntityDaoTemplate = EntityDaoTemplateFactory.getTemplate(dbType);
+        //    EntityDaoTemplate simpleEntityDaoTemplate = EntityDaoTemplateFactory.getTemplate(dbType);
 
         for (Field field : fields) {
-            MetaColumnPo metadataEntity = new MetaColumnPo();
+            EntityFieldPo metadataEntity = new EntityFieldPo();
             metadataEntity.fieldName = field.getName();
             metadataEntity.fieldType = field.getType().getSimpleName();
-            metadataEntity.jdbcValue = field.get(obj);
-            metadataEntity = simpleEntityDaoTemplate.translateDatabase(metadataEntity);
+            metadataEntity.fieldValue = field.get(obj);
+
+            //  metadataEntity = simpleEntityDaoTemplate.translateDatabase(metadataEntity);
             NotCommitField notCommitField = field.getAnnotation(NotCommitField.class);
             if (notCommitField == null) {
                 metadataEntity.isNotCommit = "1";
@@ -72,13 +78,13 @@ public abstract class BaseAssemble<T> implements Assemble<T> {
                 metadataEntity.isAutoIncrease = "0";
             }
 
-            metadataEntityList.add(metadataEntity);
+            entityFieldPos.add(metadataEntity);
         }
-        MetaDataPo metaDataPo=new MetaDataPo();
-        metaDataPo.columnPos=metadataEntityList;
-        metaDataPo.tableName=tableName;
-        metaDataPo.entityName=entityName;
-        return metaDataPo;
+        EntityDataPo entityDataPo = new EntityDataPo();
+        entityDataPo.entityFieldPos = entityFieldPos;
+        entityDataPo.entityName = entityName;
+        entityDataPo.tableName = tableName;
+        return entityDataPo;
     }
 
 }

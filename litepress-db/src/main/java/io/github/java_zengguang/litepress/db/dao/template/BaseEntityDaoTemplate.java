@@ -1,5 +1,8 @@
 package io.github.java_zengguang.litepress.db.dao.template;
 
+import io.github.java_zengguang.litepress.db.po.EntityDataPo;
+import io.github.java_zengguang.litepress.db.po.MetaColumnPo;
+import io.github.java_zengguang.litepress.db.po.MetaDataPo;
 import org.tinylog.Logger;
 
 import java.lang.reflect.Field;
@@ -13,8 +16,20 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 
 public abstract class BaseEntityDaoTemplate implements EntityDaoTemplate {
+
+    @Override
+    public EntityDataPo translateEntity(MetaDataPo metadataEntity) {
+        EntityDataPo entityDataPo = new EntityDataPo();
+        entityDataPo.entityName = metadataEntity.tableName;
+        entityDataPo.tableName = metadataEntity.tableName;
+        entityDataPo.pkColumnList = metadataEntity.pkColumnList;
+        List<MetaColumnPo> metaColumnPos = metadataEntity.columnPos;
+        entityDataPo.entityFieldPos = metaColumnPos.stream().map(this::translateEntity).toList();
+        return entityDataPo;
+    }
 
     @Override
     public Object translateObject(Field field, Object jdbcValue) {

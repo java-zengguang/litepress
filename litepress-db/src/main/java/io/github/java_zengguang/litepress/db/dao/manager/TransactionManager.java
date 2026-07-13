@@ -1,7 +1,5 @@
 package io.github.java_zengguang.litepress.db.dao.manager;
 
-import com.zaxxer.hikari.HikariDataSource;
-import com.zaxxer.hikari.HikariPoolMXBean;
 import io.github.java_zengguang.litepress.db.dao.factory.ConnectionFactory;
 import io.github.java_zengguang.litepress.db.dao.factory.PoolConnectionFactory;
 import org.tinylog.Logger;
@@ -31,7 +29,7 @@ public class TransactionManager {
     }
 
 
-    public  Connection getConnection(String dataSource) throws Exception {
+    public Connection getConnection(String dataSource) throws Exception {
         Logger.debug("base服务层-链接获取-" + dataSource);
         Connection connection = null;
         Map<String, Connection> dataConnectionMap = threadLocal.get();
@@ -44,6 +42,7 @@ public class TransactionManager {
         if (connection == null) {
             ConnectionFactory factory = PoolConnectionFactory.getInstance();
             connection = factory.createConnection(dataSource);
+            connection.setAutoCommit(false); // 关闭事务自动提交
             dataConnectionMap.put(dataSource, connection);
         }
 
@@ -51,7 +50,7 @@ public class TransactionManager {
     }
 
 
-    public  void release() throws SQLException {
+    public void release() throws SQLException {
         Logger.debug("base服务层-链接释放-all");
         Map<String, Connection> dataSourceMap = threadLocal.get();
         if (dataSourceMap != null) {
@@ -65,7 +64,7 @@ public class TransactionManager {
     }
 
 
-    public  void commit() throws SQLException {
+    public void commit() throws SQLException {
         Logger.debug("base服务层-事务提交-all");
         Map<String, Connection> dataSourceMap = threadLocal.get();
         if (dataSourceMap != null) {
@@ -85,7 +84,7 @@ public class TransactionManager {
     }
 
 
-    public  void release(String dataSource) throws Exception {
+    public void release(String dataSource) throws Exception {
         Logger.debug("base服务层-链接释放-" + dataSource);
         Connection conn = getConnection(dataSource);
         conn.close();

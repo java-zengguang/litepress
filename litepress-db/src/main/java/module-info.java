@@ -9,6 +9,8 @@ module litepress.db {
     requires jsqlparser;
     requires pagehelper;
     requires org.apache.poi.poi;
+    requires net.bytebuddy;
+    requires java.compiler;
 
     exports io.github.java_zengguang.litepress.db.proxy;
     exports io.github.java_zengguang.litepress.db.dao.assemble;
@@ -19,6 +21,6 @@ module litepress.db {
 
     exports io.github.java_zengguang.litepress.db.handler;
     exports io.github.java_zengguang.litepress.db.util;
-    exports io.github.java_zengguang.litepress.db.dao.dao;
+    exports io.github.java_zengguang.litepress.db.dao;
 
 }

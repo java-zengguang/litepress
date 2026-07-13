@@ -14,7 +14,6 @@ module litepress.core {
     exports io.github.java_zengguang.litepress.core.error;
     exports io.github.java_zengguang.litepress.core.util.lock;
     exports io.github.java_zengguang.litepress.core.bean.handle;
-    exports io.github.java_zengguang.litepress.core.relect.dynameic;
 
     exports io.github.java_zengguang.litepress.core.util.io.poi;
 
