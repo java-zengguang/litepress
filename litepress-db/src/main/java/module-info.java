@@ -22,5 +22,6 @@ module litepress.db {
     exports io.github.java_zengguang.litepress.db.handler;
     exports io.github.java_zengguang.litepress.db.util;
     exports io.github.java_zengguang.litepress.db.dao;
+    exports io.github.java_zengguang.litepress.db.po;
 
 }

@@ -31,7 +31,7 @@ public class HikariCPImpl implements DataBasePool {
         config.setKeepaliveTime(600000);  //10分钟
         config.setMaxLifetime(1800000); //30分钟
         config.setValidationTimeout(5000);
-        config.setConnectionTestQuery("SELECT 1 from  dual");
+        config.setConnectionTestQuery("SELECT 1");
         config.setMaximumPoolSize(optionDB.maxPoolSize);
         config.setMinimumIdle(2);
         config.setAutoCommit(true);  //默认事务自动提交

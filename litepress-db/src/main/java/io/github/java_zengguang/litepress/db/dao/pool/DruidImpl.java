@@ -31,7 +31,7 @@ public class DruidImpl implements DataBasePool {
         properties.put("url", optionDB.url);
         properties.put("initialSize", "1");
         properties.put("minIdle", "1");
-        properties.put("validationQuery", "SELECT 1 FROM DUAL");
+        properties.put("validationQuery", "SELECT 1");
         properties.put("init-sql", "SQL ALTER session set NLS_DATE_FORMAT='YYYY-MM-DD HH24:MI:SS'");
         properties.put("testWhileIdle", "true");
         properties.put("testOnBorrow", "false");
