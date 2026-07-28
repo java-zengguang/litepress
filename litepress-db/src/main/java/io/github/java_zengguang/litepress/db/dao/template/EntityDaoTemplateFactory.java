@@ -21,6 +21,9 @@ public class EntityDaoTemplateFactory {
         if ("OB-ORACLE".equals(dbType)) {
             entityDaoTemplate = new MysqlEntityDaoTemplate();
         }
+        if ("SQLITE".equals(dbType)) {
+            entityDaoTemplate = new SqliteEntityDaoTemplate();
+        }
         return entityDaoTemplate;
     }
 }

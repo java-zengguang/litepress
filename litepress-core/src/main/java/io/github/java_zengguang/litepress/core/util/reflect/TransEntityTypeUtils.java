@@ -34,6 +34,14 @@ public class TransEntityTypeUtils {
                 object = Long.valueOf(value);
                 break;
             }
+            case "double": {
+                object = Double.valueOf(value);
+                break;
+            }
+            case "Double": {
+                object = Double.valueOf(value);
+                break;
+            }
             case "BigDecimal": {
                 object = new BigDecimal(value);
                 break;
