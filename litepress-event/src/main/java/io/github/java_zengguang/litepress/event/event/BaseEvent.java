@@ -10,6 +10,6 @@ public class BaseEvent {
     public String parentId;  //父事件ID
     public String name; //事件类型标识
     public String message;//事件消息
-    public EventInstancePo instance;
+    public String instanceId;
     public List<BaseEvent> nextEvents=new ArrayList<>();
 }

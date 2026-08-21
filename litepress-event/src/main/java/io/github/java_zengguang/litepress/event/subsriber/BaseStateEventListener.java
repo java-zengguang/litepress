@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class BaseStateEventListener extends BaseEventListener {
-    private final Map<String, StateModel> stateModelMap = new HashMap<>();
+    private final StateModel stateModel;
 
 
-    public void addStateModel(String modelId, StateModel stateModel) {
-        stateModelMap.put(modelId, stateModel);
+    public BaseStateEventListener(StateModel stateModel) {
+        this.stateModel = stateModel;
         List<String> events = stateModel.getEvents();
         this.addEvents(events);
     }
@@ -20,8 +20,7 @@ public abstract class BaseStateEventListener extends BaseEventListener {
 
     //如果需要处理事件、幂等、等操作可以重写 dealEvent方法
     public void dealEvent(BaseEvent event) throws Exception {
-        if (event.instance != null) {
-            StateModel stateModel = stateModelMap.get(event.instance.modelId);
+        if (event.instanceId != null) {
             stateModel.doTransitionRule(event);
         }
 

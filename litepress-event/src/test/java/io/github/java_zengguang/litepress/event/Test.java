@@ -6,6 +6,7 @@ import io.github.java_zengguang.litepress.event.entity.RocketConfig;
 import io.github.java_zengguang.litepress.event.event.BaseEvent;
 import io.github.java_zengguang.litepress.event.state.BaseStateModel;
 import io.github.java_zengguang.litepress.event.state.StateModel;
+import io.github.java_zengguang.litepress.event.state.po.StatePo;
 import io.github.java_zengguang.litepress.event.state.rule.SimpleStateTransitionRule;
 import io.github.java_zengguang.litepress.event.state.rule.EventTransitionRuleBuilder;
 import io.github.java_zengguang.litepress.event.subsriber.BaseStateEventListener;
@@ -30,26 +31,7 @@ public class Test {
 
 
         Logger.info("初始化");
-        BaseStateEventListener eventListener = new BaseStateEventListener() {
 
-
-            @Override
-            public void dealEvent(BaseEvent event) throws Exception {
-
-            }
-
-            @Override
-            public void beforeDealEvent(BaseEvent event) throws Exception {
-
-            }
-
-            @Override
-            public void afterDealEvent(BaseEvent event) throws Exception {
-
-            }
-
-
-        };
 
 
         SimpleStateTransitionRule stateTransitionRule = new EventTransitionRuleBuilder()
@@ -69,11 +51,43 @@ public class Test {
                 }).build();
 
         StateModel stateModel=new BaseStateModel("xxxx") {
+            @Override
+            public StatePo getState(String id) {
+                return null;
+            }
+
+            @Override
+            public void saveState(String id, StatePo statePo) {
+
+            }
+
+
+        };
+
+        BaseStateEventListener eventListener = new BaseStateEventListener(stateModel) {
+
+
+            @Override
+            public void dealEvent(BaseEvent event) throws Exception {
+
+            }
+
+            @Override
+            public void beforeDealEvent(BaseEvent event) throws Exception {
+
+            }
+
+            @Override
+            public void afterDealEvent(BaseEvent event) throws Exception {
+
+            }
+
+
         };
         stateModel.addEventTransitionRule(stateTransitionRule);
         stateModel.addEventTransitionRule(stateTransitionRule1);
 
-        eventListener.addStateModel("xxxx",stateModel);
+
 
         messageBus.register( eventListener);
 
